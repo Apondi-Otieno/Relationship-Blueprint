@@ -530,6 +530,52 @@
     .timeline { grid-template-columns: repeat(4, 1fr); }
     .tl-seg .tl-name { display: none; }
   }
+
+  /* save card */
+  .save-card {
+    background: white;
+    border: 1px solid var(--petal);
+    border-radius: 18px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+  }
+  .save-left { flex: 1; min-width: 180px; }
+  .save-title {
+    font-size: 13px; font-weight: 500;
+    color: var(--deep);
+    display: flex; align-items: center; gap: 7px;
+    margin-bottom: 4px;
+  }
+  .save-sub { font-size: 12px; color: var(--mist); line-height: 1.5; }
+  .save-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn-save, .btn-restore {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 9px 16px;
+    border-radius: 10px;
+    font-size: 13px; font-weight: 500;
+    cursor: pointer;
+    transition: all .15s;
+    white-space: nowrap;
+  }
+  .btn-save {
+    background: var(--rose); color: white;
+    border: 1px solid var(--mauve);
+  }
+  .btn-save:hover { background: var(--deep); }
+  .btn-restore {
+    background: var(--pink-50); color: var(--deep);
+    border: 1px solid var(--petal);
+  }
+  .btn-restore:hover { background: var(--petal); }
+  .save-msg {
+    width: 100%; font-size: 12px;
+    color: var(--green); font-style: italic;
+    min-height: 16px; margin-top: -8px;
+  }
 </style>
 </head>
 <body>
@@ -580,6 +626,30 @@
       <button class="btn" onclick="addLog()">Add</button>
     </div>
     <div id="logList"></div>
+  </div>
+
+
+  <!-- SAVE / RESTORE -->
+  <div class="save-card">
+    <div class="save-left">
+      <div class="save-title">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Back up your progress
+      </div>
+      <p class="save-sub">Save a file to transfer your data to another device, or just keep it safe.</p>
+    </div>
+    <div class="save-btns">
+      <button class="btn-save" onclick="saveFile()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Save file
+      </button>
+      <label class="btn-restore">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Restore file
+        <input type="file" accept=".json" onchange="restoreFile(event)" style="display:none">
+      </label>
+    </div>
+    <div id="saveMsg" class="save-msg"></div>
   </div>
 
   <!-- MANTRA -->
@@ -960,6 +1030,41 @@ function addLog(){
 function delLog(i){S.log.splice(i,1);save();renderAll();}
 
 function renderAll(){renderTimeline();renderStats();renderPhase();renderLog();}
+
+function saveFile(){
+  const data = JSON.stringify(S, null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'my-blueprint-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  const msg = document.getElementById('saveMsg');
+  if(msg){ msg.textContent = 'Saved! Keep this file somewhere safe.'; setTimeout(()=>msg.textContent='', 4000); }
+}
+
+function restoreFile(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    try {
+      const parsed = JSON.parse(ev.target.result);
+      S = parsed;
+      save();
+      renderAll();
+      const msg = document.getElementById('saveMsg');
+      if(msg){ msg.textContent = 'Restored! Your progress is back.'; setTimeout(()=>msg.textContent='', 4000); }
+    } catch(err) {
+      const msg = document.getElementById('saveMsg');
+      if(msg){ msg.style.color='var(--red)'; msg.textContent = 'Could not read that file. Make sure it is a blueprint backup.'; setTimeout(()=>{msg.textContent='';msg.style.color='var(--green)';}, 5000); }
+    }
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+
 renderAll();
 
 document.getElementById("logInput").addEventListener("keydown",e=>{if(e.key==="Enter")addLog();});
