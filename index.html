@@ -576,6 +576,85 @@
     color: var(--green); font-style: italic;
     min-height: 16px; margin-top: -8px;
   }
+
+  /* ── non-negotiable warning ── */
+  .nn-banner {
+    border-radius: 16px;
+    padding: 18px 22px;
+    margin-bottom: 20px;
+    border: 1.5px solid;
+    animation: fadeUp .4s ease both;
+  }
+  .nn-banner.watch {
+    background: #fff8ee;
+    border-color: #f0c060;
+  }
+  .nn-banner.terminate {
+    background: var(--deep);
+    border-color: var(--mauve);
+  }
+  .nn-banner-title {
+    font-family: var(--serif);
+    font-size: 19px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .nn-banner.watch .nn-banner-title { color: #7a4a00; }
+  .nn-banner.terminate .nn-banner-title { color: #f4c0d1; }
+  .nn-banner-sub {
+    font-size: 13px;
+    line-height: 1.55;
+    margin-bottom: 14px;
+  }
+  .nn-banner.watch .nn-banner-sub { color: #9a6200; }
+  .nn-banner.terminate .nn-banner-sub { color: #e8b4c8; }
+  .nn-fail-item {
+    padding: 10px 0;
+    border-bottom: 1px solid;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .nn-banner.watch .nn-fail-item { border-color: rgba(240,192,96,.3); }
+  .nn-banner.terminate .nn-fail-item { border-color: rgba(244,192,209,.15); }
+  .nn-fail-item:last-child { border-bottom: none; }
+  .nn-fail-label {
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nn-banner.watch .nn-fail-label { color: #7a4a00; }
+  .nn-banner.terminate .nn-fail-label { color: #f4c0d1; }
+  .nn-fail-reason {
+    font-family: var(--serif);
+    font-size: 14px;
+    font-style: italic;
+    line-height: 1.5;
+  }
+  .nn-banner.watch .nn-fail-reason { color: #b07820; }
+  .nn-banner.terminate .nn-fail-reason { color: #ed93b1; }
+  .nn-phase-tag {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 99px;
+    font-weight: 500;
+    font-style: normal;
+  }
+  .nn-banner.watch .nn-phase-tag { background: #fdecc0; color: #7a4a00; }
+  .nn-banner.terminate .nn-phase-tag { background: rgba(212,83,126,.25); color: #f4c0d1; }
+  .nn-footer {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid;
+    font-family: var(--serif);
+    font-size: 15px;
+    font-style: italic;
+    line-height: 1.6;
+  }
+  .nn-banner.watch .nn-footer { border-color: rgba(240,192,96,.3); color: #9a6200; }
+  .nn-banner.terminate .nn-footer { border-color: rgba(244,192,209,.15); color: #f4c0d1; }
 </style>
 </head>
 <body>
@@ -871,6 +950,36 @@ const PHASES = [
   }
 ];
 
+
+const NON_NEGOTIABLES = [
+  {phase:2, key:"heasked",    label:"He won't hear your context or asks questions",  reason:"A man who manages instead of listens will never truly see you. This is not a communication style — it is a character pattern."},
+  {phase:2, key:"boundary",   label:"Physical boundary honoured",                    reason:"A boundary you set before anything started. If he cannot respect this one, he will not respect the harder ones."},
+  {phase:2, key:"nocompromise",label:"You stayed fully yourself",                   reason:"If you are already shrinking in month 2, it will only get harder. You cannot build a real relationship from a performed version of yourself."},
+  {phase:3, key:"account",    label:"He took accountability",                        reason:"Gaslighting and blame-reversal are not conflict styles. They are ways of erasing your reality. A man who cannot own his part cannot be a safe partner."},
+  {phase:3, key:"repair",     label:"He repaired after conflict",                    reason:"Disappearing after rupture is a choice. Repair is how trust is built. Without it, every conflict leaves a permanent crack."},
+  {phase:3, key:"mysafety",   label:"You felt safe disagreeing with him",            reason:"If you do not feel safe being disagreeable now, you will spend the marriage managing his emotions instead of living your life."},
+  {phase:3, key:"curious",    label:"He sought to understand, not assume",           reason:"A man who assumes instead of asks has already decided he knows you better than you know yourself."},
+  {phase:5, key:"sameperson", label:"He is the same man across time",               reason:"Inconsistency is not a quirk. It is information about who he actually is versus who he performed in the beginning."},
+  {phase:5, key:"freedom",    label:"You feel more free, not less",                  reason:"Love should expand you. If you feel smaller, more careful, more managed — that is not love. That is containment."},
+  {phase:5, key:"wordsact",   label:"His words and actions match",                  reason:"Words are easy. Actions across time are the truth. A man whose words and actions diverge is showing you who he prioritises — and it is not you."},
+];
+
+const TERMINATE_THRESHOLD = 3;
+
+function getNNFails(){
+  return NON_NEGOTIABLES.filter(nn => {
+    const v = S.checks[nn.phase + '_' + nn.key] || 'none';
+    return v === 'no';
+  });
+}
+
+function getNNPartials(){
+  return NON_NEGOTIABLES.filter(nn => {
+    const v = S.checks[nn.phase + '_' + nn.key] || 'none';
+    return v === 'partial';
+  });
+}
+
 const CYCLE=["none","yes","partial","no"];
 const ICONS={none:"",yes:"✓",partial:"~",no:"✗"};
 const LABELS={none:"not yet",yes:"yes",partial:"partially",no:"no"};
@@ -1029,7 +1138,50 @@ function addLog(){
 
 function delLog(i){S.log.splice(i,1);save();renderAll();}
 
-function renderAll(){renderTimeline();renderStats();renderPhase();renderLog();}
+
+function renderBanner(){
+  const existing = document.getElementById('nnBanner');
+  if(existing) existing.remove();
+
+  const fails = getNNFails();
+  const partials = getNNPartials();
+
+  if(fails.length === 0 && partials.length < 2) return;
+
+  const isTerminate = fails.length >= TERMINATE_THRESHOLD;
+  const banner = document.createElement('div');
+  banner.id = 'nnBanner';
+  banner.className = 'nn-banner ' + (isTerminate ? 'terminate' : 'watch');
+
+  let html = '';
+
+  if(isTerminate){
+    html += '<div class="nn-banner-title">Terminate order</div>';
+    html += '<div class="nn-banner-sub">' + fails.length + ' non-negotiables have failed. Your blueprint was written for exactly this moment — to protect you when your feelings might argue with your data.</div>';
+    fails.forEach(nn => {
+      html += '<div class="nn-fail-item"><div class="nn-fail-label"><span class="nn-phase-tag">Phase ' + nn.phase + '</span>' + nn.label + '</div><div class="nn-fail-reason">' + nn.reason + '</div></div>';
+    });
+    html += '<div class="nn-footer">"You do not need to explain this decision, justify it, or make him understand it. You simply need to honour what you already know."</div>';
+  } else {
+    html += '<div class="nn-banner-title">Watch carefully</div>';
+    html += '<div class="nn-banner-sub">' + (fails.length > 0 ? fails.length + ' non-negotiable' + (fails.length>1?'s have':' has') + ' failed.' : '') + (partials.length > 0 ? ' ' + partials.length + ' more ' + (partials.length>1?'are':'is') + ' uncertain.' : '') + ' This is not an alarm — it is a signal to slow down and pay close attention.</div>';
+    fails.forEach(nn => {
+      html += '<div class="nn-fail-item"><div class="nn-fail-label"><span class="nn-phase-tag">Phase ' + nn.phase + '</span>' + nn.label + '</div><div class="nn-fail-reason">' + nn.reason + '</div></div>';
+    });
+    if(partials.length > 0){
+      html += '<div class="nn-fail-item" style="opacity:.75"><div class="nn-fail-label" style="font-weight:400;font-style:italic">+ ' + partials.length + ' uncertain item' + (partials.length>1?'s':'') + ' — keep watching</div></div>';
+    }
+    html += '<div class="nn-footer">"Data does not lie. Feelings negotiate. Trust what you observed."</div>';
+  }
+
+  banner.innerHTML = html;
+
+  // Insert before the phase card
+  const phaseCard = document.getElementById('phaseCard');
+  phaseCard.parentNode.insertBefore(banner, phaseCard);
+}
+
+function renderAll(){renderTimeline();renderStats();renderBanner();renderPhase();renderLog();}
 
 function saveFile(){
   const data = JSON.stringify(S, null, 2);
