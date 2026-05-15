@@ -827,6 +827,486 @@
   }
   .btn-unlock:hover { background: var(--petal); }
 
+
+  /* ── persona journal panel ── */
+  .journal-trigger {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+  }
+  .journal-tab {
+    background: var(--rose);
+    color: white;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    padding: 16px 10px;
+    border-radius: 12px 0 0 12px;
+    box-shadow: -2px 0 12px rgba(212,83,126,.18);
+    cursor: pointer;
+    transition: background .15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .journal-tab:hover { background: var(--deep); }
+  .journal-tab-heart {
+    font-size: 14px;
+    writing-mode: horizontal-tb;
+    transform: none;
+    display: inline-block;
+  }
+
+  .journal-panel {
+    position: fixed;
+    top: 0; right: 0;
+    width: min(480px, 100vw);
+    height: 100vh;
+    background: white;
+    border-left: 1px solid var(--petal);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform .35s cubic-bezier(.4,0,.2,1);
+    overflow: hidden;
+  }
+  .journal-panel.open { transform: translateX(0); }
+
+  .journal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(114,36,62,.12);
+    z-index: 199;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s ease;
+  }
+  .journal-backdrop.open { opacity: 1; pointer-events: all; }
+
+  .journal-panel-header {
+    padding: 24px 24px 16px;
+    border-bottom: 1px solid var(--pink-100);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .journal-panel-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--deep);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .journal-close {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--petal);
+    background: var(--pink-50);
+    color: var(--mauve);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    transition: background .15s;
+    flex-shrink: 0;
+  }
+  .journal-close:hover { background: var(--petal); }
+
+  .journal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px 32px;
+  }
+
+  /* prompts section */
+  .journal-section-title {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-bottom: 12px;
+    margin-top: 4px;
+  }
+  .prompt-item {
+    margin-bottom: 16px;
+  }
+  .prompt-q {
+    font-family: var(--serif);
+    font-size: 15px;
+    font-style: italic;
+    color: var(--deep);
+    margin-bottom: 6px;
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .prompt-dot {
+    width: 6px; height: 6px; min-width: 6px;
+    border-radius: 50%;
+    background: var(--rose);
+    margin-top: 8px;
+    flex-shrink: 0;
+  }
+  .prompt-textarea {
+    width: 100%;
+    min-height: 72px;
+    border: 1px solid var(--pink-100);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-family: var(--serif);
+    color: var(--stone);
+    background: var(--blush);
+    resize: vertical;
+    line-height: 1.6;
+    outline: none;
+    transition: border-color .15s;
+  }
+  .prompt-textarea:focus { border-color: var(--petal); }
+  .prompt-textarea::placeholder { color: var(--mist); font-style: italic; }
+
+  .journal-divider {
+    height: 1px;
+    background: var(--pink-100);
+    margin: 20px 0;
+  }
+
+  /* diary entries */
+  .diary-add-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .diary-input {
+    width: 100%;
+    min-height: 80px;
+    border: 1px solid var(--pink-100);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-family: var(--serif);
+    color: var(--stone);
+    background: var(--blush);
+    resize: vertical;
+    line-height: 1.6;
+    outline: none;
+    transition: border-color .15s;
+  }
+  .diary-input:focus { border-color: var(--petal); }
+  .diary-input::placeholder { font-style: italic; color: var(--mist); }
+  .diary-add-btn {
+    align-self: flex-end;
+    padding: 8px 18px;
+    border-radius: 10px;
+    border: 1px solid var(--petal);
+    background: var(--rose);
+    color: white;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .diary-add-btn:hover { background: var(--deep); }
+
+  .diary-entry {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--pink-100);
+  }
+  .diary-entry:last-child { border-bottom: none; }
+  .diary-entry-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .diary-date {
+    font-size: 11px;
+    color: var(--mist);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .diary-heart { color: var(--rose); font-size: 10px; }
+  .diary-del {
+    color: #ddd;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 2px 4px;
+    transition: color .15s;
+    background: none;
+    border: none;
+  }
+  .diary-del:hover { color: var(--red); }
+  .diary-text {
+    font-family: var(--serif);
+    font-size: 15px;
+    color: var(--stone);
+    line-height: 1.65;
+  }
+  .diary-empty {
+    font-family: var(--serif);
+    font-size: 15px;
+    font-style: italic;
+    color: var(--mist);
+    text-align: center;
+    padding: 20px 0;
+  }
+  .journal-entry-count {
+    font-size: 11px;
+    color: var(--mauve);
+    background: var(--pink-50);
+    border: 1px solid var(--petal);
+    border-radius: 99px;
+    padding: 2px 10px;
+    margin-left: 8px;
+    font-weight: 500;
+  }
+
+
+  /* ── persona journal ── */
+  
+  .journal-tab {
+    background: var(--rose);
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: var(--sans);
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    padding: 18px 10px;
+    border-radius: 12px 0 0 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    box-shadow: -2px 0 12px rgba(212,83,126,.2);
+    transition: background .15s, padding .15s;
+    letter-spacing: .04em;
+  }
+  .journal-tab:hover { background: var(--deep); padding: 18px 13px; }
+  .journal-tab-heart { font-size: 16px; }
+
+  .journal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(114,36,62,.15);
+    z-index: 200;
+    backdrop-filter: blur(2px);
+  }
+  .journal-backdrop.open { display: block; }
+
+  .journal-panel {
+    position: fixed;
+    top: 0; right: 0;
+    width: min(480px, 95vw);
+    height: 100vh;
+    background: var(--cream);
+    border-left: 1px solid var(--petal);
+    z-index: 300;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform .35s cubic-bezier(.4,0,.2,1);
+    box-shadow: -8px 0 32px rgba(114,36,62,.12);
+  }
+  .journal-panel.open { transform: translateX(0); }
+
+  .journal-panel-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--pink-100);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    background: white;
+  }
+  .journal-panel-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--deep);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .journal-close {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--petal);
+    background: var(--pink-50);
+    color: var(--mauve);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    transition: background .15s;
+    flex-shrink: 0;
+  }
+  .journal-close:hover { background: var(--petal); }
+
+  .journal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px 40px;
+  }
+
+  .journal-section-title {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-bottom: 14px;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .journal-section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--pink-100);
+  }
+
+  .prompt-item { margin-bottom: 20px; }
+  .prompt-q {
+    font-family: var(--serif);
+    font-size: 15px;
+    font-style: italic;
+    color: var(--deep);
+    margin-bottom: 8px;
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .prompt-dot {
+    width: 6px; height: 6px; min-width: 6px;
+    border-radius: 50%;
+    background: var(--rose);
+    margin-top: 9px;
+    flex-shrink: 0;
+  }
+  .prompt-textarea {
+    width: 100%;
+    min-height: 80px;
+    border: 1px solid var(--pink-100);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 13px;
+    font-family: var(--serif);
+    color: var(--stone);
+    background: white;
+    resize: vertical;
+    line-height: 1.6;
+    outline: none;
+    transition: border-color .15s;
+  }
+  .prompt-textarea:focus { border-color: var(--petal); }
+  .prompt-textarea::placeholder { color: var(--mist); font-style: italic; }
+
+  .diary-add-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    align-items: flex-start;
+  }
+  .diary-input {
+    flex: 1;
+    min-height: 70px;
+    border: 1px solid var(--pink-100);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 13px;
+    font-family: var(--serif);
+    color: var(--stone);
+    background: white;
+    resize: none;
+    line-height: 1.6;
+    outline: none;
+    transition: border-color .15s;
+  }
+  .diary-input:focus { border-color: var(--petal); }
+  .diary-input::placeholder { color: var(--mist); font-style: italic; }
+  .btn-diary-add {
+    padding: 10px 16px;
+    background: var(--rose);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .15s;
+    align-self: flex-end;
+  }
+  .btn-diary-add:hover { background: var(--deep); }
+
+  .diary-entry {
+    padding: 14px 16px;
+    background: white;
+    border: 1px solid var(--pink-100);
+    border-radius: 14px;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  .diary-entry-date {
+    font-size: 10px;
+    color: var(--mist);
+    margin-bottom: 6px;
+    letter-spacing: .04em;
+  }
+  .diary-entry-text {
+    font-family: var(--serif);
+    font-size: 14px;
+    color: var(--stone);
+    line-height: 1.65;
+  }
+  .diary-entry-del {
+    position: absolute;
+    top: 10px; right: 12px;
+    font-size: 12px;
+    color: #ddd;
+    cursor: pointer;
+    transition: color .15s;
+    background: none;
+    border: none;
+    padding: 2px;
+  }
+  .diary-entry-del:hover { color: var(--red); }
+  .diary-empty {
+    font-family: var(--serif);
+    font-size: 15px;
+    font-style: italic;
+    color: var(--mist);
+    text-align: center;
+    padding: 20px 0;
+  }
+
+  .journal-divider {
+    height: 1px;
+    background: var(--pink-100);
+    margin: 24px 0;
+  }
+
 </style>
 </head>
 <body>
@@ -946,28 +1426,7 @@
   </div>
 
   </div><!-- end .page -->
-
-  <!-- RIGHT SIDEBAR -->
-  <aside class="sidebar sidebar-right" aria-hidden="true">
-    <div class="side-quote">"A man who wants you will make it obvious. You will not need to decode him."</div>
-    <div class="side-divider"></div>
-    <div class="side-hearts">
-      <svg class="heart-svg" width="22" height="20" viewBox="0 0 22 20" fill="var(--rose)"><path d="M11 18 C11 18 1 11 1 5.5 C1 2.9 3 1 5.5 1 C7.5 1 9.5 2.5 11 4 C12.5 2.5 14.5 1 16.5 1 C19 1 21 2.9 21 5.5 C21 11 11 18 11 18Z"/></svg>
-      <svg class="heart-svg" width="14" height="13" viewBox="0 0 14 13" fill="var(--petal)"><path d="M7 12 C7 12 1 7 1 3.5 C1 1.8 2.3 1 3.5 1 C5 1 6 2 7 3 C8 2 9 1 10.5 1 C11.7 1 13 1.8 13 3.5 C13 7 7 12 7 12Z"/></svg>
-      <svg class="heart-svg" width="10" height="9" viewBox="0 0 10 9" fill="var(--pink-200)"><path d="M5 8 C5 8 1 5 1 2.5 C1 1.4 1.9 1 2.5 1 C3.5 1 4 1.8 5 2.5 C6 1.8 6.5 1 7.5 1 C8.1 1 9 1.4 9 2.5 C9 5 5 8 5 8Z"/></svg>
-    </div>
-    <div class="side-quote">"You do not need to earn his consistency. You need to observe it."</div>
-    <div class="side-divider"></div>
-    <div class="side-hearts">
-      <svg class="heart-svg big" width="70" height="65" viewBox="0 0 70 65" fill="var(--rose)"><path d="M35 62 C35 62 5 42 5 22 C5 11 13 3 22 3 C28 3 33 7 35 11 C37 7 42 3 48 3 C57 3 65 11 65 22 C65 42 35 62 35 62Z"/></svg>
-    </div>
-    <div class="side-quote">"Peace is the goal. Not just love."</div>
-    <div class="side-divider"></div>
-    <div class="side-hearts">
-      <svg class="heart-svg" width="18" height="16" viewBox="0 0 18 16" fill="var(--petal)"><path d="M9 15 C9 15 1 9 1 4.5 C1 2.4 2.7 1 4.5 1 C6.2 1 7.8 2.2 9 3.5 C10.2 2.2 11.8 1 13.5 1 C15.3 1 17 2.4 17 4.5 C17 9 9 15 9 15Z"/></svg>
-    </div>
-    <div class="side-quote">"I will no longer live my life like I am in a hurry."</div>
-  </aside>
+  </div>
 
 </div><!-- end .layout -->
 
@@ -1522,12 +1981,24 @@ function unlockLabel(phaseNum){
     if(phaseNum === 8) return 'unlocks when Phase 7 is complete';
     return 'locked';
   }
-  if(d === 0) return 'unlocking now';
-  if(d < 7) return 'unlocks in ' + d + ' day' + (d>1?'s':'');
-  const weeks = Math.ceil(d/7);
-  if(weeks < 5) return 'unlocks in ~' + weeks + ' week' + (weeks>1?'s':'');
-  const months = Math.ceil(d/30);
-  return 'unlocks in ~' + months + ' month' + (months>1?'s':'');
+  if(d === 0) return 'unlocking now ♥';
+  if(d <= 6) return 'unlocks in ' + d + ' day' + (d>1?'s':'');
+  if(d <= 13) return 'unlocks in 1 week';
+  if(d <= 27) {
+    const w = Math.round(d/7);
+    return 'unlocks in ' + w + ' week' + (w>1?'s':'');
+  }
+  // use real calendar months from start date
+  if(S.startDate){
+    const start = new Date(S.startDate);
+    const unlock = new Date(start.getTime() + (PHASE_UNLOCK_DAYS[phaseNum] * 86400000));
+    const now = new Date();
+    const monthsLeft = (unlock.getFullYear() - now.getFullYear()) * 12 + (unlock.getMonth() - now.getMonth());
+    if(monthsLeft <= 1) return 'unlocks next month';
+    return 'unlocks in ' + monthsLeft + ' month' + (monthsLeft>1?'s':'');
+  }
+  const m = Math.round(d/30);
+  return 'unlocks in ' + m + ' month' + (m>1?'s':'');
 }
 
 function setStartDate(val){
@@ -1553,7 +2024,17 @@ function renderAll(){
   if(daysEl){
     if(days !== null){
       daysEl.style.display='inline-block';
-      daysEl.textContent = days === 0 ? 'day 1' : 'day ' + days;
+      if(days === 0){
+        daysEl.textContent = 'day 1';
+      } else {
+        const months = Math.floor(days / 30);
+        const weeks = Math.floor((days % 30) / 7);
+        const remDays = days % 7;
+        if(months > 0 && weeks > 0) daysEl.textContent = months + 'mo ' + weeks + 'w in';
+        else if(months > 0) daysEl.textContent = months + ' month' + (months>1?'s':'') + ' in';
+        else if(weeks > 0) daysEl.textContent = weeks + ' week' + (weeks>1?'s':'') + ' in';
+        else daysEl.textContent = 'day ' + days;
+      }
     } else {
       daysEl.style.display='none';
     }
@@ -1599,6 +2080,181 @@ function restoreFile(e){
   e.target.value='';
 }
 
+
+// ── Journal ──────────────────────────────────────────────────────────────
+const JOURNAL_PROMPTS = [
+  {key:"becoming",   q:"Who am I becoming through this process?"},
+  {key:"learned",    q:"What did I learn about myself this week?"},
+  {key:"showed_up",  q:"Where did I show up for myself recently?"},
+  {key:"old_belief", q:"What did the old belief say today — and what did I do anyway?"},
+  {key:"pace",       q:"Am I honouring my pace, or am I rushing? What does that look like right now?"},
+  {key:"wisest",     q:"What would the wisest version of me do next?"},
+  {key:"standard",   q:"Have I compromised any standard this week? If so, which one and why?"},
+  {key:"joy",        q:"What brought me joy this week that had nothing to do with him?"},
+];
+
+function openJournal(){
+  document.getElementById('journalPanel').classList.add('open');
+  document.getElementById('journalBackdrop').classList.add('open');
+  renderJournal();
+}
+
+function closeJournal(){
+  document.getElementById('journalPanel').classList.remove('open');
+  document.getElementById('journalBackdrop').classList.remove('open');
+}
+
+function savePrompt(key){
+  const el = document.getElementById('jp_'+key);
+  if(!el) return;
+  if(!S.journal) S.journal = {prompts:{}, entries:[]};
+  if(!S.journal.prompts) S.journal.prompts = {};
+  S.journal.prompts[key] = el.value;
+  save();
+}
+
+function addDiaryEntry(){
+  const el = document.getElementById('diaryInput');
+  if(!el) return;
+  const text = el.value.trim();
+  if(!text) return;
+  if(!S.journal) S.journal = {prompts:{}, entries:[]};
+  if(!S.journal.entries) S.journal.entries = [];
+  S.journal.entries.push({
+    text,
+    date: new Date().toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'})
+  });
+  el.value = '';
+  save();
+  renderJournal();
+}
+
+function deleteDiaryEntry(idx){
+  if(!S.journal || !S.journal.entries) return;
+  S.journal.entries.splice(idx, 1);
+  save();
+  renderJournal();
+}
+
+function renderJournal(){
+  const body = document.getElementById('journalBody');
+  if(!body) return;
+  if(!S.journal) S.journal = {prompts:{}, entries:[]};
+  const prompts = S.journal.prompts || {};
+  const entries = S.journal.entries || [];
+
+  const el = document.createElement('div');
+
+  // ── Prompts section ──────────────────────────────────────────────────
+  const promptTitle = document.createElement('div');
+  promptTitle.className = 'journal-section-title';
+  promptTitle.textContent = 'Reflection prompts';
+  el.appendChild(promptTitle);
+
+  const promptIntro = document.createElement('p');
+  promptIntro.style.cssText = 'font-family:var(--serif);font-size:13px;font-style:italic;color:var(--mist);margin-bottom:18px;line-height:1.6';
+  promptIntro.textContent = 'Revisit these whenever you need to come home to yourself.';
+  el.appendChild(promptIntro);
+
+  JOURNAL_PROMPTS.forEach(function(p){
+    const wrap = document.createElement('div');
+    wrap.className = 'prompt-item';
+
+    const q = document.createElement('div');
+    q.className = 'prompt-q';
+    const dot = document.createElement('span');
+    dot.className = 'prompt-dot';
+    q.appendChild(dot);
+    q.appendChild(document.createTextNode(p.q));
+    wrap.appendChild(q);
+
+    const ta = document.createElement('textarea');
+    ta.className = 'prompt-textarea';
+    ta.id = 'jp_' + p.key;
+    ta.placeholder = 'Write freely...';
+    ta.value = prompts[p.key] || '';
+    ta.addEventListener('change', function(){ savePrompt(p.key); });
+    wrap.appendChild(ta);
+
+    el.appendChild(wrap);
+  });
+
+  // ── Divider ──────────────────────────────────────────────────────────
+  const divider = document.createElement('div');
+  divider.className = 'journal-divider';
+  el.appendChild(divider);
+
+  // ── Diary section ────────────────────────────────────────────────────
+  const diaryTitle = document.createElement('div');
+  diaryTitle.className = 'journal-section-title';
+  diaryTitle.textContent = 'My diary' + (entries.length > 0 ? ' (' + entries.length + ')' : '');
+  el.appendChild(diaryTitle);
+
+  const diaryIntro = document.createElement('p');
+  diaryIntro.style.cssText = 'font-family:var(--serif);font-size:13px;font-style:italic;color:var(--mist);margin-bottom:16px;line-height:1.6';
+  diaryIntro.textContent = 'Write anything — about him, about you, about the day.';
+  el.appendChild(diaryIntro);
+
+  const addRow = document.createElement('div');
+  addRow.className = 'diary-add-row';
+
+  const diaryTa = document.createElement('textarea');
+  diaryTa.className = 'diary-input';
+  diaryTa.id = 'diaryInput';
+  diaryTa.placeholder = 'What is on your heart today?';
+  diaryTa.rows = 3;
+  addRow.appendChild(diaryTa);
+
+  const addBtn = document.createElement('button');
+  addBtn.className = 'diary-add-btn';
+  addBtn.textContent = 'Add';
+  addBtn.addEventListener('click', addDiaryEntry);
+  addRow.appendChild(addBtn);
+  el.appendChild(addRow);
+
+  if(entries.length === 0){
+    const empty = document.createElement('div');
+    empty.className = 'diary-empty';
+    empty.textContent = 'Your diary is waiting for your first entry. ♥';
+    el.appendChild(empty);
+  } else {
+    entries.slice().reverse().forEach(function(entry, i){
+      const realIdx = entries.length - 1 - i;
+
+      const card = document.createElement('div');
+      card.className = 'diary-entry';
+
+      const header = document.createElement('div');
+      header.className = 'diary-entry-header';
+
+      const dateSpan = document.createElement('span');
+      dateSpan.className = 'diary-date';
+      dateSpan.textContent = '♥ ' + entry.date;
+      header.appendChild(dateSpan);
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'diary-del';
+      delBtn.textContent = '✕';
+      delBtn.setAttribute('aria-label', 'Delete entry');
+      delBtn.addEventListener('click', function(){ deleteDiaryEntry(realIdx); });
+      header.appendChild(delBtn);
+
+      card.appendChild(header);
+
+      const text = document.createElement('div');
+      text.className = 'diary-text';
+      text.textContent = entry.text;
+      card.appendChild(text);
+
+      el.appendChild(card);
+    });
+  }
+
+  body.innerHTML = '';
+  body.appendChild(el);
+}
+
+
 // Auto-select first unlocked phase if current is locked
 if(!isUnlocked(S.activePhase)){
   const first = PHASES.find(ph=>isUnlocked(ph.num));
@@ -1607,6 +2263,45 @@ if(!isUnlocked(S.activePhase)){
 renderAll();
 
 document.getElementById("logInput").addEventListener("keydown",e=>{if(e.key==="Enter")addLog();});
+
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape') closeJournal();
+});
+
+// Wire journal trigger safely after DOM loads
+document.addEventListener('DOMContentLoaded', function(){
+  const trigger = document.querySelector('.journal-trigger');
+  if(trigger) trigger.addEventListener('click', openJournal);
+  const backdrop = document.getElementById('journalBackdrop');
+  if(backdrop) backdrop.addEventListener('click', closeJournal);
+  const closeBtn = document.querySelector('.journal-close');
+  if(closeBtn) closeBtn.addEventListener('click', closeJournal);
+});
 </script>
+
+<!-- JOURNAL TRIGGER TAB -->
+<div class="journal-trigger" aria-label="Open persona journal" role="button" tabindex="0">
+  <div class="journal-tab">
+    <span class="journal-tab-heart">♥</span>
+    My journal
+  </div>
+</div>
+
+<!-- JOURNAL BACKDROP -->
+<div class="journal-backdrop" id="journalBackdrop"></div>
+
+<!-- JOURNAL PANEL -->
+<div class="journal-panel" id="journalPanel">
+  <div class="journal-panel-header">
+    <div class="journal-panel-title">
+      <svg width="20" height="18" viewBox="0 0 20 18" fill="var(--rose)"><path d="M10 17 C10 17 1 10.5 1 5.5 C1 2.9 3 1 5.5 1 C7.5 1 9 2.5 10 4 C11 2.5 12.5 1 14.5 1 C17 1 19 2.9 19 5.5 C19 10.5 10 17 10 17Z"/></svg>
+      Persona journal
+    </div>
+    <button class="journal-close" onclick="closeJournal()" aria-label="Close journal">✕</button>
+  </div>
+  <div class="journal-body" id="journalBody"></div>
+</div>
+
+
 </body>
 </html>
