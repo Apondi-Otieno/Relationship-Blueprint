@@ -509,6 +509,85 @@ textarea::placeholder{color:var(--mist);font-style:italic}
   .sc-entry-del{position:absolute;top:10px;right:12px;background:none;border:none;color:#ddd;cursor:pointer;font-size:13px;transition:color .15s}
   .sc-entry-del:hover{color:var(--red)}
 
+
+  /* ── relationship log ── */
+  .rlog-card{background:white;border:1px solid var(--petal);border-radius:22px;padding:24px 28px;margin-bottom:24px}
+  .rlog-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;gap:12px}
+  .rlog-verse{font-family:var(--serif);font-size:13px;font-style:italic;color:var(--mauve);margin-bottom:18px;line-height:1.6}
+
+  .rlog-add-form{background:var(--blush);border:1px solid var(--pink-100);border-radius:14px;padding:16px 18px;margin-bottom:20px}
+  .rlog-form-title{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mist);margin-bottom:14px}
+  .rlog-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+  .rlog-form-field{display:flex;flex-direction:column;gap:4px}
+  .rlog-form-field.full{grid-column:1/-1}
+  .rlog-form-field label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mauve)}
+  .rlog-form-field input,.rlog-form-field textarea,.rlog-form-field select{border:1px solid var(--pink-100);border-radius:10px;padding:9px 12px;font-size:13px;font-family:var(--sans);color:var(--stone);background:white;outline:none;transition:border-color .15s;font-weight:500}
+  .rlog-form-field input:focus,.rlog-form-field textarea:focus{border-color:var(--petal)}
+  .rlog-form-field textarea{resize:none;min-height:70px;line-height:1.5}
+  .rlog-form-field select{cursor:pointer}
+  .rlog-add-actions{display:flex;justify-content:flex-end;margin-top:12px}
+
+  .rlog-entries{display:flex;flex-direction:column;gap:14px}
+  .rlog-entry{border:1px solid var(--pink-100);border-radius:16px;padding:18px 20px;position:relative;background:white}
+  .rlog-entry-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;gap:10px}
+  .rlog-entry-name{font-family:var(--serif);font-size:20px;font-weight:500;color:var(--deep)}
+  .rlog-entry-dates{font-size:11px;color:var(--mist);margin-top:2px}
+  .rlog-entry-del{background:none;border:none;color:#ddd;cursor:pointer;font-size:14px;transition:color .15s;padding:2px 4px;flex-shrink:0}
+  .rlog-entry-del:hover{color:var(--red)}
+  .rlog-entry-ended{display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;margin-bottom:10px;letter-spacing:.04em}
+  .ended-mutual{background:#eaf3de;color:#27500a}
+  .ended-i-ended{background:var(--pink-50);color:var(--deep)}
+  .ended-he-ended{background:var(--red-light);color:#791f1f}
+  .ended-faded{background:var(--amber-light);color:var(--amber)}
+  .ended-ongoing{background:#e8f4fd;color:#1a5276}
+  .rlog-entry-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+  .rlog-entry-field{font-size:12px}
+  .rlog-entry-field-lbl{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mist);display:block;margin-bottom:3px}
+  .rlog-entry-field-val{color:#1a1a1a;font-weight:500;line-height:1.5;font-size:13px}
+  .rlog-entry-why{background:var(--blush);border-left:3px solid var(--petal);border-radius:0 10px 10px 0;padding:10px 14px;font-family:var(--serif);font-size:14px;font-style:italic;color:var(--deep);line-height:1.6;font-weight:500}
+  .rlog-empty{font-family:var(--serif);font-size:14px;font-style:italic;color:var(--mist);text-align:center;padding:16px 0}
+
+
+  /* ── patterns ── */
+  .patterns-wrap{margin-top:24px;border-top:1px solid var(--pink-100);padding-top:20px}
+  .patterns-title{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mist);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .patterns-title::after{content:'';flex:1;height:1px;background:var(--pink-100)}
+  .pattern-card{background:var(--blush);border:1px solid var(--pink-100);border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .pattern-card-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mauve);margin-bottom:6px}
+  .pattern-card-val{font-family:var(--serif);font-size:15px;font-weight:500;color:var(--deep);line-height:1.5}
+  .pattern-card-sub{font-size:12px;color:var(--mist);margin-top:4px;line-height:1.5}
+  .pattern-card.warning{border-color:#e8a0b8;background:#fff0f5}
+  .pattern-card.warning .pattern-card-val{color:var(--deep)}
+  .pattern-card.insight{border-color:#b8d4a0;background:#f0f7e8}
+  .pattern-card.insight .pattern-card-val{color:#27500a}
+  .pattern-stat-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .pattern-stat{background:white;border:1px solid var(--petal);border-radius:10px;padding:10px 14px;text-align:center;flex:1;min-width:80px}
+  .pattern-stat-val{font-family:var(--serif);font-size:22px;font-weight:500;color:var(--rose);display:block}
+  .pattern-stat-lbl{font-size:11px;color:var(--mist)}
+  .pattern-empty{font-family:var(--serif);font-size:13px;font-style:italic;color:var(--mist);text-align:center;padding:12px 0}
+  .btn-analyse{padding:8px 18px;background:var(--pink-50);color:var(--deep);border:1px solid var(--petal);border-radius:10px;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;font-family:var(--sans)}
+  .btn-analyse:hover{background:var(--rose);color:white;border-color:var(--rose)}
+
+
+  /* ── end it modal ── */
+  .endit-backdrop{display:none;position:fixed;inset:0;background:rgba(90,26,48,.25);backdrop-filter:blur(3px);z-index:400}
+  .endit-backdrop.open{display:flex;align-items:center;justify-content:center;padding:20px}
+  .endit-modal{background:white;border-radius:24px;border:1px solid var(--petal);width:min(540px,94vw);max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(90,26,48,.18);animation:fadeUp .3s ease}
+  .endit-modal-header{padding:22px 26px 16px;border-bottom:1px solid var(--pink-100)}
+  .endit-modal-title{font-family:var(--serif);font-size:22px;font-weight:500;color:var(--deep);margin-bottom:4px}
+  .endit-modal-sub{font-size:13px;color:var(--mist);font-style:italic}
+  .endit-modal-body{padding:20px 26px 28px}
+  .endit-field{margin-bottom:14px}
+  .endit-field label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mauve);display:block;margin-bottom:5px}
+  .endit-field input,.endit-field textarea,.endit-field select{width:100%;border:1px solid var(--pink-100);border-radius:10px;padding:10px 13px;font-size:13px;font-family:var(--sans);color:var(--stone);background:var(--blush);outline:none;transition:border-color .15s;font-weight:500}
+  .endit-field input:focus,.endit-field textarea:focus{border-color:var(--petal)}
+  .endit-field textarea{min-height:80px;resize:none;line-height:1.55}
+  .endit-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap}
+  .btn-endit-cancel{padding:9px 18px;background:var(--blush);color:var(--mist);border:1px solid var(--pink-100);border-radius:10px;font-size:13px;cursor:pointer;font-family:var(--sans)}
+  .btn-endit-confirm{padding:9px 20px;background:var(--rose);color:white;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:background .15s}
+  .btn-endit-confirm:hover{background:var(--deep)}
+  .endit-prefill-note{font-size:12px;color:var(--mist);font-style:italic;background:var(--pink-50);border-radius:10px;padding:10px 12px;margin-bottom:16px;line-height:1.5}
+
 </style>
 </head>
 <body>
@@ -657,6 +736,49 @@ textarea::placeholder{color:var(--mist);font-style:italic}
   </div>
 
   
+
+
+  <!-- RELATIONSHIP LOG -->
+  <div class="rlog-card">
+    <div class="rlog-card-header">
+      <div>
+        <h2 style="font-family:var(--serif);font-size:22px;font-weight:500;color:var(--deep);margin-bottom:4px">The ones before him</h2>
+        <p class="rlog-verse">&ldquo;She opens her mouth with wisdom, and the teaching of kindness is on her tongue.&rdquo; &mdash; Proverbs 31:26</p>
+        <p style="font-size:12px;color:var(--mist)">A record of each man, what you observed, and why it ended. Patterns live here.</p>
+      </div>
+    </div>
+
+    <div class="rlog-add-form">
+      <div class="rlog-form-title">Add an entry</div>
+      <div class="rlog-form-grid">
+        <div class="rlog-form-field"><label>His name</label><input type="text" id="rlName" placeholder="First name or initials..." /></div>
+        <div class="rlog-form-field"><label>Year / period</label><input type="text" id="rlPeriod" placeholder="e.g. 2022 &ndash; 2023" /></div>
+        <div class="rlog-form-field"><label>What I admired</label><input type="text" id="rlAdmired" placeholder="What drew me to him..." /></div>
+        <div class="rlog-form-field"><label>First red flag I ignored</label><input type="text" id="rlRedFlag" placeholder="What I saw but dismissed..." /></div>
+        <div class="rlog-form-field full"><label>Why it ended</label><textarea id="rlEnded" placeholder="What happened, honestly..."></textarea></div>
+        <div class="rlog-form-field full"><label>What I learned</label><textarea id="rlLearned" placeholder="What this relationship taught me about myself..."></textarea></div>
+        <div class="rlog-form-field"><label>How it ended</label>
+          <select id="rlHow">
+            <option value="i-ended">I ended it</option>
+            <option value="he-ended">He ended it</option>
+            <option value="mutual">Mutual</option>
+            <option value="faded">It faded</option>
+            <option value="ongoing">Ongoing</option>
+          </select>
+        </div>
+      </div>
+      <div class="rlog-add-actions">
+        <button class="btn-checkin" onclick="addRlogEntry()">Add to log</button>
+      </div>
+    </div>
+
+    <div id="rlogList" class="rlog-entries"></div>
+    <div class="patterns-wrap" id="patternsWrap" style="display:none">
+      <div class="patterns-title">What the patterns reveal</div>
+      <div id="patternStats" class="pattern-stat-row"></div>
+      <div id="patternCards"></div>
+    </div>
+  </div>
 
   <div class="save-card">
     <div class="save-left">
@@ -947,8 +1069,15 @@ function renderBanner(){
   if(!isTerminate&&partials.length){
     html+="<div class='nn-fail-item' style='opacity:.7'><div class='nn-fail-label' style='font-weight:400;font-style:italic'>+ "+partials.length+" uncertain item"+(partials.length>1?"s":"")+" \u2014 keep watching</div></div>";
   }
-  var quote=isTerminate?"\u201cYou do not need to explain this decision or make him understand it. You simply need to honour what you already know.\u201d":"\u201cData does not lie. Feelings negotiate. Trust what you observed.\u201d";
-  html+="<div class='nn-footer'>"+quote+"</div></div>";
+  var quote=isTerminate?"“You do not need to explain this decision or make him understand it. You simply need to honour what you already know.”":"“Data does not lie. Feelings negotiate. Trust what you observed.”";
+  html+="<div class='nn-footer'>"+quote+"</div>";
+  if(isTerminate){
+    html+="<div style='margin-top:16px;padding-top:14px;border-top:1px solid rgba(244,192,209,.2);display:flex;align-items:center;gap:10px;flex-wrap:wrap'>";
+    html+="<span style='font-size:12px;color:var(--petal);flex:1'>Ready to close this chapter?</span>";
+    html+="<button onclick='openEndItModal()' style='padding:9px 18px;background:white;color:var(--deep);border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans);white-space:nowrap'>End it &amp; log him &#9825;</button>";
+    html+="</div>";
+  }
+  html+="</div>";
   wrap.innerHTML=html;
 }
 
@@ -1301,9 +1430,245 @@ function renderJournal(){
 // ── MAIN RENDER ───────────────────────────────────────────────────────────
 function renderAll(){
   var sdi=el("startDateInput");if(sdi&&S.startDate)sdi.value=S.startDate;
-  renderTimeline();renderStats();renderBanner();renderPhase();renderLog();renderFlagRatio();renderCheckinHistory();renderMoon();renderSelfcareHistory();
+  renderTimeline();renderStats();renderBanner();renderPhase();renderLog();renderFlagRatio();renderCheckinHistory();renderMoon();renderSelfcareHistory();renderRlogWithPatterns();
 }
 
+
+
+// ── RELATIONSHIP LOG ──────────────────────────────────────────────────────
+function addRlogEntry(){
+  var name   = (el('rlName')||{}).value||'';
+  var period = (el('rlPeriod')||{}).value||'';
+  var admired= (el('rlAdmired')||{}).value||'';
+  var redflag= (el('rlRedFlag')||{}).value||'';
+  var ended  = (el('rlEnded')||{}).value||'';
+  var learned= (el('rlLearned')||{}).value||'';
+  var how    = (el('rlHow')||{}).value||'i-ended';
+  if(!name.trim()){alert('Add his name or initials to save this entry.');return;}
+  if(!S.rlog) S.rlog=[];
+  S.rlog.push({name,period,admired,redflag,ended,learned,how,
+    date:new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})});
+  save();
+  // clear form
+  ['rlName','rlPeriod','rlAdmired','rlRedFlag','rlEnded','rlLearned'].forEach(function(id){
+    var e=el(id); if(e) e.value='';
+  });
+  renderRlogWithPatterns();
+}
+
+function deleteRlogEntry(idx){
+  if(!confirm('Remove this entry?')) return;
+  S.rlog.splice(idx,1);
+  save(); renderRlogWithPatterns();
+}
+
+var HOW_LABELS={
+  'i-ended':   {cls:'ended-i-ended',   lbl:'I ended it'},
+  'he-ended':  {cls:'ended-he-ended',  lbl:'He ended it'},
+  'mutual':    {cls:'ended-mutual',    lbl:'Mutual'},
+  'faded':     {cls:'ended-faded',     lbl:'It faded'},
+  'ongoing':   {cls:'ended-ongoing',   lbl:'Ongoing'}
+};
+
+function renderRlog(){
+  var wrap=el('rlogList'); if(!wrap) return;
+  var log=S.rlog||[];
+  if(!log.length){
+    wrap.innerHTML="<div class='rlog-empty'>No entries yet. Add the ones who shaped you.</div>";
+    return;
+  }
+  var html='';
+  log.slice().reverse().forEach(function(e,i){
+    var ri=log.length-1-i;
+    var how=HOW_LABELS[e.how]||HOW_LABELS['mutual'];
+    html+="<div class='rlog-entry'>";
+    html+="<div class='rlog-entry-header'>";
+    html+="<div><div class='rlog-entry-name'>"+e.name+"</div>";
+    if(e.period) html+="<div class='rlog-entry-dates'>"+e.period+"</div>";
+    html+="</div>";
+    html+="<button class='rlog-entry-del' onclick='deleteRlogEntry("+ri+")' aria-label='Delete'>&times;</button>";
+    html+="</div>";
+    html+="<span class='rlog-entry-ended "+how.cls+"'>"+how.lbl+"</span>";
+    html+="<div class='rlog-entry-grid'>";
+    if(e.admired)  html+="<div class='rlog-entry-field'><span class='rlog-entry-field-lbl'>What I admired</span><span class='rlog-entry-field-val'>"+e.admired+"</span></div>";
+    if(e.redflag)  html+="<div class='rlog-entry-field'><span class='rlog-entry-field-lbl'>Red flag I ignored</span><span class='rlog-entry-field-val'>"+e.redflag+"</span></div>";
+    html+="</div>";
+    if(e.ended)   html+="<div style='margin-bottom:8px'><div style='font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mist);margin-bottom:4px'>Why it ended</div><div class='rlog-entry-why'>"+e.ended+"</div></div>";
+    if(e.learned) html+="<div><div style='font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mist);margin-bottom:4px'>What I learned</div><div class='rlog-entry-why' style='border-left-color:#639922'>"+e.learned+"</div></div>";
+    html+="<div style='font-size:10px;color:var(--mist);margin-top:10px;text-align:right'>Added "+e.date+"</div>";
+    html+="</div>";
+  });
+  wrap.innerHTML=html;
+}
+
+
+
+// ── END IT MODAL ──────────────────────────────────────────────────────────
+function openEndItModal(){
+  // pre-fill name from him profile if available
+  var note=el('enditPrefillNote');
+  var himName=(S.him&&S.him.name)||'';
+  if(himName&&note){
+    note.textContent='Pre-filling from his profile: '+himName+'. Fill in the rest.';
+    var nameEl=el('enditName');
+    if(nameEl) nameEl.value=himName;
+  } else if(note){
+    note.textContent='Fill in what you know. You can always add more later.';
+  }
+  document.getElementById('enditBackdrop').classList.add('open');
+}
+
+function closeEndItModal(){
+  document.getElementById('enditBackdrop').classList.remove('open');
+}
+
+function confirmEndIt(){
+  var name=(el('enditName')||{}).value||'';
+  if(!name.trim()){alert('Add his name or initials to save this entry.');return;}
+  if(!S.rlog) S.rlog=[];
+  S.rlog.push({
+    name:    name,
+    period:  (el('enditPeriod')||{}).value||'',
+    admired: (el('enditAdmired')||{}).value||'',
+    redflag: (el('enditRedFlag')||{}).value||'',
+    ended:   (el('enditEnded')||{}).value||'',
+    learned: (el('enditLearned')||{}).value||'',
+    how:     (el('enditHow')||{}).value||'i-ended',
+    date:    new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})
+  });
+  // reset current blueprint data for a fresh start
+  S.checks={};S.notes={};S.log=[];S.checkins=[];
+  S.activePhase=1;S.tab={};S.him={};S.selfcare={};
+  save();
+  closeEndItModal();
+  renderAll();
+  loadHim();
+  loadSelfCare();
+  // scroll to relationship log
+  var rlog=document.querySelector('.rlog-card');
+  if(rlog) setTimeout(function(){rlog.scrollIntoView({behavior:'smooth',block:'start'});},300);
+  // show confirmation
+  setTimeout(function(){
+    alert('Chapter closed. He has been logged. Your blueprint is reset and ready for the next one. ♥');
+  },500);
+}
+
+// ── PATTERN ANALYSIS ─────────────────────────────────────────────────────
+function analysePatterns(){
+  var log=S.rlog||[];
+  if(log.length<2) return;
+
+  var wrap=el('patternsWrap');
+  var statsEl=el('patternStats');
+  var cardsEl=el('patternCards');
+  if(!wrap||!statsEl||!cardsEl) return;
+  wrap.style.display='block';
+
+  // ── Stats row ──────────────────────────────────────────────────────────
+  var total=log.length;
+  var iEnded=log.filter(function(e){return e.how==='i-ended';}).length;
+  var heEnded=log.filter(function(e){return e.how==='he-ended';}).length;
+  var mutual=log.filter(function(e){return e.how==='mutual'||e.how==='faded';}).length;
+
+  statsEl.innerHTML=
+    "<div class='pattern-stat'><span class='pattern-stat-val'>"+total+"</span><span class='pattern-stat-lbl'>logged</span></div>"+
+    "<div class='pattern-stat'><span class='pattern-stat-val' style='color:var(--deep)'>"+iEnded+"</span><span class='pattern-stat-lbl'>I ended</span></div>"+
+    "<div class='pattern-stat'><span class='pattern-stat-val' style='color:#8b1a1a'>"+heEnded+"</span><span class='pattern-stat-lbl'>He ended</span></div>"+
+    "<div class='pattern-stat'><span class='pattern-stat-val' style='color:var(--mist)'>"+mutual+"</span><span class='pattern-stat-lbl'>faded / mutual</span></div>";
+
+  var cards='';
+
+  // ── Who tends to end it ────────────────────────────────────────────────
+  if(heEnded>iEnded&&heEnded>1){
+    cards+="<div class='pattern-card warning'><div class='pattern-card-label'>Ending pattern</div>";
+    cards+="<div class='pattern-card-val'>He has ended it "+heEnded+" out of "+total+" times.</div>";
+    cards+="<div class='pattern-card-sub'>This may point to choosing men who are not fully ready, or staying longer than the data warrants.</div></div>";
+  } else if(iEnded>=2){
+    cards+="<div class='pattern-card insight'><div class='pattern-card-label'>Ending pattern</div>";
+    cards+="<div class='pattern-card-val'>You have ended "+iEnded+" out of "+total+" relationships.</div>";
+    cards+="<div class='pattern-card-sub'>You know when something is not right and you act on it. That is discernment, not failure.</div></div>";
+  }
+
+  // ── Red flags ignored ──────────────────────────────────────────────────
+  var redflags=log.map(function(e){return (e.redflag||'').toLowerCase().trim();}).filter(Boolean);
+  if(redflags.length>=2){
+    // find common themes
+    var financial=redflags.filter(function(f){return /financ|money|pay|fund|depend|borrow|broke|income|business/i.test(f);}).length;
+    var emotional=redflags.filter(function(f){return /emotion|feelings|distant|avoidant|cold|detach|unavail/i.test(f);}).length;
+    var consistency=redflags.filter(function(f){return /inconsist|inconsist|unreliab|flake|cancel|disappear|ghost/i.test(f);}).length;
+    var control=redflags.filter(function(f){return /control|possessiv|jealous|manag|dismiss|gaslight/i.test(f);}).length;
+
+    var topTheme='', topCount=0;
+    if(financial>topCount){topTheme='financial instability or dependence';topCount=financial;}
+    if(emotional>topCount){topTheme='emotional unavailability';topCount=emotional;}
+    if(consistency>topCount){topTheme='inconsistency and unreliability';topCount=consistency;}
+    if(control>topCount){topTheme='controlling or dismissive behaviour';topCount=control;}
+
+    if(topCount>=2){
+      cards+="<div class='pattern-card warning'><div class='pattern-card-label'>Red flag you keep ignoring</div>";
+      cards+="<div class='pattern-card-val'>"+topCount+" out of "+redflags.length+" entries mention "+topTheme+".</div>";
+      cards+="<div class='pattern-card-sub'>You saw it. You stayed anyway. The blueprint is designed to stop this pattern before it starts.</div></div>";
+    } else {
+      // just list the themes mentioned
+      cards+="<div class='pattern-card'><div class='pattern-card-label'>Red flags you noted</div>";
+      cards+="<div class='pattern-card-val'>No single dominant pattern yet.</div>";
+      cards+="<div class='pattern-card-sub'>Keep adding entries — patterns become clearer with more data. Common themes so far: "+redflags.slice(0,3).join('; ')+".</div></div>";
+    }
+  }
+
+  // ── What you admire ────────────────────────────────────────────────────
+  var admired=log.map(function(e){return (e.admired||'').toLowerCase();}).filter(Boolean);
+  if(admired.length>=2){
+    var business=admired.filter(function(a){return /business|entrepreneur|build|venture|revenue|ambit/i.test(a);}).length;
+    var charm=admired.filter(function(a){return /charm|charisma|confiden|funny|humor|wit|social/i.test(a);}).length;
+    var intell=admired.filter(function(a){return /intellig|smart|wise|knowledge|read|think|curious/i.test(a);}).length;
+    var spiritual=admired.filter(function(a){return /faith|spirit|god|church|adventist|pray|believ/i.test(a);}).length;
+
+    var admireTheme='', admireCount=0;
+    if(business>admireCount){admireTheme='business ambition and drive';admireCount=business;}
+    if(charm>admireCount){admireTheme='charm and social confidence';admireCount=charm;}
+    if(intell>admireCount){admireTheme='intelligence and curiosity';admireCount=intell;}
+    if(spiritual>admireCount){admireTheme='spirituality and faith';admireCount=spiritual;}
+
+    if(admireCount>=2){
+      cards+="<div class='pattern-card insight'><div class='pattern-card-label'>What consistently draws you in</div>";
+      cards+="<div class='pattern-card-val'>"+admireCount+" out of "+admired.length+" entries mention "+admireTheme+".</div>";
+      cards+="<div class='pattern-card-sub'>This is a real preference, not a phase. Your blueprint is built around it for a reason.</div></div>";
+    }
+  }
+
+  // ── What you learned ──────────────────────────────────────────────────
+  var learned=log.map(function(e){return e.learned||'';}).filter(Boolean);
+  if(learned.length>=2){
+    cards+="<div class='pattern-card insight'><div class='pattern-card-label'>Your own words &mdash; what you learned</div>";
+    cards+="<div class='pattern-card-val' style='font-size:13px'>";
+    learned.slice(0,3).forEach(function(l,i){
+      cards+="<div style='padding:6px 0;border-bottom:1px solid rgba(0,0,0,.06);font-style:italic'>&ldquo;"+l.trim()+"&rdquo;</div>";
+    });
+    cards+="</div></div>";
+  }
+
+  // ── Closing reflection ────────────────────────────────────────────────
+  if(total>=3){
+    cards+="<div class='pattern-card' style='background:var(--deep);border-color:var(--mauve);margin-top:4px'>";
+    cards+="<div class='pattern-card-label' style='color:var(--petal)'>The through line</div>";
+    cards+="<div class='pattern-card-val' style='color:white;font-family:var(--serif);font-style:italic'>You have been choosing and learning. The woman who built this blueprint is not the same woman who met the first man on this list.</div>";
+    cards+="</div>";
+  }
+
+  if(!cards) cards="<div class='pattern-empty'>Add at least 2 entries with red flags and what drew you in to see patterns.</div>";
+  cardsEl.innerHTML=cards;
+}
+
+function renderRlogWithPatterns(){
+  renderRlogWithPatterns();
+  var log=S.rlog||[];
+  if(log.length>=2) analysePatterns();
+  else {
+    var wrap=el('patternsWrap');
+    if(wrap) wrap.style.display='none';
+  }
+}
 
 // ── PROGRESS REPORT ───────────────────────────────────────────────────────
 function openReport(){
@@ -1516,6 +1881,37 @@ document.addEventListener("DOMContentLoaded",function(){
       </div>
     </div>
     <div class="report-body" id="reportBody"></div>
+  </div>
+</div>
+
+<!-- END IT MODAL -->
+<div class="endit-backdrop" id="enditBackdrop" onclick="closeEndItModal()">
+  <div class="endit-modal" onclick="event.stopPropagation()">
+    <div class="endit-modal-header">
+      <div class="endit-modal-title">Closing this chapter &#9825;</div>
+      <div class="endit-modal-sub">This goes directly into your relationship log. You only need to do this once.</div>
+    </div>
+    <div class="endit-modal-body">
+      <div class="endit-prefill-note" id="enditPrefillNote"></div>
+      <div class="endit-field"><label>His name or initials</label><input type="text" id="enditName" placeholder="First name or initials..." /></div>
+      <div class="endit-field"><label>Period</label><input type="text" id="enditPeriod" placeholder="e.g. 2024 – 2025" /></div>
+      <div class="endit-field"><label>What I admired</label><input type="text" id="enditAdmired" placeholder="What genuinely drew me to him..." /></div>
+      <div class="endit-field"><label>First red flag I ignored</label><input type="text" id="enditRedFlag" placeholder="What I saw but stayed anyway..." /></div>
+      <div class="endit-field"><label>Why it ended</label><textarea id="enditEnded" placeholder="In your own words, what happened..."></textarea></div>
+      <div class="endit-field"><label>What I am taking from this</label><textarea id="enditLearned" placeholder="What this taught me about myself, what I will not repeat..."></textarea></div>
+      <div class="endit-field"><label>How it ended</label>
+        <select id="enditHow">
+          <option value="i-ended">I ended it</option>
+          <option value="he-ended">He ended it</option>
+          <option value="mutual">Mutual</option>
+          <option value="faded">It faded</option>
+        </select>
+      </div>
+      <div class="endit-actions">
+        <button class="btn-endit-cancel" onclick="closeEndItModal()">Not yet</button>
+        <button class="btn-endit-confirm" onclick="confirmEndIt()">Log him &amp; close this chapter</button>
+      </div>
+    </div>
   </div>
 </div>
 
