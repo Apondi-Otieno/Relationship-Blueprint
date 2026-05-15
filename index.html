@@ -59,8 +59,65 @@
     z-index: 0;
   }
 
-  /* ── page shell ── */
-  .page { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; padding: 0 20px 80px; }
+  /* ── layout shell ── */
+  .layout {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+  }
+  .sidebar {
+    width: 180px;
+    min-width: 180px;
+    padding: 80px 16px 80px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+  }
+  .sidebar-right {
+    padding: 80px 20px 80px 16px;
+  }
+  .side-quote {
+    font-family: var(--serif);
+    font-size: 13px;
+    font-style: italic;
+    color: var(--mauve);
+    line-height: 1.7;
+    text-align: center;
+    opacity: 0.75;
+  }
+  .side-hearts {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .heart-svg { opacity: 0.5; }
+  .heart-svg.big { opacity: 0.18; }
+  .side-img {
+    width: 100%;
+    border-radius: 14px;
+    overflow: hidden;
+    opacity: 0.55;
+  }
+  .side-img img { width: 100%; display: block; }
+  .side-divider {
+    width: 1px;
+    height: 60px;
+    background: var(--petal);
+    margin: 0 auto;
+    opacity: 0.6;
+  }
+  .page { position: relative; z-index: 1; max-width: 780px; width: 100%; padding: 0 20px 80px; }
+  @media (max-width: 1100px) { .sidebar { display: none; } }
 
   /* ── hero ── */
   .hero {
@@ -655,11 +712,147 @@
   }
   .nn-banner.watch .nn-footer { border-color: rgba(240,192,96,.3); color: #9a6200; }
   .nn-banner.terminate .nn-footer { border-color: rgba(244,192,209,.15); color: #f4c0d1; }
+
+  /* ── start date picker ── */
+  .startdate-card {
+    background: white;
+    border: 1px solid var(--petal);
+    border-radius: 18px;
+    padding: 18px 22px;
+    margin-bottom: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    animation: fadeUp .8s .05s ease both;
+  }
+  .startdate-icon {
+    width: 40px; height: 40px; min-width: 40px;
+    background: var(--pink-50);
+    border: 1px solid var(--petal);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .startdate-text { flex: 1; min-width: 160px; }
+  .startdate-text label {
+    font-size: 13px; font-weight: 500; color: var(--deep);
+    display: block; margin-bottom: 4px;
+  }
+  .startdate-text p { font-size: 12px; color: var(--mist); }
+  .startdate-input-wrap { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  input[type="date"] {
+    border: 1px solid var(--petal);
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-family: var(--sans);
+    color: var(--stone);
+    background: var(--blush);
+    outline: none;
+    cursor: pointer;
+  }
+  .btn-override {
+    font-size: 11px; padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--petal);
+    background: var(--pink-50);
+    color: var(--mauve);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn-override:hover { background: var(--petal); }
+  .days-in {
+    font-size: 12px; color: var(--mauve); font-weight: 500;
+    background: var(--pink-50); border: 1px solid var(--petal);
+    padding: 5px 12px; border-radius: 99px;
+  }
+
+  /* ── locked timeline segment ── */
+  .tl-seg.locked {
+    background: var(--cream);
+    border-color: transparent;
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+  .tl-seg.locked .tl-num { color: #ccc; }
+  .tl-seg.locked .tl-name { color: #ccc; }
+  .tl-seg.locked .tl-pct { color: #ddd; font-size: 8px; }
+  .tl-seg.locked .tl-fill-bar { background: #e8dde0; }
+  .tl-seg.locked .tl-fill-track { background: #f0e8eb; }
+
+  /* ── locked phase overlay ── */
+  .locked-overlay {
+    background: white;
+    border: 1px solid var(--petal);
+    border-radius: 22px;
+    padding: 36px 28px;
+    text-align: center;
+  }
+  .locked-heart {
+    margin: 0 auto 16px;
+    opacity: 0.3;
+  }
+  .locked-title {
+    font-family: var(--serif);
+    font-size: 22px; font-weight: 400;
+    color: var(--deep);
+    margin-bottom: 8px;
+  }
+  .locked-sub {
+    font-size: 14px; color: var(--mist);
+    line-height: 1.6; margin-bottom: 20px;
+    font-family: var(--serif); font-style: italic;
+  }
+  .locked-countdown {
+    display: inline-block;
+    background: var(--pink-50);
+    border: 1px solid var(--petal);
+    border-radius: 99px;
+    padding: 8px 20px;
+    font-size: 13px;
+    color: var(--mauve);
+    font-weight: 500;
+    margin-bottom: 16px;
+  }
+  .btn-unlock {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 9px 18px;
+    border-radius: 10px;
+    border: 1px solid var(--petal);
+    background: var(--pink-50);
+    color: var(--mauve);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .btn-unlock:hover { background: var(--petal); }
+
 </style>
 </head>
 <body>
 
-<div class="page">
+<div class="layout">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="sidebar" aria-hidden="true">
+    <div class="side-hearts">
+      <svg class="heart-svg big" width="70" height="65" viewBox="0 0 70 65" fill="var(--rose)"><path d="M35 62 C35 62 5 42 5 22 C5 11 13 3 22 3 C28 3 33 7 35 11 C37 7 42 3 48 3 C57 3 65 11 65 22 C65 42 35 62 35 62Z"/></svg>
+    </div>
+    <div class="side-quote">"You are not waiting. You are choosing wisely."</div>
+    <div class="side-divider"></div>
+    <div class="side-hearts">
+      <svg class="heart-svg" width="22" height="20" viewBox="0 0 22 20" fill="var(--rose)"><path d="M11 18 C11 18 1 11 1 5.5 C1 2.9 3 1 5.5 1 C7.5 1 9.5 2.5 11 4 C12.5 2.5 14.5 1 16.5 1 C19 1 21 2.9 21 5.5 C21 11 11 18 11 18Z"/></svg>
+      <svg class="heart-svg" width="14" height="13" viewBox="0 0 14 13" fill="var(--petal)"><path d="M7 12 C7 12 1 7 1 3.5 C1 1.8 2.3 1 3.5 1 C5 1 6 2 7 3 C8 2 9 1 10.5 1 C11.7 1 13 1.8 13 3.5 C13 7 7 12 7 12Z"/></svg>
+    </div>
+    <div class="side-quote">"Patience is not passive. It is the most powerful thing a woman can do."</div>
+    <div class="side-divider"></div>
+    <div class="side-hearts">
+      <svg class="heart-svg big" width="55" height="50" viewBox="0 0 55 50" fill="var(--petal)"><path d="M27.5 47 C27.5 47 3 30 3 14 C3 7 9 2 16 2 C21 2 25 5 27.5 9 C30 5 34 2 39 2 C46 2 52 7 52 14 C52 30 27.5 47 27.5 47Z"/></svg>
+    </div>
+    <div class="side-quote">"The data is always kinder than the fantasy."</div>
+  </aside>
+
+  <div class="page">
 
   <!-- HERO -->
   <div class="hero">
@@ -674,6 +867,21 @@
     <div class="stat"><span class="stat-val" id="statPct">0%</span><span class="stat-lbl">items complete</span></div>
     <div class="stat"><span class="stat-val" id="statGreen" style="color:#3b6d11">0</span><span class="stat-lbl">green flags</span></div>
     <div class="stat"><span class="stat-val" id="statRed" style="color:#a32d2d">0</span><span class="stat-lbl">red flags</span></div>
+  </div>
+
+  <!-- START DATE -->
+  <div class="startdate-card" id="startDateCard">
+    <div class="startdate-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    </div>
+    <div class="startdate-text">
+      <label for="startDateInput">When did you meet him?</label>
+      <p>This unlocks phases on the right schedule — no rushing.</p>
+    </div>
+    <div class="startdate-input-wrap">
+      <input type="date" id="startDateInput" onchange="setStartDate(this.value)" />
+      <span class="days-in" id="daysIn" style="display:none"></span>
+    </div>
   </div>
 
   <!-- TIMELINE -->
@@ -737,7 +945,31 @@
     <p class="mantra-attr"><span class="heart">♥</span> &nbsp; my blueprint &nbsp; <span class="heart">♥</span></p>
   </div>
 
-</div>
+  </div><!-- end .page -->
+
+  <!-- RIGHT SIDEBAR -->
+  <aside class="sidebar sidebar-right" aria-hidden="true">
+    <div class="side-quote">"A man who wants you will make it obvious. You will not need to decode him."</div>
+    <div class="side-divider"></div>
+    <div class="side-hearts">
+      <svg class="heart-svg" width="22" height="20" viewBox="0 0 22 20" fill="var(--rose)"><path d="M11 18 C11 18 1 11 1 5.5 C1 2.9 3 1 5.5 1 C7.5 1 9.5 2.5 11 4 C12.5 2.5 14.5 1 16.5 1 C19 1 21 2.9 21 5.5 C21 11 11 18 11 18Z"/></svg>
+      <svg class="heart-svg" width="14" height="13" viewBox="0 0 14 13" fill="var(--petal)"><path d="M7 12 C7 12 1 7 1 3.5 C1 1.8 2.3 1 3.5 1 C5 1 6 2 7 3 C8 2 9 1 10.5 1 C11.7 1 13 1.8 13 3.5 C13 7 7 12 7 12Z"/></svg>
+      <svg class="heart-svg" width="10" height="9" viewBox="0 0 10 9" fill="var(--pink-200)"><path d="M5 8 C5 8 1 5 1 2.5 C1 1.4 1.9 1 2.5 1 C3.5 1 4 1.8 5 2.5 C6 1.8 6.5 1 7.5 1 C8.1 1 9 1.4 9 2.5 C9 5 5 8 5 8Z"/></svg>
+    </div>
+    <div class="side-quote">"You do not need to earn his consistency. You need to observe it."</div>
+    <div class="side-divider"></div>
+    <div class="side-hearts">
+      <svg class="heart-svg big" width="70" height="65" viewBox="0 0 70 65" fill="var(--rose)"><path d="M35 62 C35 62 5 42 5 22 C5 11 13 3 22 3 C28 3 33 7 35 11 C37 7 42 3 48 3 C57 3 65 11 65 22 C65 42 35 62 35 62Z"/></svg>
+    </div>
+    <div class="side-quote">"Peace is the goal. Not just love."</div>
+    <div class="side-divider"></div>
+    <div class="side-hearts">
+      <svg class="heart-svg" width="18" height="16" viewBox="0 0 18 16" fill="var(--petal)"><path d="M9 15 C9 15 1 9 1 4.5 C1 2.4 2.7 1 4.5 1 C6.2 1 7.8 2.2 9 3.5 C10.2 2.2 11.8 1 13.5 1 C15.3 1 17 2.4 17 4.5 C17 9 9 15 9 15Z"/></svg>
+    </div>
+    <div class="side-quote">"I will no longer live my life like I am in a hurry."</div>
+  </aside>
+
+</div><!-- end .layout -->
 
 <script>
 const PHASES = [
@@ -1050,20 +1282,31 @@ function renderTimeline(){
   const tl=document.getElementById("timeline");
   tl.innerHTML="";
   PHASES.forEach(ph=>{
-    const cls=phClass(ph.num),sc=score(ph.num),isPre=ph.num>=6;
+    const unlocked=isUnlocked(ph.num);
+    const sc=score(ph.num);
+    const isPre=ph.num>=6;
+    let cls;
+    if(!unlocked){
+      cls="locked";
+    } else {
+      cls=phClass(ph.num);
+    }
     const d=document.createElement("div");
     d.className="tl-seg "+cls+(isPre?" prenup-phase":"");
-    const pctLabel=sc.pct>0?sc.pct+"%" : "\u00a0";
-    d.innerHTML="<span class='tl-num'>"+ph.num+"</span><span class='tl-name'>"+ph.label+"</span><span class='tl-pct'>"+pctLabel+"</span><div class='tl-fill-track'><div class='tl-fill-bar' style='width:"+sc.pct+"%'></div></div>";
-    d.onclick=function(){S.activePhase=ph.num;save();renderAll();};
+    const pctLabel=(!unlocked)?unlockLabel(ph.num):(sc.pct>0?sc.pct+"%":"\u00a0");
+    d.innerHTML="<span class='tl-num'>"+ph.num+"</span><span class='tl-name'>"+ph.label+"</span><span class='tl-pct'>"+pctLabel+"</span><div class='tl-fill-track'><div class='tl-fill-bar' style='width:"+(unlocked?sc.pct:0)+"%'></div></div>";
+    if(unlocked){
+      d.onclick=function(){S.activePhase=ph.num;save();renderAll();};
+    }
     tl.appendChild(d);
   });
 }
 
 function renderStats(){
-  const done=PHASES.filter(ph=>score(ph.num).pct>=80).length;
+  const unlocked=PHASES.filter(ph=>isUnlocked(ph.num)).length;
+  const done=PHASES.filter(ph=>isUnlocked(ph.num)&&score(ph.num).pct>=80).length;
   document.getElementById("progressFill").style.width=Math.round(done/8*100)+"%";
-  document.getElementById("progressTxt").textContent=`${done} / 8 phases`;
+  document.getElementById("progressTxt").textContent=done+" / "+unlocked+" unlocked phases";
   document.getElementById("statPhase").textContent=`Ph ${S.activePhase}`;
   document.getElementById("statPct").textContent=totalPct()+"%";
   document.getElementById("statGreen").textContent=S.log.filter(l=>l.flag==="green").length;
@@ -1072,6 +1315,24 @@ function renderStats(){
 
 function renderPhase(){
   const ph=PHASES[S.activePhase-1],sc=score(ph.num);
+
+  // If phase is locked, show overlay instead
+  if(!isUnlocked(ph.num)){
+    const d=daysUntilUnlock(ph.num);
+    const lbl=unlockLabel(ph.num);
+    document.getElementById('phaseCard').innerHTML=
+      '<div class="locked-overlay">'+
+      '<svg class="locked-heart" width="48" height="44" viewBox="0 0 48 44" fill="var(--rose)"><path d="M24 42 C24 42 2 28 2 14 C2 7 8 2 15 2 C19 2 22 4 24 7 C26 4 29 2 33 2 C40 2 46 7 46 14 C46 28 24 42 24 42Z"/></svg>'+
+      '<div class="locked-title">Phase '+ph.num+' — '+ph.label+'</div>'+
+      '<div class="locked-sub">This phase is waiting for you. Your blueprint is protecting your pace.</div>'+
+      '<div class="locked-countdown">'+lbl+'</div><br>'+
+      '<button class="btn-unlock" onclick="overrideUnlock('+ph.num+')">'+
+      '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>'+
+      'Unlock early (override)</button>'+
+      '</div>';
+    return;
+  }
+
   const tab=S.tab[ph.num]||"input";
   const isPre=ph.num>=6;
 
@@ -1212,7 +1473,97 @@ function renderBanner(){
   phaseCard.parentNode.insertBefore(banner, phaseCard);
 }
 
-function renderAll(){renderTimeline();renderStats();renderBanner();renderPhase();renderLog();}
+
+// Phase unlock schedule — days from start date
+const PHASE_UNLOCK_DAYS = {
+  1: 0,
+  2: 28,      // 4 weeks
+  3: 180,     // 6 months
+  4: 390,     // 13 months
+  5: 390,
+  6: 390,
+  7: -1,      // unlocks when phase 6 >= 80%
+  8: -1       // unlocks when phase 7 >= 80%
+};
+
+function getDaysIn(){
+  if(!S.startDate) return null;
+  const start = new Date(S.startDate);
+  const now = new Date();
+  return Math.floor((now - start) / (1000*60*60*24));
+}
+
+function isUnlocked(phaseNum){
+  if(S.overrides && S.overrides[phaseNum]) return true;
+  const days = getDaysIn();
+  if(days === null) return phaseNum === 1; // no date set — only phase 1 open
+  const threshold = PHASE_UNLOCK_DAYS[phaseNum];
+  if(threshold === -1){
+    // special: based on previous phase completion
+    if(phaseNum === 7) return score(6).pct >= 80;
+    if(phaseNum === 8) return score(7).pct >= 80;
+    return false;
+  }
+  return days >= threshold;
+}
+
+function daysUntilUnlock(phaseNum){
+  const days = getDaysIn();
+  if(days === null) return null;
+  const threshold = PHASE_UNLOCK_DAYS[phaseNum];
+  if(threshold === -1) return null;
+  return Math.max(0, threshold - days);
+}
+
+function unlockLabel(phaseNum){
+  const d = daysUntilUnlock(phaseNum);
+  if(d === null){
+    if(phaseNum === 7) return 'unlocks when Phase 6 is complete';
+    if(phaseNum === 8) return 'unlocks when Phase 7 is complete';
+    return 'locked';
+  }
+  if(d === 0) return 'unlocking now';
+  if(d < 7) return 'unlocks in ' + d + ' day' + (d>1?'s':'');
+  const weeks = Math.ceil(d/7);
+  if(weeks < 5) return 'unlocks in ~' + weeks + ' week' + (weeks>1?'s':'');
+  const months = Math.ceil(d/30);
+  return 'unlocks in ~' + months + ' month' + (months>1?'s':'');
+}
+
+function setStartDate(val){
+  S.startDate = val;
+  if(!S.overrides) S.overrides = {};
+  save();
+  renderAll();
+}
+
+function overrideUnlock(phaseNum){
+  if(!S.overrides) S.overrides = {};
+  S.overrides[phaseNum] = true;
+  save();
+  renderAll();
+}
+
+function renderAll(){
+  // update start date input
+  const sdi = document.getElementById('startDateInput');
+  if(sdi && S.startDate) sdi.value = S.startDate;
+  const days = getDaysIn();
+  const daysEl = document.getElementById('daysIn');
+  if(daysEl){
+    if(days !== null){
+      daysEl.style.display='inline-block';
+      daysEl.textContent = days === 0 ? 'day 1' : 'day ' + days;
+    } else {
+      daysEl.style.display='none';
+    }
+  }
+  renderTimeline();
+  renderStats();
+  renderBanner();
+  renderPhase();
+  renderLog();
+}
 
 function saveFile(){
   const data = JSON.stringify(S, null, 2);
@@ -1248,6 +1599,11 @@ function restoreFile(e){
   e.target.value='';
 }
 
+// Auto-select first unlocked phase if current is locked
+if(!isUnlocked(S.activePhase)){
+  const first = PHASES.find(ph=>isUnlocked(ph.num));
+  if(first) S.activePhase = first.num;
+}
 renderAll();
 
 document.getElementById("logInput").addEventListener("keydown",e=>{if(e.key==="Enter")addLog();});
