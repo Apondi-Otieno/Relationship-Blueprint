@@ -757,8 +757,11 @@ const PHASES = [
       {key:"character",label:"Character check",text:"How does he treat waitstaff, strangers, people who can do nothing for him?"},
       {key:"direction",label:"Direction evident",text:"Is there evidence of a plan — revenue, track record, growth?"},
       {key:"multistream",label:"Multiple streams",text:"Does he run more than one business or income stream?"},
+      {key:"finindep",label:"Financially independent",text:"Is he financially independent — not relying on parents, family, or a woman to fund his life?"},
+      {key:"dateplans",label:"He plans the date",text:"Did he plan the first date — venue, time, logistics — without prompting from me?"},
+      {key:"datepays",label:"He pays",text:"Did he pay for the date without hesitation, jokes, or making it awkward?"},
       {key:"nochase",label:"I did not chase",text:"I refrained from initiating, over-texting, or performing for his attention."},
-      {key:"redflags1",label:"No red flags",text:"No dismissiveness, instability, or dishonesty observed in this window."},
+      {key:"redflags1",label:"No red flags",text:"No dismissiveness, financial instability, or dishonesty observed in this window."},
     ]
   },
   {
@@ -769,6 +772,9 @@ const PHASES = [
       "Share your truth: autism, your healing journey, what you carry. Say it plainly, without apology.",
       "Ask him directly: 'What are you building right now?' and then be quiet.",
       "Do not fill silences. Let him show you who he is.",
+      "Watch whether he plans dates or waits for you to. Watch who pays and how it feels.",
+      "Note whether he has made any jokes about money, splitting, or you taking care of him. Even once.",
+      "By month 4–5: if exclusivity has not been named, you can name it. Once. His response is the data.",
       "Hold the boundary: no sleepovers, no sex. This is non-negotiable — not a suggestion.",
       "Do not adjust your personality, opinions, or standards to keep his interest."
     ],
@@ -779,6 +785,10 @@ const PHASES = [
       {key:"heasked",label:"He was curious",text:"He asked follow-up questions about me, rather than managing or fixing me."},
       {key:"hisvision",label:"Specific vision",text:"He described what he is building with specificity — not vague ambition."},
       {key:"helpsme",label:"Opens my doors",text:"He has shown genuine interest in or support of my ventures."},
+      {key:"dateconsistent",label:"Plans dates consistently",text:"He plans dates regularly — venue, time, effort — without me suggesting it."},
+      {key:"datepays2",label:"Pays without drama",text:"He pays for dates consistently and without jokes about splitting, me treating him, or financial pressure."},
+      {key:"nofinancejokes",label:"No financial reversal jokes",text:"He has never joked about me taking care of him, paying for him, or funding his life."},
+      {key:"exclusive",label:"Exclusivity conversation",text:"He has raised the question of exclusivity — or responded clearly and seriously when I did."},
       {key:"boundary",label:"Boundary held",text:"No sleepovers. No sex. Boundary honoured completely."},
       {key:"nocompromise",label:"I stayed myself",text:"I refrained from softening, shrinking, or performing to keep his interest."},
     ]
@@ -832,7 +842,10 @@ const PHASES = [
     gate:"Is he the same man across time and context?",
     myInput:[
       "Pull up your Phase 1 observations. Compare them honestly to who he is now.",
+      "Is he still planning dates — or has that quietly become your job?",
+      "Is he still paying — or has money started to feel like a negotiation?",
       "Note whether his effort has increased, plateaued, or declined since you stopped being new.",
+      "Has he established full financial independence from his parents? This should be visible by now.",
       "Watch how he shows up when you are stressed, unwell, or unavailable — not just when you are thriving.",
       "Notice whether he makes space for your ambition or competes with it.",
       "Ask yourself: do I feel more free or more managed in this relationship?",
@@ -842,8 +855,12 @@ const PHASES = [
     items:[
       {key:"sameperson",label:"Same man",text:"He is the same person in month 13 as he was in week 1."},
       {key:"effortup",label:"Effort sustained",text:"His effort has maintained or grown — it has not declined now that I am 'secured.'"},
+      {key:"stilldates",label:"Still plans dates",text:"He still plans intentional dates — not just hanging out, actual plans he thought about."},
+      {key:"stillpays",label:"Still pays",text:"He still pays for dates consistently — this has not quietly shifted onto me over time."},
       {key:"hardsame",label:"Present in hardship",text:"He has shown up during a hard moment for me — not just the good ones."},
       {key:"dooropen",label:"Opens my doors",text:"He actively supports my ventures without needing mine to support his."},
+      {key:"finindep5",label:"Financially independent",text:"He is fully financially independent — not leaning on parents, family, or me."},
+      {key:"parentsindep",label:"Adult with his parents",text:"He operates as a grown man with his parents — not seeking their approval or funding for his adult life."},
       {key:"freedom",label:"I feel free",text:"I feel more free, more myself in this relationship — not less."},
       {key:"wordsact",label:"Words = actions",text:"What he says and what he does are the same thing, consistently."},
     ]
@@ -877,12 +894,14 @@ const PHASES = [
     items:[
       {key:"finances",label:"Finances discussed",text:"We have discussed finances specifically — income, assets, liabilities, savings."},
       {key:"records",label:"Records seen",text:"I have seen his business and financial records. Not just heard about them."},
+      {key:"hefinances",label:"He is financially stable",text:"His finances are stable and independent — he is not carrying debt that requires my intervention."},
       {key:"location",label:"Location aligned",text:"We are aligned on where we will live — not just broadly, specifically."},
       {key:"conflictstyle",label:"Conflict approach",text:"We have agreed on how we handle conflict as a unit."},
       {key:"parenting",label:"Parenting aligned",text:"We have talked through parenting philosophy in real depth."},
-      {key:"inlaws",label:"Boundaries clear",text:"Family and in-law boundaries have been discussed and agreed."},
+      {key:"trustfund6",label:"Trust fund agreed",text:"We are both committed to establishing a trust fund for our children. He sees this as non-negotiable."},
+      {key:"inlaws",label:"Boundaries clear",text:"Family and in-law boundaries have been discussed and agreed — including his parents."},
       {key:"prenupraised",label:"Prenup raised",text:"I raised the prenup directly and clearly. His response was noted."},
-      {key:"prenupagree",label:"Prenup agreed",text:"He agreed to a prenuptial agreement without resistance."},
+      {key:"prenupagree",label:"Prenup agreed",text:"He agreed to a prenuptial agreement without resistance, guilt-tripping, or conditions."},
       {key:"builder",label:"He can build",text:"He can build with me — evident in how he moves, not just what he says."},
     ]
   },
@@ -952,16 +971,28 @@ const PHASES = [
 
 
 const NON_NEGOTIABLES = [
-  {phase:2, key:"heasked",    label:"He won't hear your context or asks questions",  reason:"A man who manages instead of listens will never truly see you. This is not a communication style — it is a character pattern."},
-  {phase:2, key:"boundary",   label:"Physical boundary honoured",                    reason:"A boundary you set before anything started. If he cannot respect this one, he will not respect the harder ones."},
-  {phase:2, key:"nocompromise",label:"You stayed fully yourself",                   reason:"If you are already shrinking in month 2, it will only get harder. You cannot build a real relationship from a performed version of yourself."},
-  {phase:3, key:"account",    label:"He took accountability",                        reason:"Gaslighting and blame-reversal are not conflict styles. They are ways of erasing your reality. A man who cannot own his part cannot be a safe partner."},
-  {phase:3, key:"repair",     label:"He repaired after conflict",                    reason:"Disappearing after rupture is a choice. Repair is how trust is built. Without it, every conflict leaves a permanent crack."},
-  {phase:3, key:"mysafety",   label:"You felt safe disagreeing with him",            reason:"If you do not feel safe being disagreeable now, you will spend the marriage managing his emotions instead of living your life."},
-  {phase:3, key:"curious",    label:"He sought to understand, not assume",           reason:"A man who assumes instead of asks has already decided he knows you better than you know yourself."},
-  {phase:5, key:"sameperson", label:"He is the same man across time",               reason:"Inconsistency is not a quirk. It is information about who he actually is versus who he performed in the beginning."},
-  {phase:5, key:"freedom",    label:"You feel more free, not less",                  reason:"Love should expand you. If you feel smaller, more careful, more managed — that is not love. That is containment."},
-  {phase:5, key:"wordsact",   label:"His words and actions match",                  reason:"Words are easy. Actions across time are the truth. A man whose words and actions diverge is showing you who he prioritises — and it is not you."},
+  {phase:1, key:"finindep",      label:"He is financially independent",              reason:"A man who is still financially dependent on his parents or others at this stage is not yet ready to build with you. Financial independence is the floor, not a bonus."},
+  {phase:1, key:"dateplans",     label:"He planned the first date",                  reason:"A man who wants you will pursue you with intention. If you planned it, or it happened by accident, that is information about how much effort he is willing to invest."},
+  {phase:1, key:"datepays",      label:"He paid without hesitation",                 reason:"A man who makes jokes about splitting, forgets his wallet, or makes you feel awkward about money on a first date is showing you his financial character early."},
+  {phase:2, key:"nofinancejokes",label:"No jokes about you financing him",           reason:"'I'm joking' is often 'I'm testing.' A man who jokes about you taking care of him financially is planting a seed. Watch whether it grows into an expectation."},
+  {phase:2, key:"exclusive",     label:"He raised exclusivity clearly",              reason:"A man who wants you will not leave your status ambiguous for months. If exclusivity has not been named by month 6, you are not a priority — you are an option."},
+  {phase:2, key:"heasked",       label:"He listens without managing you",            reason:"A man who manages instead of listens will never truly see you. This is not a communication style — it is a character pattern."},
+  {phase:2, key:"boundary",      label:"Physical boundary held",                     reason:"A boundary you set before anything started. If he cannot respect this one, he will not respect the harder ones."},
+  {phase:3, key:"account",       label:"He took accountability",                     reason:"Gaslighting and blame-reversal are not conflict styles. They are ways of erasing your reality. A man who cannot own his part cannot be a safe partner."},
+  {phase:3, key:"repair",        label:"He repaired after conflict",                 reason:"Disappearing after rupture is a choice. Repair is how trust is built. Without it, every conflict leaves a permanent crack."},
+  {phase:3, key:"mysafety",      label:"You felt safe disagreeing",                  reason:"If you do not feel safe being disagreeable now, you will spend the marriage managing his emotions instead of living your life."},
+  {phase:4, key:"moneyleg",      label:"He understands financial legacy",            reason:"A man who only thinks about income, not generational wealth, will not build the kind of family financial foundation you need. This is a values misalignment, not a gap you can teach around."},
+  {phase:4, key:"trustfund",     label:"He is aligned on trust funds",              reason:"You have been clear about this from the start. A man who does not see trust funds as essential for children does not share your vision of what family provision looks like."},
+  {phase:5, key:"stilldates",    label:"He still plans dates consistently",          reason:"When a man stops planning dates after you are 'secured,' he is telling you that the pursuit was performance. Sustained effort is what love looks like in practice."},
+  {phase:5, key:"stillpays",     label:"He still pays consistently",                 reason:"If paying for dates has quietly shifted onto you over time, that shift was a decision he made. It did not happen accidentally."},
+  {phase:5, key:"finindep5",     label:"He is fully financially independent",        reason:"Financial dependence on family or a partner is not a temporary inconvenience — it is a dynamic that shapes the entire power structure of a relationship."},
+  {phase:5, key:"parentsindep",  label:"He is an adult with his parents",            reason:"A man who has not claimed his adulthood with his own parents will struggle to build a family that is truly yours. His first loyalty must be to the family you build together."},
+  {phase:5, key:"freedom",       label:"You feel more free, not less",               reason:"Love should expand you. If you feel smaller, more careful, more managed — that is not love. That is containment."},
+  {phase:6, key:"prenupagree",   label:"He agreed to the prenup",                   reason:"A man who refuses a prenuptial agreement is not protecting love — he is protecting access to your assets. A secure man who loves you will understand why this matters."},
+  {phase:6, key:"trustfund6",    label:"Trust fund commitment confirmed",            reason:"This is not a negotiation. You have known you wanted this since before you met him. If he cannot commit to it now, he will not build it with you later."},
+  {phase:6, key:"builder",       label:"He can build, not just talk",               reason:"Some men are visionary in conversation and absent in execution. By Phase 6, the evidence of whether he can actually build should be visible in how he has moved — not in what he has promised."},
+  {phase:7, key:"peace",         label:"You feel peace, not just excitement",        reason:"Excitement fades. Peace is what sustains a marriage. If you are walking toward a proposal with anxiety, urgency, or relief rather than peace — your body already knows something your mind is negotiating with."},
+  {phase:7, key:"prenupcommit",  label:"Prenup will be signed before wedding",      reason:"Commitment without the paperwork is just a feeling. The prenup signed before the wedding is the thing that protects you if the feeling changes."},
 ];
 
 const TERMINATE_THRESHOLD = 3;
