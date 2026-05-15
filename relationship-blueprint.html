@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Relationship Blueprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink-50: #fff0f5;
+    --pink-100: #ffd6e7;
+    --pink-200: #ffadd2;
+    --pink-400: #f06292;
+    --pink-500: #e91e8c;
+    --pink-600: #c2185b;
+    --pink-700: #880e4f;
+    --pink-800: #560027;
+    --blush: #fdf0f4;
+    --rose: #d4537e;
+    --deep: #72243e;
+    --mauve: #993556;
+    --petal: #f4c0d1;
+    --cream: #fdf8f5;
+    --stone: #4a3f3f;
+    --mist: #a08080;
+    --green: #3b6d11;
+    --green-light: #eaf3de;
+    --red: #a32d2d;
+    --red-light: #fcebeb;
+    --amber: #854f0b;
+    --amber-light: #faeeda;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--cream);
+    color: var(--stone);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── decorative background ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 80% 10%, rgba(244,192,209,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 10% 80%, rgba(212,83,126,0.08) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── page shell ── */
+  .page { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; padding: 0 20px 80px; }
+
+  /* ── hero ── */
+  .hero {
+    text-align: center;
+    padding: 64px 0 40px;
+    animation: fadeUp .8s ease both;
+  }
+  .hero-eyebrow {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--mauve);
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(38px, 8vw, 62px);
+    font-weight: 300;
+    color: var(--deep);
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .hero h1 em { font-style: italic; color: var(--rose); }
+  .hero-sub {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--mist);
+    line-height: 1.6;
+    max-width: 480px;
+    margin: 0 auto 32px;
+  }
+
+  /* ── stats bar ── */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 36px;
+    animation: fadeUp .8s .1s ease both;
+  }
+  .stat {
+    background: white;
+    border: 1px solid var(--petal);
+    border-radius: 14px;
+    padding: 16px 12px;
+    text-align: center;
+  }
+  .stat-val {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--rose);
+    display: block;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-lbl { font-size: 11px; color: var(--mist); letter-spacing: .04em; }
+
+  /* ── timeline ── */
+  .timeline-section { margin-bottom: 28px; animation: fadeUp .8s .15s ease both; }
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-bottom: 12px;
+    padding-left: 2px;
+  }
+  .timeline {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 5px;
+    background: white;
+    border: 1px solid var(--petal);
+    border-radius: 18px;
+    padding: 14px 12px;
+  }
+  .tl-seg {
+    border-radius: 10px;
+    padding: 10px 4px 8px;
+    text-align: center;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: all .2s ease;
+    position: relative;
+  }
+  .tl-seg:hover { transform: translateY(-1px); }
+  .tl-seg .tl-num { font-family: var(--serif); font-size: 18px; font-weight: 500; display: block; line-height: 1; }
+  .tl-seg .tl-name { font-size: 9px; display: block; margin-top: 3px; line-height: 1.2; }
+  .tl-seg .tl-pct { font-size: 9px; font-weight: 500; display: block; margin-top: 3px; }
+
+  .tl-seg.future { background: var(--cream); }
+  .tl-seg.future .tl-num { color: #ccc; }
+  .tl-seg.future .tl-name { color: #ccc; }
+
+  .tl-seg.done { background: var(--pink-50); border-color: var(--petal); }
+  .tl-seg.done .tl-num { color: var(--mauve); }
+  .tl-seg.done .tl-name { color: var(--rose); }
+  .tl-seg.done .tl-pct { color: var(--mauve); }
+
+  .tl-seg.active { background: var(--rose); border-color: var(--mauve); box-shadow: 0 4px 16px rgba(212,83,126,.25); }
+  .tl-seg.active .tl-num { color: white; }
+  .tl-seg.active .tl-name { color: rgba(255,255,255,.85); }
+  .tl-seg.active .tl-pct { color: var(--petal); }
+
+  .tl-seg.prenup-phase.done { background: #fdf0f4; border-color: var(--rose); }
+  .tl-seg.prenup-phase.active { background: var(--deep); border-color: var(--mauve); }
+
+  /* per-phase fill bar */
+  .tl-fill-track {
+    width: 100%; height: 4px;
+    background: rgba(255,255,255,0.35);
+    border-radius: 99px;
+    margin-top: 5px;
+    overflow: hidden;
+  }
+  .tl-fill-bar {
+    height: 100%;
+    border-radius: 99px;
+    transition: width .5s ease;
+    background: rgba(255,255,255,0.75);
+  }
+  .tl-seg.future .tl-fill-track { background: rgba(212,83,126,0.12); }
+  .tl-seg.future .tl-fill-bar { background: var(--petal); }
+  .tl-seg.done .tl-fill-track { background: rgba(212,83,126,0.15); }
+  .tl-seg.done .tl-fill-bar { background: var(--rose); }
+
+  /* progress */
+  .progress-row {
+    display: flex; align-items: center; gap: 12px; margin-top: 10px;
+  }
+  .progress-track {
+    flex: 1; height: 4px; background: var(--petal);
+    border-radius: 99px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: var(--rose);
+    border-radius: 99px; transition: width .5s ease;
+  }
+  .progress-txt { font-size: 12px; color: var(--mauve); font-weight: 500; white-space: nowrap; }
+
+  /* ── phase card ── */
+  .phase-card {
+    background: white;
+    border: 1px solid var(--petal);
+    border-radius: 22px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    animation: fadeUp .4s ease both;
+  }
+  .phase-card-header {
+    padding: 24px 28px 20px;
+    border-bottom: 1px solid var(--pink-100);
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .phase-num-badge {
+    width: 48px; height: 48px; min-width: 48px;
+    border-radius: 50%;
+    background: var(--pink-50);
+    border: 1.5px solid var(--petal);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--serif);
+    font-size: 22px; font-weight: 500;
+    color: var(--rose);
+  }
+  .phase-num-badge.prenup-badge { background: #fdf0f4; border-color: var(--rose); color: var(--deep); }
+  .phase-title-block { flex: 1; }
+  .phase-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--deep);
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .phase-gate {
+    font-family: var(--serif);
+    font-size: 15px;
+    font-style: italic;
+    color: var(--mauve);
+    margin-bottom: 3px;
+  }
+  .phase-timing { font-size: 12px; color: var(--mist); }
+  .score-circle {
+    width: 60px; height: 60px; min-width: 60px;
+    border-radius: 50%;
+    border: 2.5px solid var(--petal);
+    background: var(--pink-50);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .score-pct { font-family: var(--serif); font-size: 16px; font-weight: 500; color: var(--deep); line-height: 1; }
+  .score-sub { font-size: 10px; color: var(--mist); margin-top: 2px; }
+
+  /* tabs */
+  .phase-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--pink-100);
+    background: var(--blush);
+  }
+  .ptab {
+    flex: 1; padding: 12px 8px;
+    font-size: 12px; font-weight: 500;
+    text-align: center; cursor: pointer;
+    color: var(--mist);
+    border-bottom: 2px solid transparent;
+    background: none; border-top: none; border-left: none; border-right: none;
+    transition: color .15s;
+    letter-spacing: .02em;
+  }
+  .ptab:hover { color: var(--rose); }
+  .ptab.active { color: var(--rose); border-bottom-color: var(--rose); background: white; }
+
+  .phase-body { padding: 22px 28px; }
+
+  /* my input box */
+  .my-input-box {
+    background: linear-gradient(135deg, var(--pink-50) 0%, #fff8fb 100%);
+    border: 1px solid var(--petal);
+    border-left: 4px solid var(--rose);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 18px;
+  }
+  .mi-title {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: .12em; text-transform: uppercase;
+    color: var(--mauve); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .mi-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(244,192,209,.4);
+  }
+  .mi-item:last-child { border-bottom: none; }
+  .mi-dot {
+    width: 7px; height: 7px; min-width: 7px;
+    border-radius: 50%; background: var(--rose);
+    margin-top: 7px;
+  }
+  .mi-text { font-size: 14px; color: var(--deep); line-height: 1.55; }
+
+  /* prenup box */
+  .prenup-box {
+    background: var(--deep);
+    border-radius: 14px;
+    padding: 20px 22px;
+    margin-bottom: 18px;
+  }
+  .prenup-title {
+    font-family: var(--serif);
+    font-size: 16px; font-weight: 500;
+    color: var(--petal);
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(244,192,209,.2);
+    letter-spacing: .02em;
+  }
+  .prenup-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(244,192,209,.1);
+    font-size: 13px;
+    color: #e8b4c8;
+    line-height: 1.55;
+  }
+  .prenup-item:last-child { border-bottom: none; }
+  .prenup-arrow { color: var(--rose); flex-shrink: 0; margin-top: 1px; }
+  .prenup-note-wrap { margin-top: 14px; }
+
+  /* checklist */
+  .check-title {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: .12em; text-transform: uppercase;
+    color: var(--mist); margin-bottom: 12px;
+  }
+  .check-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--pink-100);
+  }
+  .check-item:last-of-type { border-bottom: none; }
+  .check-btn {
+    width: 26px; height: 26px; min-width: 26px;
+    border-radius: 50%;
+    border: 1.5px solid var(--petal);
+    background: white;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 500;
+    color: transparent;
+    transition: all .15s ease;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .check-btn:hover { border-color: var(--rose); transform: scale(1.05); }
+  .check-btn.yes { background: var(--rose); border-color: var(--rose); color: white; }
+  .check-btn.partial { background: var(--amber-light); border-color: var(--amber); color: var(--amber); }
+  .check-btn.no { background: var(--red-light); border-color: var(--red); color: var(--red); }
+  .check-content { flex: 1; }
+  .check-label { font-size: 14px; color: var(--stone); line-height: 1.45; display: block; }
+  .check-meta {
+    font-size: 11px; color: var(--mist); margin-top: 3px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .check-tag {
+    background: var(--pink-50); color: var(--mauve);
+    padding: 2px 7px; border-radius: 99px;
+    font-size: 10px; font-weight: 500;
+  }
+  .check-state { font-weight: 500; }
+  .state-yes { color: var(--green); }
+  .state-partial { color: var(--amber); }
+  .state-no { color: var(--red); }
+  .state-none { color: var(--mist); }
+
+  /* notes */
+  .notes-lbl {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: .1em; text-transform: uppercase;
+    color: var(--mist); margin-bottom: 8px;
+  }
+  textarea {
+    width: 100%;
+    min-height: 100px;
+    border: 1px solid var(--pink-100);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 14px;
+    font-family: var(--serif);
+    color: var(--stone);
+    background: var(--blush);
+    resize: vertical;
+    line-height: 1.6;
+    transition: border-color .15s;
+    outline: none;
+  }
+  textarea:focus { border-color: var(--petal); }
+  textarea::placeholder { color: var(--mist); font-style: italic; }
+
+  /* ── observation log ── */
+  .log-card {
+    background: white;
+    border: 1px solid var(--petal);
+    border-radius: 22px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+    animation: fadeUp .8s .25s ease both;
+  }
+  .log-card h2 {
+    font-family: var(--serif);
+    font-size: 22px; font-weight: 400;
+    color: var(--deep);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .log-input-row {
+    display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
+  }
+  .log-input-row input {
+    flex: 1; min-width: 160px;
+    border: 1px solid var(--pink-100);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-family: var(--sans);
+    color: var(--stone);
+    background: var(--blush);
+    outline: none;
+    transition: border-color .15s;
+  }
+  .log-input-row input:focus { border-color: var(--petal); }
+  .log-input-row select {
+    border: 1px solid var(--pink-100);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 13px;
+    font-family: var(--sans);
+    color: var(--stone);
+    background: var(--blush);
+    cursor: pointer;
+    outline: none;
+    min-width: 130px;
+  }
+  .btn {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 1px solid var(--petal);
+    background: var(--pink-50);
+    color: var(--deep);
+    font-size: 13px;
+    font-family: var(--sans);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .15s;
+    white-space: nowrap;
+  }
+  .btn:hover { background: var(--rose); color: white; border-color: var(--rose); }
+  .log-entry {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--pink-100);
+    flex-wrap: wrap;
+  }
+  .log-entry:last-child { border-bottom: none; }
+  .flag-pill {
+    font-size: 11px; font-weight: 500;
+    padding: 4px 10px; border-radius: 99px;
+    white-space: nowrap;
+  }
+  .flag-green { background: var(--green-light); color: #27500a; }
+  .flag-red { background: var(--red-light); color: #791f1f; }
+  .flag-neutral { background: var(--cream); color: var(--mist); border: 1px solid var(--petal); }
+  .log-phase-tag {
+    font-size: 10px; color: var(--mauve);
+    background: var(--pink-50); border: 1px solid var(--petal);
+    padding: 3px 8px; border-radius: 99px; white-space: nowrap;
+  }
+  .log-text { font-size: 14px; color: var(--stone); flex: 1; line-height: 1.4; min-width: 120px; }
+  .log-del { color: #ddd; cursor: pointer; font-size: 14px; padding: 2px; transition: color .15s; }
+  .log-del:hover { color: var(--red); }
+  .log-empty { font-family: var(--serif); font-size: 16px; font-style: italic; color: var(--mist); padding: 10px 0; }
+
+  /* ── mantra footer ── */
+  .mantra {
+    text-align: center;
+    padding: 40px 20px;
+    animation: fadeUp .8s .3s ease both;
+  }
+  .mantra-quote {
+    font-family: var(--serif);
+    font-size: clamp(20px, 4vw, 28px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--mauve);
+    line-height: 1.5;
+    max-width: 520px;
+    margin: 0 auto 12px;
+  }
+  .mantra-attr { font-size: 12px; color: var(--mist); letter-spacing: .08em; }
+  .heart { color: var(--rose); }
+
+  /* ── animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── responsive ── */
+  @media (max-width: 600px) {
+    .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    .timeline { grid-template-columns: repeat(4, 1fr); }
+    .phase-card-header { flex-wrap: wrap; }
+    .phase-body { padding: 18px 18px; }
+    .log-card { padding: 20px 18px; }
+    .hero { padding: 40px 0 28px; }
+  }
+  @media (max-width: 400px) {
+    .timeline { grid-template-columns: repeat(4, 1fr); }
+    .tl-seg .tl-name { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <p class="hero-eyebrow">A woman who knows her worth</p>
+    <h1>My Relationship <em>Blueprint</em></h1>
+    <p class="hero-sub">I will no longer live my life like I am in a hurry</p>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat"><span class="stat-val" id="statPhase">—</span><span class="stat-lbl">active phase</span></div>
+    <div class="stat"><span class="stat-val" id="statPct">0%</span><span class="stat-lbl">items complete</span></div>
+    <div class="stat"><span class="stat-val" id="statGreen" style="color:#3b6d11">0</span><span class="stat-lbl">green flags</span></div>
+    <div class="stat"><span class="stat-val" id="statRed" style="color:#a32d2d">0</span><span class="stat-lbl">red flags</span></div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="timeline-section">
+    <p class="section-label">Your journey — tap a phase</p>
+    <div class="timeline" id="timeline"></div>
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <span class="progress-txt" id="progressTxt">0 / 8 phases</span>
+    </div>
+  </div>
+
+  <!-- PHASE CARD -->
+  <div class="phase-card" id="phaseCard"></div>
+
+  <!-- OBSERVATION LOG -->
+  <div class="log-card">
+    <h2>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--rose)"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 0 2-2h2a2 2 0 0 0 2 2m-6 7 2 2 4-4"/></svg>
+      Observation log
+    </h2>
+    <div class="log-input-row">
+      <input type="text" id="logInput" placeholder="What did you notice today?" />
+      <select id="logFlag">
+        <option value="green">Green flag</option>
+        <option value="red">Red flag</option>
+        <option value="neutral">Neutral</option>
+      </select>
+      <button class="btn" onclick="addLog()">Add</button>
+    </div>
+    <div id="logList"></div>
+  </div>
+
+  <!-- MANTRA -->
+  <div class="mantra">
+    <p class="mantra-quote">"The right man will meet me where I am — not where I pretended to be."</p>
+    <p class="mantra-attr"><span class="heart">♥</span> &nbsp; my blueprint &nbsp; <span class="heart">♥</span></p>
+  </div>
+
+</div>
+
+<script>
+const PHASES = [
+  {
+    num:1, label:"Observe", timing:"Weeks 1–4",
+    gate:"Does he have direction and revenue?",
+    myInput:[
+      "Show up as yourself — nothing more, nothing less.",
+      "Ask one casual question about what he is working on. Listen. Do not probe.",
+      "Observe in silence. You are not required to impress, explain, or perform.",
+      "Keep a mental note (or log here) of how he treats people around him.",
+      "Zero emotional, financial, or physical investment at this stage."
+    ],
+    prenup: null,
+    items:[
+      {key:"followthrough",label:"Follow-through",text:"Does he follow through on small commitments unprompted?"},
+      {key:"character",label:"Character check",text:"How does he treat waitstaff, strangers, people who can do nothing for him?"},
+      {key:"direction",label:"Direction evident",text:"Is there evidence of a plan — revenue, track record, growth?"},
+      {key:"multistream",label:"Multiple streams",text:"Does he run more than one business or income stream?"},
+      {key:"nochase",label:"I did not chase",text:"I refrained from initiating, over-texting, or performing for his attention."},
+      {key:"redflags1",label:"No red flags",text:"No dismissiveness, instability, or dishonesty observed in this window."},
+    ]
+  },
+  {
+    num:2, label:"The manual", timing:"Month 2–6",
+    gate:"Does he open doors or need mine?",
+    myInput:[
+      "Have ONE intentional in-person conversation — you choose the setting, you set the tone.",
+      "Share your truth: autism, your healing journey, what you carry. Say it plainly, without apology.",
+      "Ask him directly: 'What are you building right now?' and then be quiet.",
+      "Do not fill silences. Let him show you who he is.",
+      "Hold the boundary: no sleepovers, no sex. This is non-negotiable — not a suggestion.",
+      "Do not adjust your personality, opinions, or standards to keep his interest."
+    ],
+    prenup: null,
+    items:[
+      {key:"convo",label:"Intentional talk",text:"Have I had one intentional in-person conversation?"},
+      {key:"shared",label:"I showed up fully",text:"I shared who I am — autism, healing journey, what I carry."},
+      {key:"heasked",label:"He was curious",text:"He asked follow-up questions about me, rather than managing or fixing me."},
+      {key:"hisvision",label:"Specific vision",text:"He described what he is building with specificity — not vague ambition."},
+      {key:"helpsme",label:"Opens my doors",text:"He has shown genuine interest in or support of my ventures."},
+      {key:"boundary",label:"Boundary held",text:"No sleepovers. No sex. Boundary honoured completely."},
+      {key:"nocompromise",label:"I stayed myself",text:"I refrained from softening, shrinking, or performing to keep his interest."},
+    ]
+  },
+  {
+    num:3, label:"Conflict test", timing:"Month 7–12",
+    gate:"How does he handle rupture?",
+    myInput:[
+      "Do NOT manufacture conflict. Wait for something real and small to arise naturally.",
+      "When it arises: state your disagreement clearly, calmly, once.",
+      "Do not over-explain, apologise for having the opinion, or back down to keep the peace.",
+      "Watch what he does next — his instinct under friction is the data.",
+      "After it resolves (or does not): write in your log what you observed. Be honest.",
+      "Ask yourself: did I feel safe being disagreeable with him?"
+    ],
+    prenup: null,
+    items:[
+      {key:"natural",label:"Organic conflict",text:"A disagreement arose naturally — I did not create it."},
+      {key:"account",label:"He took accountability",text:"He acknowledged his part without reversing it onto me."},
+      {key:"curious",label:"He sought clarity",text:"He asked what I meant rather than assuming or defending."},
+      {key:"repair",label:"He repaired",text:"He initiated repair — he did not disappear or wait for me to fix it."},
+      {key:"mysafety",label:"I felt safe",text:"I felt safe enough to disagree without shrinking or shutting down."},
+      {key:"myground",label:"I held my ground",text:"I stated my position clearly and did not collapse under pressure."},
+      {key:"pattern",label:"Pattern consistent",text:"This conflict response matches his behaviour in weeks 1–6 — not a one-off."},
+    ]
+  },
+  {
+    num:4, label:"Values talk", timing:"Month 13",
+    gate:"Are our foundations the same?",
+    myInput:[
+      "Initiate a real conversation about money — not hypothetically. Ask: 'What does financial legacy mean to you?'",
+      "State clearly that you want a trust fund for your children. Watch his reaction.",
+      "Ask about spirituality: 'How does your faith actually show up in your daily life?' Do not accept vague answers.",
+      "Share your own answers to these questions. Be specific. Do not hedge.",
+      "Ask about children directly: how many, when, and what kind of parent does he intend to be?",
+      "If his answers are misaligned, this is information — not a problem to fix."
+    ],
+    prenup: null,
+    items:[
+      {key:"moneyleg",label:"Legacy mindset",text:"He understands money as legacy and generational wealth — not just income."},
+      {key:"trustfund",label:"Trust fund aligned",text:"He sees trust funds for children as essential, not optional."},
+      {key:"children",label:"Children alignment",text:"We have spoken about children — his answer felt genuine and considered."},
+      {key:"spirit",label:"Lived spirituality",text:"His spirituality is lived in daily choices, not performed for appearance."},
+      {key:"family",label:"Family structure",text:"Our views on family structure and roles are aligned."},
+      {key:"presence",label:"Emotional presence",text:"He speaks about fatherhood with emotional intention, not just provision."},
+      {key:"adventist",label:"Honest with myself",text:"I have been honest with myself about what I actually need spiritually."},
+    ]
+  },
+  {
+    num:5, label:"Consistency", timing:"Month 13+",
+    gate:"Is he the same man across time and context?",
+    myInput:[
+      "Pull up your Phase 1 observations. Compare them honestly to who he is now.",
+      "Note whether his effort has increased, plateaued, or declined since you stopped being new.",
+      "Watch how he shows up when you are stressed, unwell, or unavailable — not just when you are thriving.",
+      "Notice whether he makes space for your ambition or competes with it.",
+      "Ask yourself: do I feel more free or more managed in this relationship?",
+      "You do not need to say anything yet — just observe and document."
+    ],
+    prenup: null,
+    items:[
+      {key:"sameperson",label:"Same man",text:"He is the same person in month 13 as he was in week 1."},
+      {key:"effortup",label:"Effort sustained",text:"His effort has maintained or grown — it has not declined now that I am 'secured.'"},
+      {key:"hardsame",label:"Present in hardship",text:"He has shown up during a hard moment for me — not just the good ones."},
+      {key:"dooropen",label:"Opens my doors",text:"He actively supports my ventures without needing mine to support his."},
+      {key:"freedom",label:"I feel free",text:"I feel more free, more myself in this relationship — not less."},
+      {key:"wordsact",label:"Words = actions",text:"What he says and what he does are the same thing, consistently."},
+    ]
+  },
+  {
+    num:6, label:"Blueprint", timing:"Month 13+",
+    gate:"Can he build with me — specifically, not hypothetically?",
+    myInput:[
+      "Request to see his financial records and business documentation. This is not rude — it is due diligence.",
+      "Bring your own financial picture to the table. Full transparency, both ways.",
+      "Discuss location: where will you live, and what does home look like for both of you?",
+      "Discuss conflict resolution: what is the agreed approach when things get hard?",
+      "Raise the prenuptial agreement directly. State it clearly: 'I want a prenup. It protects both of us.'",
+      "If he reacts with resistance, that is information. A secure man who loves you will understand.",
+      "Do not soften this conversation. This is the blueprint — it must be specific."
+    ],
+    prenup:{
+      title:"Prenuptial agreement — what to establish",
+      items:[
+        "Individual assets owned before marriage remain separate property.",
+        "Trust funds for children are ring-fenced — not marital assets.",
+        "Business ownership and intellectual property clearly delineated.",
+        "Income earned during marriage — agree on split or community property terms.",
+        "Debt liability: each party responsible for debt brought into the marriage.",
+        "Spousal support terms if applicable — duration and conditions.",
+        "Process for financial decisions above an agreed threshold.",
+        "Review clause: prenup reviewed every 5–7 years as life changes.",
+        "Both parties must have independent legal counsel. Non-negotiable."
+      ]
+    },
+    items:[
+      {key:"finances",label:"Finances discussed",text:"We have discussed finances specifically — income, assets, liabilities, savings."},
+      {key:"records",label:"Records seen",text:"I have seen his business and financial records. Not just heard about them."},
+      {key:"location",label:"Location aligned",text:"We are aligned on where we will live — not just broadly, specifically."},
+      {key:"conflictstyle",label:"Conflict approach",text:"We have agreed on how we handle conflict as a unit."},
+      {key:"parenting",label:"Parenting aligned",text:"We have talked through parenting philosophy in real depth."},
+      {key:"inlaws",label:"Boundaries clear",text:"Family and in-law boundaries have been discussed and agreed."},
+      {key:"prenupraised",label:"Prenup raised",text:"I raised the prenup directly and clearly. His response was noted."},
+      {key:"prenupagree",label:"Prenup agreed",text:"He agreed to a prenuptial agreement without resistance."},
+      {key:"builder",label:"He can build",text:"He can build with me — evident in how he moves, not just what he says."},
+    ]
+  },
+  {
+    num:7, label:"Engagement", timing:"When ready",
+    gate:"Did he ask my parents before he asked me?",
+    myInput:[
+      "Do not drop hints about a proposal timeline. Do not manufacture urgency.",
+      "Trust that a man who is ready will move — without being pushed.",
+      "If he asks to meet your parents in the context of a future together, receive it fully.",
+      "When he proposes, give yourself permission to feel it — you earned this by being patient.",
+      "Before accepting: sit with whether you feel peace, not just excitement.",
+      "Review your Phase 1–6 notes before saying yes. Let the data and your gut speak together."
+    ],
+    prenup:{
+      title:"Prenup — before you say yes",
+      items:[
+        "Confirm prenup conversation has happened and both parties are committed to it.",
+        "Agree on timeline: prenup signed minimum 3 months before wedding date.",
+        "Both parties have retained separate, independent legal counsel.",
+        "No signing under emotional pressure or close to the wedding date.",
+        "If he withdraws agreement at this stage — sit with that seriously before proceeding."
+      ]
+    },
+    items:[
+      {key:"parents",label:"He asked my parents",text:"He asked to meet my parents in the context of a serious future — before proposing."},
+      {key:"peace",label:"I feel peace",text:"My dominant feeling is peace — not anxiety, urgency, or relief."},
+      {key:"datacheck",label:"Data reviewed",text:"I reviewed my Phase 1–6 observations before saying yes."},
+      {key:"proposal",label:"He proposed",text:"He proposed. I said yes with a clear and settled heart."},
+      {key:"prenupcommit",label:"Prenup committed",text:"Both of us are committed to signing the prenup before the wedding."},
+      {key:"counsel",label:"Separate lawyers",text:"We have both retained independent legal counsel for the prenup."},
+    ]
+  },
+  {
+    num:8, label:"Marriage", timing:"Ongoing",
+    gate:"Is consistency sustained — not just before the wedding?",
+    myInput:[
+      "Keep choosing yourself inside the marriage. Your identity does not dissolve when you become a wife.",
+      "Revisit your values conversation annually — people grow and so should the agreement.",
+      "Review and update the prenup every 5–7 years with independent counsel.",
+      "Build the trust fund structure before or shortly after having children — not someday.",
+      "Name the moments when you feel managed, not seen — and raise them early, not when they have compounded.",
+      "Protect your ventures, your friendships, your spiritual practice. These are not threats to the marriage."
+    ],
+    prenup:{
+      title:"Post-marriage legal & financial checklist",
+      items:[
+        "Trust fund established and funded — structure and beneficiary designations in place.",
+        "Wills and estate plans updated to reflect marriage and children.",
+        "Life insurance policies reviewed and updated.",
+        "Prenup stored safely with both parties' lawyers. Know where your copy is.",
+        "Financial review scheduled annually — together, with full transparency.",
+        "Prenup reviewed and updated at agreed intervals (every 5–7 years)."
+      ]
+    },
+    items:[
+      {key:"postwed",label:"Same man",text:"He is the same man after the wedding as before it."},
+      {key:"trustplan",label:"Trust fund built",text:"The trust fund for our children is established and being funded."},
+      {key:"wills",label:"Legal docs done",text:"Wills, estate plans, and insurance are updated and in place."},
+      {key:"prenupstored",label:"Prenup secured",text:"The signed prenup is stored safely with both parties' independent lawyers."},
+      {key:"innerwork",label:"Inner work ongoing",text:"We are both actively doing the emotional work to be present, safe parents."},
+      {key:"mywhole",label:"I remain whole",text:"I am still fully myself inside this marriage — my identity, ventures, and voice are intact."},
+      {key:"team",label:"We are a team",text:"We move as a team — decisions made together, not one managing the other."},
+    ]
+  }
+];
+
+const CYCLE=["none","yes","partial","no"];
+const ICONS={none:"",yes:"✓",partial:"~",no:"✗"};
+const LABELS={none:"not yet",yes:"yes",partial:"partially",no:"no"};
+const STATE_CLS={none:"state-none",yes:"state-yes",partial:"state-partial",no:"state-red"};
+
+let S={activePhase:1,tab:{},checks:{},notes:{},log:[]};
+try{const d=localStorage.getItem("rbp3");if(d)S=JSON.parse(d);}catch(e){}
+function save(){try{localStorage.setItem("rbp3",JSON.stringify(S));}catch(e){}}
+
+function score(n){
+  const ph=PHASES[n-1],tot=ph.items.length;
+  const yes=ph.items.filter(i=>S.checks[`${n}_${i.key}`]==="yes").length;
+  const par=ph.items.filter(i=>S.checks[`${n}_${i.key}`]==="partial").length;
+  return{yes,par,tot,pct:tot?Math.round((yes+par*.5)/tot*100):0};
+}
+function totalPct(){
+  let t=0,y=0,p=0;
+  PHASES.forEach(ph=>ph.items.forEach(it=>{t++;const v=S.checks[`${ph.num}_${it.key}`]||"none";if(v==="yes")y++;if(v==="partial")p++;}));
+  return t?Math.round((y+p*.5)/t*100):0;
+}
+function phClass(n){
+  if(n===S.activePhase)return"active";
+  const sc=score(n);
+  if(sc.pct>=80||n<S.activePhase)return"done";
+  return"future";
+}
+
+function cycleCheck(ph,key){
+  const k=`${ph}_${key}`,cur=S.checks[k]||"none",idx=CYCLE.indexOf(cur);
+  S.checks[k]=CYCLE[(idx+1)%CYCLE.length];
+  save();renderAll();
+}
+function setTab(ph,tab){S.tab[ph]=tab;save();renderPhase();}
+function saveNote(ph,type){const el=document.getElementById("pn");if(el){S.notes[`${ph}_${type}`]=el.value;save();}}
+
+function renderTimeline(){
+  const tl=document.getElementById("timeline");
+  tl.innerHTML="";
+  PHASES.forEach(ph=>{
+    const cls=phClass(ph.num),sc=score(ph.num),isPre=ph.num>=6;
+    const d=document.createElement("div");
+    d.className="tl-seg "+cls+(isPre?" prenup-phase":"");
+    const pctLabel=sc.pct>0?sc.pct+"%" : "\u00a0";
+    d.innerHTML="<span class='tl-num'>"+ph.num+"</span><span class='tl-name'>"+ph.label+"</span><span class='tl-pct'>"+pctLabel+"</span><div class='tl-fill-track'><div class='tl-fill-bar' style='width:"+sc.pct+"%'></div></div>";
+    d.onclick=function(){S.activePhase=ph.num;save();renderAll();};
+    tl.appendChild(d);
+  });
+}
+
+function renderStats(){
+  const done=PHASES.filter(ph=>score(ph.num).pct>=80).length;
+  document.getElementById("progressFill").style.width=Math.round(done/8*100)+"%";
+  document.getElementById("progressTxt").textContent=`${done} / 8 phases`;
+  document.getElementById("statPhase").textContent=`Ph ${S.activePhase}`;
+  document.getElementById("statPct").textContent=totalPct()+"%";
+  document.getElementById("statGreen").textContent=S.log.filter(l=>l.flag==="green").length;
+  document.getElementById("statRed").textContent=S.log.filter(l=>l.flag==="red").length;
+}
+
+function renderPhase(){
+  const ph=PHASES[S.activePhase-1],sc=score(ph.num);
+  const tab=S.tab[ph.num]||"input";
+  const isPre=ph.num>=6;
+
+  let tabsHtml=`<div class="phase-tabs">
+    <button class="ptab${tab==="input"?" active":""}" onclick="setTab(${ph.num},'input')">My inputs</button>
+    <button class="ptab${tab==="check"?" active":""}" onclick="setTab(${ph.num},'check')">Checklist</button>
+    ${ph.prenup?`<button class="ptab${tab==="prenup"?" active":""}" onclick="setTab(${ph.num},'prenup')">Prenup</button>`:""}
+    <button class="ptab${tab==="notes"?" active":""}" onclick="setTab(${ph.num},'notes')">Notes</button>
+  </div>`;
+
+  let body="";
+
+  if(tab==="input"){
+    body=`<div class="my-input-box">
+      <div class="mi-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        What is required from me in this phase
+      </div>
+      ${ph.myInput.map(t=>`<div class="mi-item"><div class="mi-dot"></div><div class="mi-text">${t}</div></div>`).join("")}
+    </div>`;
+  }
+
+  if(tab==="check"){
+    body=`<div class="check-title">Tap the circle to cycle: yes → partial → no → not yet</div>
+    ${ph.items.map(it=>{
+      const k=`${ph.num}_${it.key}`,v=S.checks[k]||"none";
+      return`<div class="check-item">
+        <button class="check-btn ${v!=="none"?v:""}" onclick="cycleCheck(${ph.num},'${it.key}')" aria-label="Toggle ${it.label}">${ICONS[v]}</button>
+        <div class="check-content">
+          <span class="check-label">${it.text}</span>
+          <div class="check-meta">
+            <span class="check-tag">${it.label}</span>
+            <span class="check-state ${STATE_CLS[v]}">${LABELS[v]}</span>
+          </div>
+        </div>
+      </div>`;
+    }).join("")}`;
+  }
+
+  if(tab==="prenup"&&ph.prenup){
+    body=`<div class="prenup-box">
+      <div class="prenup-title">${ph.prenup.title}</div>
+      ${ph.prenup.items.map(pi=>`<div class="prenup-item"><span class="prenup-arrow">→</span>${pi}</div>`).join("")}
+    </div>
+    <div class="prenup-note-wrap">
+      <div class="notes-lbl">My prenup notes — lawyer, dates, outstanding items</div>
+      <textarea id="pn" placeholder="e.g. Booked consultation with [lawyer] for [date]..." onchange="saveNote(${ph.num},'prenup')">${S.notes[`${ph.num}_prenup`]||""}</textarea>
+    </div>`;
+  }
+
+  if(tab==="notes"){
+    body=`<div class="notes-lbl">Phase notes — what I observed, how I felt, what to remember</div>
+    <textarea id="pn" placeholder="Write freely here..." onchange="saveNote(${ph.num},'main')" style="min-height:130px">${S.notes[`${ph.num}_main`]||""}</textarea>`;
+  }
+
+  document.getElementById("phaseCard").innerHTML=`
+    <div class="phase-card-header">
+      <div class="phase-num-badge${isPre?" prenup-badge":""}">${ph.num}</div>
+      <div class="phase-title-block">
+        <div class="phase-title">Phase ${ph.num} — ${ph.label}</div>
+        <div class="phase-gate">"${ph.gate}"</div>
+        <div class="phase-timing">${ph.timing}</div>
+      </div>
+      <div class="score-circle">
+        <span class="score-pct">${sc.pct}%</span>
+        <span class="score-sub">${sc.yes}/${sc.tot}</span>
+      </div>
+    </div>
+    ${tabsHtml}
+    <div class="phase-body">${body}</div>`;
+}
+
+function renderLog(){
+  const el=document.getElementById("logList");
+  if(!S.log.length){el.innerHTML=`<p class="log-empty">No observations yet — add your first one above.</p>`;return;}
+  el.innerHTML=S.log.slice().reverse().map((e,i)=>{
+    const ri=S.log.length-1-i;
+    const fcls=e.flag==="green"?"flag-green":e.flag==="red"?"flag-red":"flag-neutral";
+    const flbl=e.flag==="green"?"green flag":e.flag==="red"?"red flag":"neutral";
+    return`<div class="log-entry">
+      <span class="flag-pill ${fcls}">${flbl}</span>
+      <span class="log-phase-tag">Phase ${e.phase}</span>
+      <span class="log-text">${e.text}</span>
+      <span class="log-del" onclick="delLog(${ri})" aria-label="Delete">✕</span>
+    </div>`;
+  }).join("");
+}
+
+function addLog(){
+  const inp=document.getElementById("logInput"),flag=document.getElementById("logFlag").value,text=inp.value.trim();
+  if(!text)return;
+  S.log.push({text,flag,phase:S.activePhase,date:new Date().toLocaleDateString()});
+  inp.value="";save();renderAll();
+}
+
+function delLog(i){S.log.splice(i,1);save();renderAll();}
+
+function renderAll(){renderTimeline();renderStats();renderPhase();renderLog();}
+renderAll();
+
+document.getElementById("logInput").addEventListener("keydown",e=>{if(e.key==="Enter")addLog();});
+</script>
+</body>
+</html>
