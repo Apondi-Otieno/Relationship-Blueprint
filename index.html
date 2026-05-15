@@ -1764,8 +1764,8 @@ function renderTimeline(){
 function renderStats(){
   const unlocked=PHASES.filter(ph=>isUnlocked(ph.num)).length;
   const done=PHASES.filter(ph=>isUnlocked(ph.num)&&score(ph.num).pct>=80).length;
-  document.getElementById("progressFill").style.width=Math.round(done/8*100)+"%";
-  document.getElementById("progressTxt").textContent=done+" / "+unlocked+" unlocked phases";
+  document.getElementById("progressFill").style.width=Math.round(unlocked/8*100)+"%";
+  document.getElementById("progressTxt").textContent=unlocked+" / 8 phases unlocked"+(done>0?" · "+done+" complete":"");
   document.getElementById("statPhase").textContent=`Ph ${S.activePhase}`;
   document.getElementById("statPct").textContent=totalPct()+"%";
   document.getElementById("statGreen").textContent=S.log.filter(l=>l.flag==="green").length;
@@ -2104,13 +2104,18 @@ function closeJournal(){
   document.getElementById('journalBackdrop').classList.remove('open');
 }
 
-function savePrompt(key){
-  const el = document.getElementById('jp_'+key);
-  if(!el) return;
+function savePrompt(key, value){
   if(!S.journal) S.journal = {prompts:{}, entries:[]};
   if(!S.journal.prompts) S.journal.prompts = {};
-  S.journal.prompts[key] = el.value;
+  S.journal.prompts[key] = value;
   save();
+  // show subtle saved indicator
+  const indicator = document.getElementById('saved_' + key);
+  if(indicator){
+    indicator.style.opacity = '1';
+    clearTimeout(indicator._t);
+    indicator._t = setTimeout(function(){ indicator.style.opacity = '0'; }, 1500);
+  }
 }
 
 function addDiaryEntry(){
@@ -2173,8 +2178,14 @@ function renderJournal(){
     ta.id = 'jp_' + p.key;
     ta.placeholder = 'Write freely...';
     ta.value = prompts[p.key] || '';
-    ta.addEventListener('change', function(){ savePrompt(p.key); });
+    ta.addEventListener('input', function(){ savePrompt(p.key, ta.value); });
     wrap.appendChild(ta);
+
+    const saved = document.createElement('span');
+    saved.id = 'saved_' + p.key;
+    saved.textContent = 'saved ♥';
+    saved.style.cssText = 'font-size:11px;color:var(--rose);opacity:0;transition:opacity .3s;display:block;text-align:right;margin-top:3px;font-style:italic;';
+    wrap.appendChild(saved);
 
     el.appendChild(wrap);
   });
