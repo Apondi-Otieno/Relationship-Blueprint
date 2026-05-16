@@ -967,7 +967,7 @@ const NON_NEGOTIABLES = [
 ];
 
 const TERMINATE_THRESHOLD = 3;
-const PHASE_UNLOCK_DAYS = {1:0,2:28,3:180,4:390,5:390,6:390,7:-1,8:-1};
+const PHASE_UNLOCK_DAYS = {1:0,2:28,3:180,4:390,5:390,6:390,7:730,8:-1};
 const JOURNAL_PROMPTS = [
   {key:"becoming",q:"Who am I becoming through this process?"},
   {key:"showed",q:"Where did I show up fully for myself this week?"},
@@ -1012,12 +1012,19 @@ function friendlyElapsed(days){
   return years+"y "+remM+"m in";
 }
 function isUnlocked(n){
+  // Phase 7 (engagement) — time only, no override, blocked if terminate order active
+  if(n===7){
+    var days7=getDaysIn();
+    if(days7===null) return false;
+    return days7>=730&&getNNFails().length<TERMINATE_THRESHOLD;
+  }
+  // Phase 8 — unlocks when phase 7 >= 80%
+  if(n===8) return score(7).pct>=80;
+  // All other phases — time-based with optional override
   if(S.overrides&&S.overrides[n]) return true;
   var days=getDaysIn();
   if(days===null) return n===1;
-  var t=PHASE_UNLOCK_DAYS[n];
-  if(t===-1){if(n===7) return score(6).pct>=80&&getNNFails().length<TERMINATE_THRESHOLD;if(n===8) return score(7).pct>=80;return false;}
-  return days>=t;
+  return days>=PHASE_UNLOCK_DAYS[n];
 }
 function daysUntilUnlock(n){
   var days=getDaysIn(),t=PHASE_UNLOCK_DAYS[n];
@@ -1147,7 +1154,7 @@ function renderBanner(){
 function renderPhase(){
   var ph=PHASES[S.activePhase-1],sc=score(ph.num);
   if(!isUnlocked(ph.num)){
-    el("phaseCard").innerHTML="<div class='locked-overlay'><svg width='44' height='40' viewBox='0 0 44 40' fill='var(--rose)' opacity='.3'><path d='M22 38C22 38 2 25 2 13 2 6 8 2 14 2 18 2 21 4 22 7 24 4 27 2 31 2 37 2 43 6 43 13 43 25 22 38 22 38Z'/></svg><div class='locked-title'>Phase "+ph.num+" \u2014 "+ph.label+"</div><div class='locked-sub'>This phase is waiting for you. Your blueprint is protecting your pace.</div><div class='locked-countdown'>"+unlockLabel(ph.num)+"</div><br><button class='btn-unlock' onclick='overrideUnlock("+ph.num+")'>\uD83D\uDD13 Unlock early (override)</button></div>";
+    el("phaseCard").innerHTML="<div class='locked-overlay'><svg width='44' height='40' viewBox='0 0 44 40' fill='var(--rose)' opacity='.3'><path d='M22 38C22 38 2 25 2 13 2 6 8 2 14 2 18 2 21 4 22 7 24 4 27 2 31 2 37 2 43 6 43 13 43 25 22 38 22 38Z'/></svg><div class='locked-title'>Phase "+ph.num+" \u2014 "+ph.label+"</div><div class='locked-sub'>"+(ph.num===7?"Engagement unlocks after 2 years together — and only if the data is clean. There is no shortcut here.":ph.num===8?"Marriage unlocks once the engagement phase is complete.":"This phase is waiting for you. Your blueprint is protecting your pace.")+"</div><div class='locked-countdown'>"+unlockLabel(ph.num)+"</div></div>";
     return;
   }
   var tab=S.tab[ph.num]||"input",isPre=ph.num>=6;
