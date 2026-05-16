@@ -310,13 +310,76 @@ textarea::placeholder{color:var(--mist);font-style:italic}
 .diary-del:hover{color:var(--red)}
 .diary-empty{font-family:var(--serif);font-size:16px;font-style:italic;color:var(--mist);text-align:center;padding:16px 0}
 
-@media(max-width:600px){
-  .stats-bar{grid-template-columns:repeat(2,1fr)}
-  .timeline{grid-template-columns:repeat(4,1fr)}
-  .him-fields,.selfcare-areas{grid-template-columns:1fr}
+@media(max-width:700px){
+  /* layout */
+  .sidebar{display:none!important}
+  .page{padding:0 12px 60px;max-width:100%}
+  .layout{display:block}
+
+  /* hero */
+  .hero{padding:28px 0 20px}
+  .hero h1{font-size:32px}
+  .hero-sub{font-size:15px}
+
+  /* stats */
+  .stats-bar{grid-template-columns:repeat(2,1fr);gap:8px}
+
+  /* timeline */
+  .timeline{grid-template-columns:repeat(4,1fr);gap:3px;padding:10px 8px}
+  .tl-seg .tl-name{font-size:8px}
+  .tl-seg .tl-num{font-size:13px}
+  .tl-seg .tl-pct{font-size:8px}
+
+  /* cards */
+  .phase-card,.log-card,.checkin-card,.flag-ratio-card,.him-card,
+  .selfcare-card,.save-card,.rlog-card,.mantra{border-radius:14px;padding:16px 14px}
+  .phase-card-header{flex-wrap:wrap;gap:10px}
+  .phase-body{padding:14px 14px}
+  .phase-tabs .ptab{font-size:11px;padding:8px 4px}
+
+  /* him card */
+  .him-fields{grid-template-columns:1fr}
   .him-field.full{grid-column:1}
-  .phase-body{padding:16px 16px}
-  .log-card,.checkin-card{padding:18px 16px}
+  .him-card-header{flex-wrap:wrap}
+
+  /* selfcare */
+  .selfcare-areas{grid-template-columns:1fr}
+
+  /* rlog */
+  .rlog-form-grid{grid-template-columns:1fr}
+  .rlog-form-field.full{grid-column:1}
+  .rlog-entry-grid{grid-template-columns:1fr}
+
+  /* checkin */
+  .heart-rating{gap:6px}
+  .heart-btn{width:36px;height:36px;font-size:16px}
+
+  /* save card */
+  .save-btns{flex-wrap:wrap;gap:6px}
+  .save-left{min-width:0}
+
+  /* flag ratio */
+  .flag-phase-row{gap:6px}
+  .flag-phase-label{min-width:52px;font-size:11px}
+  .flag-counts{font-size:11px}
+
+  /* journal panel */
+  .journal-panel{width:100vw}
+
+  /* report modal */
+  .report-modal{width:100vw;height:100vh;max-height:100vh;border-radius:0}
+  .report-stat-grid{grid-template-columns:repeat(2,1fr)}
+
+  /* endit modal */
+  .endit-modal{width:100%;border-radius:16px}
+
+  /* log */
+  .log-add-controls{flex-direction:column;align-items:flex-start;gap:8px}
+  .log-flag-toggle{flex-wrap:wrap}
+
+  /* startdate card */
+  .startdate-card{flex-direction:column;gap:10px}
+  .startdate-input-wrap{flex-wrap:wrap}
 }
 @media print{
   .sidebar,.journal-trigger,.journal-panel,.journal-backdrop,.save-card,.startdate-card,.btn,.print-btn{display:none!important}
@@ -953,7 +1016,7 @@ function isUnlocked(n){
   var days=getDaysIn();
   if(days===null) return n===1;
   var t=PHASE_UNLOCK_DAYS[n];
-  if(t===-1){if(n===7) return score(6).pct>=80;if(n===8) return score(7).pct>=80;return false;}
+  if(t===-1){if(n===7) return score(6).pct>=80&&getNNFails().length<TERMINATE_THRESHOLD;if(n===8) return score(7).pct>=80;return false;}
   return days>=t;
 }
 function daysUntilUnlock(n){
@@ -1366,10 +1429,58 @@ function restoreFile(e){
   var file=e.target.files[0];if(!file)return;
   var reader=new FileReader();
   reader.onload=function(ev){
-    try{S=JSON.parse(ev.target.result);save();loadHim();loadSelfCare();renderAll();var msg=el("saveMsg");if(msg){msg.textContent="Restored! Your progress is back. \u2665";setTimeout(function(){msg.textContent="";},4000);}}
-    catch(err){var msg=el("saveMsg");if(msg){msg.style.color="var(--red)";msg.textContent="Could not read that file.";setTimeout(function(){msg.textContent="";msg.style.color="var(--green)";},5000);}}
+    var msg=el("saveMsg");
+    try{
+      var raw=ev.target.result.trim();
+      var parsed=JSON.parse(raw);
+      // Safe defaults for every field the app uses
+      S={
+        activePhase: parsed.activePhase||1,
+        tab:         parsed.tab||{},
+        checks:      parsed.checks||{},
+        notes:       parsed.notes||{},
+        log:         parsed.log||[],
+        checkins:    parsed.checkins||[],
+        him:         parsed.him||{},
+        selfcare:    parsed.selfcare||{},
+        selfcareHistory: parsed.selfcareHistory||[],
+        rlog:        parsed.rlog||[],
+        moonLog:     parsed.moonLog||[],
+        overrides:   parsed.overrides||{},
+        startDate:   parsed.startDate||null
+      };
+      // journal — handle both old flat format and new {prompts,entries} format
+      if(parsed.journal){
+        if(parsed.journal.prompts||parsed.journal.entries){
+          S.journal={prompts:parsed.journal.prompts||{},entries:parsed.journal.entries||[]};
+        } else {
+          S.journal={prompts:parsed.journal,entries:[]};
+        }
+      } else {
+        S.journal={prompts:{},entries:[]};
+      }
+      save();
+      // render everything safely
+      try{loadHim();}catch(e2){console.warn('loadHim:',e2);}
+      try{loadSelfCare();}catch(e2){console.warn('loadSelfCare:',e2);}
+      try{renderAll();}catch(e2){console.warn('renderAll:',e2);}
+      if(msg){
+        msg.style.color="var(--green)";
+        msg.textContent="Restored! Your progress is back. ♥";
+        setTimeout(function(){msg.textContent="";},4000);
+      }
+    }
+    catch(err){
+      console.error("Restore error:",err);
+      if(msg){
+        msg.style.color="var(--red)";
+        msg.textContent="Error: "+err.message;
+        setTimeout(function(){msg.textContent="";msg.style.color="var(--green)";},6000);
+      }
+    }
   };
-  reader.readAsText(file);e.target.value="";
+  reader.readAsText(file);
+  e.target.value="";
 }
 
 // ── JOURNAL ───────────────────────────────────────────────────────────────
@@ -1505,16 +1616,19 @@ function renderRlog(){
 
 // ── END IT MODAL ──────────────────────────────────────────────────────────
 function openEndItModal(){
-  // pre-fill name from him profile if available
   var note=el('enditPrefillNote');
   var himName=(S.him&&S.him.name)||'';
-  if(himName&&note){
-    note.textContent='Pre-filling from his profile: '+himName+'. Fill in the rest.';
-    var nameEl=el('enditName');
-    if(nameEl) nameEl.value=himName;
-  } else if(note){
-    note.textContent='Fill in what you know. You can always add more later.';
+  var nameEl=el('enditName');
+  if(nameEl&&himName) nameEl.value=himName;
+  // auto-fill period from start date to today
+  var periodEl=el('enditPeriod');
+  if(periodEl&&S.startDate){
+    var start=new Date(S.startDate);
+    var startStr=start.toLocaleDateString('en-GB',{month:'short',year:'numeric'});
+    var endStr=new Date().toLocaleDateString('en-GB',{month:'short',year:'numeric'});
+    periodEl.value=startStr+' – '+endStr;
   }
+  if(note) note.textContent=himName?'Pre-filled from his profile. Add the honest details below.':'Fill in what you know. You can always add more later.';
   document.getElementById('enditBackdrop').classList.add('open');
 }
 
@@ -1536,21 +1650,38 @@ function confirmEndIt(){
     how:     (el('enditHow')||{}).value||'i-ended',
     date:    new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})
   });
-  // reset current blueprint data for a fresh start
-  S.checks={};S.notes={};S.log=[];S.checkins=[];
-  S.activePhase=1;S.tab={};S.him={};S.selfcare={};
+  // preserve rlog, journal, selfcareHistory across reset
+  var keepRlog=S.rlog||[];
+  var keepJournal=S.journal||{};
+  var keepSCHist=S.selfcareHistory||[];
+  S={activePhase:1,tab:{},checks:{},notes:{},log:[],checkins:[],
+     him:{},selfcare:{},
+     rlog:keepRlog,journal:keepJournal,selfcareHistory:keepSCHist,
+     startDate:S.startDate,overrides:{}};
   save();
   closeEndItModal();
   renderAll();
   loadHim();
   loadSelfCare();
-  // scroll to relationship log
-  var rlog=document.querySelector('.rlog-card');
-  if(rlog) setTimeout(function(){rlog.scrollIntoView({behavior:'smooth',block:'start'});},300);
-  // show confirmation
+  // scroll to relationship log after render settles
   setTimeout(function(){
-    alert('Chapter closed. He has been logged. Your blueprint is reset and ready for the next one. ♥');
-  },500);
+    var rlog=document.querySelector('.rlog-card');
+    if(rlog){
+      rlog.scrollIntoView({behavior:'smooth',block:'start'});
+      // flash the card so she can see it
+      rlog.style.transition='box-shadow .3s';
+      rlog.style.boxShadow='0 0 0 3px var(--rose)';
+      setTimeout(function(){rlog.style.boxShadow='';},2000);
+    }
+  },600);
+  setTimeout(function(){
+    var msg=el('saveMsg');
+    if(msg){
+      msg.style.color='var(--green)';
+      msg.textContent='Chapter closed. He has been logged. Your blueprint is ready for the next one. ♥';
+      setTimeout(function(){msg.textContent='';},5000);
+    }
+  },700);
 }
 
 // ── PATTERN ANALYSIS ─────────────────────────────────────────────────────
@@ -1558,110 +1689,269 @@ function analysePatterns(){
   var log=S.rlog||[];
   if(log.length<2) return;
 
-  var wrap=el('patternsWrap');
-  var statsEl=el('patternStats');
-  var cardsEl=el('patternCards');
+  var wrap=el('patternsWrap'),statsEl=el('patternStats'),cardsEl=el('patternCards');
   if(!wrap||!statsEl||!cardsEl) return;
   wrap.style.display='block';
 
-  // ── Stats row ──────────────────────────────────────────────────────────
   var total=log.length;
   var iEnded=log.filter(function(e){return e.how==='i-ended';}).length;
   var heEnded=log.filter(function(e){return e.how==='he-ended';}).length;
   var mutual=log.filter(function(e){return e.how==='mutual'||e.how==='faded';}).length;
 
   statsEl.innerHTML=
-    "<div class='pattern-stat'><span class='pattern-stat-val'>"+total+"</span><span class='pattern-stat-lbl'>logged</span></div>"+
-    "<div class='pattern-stat'><span class='pattern-stat-val' style='color:var(--deep)'>"+iEnded+"</span><span class='pattern-stat-lbl'>I ended</span></div>"+
-    "<div class='pattern-stat'><span class='pattern-stat-val' style='color:#8b1a1a'>"+heEnded+"</span><span class='pattern-stat-lbl'>He ended</span></div>"+
+    "<div class='pattern-stat'><span class='pattern-stat-val'>"+total+"</span><span class='pattern-stat-lbl'>relationships logged</span></div>"+
+    "<div class='pattern-stat'><span class='pattern-stat-val' style='color:var(--deep)'>"+iEnded+"</span><span class='pattern-stat-lbl'>I ended it</span></div>"+
+    "<div class='pattern-stat'><span class='pattern-stat-val' style='color:#8b1a1a'>"+heEnded+"</span><span class='pattern-stat-lbl'>He ended it</span></div>"+
     "<div class='pattern-stat'><span class='pattern-stat-val' style='color:var(--mist)'>"+mutual+"</span><span class='pattern-stat-lbl'>faded / mutual</span></div>";
 
   var cards='';
 
-  // ── Who tends to end it ────────────────────────────────────────────────
-  if(heEnded>iEnded&&heEnded>1){
-    cards+="<div class='pattern-card warning'><div class='pattern-card-label'>Ending pattern</div>";
-    cards+="<div class='pattern-card-val'>He has ended it "+heEnded+" out of "+total+" times.</div>";
-    cards+="<div class='pattern-card-sub'>This may point to choosing men who are not fully ready, or staying longer than the data warrants.</div></div>";
-  } else if(iEnded>=2){
-    cards+="<div class='pattern-card insight'><div class='pattern-card-label'>Ending pattern</div>";
-    cards+="<div class='pattern-card-val'>You have ended "+iEnded+" out of "+total+" relationships.</div>";
-    cards+="<div class='pattern-card-sub'>You know when something is not right and you act on it. That is discernment, not failure.</div></div>";
+  // ── Helper: theme scanner ──────────────────────────────────────────────
+  var THEMES=[
+    {key:'financial',   label:'financial issues',
+     re:/financ|money|pay|fund|depend|borrow|broke|income|afford|rent|debt/i,
+     suggestion:[
+       'In Phase 1: watch who pays on the first date and how — no hesitation, no jokes.',
+       'Ask directly by month 3: "What does your financial life look like right now?" and listen for specificity.',
+       'Look for evidence — actual revenue, independence from parents — not just talk of ambition.',
+       'Add Phase 1 checklist item: "Is he financially independent?" and do not progress until it is answered.'
+     ]},
+    {key:'emotional',   label:'emotional unavailability',
+     re:/emotion|unavail|distant|avoidant|cold|detach|numb|walls|shut.*down|not.*open/i,
+     suggestion:[
+       'In Phase 2: share something vulnerable early. Watch whether he moves toward you or manages you.',
+       'Notice how he responds when you are having a hard day — does he show up or go quiet?',
+       'Ask him directly: "How do you handle it when someone you care about is struggling?" — listen for the instinct, not the theory.',
+       'Do not confuse consistency with availability. He can be reliable and still be emotionally closed.'
+     ]},
+    {key:'consistency', label:'inconsistency',
+     re:/inconsist|unreliab|flake|cancel|disappear|ghost|hot.*cold|one.*day/i,
+     suggestion:[
+       'Track follow-through on small things in Phase 1 — does he do what he says he will, unprompted?',
+       'Log your observations weekly. Patterns are invisible in the moment but clear in the data over time.',
+       'Do not excuse inconsistency as being busy. Effort is a choice. Watch the pattern, not the excuse.',
+       'By month 5: pull up Phase 1 notes and compare who he is now to who he was then.'
+     ]},
+    {key:'control',     label:'controlling or dismissive behaviour',
+     re:/control|possessiv|jealous|manipulat|gaslight|dismiss|domina|isolat/i,
+     suggestion:[
+       'Notice in Phase 2: does he ask questions or does he tell you what to think about yourself?',
+       'Disagree about something small deliberately. Watch whether he handles it or resists it.',
+       'If he dismisses your context once, log it. If it happens twice, it is not a bad day — it is a pattern.',
+       'Ask yourself: do I feel more free or more managed when I am around him?'
+     ]},
+    {key:'immaturity',  label:'immaturity or unreadiness',
+     re:/immatur|not.*ready|parent|no.*direction|no.*goal|aimless|grow.*up|still.*figur/i,
+     suggestion:[
+       'Phase 1 gate: does he have direction and revenue? If not, he is not ready to build with you.',
+       'Ask: "What are you working toward in the next two years?" Vague answers are answers.',
+       'Financial and emotional independence from his parents should be visible by month 6.',
+       'Do not mother a man into readiness. That is not a partnership — it is a project.'
+     ]},
+    {key:'dishonest',   label:'dishonesty or secrecy',
+     re:/li(e|es|ed)|dishon|secret|hid|cheat|decei|betray|two-fac/i,
+     suggestion:[
+       'Ask to see his financial and business records in Phase 6 — a secure man will not hesitate.',
+       'Watch whether his stories are consistent across time. Inconsistency in detail is a signal.',
+       'In Phase 3: does he own his part in conflict or does he rewrite events? That is the test.',
+       'Trust your gut when something feels off — then write it in the observation log the same day.'
+     ]},
+    {key:'effort',      label:'lack of effort',
+     re:/effort|plan|initiat|pursue|chase|never.*plan|lazy|coast/i,
+     suggestion:[
+       'Do not initiate the first date, the first call, or the exclusivity conversation. Watch what he does.',
+       'By month 5: is he still planning intentional dates or has that quietly become your job?',
+       'A man who wants you will make it obvious. You should not have to wonder.',
+       'Note in the log each time you initiated vs each time he did. The ratio will tell you everything.'
+     ]},
+    {key:'alignment',   label:'values misalignment',
+     re:/value|align|spiritual|faith|famil|children|different.*view|not.*on.*same/i,
+     suggestion:[
+       'Phase 4 conversation: ask about money, children, and spirituality directly — not hypothetically.',
+       'Listen for how he lives his values, not just how he describes them.',
+       'On the Adventist tension specifically: be honest with yourself about what you actually need spiritually.',
+       'Misalignment on legacy, trust funds, or parenting is not a gap you can teach around — decide early.'
+     ]},
+  ];
+
+  function scanThemes(texts){
+    var counts={};
+    var examples={};
+    THEMES.forEach(function(t){counts[t.key]=0;examples[t.key]=[];});
+    texts.forEach(function(text){
+      var tl=text.toLowerCase();
+      THEMES.forEach(function(t){
+        if(t.re.test(tl)){
+          counts[t.key]++;
+          if(examples[t.key].length<2) examples[t.key].push(text.trim());
+        }
+      });
+    });
+    return {counts:counts,examples:examples};
   }
 
   // ── Red flags ignored ──────────────────────────────────────────────────
-  var redflags=log.map(function(e){return (e.redflag||'').toLowerCase().trim();}).filter(Boolean);
-  if(redflags.length>=2){
-    // find common themes
-    var financial=redflags.filter(function(f){return /financ|money|pay|fund|depend|borrow|broke|income|business/i.test(f);}).length;
-    var emotional=redflags.filter(function(f){return /emotion|feelings|distant|avoidant|cold|detach|unavail/i.test(f);}).length;
-    var consistency=redflags.filter(function(f){return /inconsist|inconsist|unreliab|flake|cancel|disappear|ghost/i.test(f);}).length;
-    var control=redflags.filter(function(f){return /control|possessiv|jealous|manag|dismiss|gaslight/i.test(f);}).length;
-
-    var topTheme='', topCount=0;
-    if(financial>topCount){topTheme='financial instability or dependence';topCount=financial;}
-    if(emotional>topCount){topTheme='emotional unavailability';topCount=emotional;}
-    if(consistency>topCount){topTheme='inconsistency and unreliability';topCount=consistency;}
-    if(control>topCount){topTheme='controlling or dismissive behaviour';topCount=control;}
-
-    if(topCount>=2){
-      cards+="<div class='pattern-card warning'><div class='pattern-card-label'>Red flag you keep ignoring</div>";
-      cards+="<div class='pattern-card-val'>"+topCount+" out of "+redflags.length+" entries mention "+topTheme+".</div>";
-      cards+="<div class='pattern-card-sub'>You saw it. You stayed anyway. The blueprint is designed to stop this pattern before it starts.</div></div>";
+  var redFlagTexts=log.map(function(e){return e.redflag||'';}).filter(Boolean);
+  if(redFlagTexts.length>=1){
+    var rfScan=scanThemes(redFlagTexts);
+    var rfTop=THEMES.slice().sort(function(a,b){return rfScan.counts[b.key]-rfScan.counts[a.key];}).filter(function(t){return rfScan.counts[t.key]>0;});
+    if(rfTop.length){
+      cards+="<div class='pattern-card warning'><div class='pattern-card-label'>Red flags you kept ignoring</div>";
+      rfTop.slice(0,3).forEach(function(t){
+        var cnt=rfScan.counts[t.key];
+        cards+="<div style='margin-bottom:10px'>";
+        cards+="<div style='font-size:13px;font-weight:600;color:var(--deep);margin-bottom:4px'>"+t.label+" &mdash; <span style='color:#8b1a1a'>"+cnt+"x</span></div>";
+        rfScan.examples[t.key].forEach(function(ex){
+          cards+="<div style='font-size:12px;color:var(--mist);font-style:italic;padding:3px 0 3px 10px;border-left:2px solid #e8a0b8'>&ldquo;"+ex+"&rdquo;</div>";
+        });
+        cards+="</div>";
+      });
+      if(rfTop[0]&&rfScan.counts[rfTop[0].key]>=2){
+        cards+="<div class='pattern-card-sub' style='margin-top:6px'>You saw <strong>"+rfTop[0].label+"</strong> and stayed. The blueprint is here to catch this earlier next time.</div>";
+      }
+      // suggestions for top theme
+      var rfThemeObj=THEMES.filter(function(t){return t.key===rfTop[0].key;})[0];
+      if(rfThemeObj&&rfThemeObj.suggestion){
+        cards+="<div style='margin-top:12px;padding-top:12px;border-top:1px solid rgba(244,192,209,.3)'>";
+        cards+="<div style='font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mauve);margin-bottom:8px'>What to do differently next time</div>";
+        rfThemeObj.suggestion.forEach(function(s){
+          cards+="<div style='font-size:13px;color:var(--deep);padding:5px 0 5px 12px;border-left:2px solid var(--rose);margin-bottom:6px;line-height:1.5;font-weight:500'>"+s+"</div>";
+        });
+        cards+="</div>";
+      }
+      cards+="</div>";
     } else {
-      // just list the themes mentioned
-      cards+="<div class='pattern-card'><div class='pattern-card-label'>Red flags you noted</div>";
-      cards+="<div class='pattern-card-val'>No single dominant pattern yet.</div>";
-      cards+="<div class='pattern-card-sub'>Keep adding entries — patterns become clearer with more data. Common themes so far: "+redflags.slice(0,3).join('; ')+".</div></div>";
+      // no theme matched — show raw entries
+      cards+="<div class='pattern-card warning'><div class='pattern-card-label'>Red flags you noted</div>";
+      redFlagTexts.forEach(function(rf){
+        cards+="<div style='font-size:13px;color:var(--stone);padding:5px 0 5px 10px;border-left:2px solid #e8a0b8;margin-bottom:4px;font-style:italic'>&ldquo;"+rf+"&rdquo;</div>";
+      });
+      cards+="</div>";
     }
   }
 
-  // ── What you admire ────────────────────────────────────────────────────
-  var admired=log.map(function(e){return (e.admired||'').toLowerCase();}).filter(Boolean);
-  if(admired.length>=2){
-    var business=admired.filter(function(a){return /business|entrepreneur|build|venture|revenue|ambit/i.test(a);}).length;
-    var charm=admired.filter(function(a){return /charm|charisma|confiden|funny|humor|wit|social/i.test(a);}).length;
-    var intell=admired.filter(function(a){return /intellig|smart|wise|knowledge|read|think|curious/i.test(a);}).length;
-    var spiritual=admired.filter(function(a){return /faith|spirit|god|church|adventist|pray|believ/i.test(a);}).length;
-
-    var admireTheme='', admireCount=0;
-    if(business>admireCount){admireTheme='business ambition and drive';admireCount=business;}
-    if(charm>admireCount){admireTheme='charm and social confidence';admireCount=charm;}
-    if(intell>admireCount){admireTheme='intelligence and curiosity';admireCount=intell;}
-    if(spiritual>admireCount){admireTheme='spirituality and faith';admireCount=spiritual;}
-
-    if(admireCount>=2){
-      cards+="<div class='pattern-card insight'><div class='pattern-card-label'>What consistently draws you in</div>";
-      cards+="<div class='pattern-card-val'>"+admireCount+" out of "+admired.length+" entries mention "+admireTheme+".</div>";
-      cards+="<div class='pattern-card-sub'>This is a real preference, not a phase. Your blueprint is built around it for a reason.</div></div>";
+  // ── Why it ended ──────────────────────────────────────────────────────
+  var endedTexts=log.map(function(e){return e.ended||'';}).filter(Boolean);
+  if(endedTexts.length>=1){
+    var endScan=scanThemes(endedTexts);
+    var endTop=THEMES.slice().sort(function(a,b){return endScan.counts[b.key]-endScan.counts[a.key];}).filter(function(t){return endScan.counts[t.key]>0;});
+    if(endTop.length){
+      cards+="<div class='pattern-card warning'><div class='pattern-card-label'>Why things end for you</div>";
+      endTop.slice(0,3).forEach(function(t){
+        var cnt=endScan.counts[t.key];
+        cards+="<div style='margin-bottom:10px'>";
+        cards+="<div style='font-size:13px;font-weight:600;color:var(--deep);margin-bottom:4px'>"+t.label+" &mdash; <span style='color:#8b1a1a'>"+cnt+"x</span></div>";
+        endScan.examples[t.key].forEach(function(ex){
+          cards+="<div style='font-size:12px;color:var(--mist);font-style:italic;padding:3px 0 3px 10px;border-left:2px solid var(--petal)'>&ldquo;"+ex+"&rdquo;</div>";
+        });
+        var endThemeObj=THEMES.filter(function(th){return th.key===t.key;})[0];
+        if(endThemeObj&&endThemeObj.suggestion&&cnt>=1){
+          cards+="<div style='margin-top:8px;padding-top:8px;border-top:1px solid rgba(244,192,209,.2)'>";
+          cards+="<div style='font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mauve);margin-bottom:6px'>Catch it earlier next time</div>";
+          endThemeObj.suggestion.slice(0,2).forEach(function(s){
+            cards+="<div style='font-size:13px;color:var(--deep);padding:4px 0 4px 12px;border-left:2px solid var(--rose);margin-bottom:5px;line-height:1.5;font-weight:500'>"+s+"</div>";
+          });
+          cards+="</div>";
+        }
+        cards+="</div>";
+      });
+      cards+="</div>";
     }
   }
 
-  // ── What you learned ──────────────────────────────────────────────────
-  var learned=log.map(function(e){return e.learned||'';}).filter(Boolean);
-  if(learned.length>=2){
-    cards+="<div class='pattern-card insight'><div class='pattern-card-label'>Your own words &mdash; what you learned</div>";
-    cards+="<div class='pattern-card-val' style='font-size:13px'>";
-    learned.slice(0,3).forEach(function(l,i){
-      cards+="<div style='padding:6px 0;border-bottom:1px solid rgba(0,0,0,.06);font-style:italic'>&ldquo;"+l.trim()+"&rdquo;</div>";
+  // ── Ending pattern ────────────────────────────────────────────────────
+  if(heEnded>iEnded&&heEnded>=2){
+    cards+="<div class='pattern-card warning'><div class='pattern-card-label'>Ending pattern</div>";
+    cards+="<div class='pattern-card-val'>He has ended it "+heEnded+" out of "+total+" times.</div>";
+    cards+="<div class='pattern-card-sub'>This may point to choosing men who are not fully ready, or staying longer than the data warrants. The blueprint's phase-by-phase observations are designed to surface this earlier.</div></div>";
+  } else if(iEnded>=2){
+    cards+="<div class='pattern-card insight'><div class='pattern-card-label'>Ending pattern</div>";
+    cards+="<div class='pattern-card-val'>You ended "+iEnded+" out of "+total+" relationships.</div>";
+    cards+="<div class='pattern-card-sub'>You know when something is not right and you act on it. That is discernment, not failure.</div></div>";
+  }
+
+  // ── What draws you in ─────────────────────────────────────────────────
+  var admiredTexts=log.map(function(e){return e.admired||'';}).filter(Boolean);
+  if(admiredTexts.length>=1){
+    var admScan=scanThemes(admiredTexts);
+    // add attraction-specific themes
+    var attrThemes=[
+      {key:'business2',label:'business ambition',re:/business|entrepreneur|build|venture|revenue|ambit|success|drive/i},
+      {key:'charm2',   label:'charm and confidence',re:/charm|charisma|confiden|funny|humor|wit|social|magnetic/i},
+      {key:'intel2',   label:'intelligence',re:/intellig|smart|wise|knowledge|read|think|curious|articulate/i},
+      {key:'spirit2',  label:'spirituality or faith',re:/faith|spirit|god|church|adventist|pray|believ|worship/i},
+      {key:'looks2',   label:'physical attraction',re:/handsome|attractive|looks|tall|physical|appearance|beautiful/i},
+      {key:'secure2',  label:'emotional security',re:/secure|stable|calm|safe|grounded|mature|steady|consistent/i},
+    ];
+    var attrCounts={};
+    var attrEx={};
+    attrThemes.forEach(function(t){attrCounts[t.key]=0;attrEx[t.key]=[];});
+    admiredTexts.forEach(function(text){
+      attrThemes.forEach(function(t){
+        if(t.re.test(text)){
+          attrCounts[t.key]++;
+          if(attrEx[t.key].length<1) attrEx[t.key].push(text.trim());
+        }
+      });
     });
-    cards+="</div></div>";
+    var attrTop=attrThemes.filter(function(t){return attrCounts[t.key]>0;}).sort(function(a,b){return attrCounts[b.key]-attrCounts[a.key];});
+    if(attrTop.length){
+      cards+="<div class='pattern-card insight'><div class='pattern-card-label'>What consistently draws you in</div>";
+      attrTop.slice(0,3).forEach(function(t){
+        cards+="<div style='margin-bottom:8px'>";
+        cards+="<div style='font-size:13px;font-weight:600;color:#27500a;margin-bottom:3px'>"+t.label+" &mdash; "+attrCounts[t.key]+"x</div>";
+        attrEx[t.key].forEach(function(ex){
+          cards+="<div style='font-size:12px;color:var(--mist);font-style:italic;padding:3px 0 3px 10px;border-left:2px solid #a8d08a'>&ldquo;"+ex+"&rdquo;</div>";
+        });
+        cards+="</div>";
+      });
+      cards+="<div class='pattern-card-sub' style='margin-top:6px'>These are real preferences. Your blueprint is built around them.</div>";
+      cards+="</div>";
+    } else {
+      // no theme matched — show raw
+      cards+="<div class='pattern-card insight'><div class='pattern-card-label'>What drew you in</div>";
+      admiredTexts.forEach(function(a){
+        cards+="<div style='font-size:13px;color:#27500a;padding:5px 0 5px 10px;border-left:2px solid #a8d08a;margin-bottom:4px;font-style:italic'>&ldquo;"+a+"&rdquo;</div>";
+      });
+      cards+="</div>";
+    }
   }
 
-  // ── Closing reflection ────────────────────────────────────────────────
-  if(total>=3){
+  // ── Your own words ────────────────────────────────────────────────────
+  var learnedTexts=log.map(function(e){return e.learned||'';}).filter(Boolean);
+  if(learnedTexts.length>=1){
+    cards+="<div class='pattern-card insight'><div class='pattern-card-label'>What you are learning about yourself</div>";
+    learnedTexts.slice(0,4).forEach(function(l){
+      cards+="<div style='padding:8px 0;border-bottom:1px solid rgba(0,0,0,.06);font-family:var(--serif);font-size:14px;font-style:italic;color:var(--deep);line-height:1.6'>&ldquo;"+l.trim()+"&rdquo;</div>";
+    });
+    cards+="</div>";
+  }
+
+  // ── The gap: red flag vs why it ended ─────────────────────────────────
+  var bothCount=log.filter(function(e){return e.redflag&&e.ended;}).length;
+  if(bothCount>=2){
+    cards+="<div class='pattern-card' style='border-color:var(--mauve);background:var(--pink-50)'>";
+    cards+="<div class='pattern-card-label'>The gap between seeing and leaving</div>";
+    cards+="<div class='pattern-card-val'>In "+bothCount+" relationships you noted a red flag early and still had to write a reason why it ended.</div>";
+    cards+="<div class='pattern-card-sub'>The blueprint asks you to name the red flag in Phase 1 or 2 — before you are emotionally invested — so the data can protect you before the gap opens.</div>";
+    cards+="</div>";
+  }
+
+  // ── Closing ───────────────────────────────────────────────────────────
+  if(total>=2){
     cards+="<div class='pattern-card' style='background:var(--deep);border-color:var(--mauve);margin-top:4px'>";
     cards+="<div class='pattern-card-label' style='color:var(--petal)'>The through line</div>";
     cards+="<div class='pattern-card-val' style='color:white;font-family:var(--serif);font-style:italic'>You have been choosing and learning. The woman who built this blueprint is not the same woman who met the first man on this list.</div>";
     cards+="</div>";
   }
 
-  if(!cards) cards="<div class='pattern-empty'>Add at least 2 entries with red flags and what drew you in to see patterns.</div>";
+  if(!cards) cards="<div class='pattern-empty'>Add entries with red flags and reasons why it ended to see patterns.</div>";
   cardsEl.innerHTML=cards;
 }
 
+
 function renderRlogWithPatterns(){
-  renderRlogWithPatterns();
+  renderRlog();
   var log=S.rlog||[];
   if(log.length>=2) analysePatterns();
   else {
