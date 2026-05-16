@@ -412,6 +412,9 @@ textarea::placeholder{color:var(--mist);font-style:italic}
   .rlog-add-actions .btn-checkin{width:100%;text-align:center;padding:12px}
   .rlog-entry-grid{grid-template-columns:1fr}
   .rlog-entry-header{flex-wrap:wrap}
+  .rlog-edit-grid{grid-template-columns:1fr}
+  .rlog-edit-field.full{grid-column:1}
+  .rlog-edit-field input,.rlog-edit-field textarea,.rlog-edit-field select{font-size:16px}
 
   /* endit modal */
   .endit-backdrop{padding:10px}
@@ -682,6 +685,19 @@ textarea::placeholder{color:var(--mist);font-style:italic}
   .rlog-entry-dates{font-size:11px;color:var(--mist);margin-top:2px}
   .rlog-entry-del{background:none;border:none;color:#ddd;cursor:pointer;font-size:14px;transition:color .15s;padding:2px 4px;flex-shrink:0}
   .rlog-entry-del:hover{color:var(--red)}
+  .rlog-entry-edit{background:none;border:none;color:var(--petal);cursor:pointer;font-size:13px;transition:color .15s;padding:2px 6px;font-family:var(--sans);font-weight:500;letter-spacing:.02em}
+  .rlog-entry-edit:hover{color:var(--mauve)}
+  .rlog-edit-form{background:var(--blush);border:1px solid var(--pink-100);border-radius:12px;padding:14px;margin-top:12px;display:none}
+  .rlog-edit-form.open{display:block}
+  .rlog-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+  .rlog-edit-field{display:flex;flex-direction:column;gap:3px}
+  .rlog-edit-field.full{grid-column:1/-1}
+  .rlog-edit-field label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mauve)}
+  .rlog-edit-field input,.rlog-edit-field textarea,.rlog-edit-field select{width:100%;border:1px solid var(--pink-100);border-radius:8px;padding:8px 10px;font-size:13px;font-family:var(--sans);color:var(--stone);background:white;outline:none;box-sizing:border-box}
+  .rlog-edit-field textarea{resize:none;min-height:60px;line-height:1.5}
+  .rlog-edit-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
+  .btn-edit-save{padding:8px 18px;background:var(--rose);color:white;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans)}
+  .btn-edit-cancel{padding:8px 14px;background:white;color:var(--mist);border:1px solid var(--pink-100);border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--sans)}
   .rlog-entry-ended{display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;margin-bottom:10px;letter-spacing:.04em}
   .ended-mutual{background:#eaf3de;color:#27500a}
   .ended-i-ended{background:var(--pink-50);color:var(--deep)}
@@ -1969,6 +1985,28 @@ function addRlogEntry(){
   renderRlogWithPatterns();
 }
 
+
+function toggleRlogEdit(idx){
+  var form=document.getElementById('rlogedit_'+idx);
+  if(!form) return;
+  form.classList.toggle('open');
+}
+
+function saveRlogEdit(idx){
+  if(!S.rlog||!S.rlog[idx]) return;
+  var e=S.rlog[idx];
+  function val(id){var el=document.getElementById(id);return el?el.value:'';}
+  e.name    = val('re_name_'+idx);
+  e.period  = val('re_period_'+idx);
+  e.admired = val('re_admired_'+idx);
+  e.redflag = val('re_redflag_'+idx);
+  e.ended   = val('re_ended_'+idx);
+  e.learned = val('re_learned_'+idx);
+  e.how     = val('re_how_'+idx);
+  save();
+  renderRlogWithPatterns();
+}
+
 function deleteRlogEntry(idx){
   if(!confirm('Remove this entry?')) return;
   S.rlog.splice(idx,1);
@@ -1990,16 +2028,36 @@ function renderRlog(){
     wrap.innerHTML="<div class='rlog-empty'>No entries yet. Add the ones who shaped you.</div>";
     return;
   }
+  // Sort by period start year (newest first), fallback to add date
+  var indexed=log.map(function(e,i){return{e:e,i:i};});
+  indexed.sort(function(a,b){
+    function startYear(entry){
+      if(entry.period){
+        var m=entry.period.match(/\d{4}/);
+        if(m) return parseInt(m[0]);
+      }
+      // fallback: parse added date
+      if(entry.date){
+        var m2=entry.date.match(/\d{4}/);
+        if(m2) return parseInt(m2[0]);
+      }
+      return 0;
+    }
+    return startYear(b.e)-startYear(a.e);
+  });
   var html='';
-  log.slice().reverse().forEach(function(e,i){
-    var ri=log.length-1-i;
+  indexed.forEach(function(item){
+    var e=item.e, ri=item.i;
     var how=HOW_LABELS[e.how]||HOW_LABELS['mutual'];
     html+="<div class='rlog-entry'>";
     html+="<div class='rlog-entry-header'>";
     html+="<div><div class='rlog-entry-name'>"+e.name+"</div>";
     if(e.period) html+="<div class='rlog-entry-dates'>"+e.period+"</div>";
     html+="</div>";
+    html+="<div style='display:flex;gap:4px;align-items:center'>";
+    html+="<button class='rlog-entry-edit' onclick='toggleRlogEdit("+ri+")'>edit</button>";
     html+="<button class='rlog-entry-del' onclick='deleteRlogEntry("+ri+")' aria-label='Delete'>&times;</button>";
+    html+="</div>";
     html+="</div>";
     html+="<span class='rlog-entry-ended "+how.cls+"'>"+how.lbl+"</span>";
     html+="<div class='rlog-entry-grid'>";
@@ -2009,6 +2067,27 @@ function renderRlog(){
     if(e.ended)   html+="<div style='margin-bottom:8px'><div style='font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mist);margin-bottom:4px'>Why it ended</div><div class='rlog-entry-why'>"+e.ended+"</div></div>";
     if(e.learned) html+="<div><div style='font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mist);margin-bottom:4px'>What I learned</div><div class='rlog-entry-why' style='border-left-color:#639922'>"+e.learned+"</div></div>";
     html+="<div style='font-size:10px;color:var(--mist);margin-top:10px;text-align:right'>Added "+e.date+"</div>";
+    // Inline edit form
+    html+="<div class='rlog-edit-form' id='rlogedit_"+ri+"'>";
+    html+="<div class='rlog-edit-grid'>";
+    html+="<div class='rlog-edit-field'><label>Name</label><input id='re_name_"+ri+"' value='"+e.name.replace(/'/g,"&#39;")+"'/></div>";
+    html+="<div class='rlog-edit-field'><label>Period</label><input id='re_period_"+ri+"' value='"+(e.period||'').replace(/'/g,"&#39;")+"'/></div>";
+    html+="<div class='rlog-edit-field'><label>What I admired</label><input id='re_admired_"+ri+"' value='"+(e.admired||'').replace(/'/g,"&#39;")+"'/></div>";
+    html+="<div class='rlog-edit-field'><label>Red flag ignored</label><input id='re_redflag_"+ri+"' value='"+(e.redflag||'').replace(/'/g,"&#39;")+"'/></div>";
+    html+="<div class='rlog-edit-field full'><label>Why it ended</label><textarea id='re_ended_"+ri+"'>"+(e.ended||'').replace(/</g,'&lt;')+"</textarea></div>";
+    html+="<div class='rlog-edit-field full'><label>What I learned</label><textarea id='re_learned_"+ri+"'>"+(e.learned||'').replace(/</g,'&lt;')+"</textarea></div>";
+    html+="<div class='rlog-edit-field'><label>How it ended</label><select id='re_how_"+ri+"'>";
+    var howOpts=['i-ended','he-ended','mutual','faded','ongoing'];
+    var howLbls={'i-ended':'I ended it','he-ended':'He ended it','mutual':'Mutual','faded':'It faded','ongoing':'Ongoing'};
+    howOpts.forEach(function(opt){
+      html+="<option value='"+opt+"'"+(e.how===opt?' selected':'')+">"+howLbls[opt]+"</option>";
+    });
+    html+="</select></div>";
+    html+="</div>";
+    html+="<div class='rlog-edit-actions'>";
+    html+="<button class='btn-edit-cancel' onclick='toggleRlogEdit("+ri+")'>Cancel</button>";
+    html+="<button class='btn-edit-save' onclick='saveRlogEdit("+ri+")'>Save changes</button>";
+    html+="</div></div>";
     html+="</div>";
   });
   wrap.innerHTML=html;
