@@ -905,41 +905,253 @@ textarea::placeholder{color:var(--mist);font-style:italic}
 
 <script>
 
+// ── CONSTANTS ─────────────────────────────────────────────────────────────
+var STATE_CYCLE  = ["none","yes","partial","no"];
+var STATE_ICONS  = {none:"",yes:"✓",partial:"~",no:"✕"};
+var STATE_LABELS = {none:"not yet",yes:"yes",partial:"partially",no:"no"};
+var STATE_CLS    = {none:"state-none",yes:"state-yes",partial:"state-partial",no:"state-red"};
+
 // ── DATA ──────────────────────────────────────────────────────────────────
 const PHASES = [
-  {num:1,label:"Observe",timing:"Weeks 1\u20134",gate:"Does he have direction and revenue?",
-   myInput:["Show up as yourself \u2014 nothing more, nothing less.","Ask one casual question about what he is working on. Listen. Do not probe.","Observe in silence. You are not required to impress, explain, or perform.","Keep a mental note (or log here) of how he treats people around him.","Zero emotional, financial, or physical investment at this stage."],
+  {num:1,label:"Observe",timing:"Weeks 1–4",gate:"Does he have direction and revenue?",
+   myInput:["Show up as yourself — nothing more, nothing less.","Ask one casual question about what he is working on. Listen. Do not probe.","Observe in silence. You are not required to impress, explain, or perform.","Keep a mental note (or log here) of how he treats people around him.","Zero emotional, financial, or physical investment at this stage.",
+   "Watch for avoidant signals: does he seem comfortable with surface connection but redirect when things get personal or warm? Does he pride himself on not needing anyone? These are early tells."],
    prenup:null,
-   items:[{key:"followthrough",label:"Follow-through",text:"Does he follow through on small commitments unprompted?"},{key:"character",label:"Character check",text:"How does he treat waitstaff, strangers, people who can do nothing for him?"},{key:"direction",label:"Direction evident",text:"Is there evidence of a plan \u2014 revenue, track record, growth?"},{key:"multistream",label:"Multiple streams",text:"Does he run more than one business or income stream?"},{key:"finindep",label:"Financially independent",text:"Is he financially independent \u2014 not relying on parents, family, or a woman?"},{key:"dateplans",label:"He planned the date",text:"Did he plan the first date \u2014 venue, time, logistics \u2014 without prompting?"},{key:"datepays",label:"He paid",text:"Did he pay without hesitation, jokes, or making it awkward?"},{key:"nochase",label:"I did not chase",text:"I refrained from initiating, over-texting, or performing for his attention."},{key:"redflags1",label:"No red flags",text:"No dismissiveness, financial instability, or dishonesty observed."}]},
-  {num:2,label:"The manual",timing:"Month 2\u20136",gate:"Does he open doors or need mine?",
-   myInput:["Have ONE intentional in-person conversation \u2014 you choose the setting, you set the tone.","Share your truth: autism, your healing journey, what you carry. Say it plainly, without apology.","Ask him directly: \u2018What are you building right now?\u2019 and then be quiet.","Do not fill silences. Let him show you who he is.","Watch whether he plans dates or waits for you to. Watch who pays and how it feels.","Note any jokes about money, splitting, or you taking care of him. Even once.","By month 4\u20135: if exclusivity has not been named, you can name it. Once. His response is the data.","Hold the boundary: no sleepovers, no sex. This is non-negotiable \u2014 not a suggestion.","Do not adjust your personality, opinions, or standards to keep his interest."],
+   monthly:null,
+   items:[
+     {key:"followthrough",label:"Follow-through",text:"Does he follow through on small commitments unprompted?"},
+     {key:"character",label:"Character check",text:"How does he treat waitstaff, strangers, people who can do nothing for him?"},
+     {key:"direction",label:"Direction evident",text:"Is there evidence of a plan — revenue, track record, growth?"},
+     {key:"multistream",label:"Multiple streams",text:"Does he run more than one business or income stream?"},
+     {key:"finindep",label:"Financially independent",text:"Is he financially independent — not relying on parents, family, or a woman?"},
+     {key:"dateplans",label:"He planned the date",text:"Did he plan the first date — venue, time, logistics — without prompting?"},
+     {key:"datepays",label:"He paid",text:"Did he pay without hesitation, jokes, or making it awkward?"},
+     {key:"remembers",label:"He remembers",text:"Does he remember details you told him and follow up on them unprompted?"},
+     {key:"nochase",label:"I did not chase",text:"I refrained from initiating, over-texting, or performing for his attention."},
+     {key:"redflags1",label:"No red flags",text:"No dismissiveness, financial instability, or dishonesty observed."},
+     {key:"pullback",label:"Attachment signal",text:"When life made me naturally less available — a busy week, unwell, preoccupied — did he respond securely? Steady, checked in without pressure, did not chase or go cold."},
+     {key:"motherrel",label:"How he speaks of his mother",text:"How does he speak about his mother and the women in his life? With respect, complexity, and care — or with contempt or dismissal?"},
+     {key:"closenessresp",label:"Response to closeness",text:"When the conversation got warm, personal, or emotionally close — did he lean in or subtly redirect? Avoidant men consistently steer away from depth at the first sign of real intimacy."},
+     {key:"independpride",label:"Independence as identity",text:"Does he wear his independence as a badge of honour — talks often about not needing anyone, being self-sufficient, never relying on others? This can signal avoidant attachment dressed as strength."},
+   ]},
+  {num:2,label:"The manual",timing:"Month 2–6",gate:"Does he open doors or need mine?",
+   myInput:["Have ONE intentional in-person conversation — you choose the setting, you set the tone.","Share your truth: autism, your healing journey, what you carry. Say it plainly, without apology.","Ask him directly: ‘What are you building right now?’ and then be quiet.","Do not fill silences. Let him show you who he is.","Watch whether he plans dates or waits for you to. Watch who pays and how it feels.","Note any jokes about money, splitting, or you taking care of him. Even once.","By month 4–5: if exclusivity has not been named, you can name it. Once. His response is the data.","Hold the boundary: no sleepovers, no sex. This is non-negotiable — not a suggestion.","Do not adjust your personality, opinions, or standards to keep his interest."],
    prenup:null,
-   items:[{key:"convo",label:"Intentional talk",text:"Have I had one intentional in-person conversation?"},{key:"shared",label:"I showed up fully",text:"I shared who I am \u2014 autism, healing journey, what I carry."},{key:"heasked",label:"He was curious",text:"He asked follow-up questions about me, rather than managing or fixing me."},{key:"hisvision",label:"Specific vision",text:"He described what he is building with specificity \u2014 not vague ambition."},{key:"helpsme",label:"Opens my doors",text:"He has shown genuine interest in or support of my ventures."},{key:"dateconsistent",label:"Plans dates",text:"He plans dates regularly \u2014 venue, time, effort \u2014 without me suggesting it."},{key:"datepays2",label:"Pays without drama",text:"He pays for dates consistently and without jokes or pressure."},{key:"nofinancejokes",label:"No financial jokes",text:"He has never joked about me taking care of him or paying for him."},{key:"exclusive",label:"Exclusivity named",text:"He has raised exclusivity, or responded clearly when I did."},{key:"boundary",label:"Boundary held",text:"No sleepovers. No sex. Boundary honoured completely."},{key:"nocompromise",label:"I stayed myself",text:"I refrained from softening, shrinking, or performing to keep his interest."}]},
-  {num:3,label:"Conflict test",timing:"Month 7\u201312",gate:"How does he handle rupture?",
-   myInput:["Do NOT manufacture conflict. Wait for something real and small to arise naturally.","When it arises: state your disagreement clearly, calmly, once.","Do not over-explain, apologise for having the opinion, or back down to keep the peace.","Watch what he does next \u2014 his instinct under friction is the data.","After it resolves (or does not): write in your log what you observed. Be honest.","Ask yourself: did I feel safe being disagreeable with him?"],
+   monthly:[
+     {month:"Month 2 — The reveal",items:[
+       {key:"m2_convo",text:"I have had one real, intentional in-person conversation with him."},
+       {key:"m2_shared",text:"I shared who I am — autism, healing journey, what I carry — without apology."},
+       {key:"m2_response",text:"His response to my truth was curiosity, not management or fixing."},
+       {key:"m2_vision",text:"I asked what he is building. His answer was specific, not vague."},
+       {key:"m2_boundary",text:"The boundary is intact. No sleepovers. No sex."},
+       {key:"m2_distress",text:"I was stressed or overwhelmed at some point this month. Did he turn toward me — notice and show up — or turn away and go quiet?"},
+       {key:"m2_vulnresp",text:"When I shared something personal or vulnerable, did he match it with his own openness, or did he give a solution, a joke, or a subject change? Avoidant men respond to vulnerability with problem-solving or redirection — not emotional presence."},
+       {key:"m2_closepull",text:"After a moment of genuine closeness or warmth between us, did he pull back — go quiet, get busy, create distance? This post-closeness withdrawal is one of the clearest avoidant signals in early dating."},
+     ]},
+     {month:"Month 3 — The pattern",items:[
+       {key:"m3_dates",text:"He has planned at least two intentional dates without prompting from me."},
+       {key:"m3_pays",text:"He has paid consistently, without jokes, splitting suggestions, or awkwardness."},
+       {key:"m3_consistent",text:"He is the same person week to week — not hot and cold."},
+       {key:"m3_remembers",text:"He remembers things I have told him and follows up on them."},
+       {key:"m3_nojokes",text:"He has not made a single joke about me paying, treating him, or taking care of him."},
+       {key:"m3_turnstoward",text:"When I have shared something hard or emotional, he has turned toward it — asked follow-up questions, checked in later — not changed the subject or minimised it."},
+     ]},
+     {month:"Month 4 — The money test",items:[
+       {key:"m4_pays",text:"He is still paying. The financial dynamic has not quietly shifted."},
+       {key:"m4_finindep",text:"I have seen or heard clear evidence that he is financially independent."},
+       {key:"m4_introduces",text:"He has introduced me to at least one person in his life — friend, colleague, family."},
+       {key:"m4_speaks",text:"I have evidence he speaks about me positively to people in his life."},
+       {key:"m4_myventures",text:"He has shown genuine interest in my ventures — asked questions, offered support."},
+       {key:"m4_avoidpull",text:"Is there a pattern of him pulling back after closeness, then re-engaging when I create distance? This push-pull cycle is a hallmark of avoidant attachment and becomes more pronounced, not less, over time."},
+       {key:"m4_needsresp",text:"When I expressed a need — for reassurance, connection, or support — did he respond or subtly signal that the need was too much? Avoidant men are comfortable until you actually need something."},
+     ]},
+     {month:"Month 5 — The exclusivity window",items:[
+       {key:"m5_exclusive",text:"Exclusivity has been named — by him, or clearly and seriously in response to me."},
+       {key:"m5_effort",text:"His effort is sustained or increasing. It has not dropped since the beginning."},
+       {key:"m5_success",text:"He has seen me succeed at something. How did he respond — did he celebrate or compete?"},
+       {key:"m5_boundary",text:"The boundary is still intact at month 5. No pressure, no negotiation."},
+     ]},
+     {month:"Month 6 — The verdict",items:[
+       {key:"m6_verdict",text:"I have enough data across 4 months to know whether this man is consistent."},
+       {key:"m6_exclusive",text:"We are exclusive. This is confirmed and named."},
+       {key:"m6_safe",text:"I feel more myself around him than I did in month 2 — not more managed."},
+       {key:"m6_proceed",text:"The data supports proceeding to Phase 3. I am not overriding the data with feeling."},
+     ]},
+   ],
+   items:[
+     {key:"convo",label:"Intentional talk",text:"Have I had one intentional in-person conversation?"},
+     {key:"shared",label:"I showed up fully",text:"I shared who I am — autism, healing journey, what I carry."},
+     {key:"heasked",label:"He was curious",text:"He asked follow-up questions about me, rather than managing or fixing me."},
+     {key:"hisvision",label:"Specific vision",text:"He described what he is building with specificity — not vague ambition."},
+     {key:"helpsme",label:"Opens my doors",text:"He has shown genuine interest in or support of my ventures."},
+     {key:"dateconsistent",label:"Plans dates",text:"He plans dates regularly — venue, time, effort — without me suggesting it."},
+     {key:"datepays2",label:"Pays without drama",text:"He pays for dates consistently and without jokes or pressure."},
+     {key:"nofinancejokes",label:"No financial jokes",text:"He has never joked about me taking care of him or paying for him."},
+     {key:"introduces",label:"Introduces me",text:"He has introduced me to people in his life — friends, family, or colleagues."},
+     {key:"speakswell",label:"Speaks of me",text:"I have evidence he speaks about me positively to the people in his life."},
+     {key:"exclusive",label:"Exclusivity named",text:"He has raised exclusivity, or responded clearly and seriously when I did."},
+     {key:"boundary",label:"Boundary held",text:"No sleepovers. No sex. Boundary honoured completely."},
+     {key:"nocompromise",label:"I stayed myself",text:"I refrained from softening, shrinking, or performing to keep his interest."},
+   ]},
+  {num:3,label:"Conflict test",timing:"Month 7–12",gate:"How does he handle rupture?",
+   myInput:["Do NOT manufacture conflict. Wait for something real and small to arise naturally.","When it arises: state your disagreement clearly, calmly, once.","Do not over-explain, apologise for having the opinion, or back down to keep the peace.","Watch what he does next — his instinct under friction is the data.","After it resolves (or does not): write in your log what you observed. Be honest.","Ask yourself: did I feel safe being disagreeable with him?"],
    prenup:null,
-   items:[{key:"natural",label:"Organic conflict",text:"A disagreement arose naturally \u2014 I did not create it."},{key:"account",label:"He took accountability",text:"He acknowledged his part without reversing it onto me."},{key:"curious",label:"He sought clarity",text:"He asked what I meant rather than assuming or defending."},{key:"repair",label:"He repaired",text:"He initiated repair \u2014 he did not disappear or wait for me to fix it."},{key:"mysafety",label:"I felt safe",text:"I felt safe enough to disagree without shrinking or shutting down."},{key:"myground",label:"I held my ground",text:"I stated my position clearly and did not collapse under pressure."},{key:"pattern",label:"Pattern consistent",text:"This conflict response matches his behaviour in weeks 1\u20136."}]},
+   monthly:[
+     {month:"Months 7–8 — First friction",items:[
+       {key:"c1_arose",text:"A natural disagreement arose in this window. I did not create it."},
+       {key:"c1_account",text:"He took accountability for his part without reversing it onto me."},
+       {key:"c1_curious",text:"He asked what I meant rather than assuming or defending himself."},
+       {key:"c1_repair",text:"He initiated repair. He did not disappear or wait for me to fix it."},
+       {key:"c1_safe",text:"I felt safe enough to disagree. I did not shut down or over-apologise."},
+       {key:"c1_myrepair",text:"When I attempted to repair — a soft word, a gesture, a question — did he notice and receive it? Or did he ignore my bid and wait for me to do more?"},
+     ]},
+     {month:"Months 9–10 — Second friction",items:[
+       {key:"c2_arose",text:"A second natural disagreement arose. Two data points are more reliable than one."},
+       {key:"c2_same",text:"He handled the second conflict the same way as the first — or better."},
+       {key:"c2_account",text:"He took accountability again. It was not a one-off performance."},
+       {key:"c2_pattern",text:"I can see a conflict pattern forming — and it is one I can build a life inside."},
+       {key:"c2_stress",text:"Has he been under significant external pressure this window — work, money, family? How did he behave toward me when he was stressed? That is closer to the truth of who he is."},
+       {key:"c2_avoidconflict",text:"In conflict, does he shut down, go silent, or say 'I'm fine' when he clearly isn't? Avoidant men often stonewall — they do not have the conflict, they withdraw from it entirely and wait for it to pass."},
+       {key:"c2_comeback",text:"After conflict or emotional intensity, did he re-engage fully — or did he come back physically present but emotionally absent? Avoidants return to the room but not to the relationship."},
+     ]},
+     {month:"Months 11–12 — The verdict",items:[
+       {key:"c3_pattern",text:"His conflict style is consistent across multiple incidents. This is who he is."},
+       {key:"c3_growth",text:"I have seen him grow or adjust based on our conflicts — not just comply."},
+       {key:"c3_me",text:"I have held my ground in conflict without it destroying the relationship."},
+       {key:"c3_safe",text:"Disagreement feels like a conversation between us, not a threat to the relationship."},
+       {key:"c3_proceed",text:"The data supports proceeding. I am not carrying unresolved ruptures into Phase 4."},
+     ]},
+   ],
+   items:[
+     {key:"natural",label:"Organic conflict",text:"A disagreement arose naturally — I did not create it."},
+     {key:"account",label:"He took accountability",text:"He acknowledged his part without reversing it onto me."},
+     {key:"curious",label:"He sought clarity",text:"He asked what I meant rather than assuming or defending."},
+     {key:"repair",label:"He repaired",text:"He initiated repair — he did not disappear or wait for me to fix it."},
+     {key:"second",label:"Second conflict observed",text:"There has been more than one conflict. A pattern is visible, not a performance."},
+     {key:"growth",label:"He adjusted",text:"I have seen him grow or adjust based on our disagreements — not just comply once."},
+     {key:"mysafety",label:"I felt safe",text:"I felt safe enough to disagree without shrinking or shutting down."},
+     {key:"myground",label:"I held my ground",text:"I stated my position clearly and did not collapse under pressure."},
+     {key:"pattern",label:"Pattern consistent",text:"His conflict response is consistent across multiple incidents — this is who he is."},
+   ]},
   {num:4,label:"Values talk",timing:"Month 13",gate:"Are our foundations the same?",
-   myInput:["Initiate a real conversation about money. Ask: \u2018What does financial legacy mean to you?\u2019","State clearly that you want a trust fund for your children. Watch his reaction.","Ask about spirituality: \u2018How does your faith actually show up in your daily life?\u2019","Share your own answers. Be specific. Do not hedge.","Ask about children directly: how many, when, what kind of parent does he intend to be?","If his answers are misaligned, this is information \u2014 not a problem to fix."],
+   myInput:["Initiate a real conversation about money. Ask: ‘What does financial legacy mean to you?’","State clearly that you want a trust fund for your children. Watch his reaction.","Ask about spirituality: ‘How does your faith actually show up in your daily life?’","Share your own answers. Be specific. Do not hedge.","Ask about children directly: how many, when, what kind of parent does he intend to be?","If his answers are misaligned, this is information — not a problem to fix."],
    prenup:null,
-   items:[{key:"moneyleg",label:"Legacy mindset",text:"He understands money as legacy and generational wealth \u2014 not just income."},{key:"trustfund",label:"Trust fund aligned",text:"He sees trust funds for children as essential, not optional."},{key:"children",label:"Children alignment",text:"We have spoken about children \u2014 his answer felt genuine and considered."},{key:"spirit",label:"Lived spirituality",text:"His spirituality is lived in daily choices, not performed for appearance."},{key:"family",label:"Family structure",text:"Our views on family structure and roles are aligned."},{key:"presence",label:"Emotional presence",text:"He speaks about fatherhood with emotional intention, not just provision."},{key:"adventist",label:"Honest with myself",text:"I have been honest with myself about what I actually need spiritually."}]},
+   monthly:null,
+   items:[
+     {key:"moneyleg",label:"Legacy mindset",text:"He understands money as legacy and generational wealth — not just income."},
+     {key:"trustfund",label:"Trust fund aligned",text:"He sees trust funds for children as essential, not optional."},
+     {key:"children",label:"Children alignment",text:"We have spoken about children — his answer felt genuine and considered."},
+     {key:"spirit",label:"Lived spirituality",text:"His spirituality is lived in daily choices, not performed for appearance."},
+     {key:"family",label:"Family structure",text:"Our views on family structure and roles are aligned."},
+     {key:"presence",label:"Emotional presence",text:"He speaks about fatherhood with emotional intention, not just provision."},
+     {key:"conflict4",label:"Conflict resolution style",text:"We have discussed how we will handle conflict as a married couple — not just assumed."},
+     {key:"inlaws4",label:"In-law expectations",text:"He has spoken about his parents and family with appropriate adult independence."},
+     {key:"adventist",label:"Honest with myself",text:"I have been honest with myself about what I actually need spiritually."},
+     {key:"motherobs",label:"Parental relationship",text:"I have observed how he treats and speaks about his mother and the women who raised him. Research consistently shows this is the most reliable predictor of how a man will treat his partner long-term."},
+     {key:"stressobs",label:"Stress response",text:"I have seen him under real external pressure. His behaviour toward me when stressed reveals more about his character than his behaviour when life is easy."},
+   ]},
   {num:5,label:"Consistency",timing:"Month 13+",gate:"Is he the same man across time and context?",
-   myInput:["Pull up your Phase 1 observations. Compare them honestly to who he is now.","Is he still planning dates \u2014 or has that quietly become your job?","Is he still paying \u2014 or has money started to feel like a negotiation?","Note whether his effort has increased, plateaued, or declined since you stopped being new.","Has he established full financial independence from his parents?","Watch how he shows up when you are stressed, unwell, or unavailable.","Ask yourself: do I feel more free or more managed in this relationship?"],
+   myInput:["Pull up your Phase 1 observations. Compare them honestly to who he is now.","Is he still planning dates — or has that quietly become your job?","Is he still paying — or has money started to feel like a negotiation?","Note whether his effort has increased, plateaued, or declined since you stopped being new.","Has he established full financial independence from his parents?","Watch how he shows up when you are stressed, unwell, or unavailable.","Notice how he responds to your wins. Does he celebrate you or compete with you?","Ask yourself: do I feel more free or more managed in this relationship?"],
    prenup:null,
-   items:[{key:"sameperson",label:"Same man",text:"He is the same person in month 13 as he was in week 1."},{key:"effortup",label:"Effort sustained",text:"His effort has maintained or grown \u2014 it has not declined now that I am secured."},{key:"stilldates",label:"Still plans dates",text:"He still plans intentional dates \u2014 not just hanging out."},{key:"stillpays",label:"Still pays",text:"He still pays consistently \u2014 this has not quietly shifted onto me."},{key:"hardsame",label:"Present in hardship",text:"He has shown up during a hard moment \u2014 not just the good ones."},{key:"dooropen",label:"Opens my doors",text:"He actively supports my ventures without needing mine to support his."},{key:"finindep5",label:"Financially independent",text:"He is fully financially independent \u2014 not leaning on parents or me."},{key:"parentsindep",label:"Adult with parents",text:"He operates as a grown man with his parents \u2014 not seeking their approval or funding."},{key:"freedom",label:"I feel free",text:"I feel more free, more myself in this relationship \u2014 not less."},{key:"wordsact",label:"Words = actions",text:"What he says and what he does are the same thing, consistently."}]},
-  {num:6,label:"Blueprint",timing:"Month 13+",gate:"Can he build with me \u2014 specifically, not hypothetically?",
-   myInput:["Request to see his financial records and business documentation.","Bring your own financial picture to the table. Full transparency, both ways.","Discuss location: where will you live, and what does home look like?","Discuss conflict resolution: what is the agreed approach when things get hard?","Raise the prenuptial agreement directly. State it: \u2018I want a prenup. It protects both of us.\u2019","If he reacts with resistance, that is information. A secure man will understand.","Do not soften this conversation. This is the blueprint \u2014 it must be specific."],
-   prenup:{title:"Prenuptial agreement \u2014 what to establish",items:["Individual assets owned before marriage remain separate property.","Trust funds for children are ring-fenced \u2014 not marital assets.","Business ownership and intellectual property clearly delineated.","Income earned during marriage \u2014 agree on split or community property terms.","Debt liability: each party responsible for debt brought into the marriage.","Spousal support terms if applicable \u2014 duration and conditions.","Process for financial decisions above an agreed threshold.","Review clause: prenup reviewed every 5\u20137 years as life changes.","Both parties must have independent legal counsel. Non-negotiable."]},
-   items:[{key:"finances",label:"Finances discussed",text:"We have discussed finances specifically \u2014 income, assets, liabilities, savings."},{key:"records",label:"Records seen",text:"I have seen his business and financial records. Not just heard about them."},{key:"hefinances",label:"He is stable",text:"His finances are stable and independent \u2014 not carrying debt requiring my intervention."},{key:"location",label:"Location aligned",text:"We are aligned on where we will live \u2014 not just broadly, specifically."},{key:"conflictstyle",label:"Conflict approach",text:"We have agreed on how we handle conflict as a unit."},{key:"parenting",label:"Parenting aligned",text:"We have talked through parenting philosophy in real depth."},{key:"trustfund6",label:"Trust fund agreed",text:"We are both committed to establishing a trust fund for our children."},{key:"inlaws",label:"Boundaries clear",text:"Family and in-law boundaries have been discussed and agreed."},{key:"prenupraised",label:"Prenup raised",text:"I raised the prenup directly and clearly. His response was noted."},{key:"prenupagree",label:"Prenup agreed",text:"He agreed to a prenuptial agreement without resistance or guilt-tripping."},{key:"builder",label:"He can build",text:"He can build with me \u2014 evident in how he moves, not just what he says."}]},
-  {num:7,label:"Engagement",timing:"When ready",gate:"Did he ask my parents before he asked me?",
-   myInput:["Do not drop hints about a proposal timeline. Do not manufacture urgency.","Trust that a man who is ready will move \u2014 without being pushed.","If he asks to meet your parents in the context of a future together, receive it fully.","When he proposes, give yourself permission to feel it \u2014 you earned this by being patient.","Before accepting: sit with whether you feel peace, not just excitement.","Review your Phase 1\u20136 notes before saying yes. Let the data and your gut speak together."],
-   prenup:{title:"Prenup \u2014 before you say yes",items:["Confirm prenup conversation has happened and both parties are committed.","Agree on timeline: prenup signed minimum 3 months before wedding date.","Both parties have retained separate, independent legal counsel.","No signing under emotional pressure or close to the wedding date.","If he withdraws agreement at this stage \u2014 sit with that seriously before proceeding."]},
-   items:[{key:"parents",label:"He asked my parents",text:"He asked to meet my parents in the context of a serious future \u2014 before proposing."},{key:"peace",label:"I feel peace",text:"My dominant feeling is peace \u2014 not anxiety, urgency, or relief."},{key:"datacheck",label:"Data reviewed",text:"I reviewed my Phase 1\u20136 observations before saying yes."},{key:"proposal",label:"He proposed",text:"He proposed. I said yes with a clear and settled heart."},{key:"prenupcommit",label:"Prenup committed",text:"Both of us are committed to signing the prenup before the wedding."},{key:"counsel",label:"Separate lawyers",text:"We have both retained independent legal counsel for the prenup."}]},
-  {num:8,label:"Marriage",timing:"Ongoing",gate:"Is consistency sustained \u2014 not just before the wedding?",
-   myInput:["Keep choosing yourself inside the marriage. Your identity does not dissolve when you become a wife.","Revisit your values conversation annually \u2014 people grow and so should the agreement.","Review and update the prenup every 5\u20137 years with independent counsel.","Build the trust fund structure before or shortly after having children \u2014 not someday.","Name the moments when you feel managed, not seen \u2014 and raise them early.","Protect your ventures, your friendships, your spiritual practice."],
-   prenup:{title:"Post-marriage legal & financial",items:["Trust fund established and funded \u2014 structure and beneficiary designations in place.","Wills and estate plans updated to reflect marriage and children.","Life insurance policies reviewed and updated.","Prenup stored safely with both parties' lawyers. Know where your copy is.","Financial review scheduled annually \u2014 together, with full transparency.","Prenup reviewed and updated at agreed intervals (every 5\u20137 years)."]},
-   items:[{key:"postwed",label:"Same man",text:"He is the same man after the wedding as before it."},{key:"trustplan",label:"Trust fund built",text:"The trust fund for our children is established and being funded."},{key:"wills",label:"Legal docs done",text:"Wills, estate plans, and insurance are updated and in place."},{key:"prenupstored",label:"Prenup secured",text:"The signed prenup is stored safely with both parties' independent lawyers."},{key:"innerwork",label:"Inner work ongoing",text:"We are both actively doing the emotional work to be present, safe parents."},{key:"mywhole",label:"I remain whole",text:"I am still fully myself inside this marriage \u2014 my identity, ventures, and voice are intact."},{key:"team",label:"We are a team",text:"We move as a team \u2014 decisions made together, not one managing the other."}]},
+   monthly:[
+     {month:"Month 13–15 — The comparison",items:[
+       {key:"m13_compare",text:"I have compared month 13 to week 1. The man is the same or better."},
+       {key:"m13_effort",text:"His effort has not dropped since I am no longer new."},
+       {key:"m13_dates",text:"He is still planning intentional dates — this has not quietly become my job."},
+       {key:"m13_pays",text:"He is still paying. The financial dynamic has not shifted onto me."},
+       {key:"m13_wins",text:"He has seen me win at something. He celebrated it — he did not compete or diminish."},
+     ]},
+     {month:"Month 16–18 — The pressure test",items:[
+       {key:"m16_hard",text:"He has shown up during at least one genuinely hard moment for me."},
+       {key:"m16_finindep",text:"He is fully financially independent. His parents are not funding his adult life."},
+       {key:"m16_parents",text:"He operates as an adult with his parents — he does not seek their approval for his choices."},
+       {key:"m16_ventures",text:"He actively supports my ventures. He opens doors — he does not need mine."},
+       {key:"m16_free",text:"I feel more free, more myself at month 18 than I did at month 6."},
+       {key:"m16_stress",text:"I have seen him under significant external pressure this period. He did not take it out on me, withdraw completely, or become someone different. Stress is the truest mirror of character."},
+       {key:"m16_turnstoward",text:"When I have bid for connection — shared something, asked for support, expressed a need — he has turned toward it consistently, not away from it."},
+       {key:"m16_avoidpattern",text:"Over 16+ months, is there a consistent pattern of him pulling back after closeness, resurfacing when I pull away, and struggling to stay emotionally present when things get real? Avoidant patterns do not resolve without deliberate therapeutic work — they become the relationship's weather."},
+       {key:"m16_needsokay",text:"Does he make me feel that my needs are reasonable and welcome — or do I find myself editing what I ask for, downplaying what I feel, or managing his comfort with my emotions? That self-editing is the data."},
+     ]},
+     {month:"Month 19–21 — The long game",items:[
+       {key:"m19_same",text:"He is still the same man. No significant drift in character, effort, or care."},
+       {key:"m19_conflict",text:"We have had conflict in this window and it resolved well. His pattern holds."},
+       {key:"m19_spiritual",text:"His spiritual life is still lived, not performed — it has not disappeared post-Phase 4."},
+       {key:"m19_family",text:"He has invested in the relationships that matter to me — my family knows him."},
+       {key:"m19_blueprint",text:"I have re-read my Phase 1 notes. This man passes the long-game test."},
+     ]},
+     {month:"Month 22–24 — Before engagement unlocks",items:[
+       {key:"m22_nodoubt",text:"I do not have a quiet nagging doubt I am explaining away. My gut is settled."},
+       {key:"m22_data",text:"The full 22 months of data support who I believe him to be."},
+       {key:"m22_free",text:"I am still fully myself in this relationship. My identity, voice, and ventures are intact."},
+       {key:"m22_ready",text:"I believe this man is ready to build a specific, documented future with me."},
+     ]},
+   ],
+   items:[
+     {key:"sameperson",label:"Same man",text:"He is the same person in month 13 as he was in week 1."},
+     {key:"effortup",label:"Effort sustained",text:"His effort has maintained or grown — it has not declined now that I am secured."},
+     {key:"stilldates",label:"Still plans dates",text:"He still plans intentional dates — not just hanging out."},
+     {key:"stillpays",label:"Still pays",text:"He still pays consistently — this has not quietly shifted onto me."},
+     {key:"hardsame",label:"Present in hardship",text:"He has shown up during a hard moment — not just the good ones."},
+     {key:"celebrateme",label:"Celebrates my wins",text:"He celebrates my success genuinely — he does not compete with or diminish it."},
+     {key:"dooropen",label:"Opens my doors",text:"He actively supports my ventures without needing mine to support his."},
+     {key:"finindep5",label:"Financially independent",text:"He is fully financially independent — not leaning on parents or me."},
+     {key:"parentsindep",label:"Adult with parents",text:"He operates as a grown man with his parents — not seeking their approval or funding."},
+     {key:"familyknows",label:"Family knows him",text:"He has invested in the relationships that matter to me. My family knows him well."},
+     {key:"freedom",label:"I feel free",text:"I feel more free, more myself in this relationship — not less."},
+     {key:"wordsact",label:"Words = actions",text:"What he says and what he does are the same thing, consistently."},
+     {key:"nogutdoubt",label:"No quiet doubt",text:"I do not have a nagging doubt I am explaining away. My gut is settled."},
+     {key:"needswelcome",label:"My needs are welcome",text:"I do not find myself shrinking what I ask for or editing my emotions to manage his comfort. My needs are met with care, not subtle signals that I am too much."},
+     {key:"avoidfree",label:"No push-pull pattern",text:"There is no recurring pattern of closeness followed by withdrawal, then re-engagement when I pull away. That cycle is avoidant attachment — and it becomes the architecture of the relationship."},
+   ]},
+  {num:6,label:"Blueprint",timing:"Month 13+",gate:"Can he build with me — specifically, not hypothetically?",
+   myInput:["Request to see his financial records and business documentation.","Bring your own financial picture to the table. Full transparency, both ways.","Discuss location: where will you live, and what does home look like?","Discuss conflict resolution: what is the agreed approach when things get hard?","Raise the prenuptial agreement directly. State it: ‘I want a prenup. It protects both of us.’","If he reacts with resistance, that is information. A secure man will understand.","Do not soften this conversation. This is the blueprint — it must be specific."],
+   prenup:{title:"Prenuptial agreement — what to establish",items:["Individual assets owned before marriage remain separate property.","Trust funds for children are ring-fenced — not marital assets.","Business ownership and intellectual property clearly delineated.","Income earned during marriage — agree on split or community property terms.","Debt liability: each party responsible for debt brought into the marriage.","Spousal support terms if applicable — duration and conditions.","Process for financial decisions above an agreed threshold.","Review clause: prenup reviewed every 5–7 years as life changes.","Both parties must have independent legal counsel. Non-negotiable."]},
+   monthly:null,
+   items:[
+     {key:"finances",label:"Finances discussed",text:"We have discussed finances specifically — income, assets, liabilities, savings."},
+     {key:"records",label:"Records seen",text:"I have seen his business and financial records. Not just heard about them."},
+     {key:"hefinances",label:"He is stable",text:"His finances are stable and independent — not carrying debt requiring my intervention."},
+     {key:"location",label:"Location aligned",text:"We are aligned on where we will live — not just broadly, specifically."},
+     {key:"conflictstyle",label:"Conflict approach",text:"We have agreed on how we handle conflict as a unit."},
+     {key:"parenting",label:"Parenting aligned",text:"We have talked through parenting philosophy in real depth."},
+     {key:"trustfund6",label:"Trust fund agreed",text:"We are both committed to establishing a trust fund for our children."},
+     {key:"inlaws",label:"Boundaries clear",text:"Family and in-law boundaries have been discussed and agreed."},
+     {key:"hisfamily",label:"His family accepts me",text:"I have met his family and they know who I am in his life."},
+     {key:"prenupraised",label:"Prenup raised",text:"I raised the prenup directly and clearly. His response was noted."},
+     {key:"prenupagree",label:"Prenup agreed",text:"He agreed to a prenuptial agreement without resistance or guilt-tripping."},
+     {key:"builder",label:"He can build",text:"He can build with me — evident in how he moves, not just what he says."},
+     {key:"jointdecision",label:"Joint decision-making",text:"We have made at least one real decision together where we had competing interests or preferences. Did we navigate it as equals, or did one of us manage the other? Research shows power dynamics reveal themselves most clearly here."},
+     {key:"attachsecure",label:"Secure attachment confirmed",text:"Over the full arc of this relationship, his attachment pattern has been secure — he does not become anxious and clingy when I am independent, nor avoidant and cold when things get close."},
+   ]},
+  {num:7,label:"Engagement",timing:"After 2 years",gate:"Did he ask my parents before he asked me?",
+   myInput:["Do not drop hints about a proposal timeline. Do not manufacture urgency.","Trust that a man who is ready will move — without being pushed.","If he asks to meet your parents in the context of a future together, receive it fully.","When he proposes, give yourself permission to feel it — you earned this by being patient.","Before accepting: sit with whether you feel peace, not just excitement.","Review your Phase 1–6 notes before saying yes. Let the data and your gut speak together."],
+   prenup:{title:"Prenup — before you say yes",items:["Confirm prenup conversation has happened and both parties are committed.","Agree on timeline: prenup signed minimum 3 months before wedding date.","Both parties have retained separate, independent legal counsel.","No signing under emotional pressure or close to the wedding date.","If he withdraws agreement at this stage — sit with that seriously before proceeding."]},
+   monthly:null,
+   items:[
+     {key:"parents",label:"He asked my parents",text:"He asked to meet my parents in the context of a serious future — before proposing."},
+     {key:"peace",label:"I feel peace",text:"My dominant feeling is peace — not anxiety, urgency, or relief."},
+     {key:"datacheck",label:"Data reviewed",text:"I reviewed my Phase 1–6 observations before saying yes."},
+     {key:"proposal",label:"He proposed",text:"He proposed. I said yes with a clear and settled heart."},
+     {key:"prenupcommit",label:"Prenup committed",text:"Both of us are committed to signing the prenup before the wedding."},
+     {key:"counsel",label:"Separate lawyers",text:"We have both retained independent legal counsel for the prenup."},
+     {key:"nourgency",label:"No urgency felt",text:"I did not feel rushed, pressured, or relieved. Peace was the dominant feeling."},
+   ]},
+  {num:8,label:"Marriage",timing:"Ongoing",gate:"Is consistency sustained — not just before the wedding?",
+   myInput:["Keep choosing yourself inside the marriage. Your identity does not dissolve when you become a wife.","Revisit your values conversation annually — people grow and so should the agreement.","Review and update the prenup every 5–7 years with independent counsel.","Build the trust fund structure before or shortly after having children — not someday.","Name the moments when you feel managed, not seen — and raise them early.","Protect your ventures, your friendships, your spiritual practice."],
+   prenup:{title:"Post-marriage legal & financial",items:["Trust fund established and funded — structure and beneficiary designations in place.","Wills and estate plans updated to reflect marriage and children.","Life insurance policies reviewed and updated.","Prenup stored safely with both parties' lawyers. Know where your copy is.","Financial review scheduled annually — together, with full transparency.","Prenup reviewed and updated at agreed intervals (every 5–7 years)."]},
+   monthly:null,
+   items:[
+     {key:"postwed",label:"Same man",text:"He is the same man after the wedding as before it."},
+     {key:"trustplan",label:"Trust fund built",text:"The trust fund for our children is established and being funded."},
+     {key:"wills",label:"Legal docs done",text:"Wills, estate plans, and insurance are updated and in place."},
+     {key:"prenupstored",label:"Prenup secured",text:"The signed prenup is stored safely with both parties' independent lawyers."},
+     {key:"innerwork",label:"Inner work ongoing",text:"We are both actively doing the emotional work to be present, safe parents."},
+     {key:"mywhole",label:"I remain whole",text:"I am still fully myself inside this marriage — my identity, ventures, and voice are intact."},
+     {key:"team",label:"We are a team",text:"We move as a team — decisions made together, not one managing the other."},
+     {key:"annual",label:"Annual review done",text:"We have had our annual values conversation. The agreement has been revisited."},
+   ]},
 ];
+
 
 const NON_NEGOTIABLES = [
   {phase:1,key:"finindep",label:"He is financially independent",reason:"A man still financially dependent on his parents or others is not yet ready to build with you. Financial independence is the floor, not a bonus."},
@@ -964,8 +1176,13 @@ const NON_NEGOTIABLES = [
   {phase:6,key:"builder",label:"He can build, not just talk",reason:"By Phase 6, evidence of whether he can actually build should be visible in how he has moved \u2014 not in what he has promised."},
   {phase:7,key:"peace",label:"You feel peace, not just excitement",reason:"Excitement fades. Peace is what sustains a marriage. If you are walking toward a proposal with anxiety, urgency, or relief rather than peace \u2014 your body already knows something your mind is negotiating with."},
   {phase:7,key:"prenupcommit",label:"Prenup will be signed before wedding",reason:"Commitment without the paperwork is just a feeling. The prenup signed before the wedding is what protects you if the feeling changes."},
+  {phase:1,key:"motherrel",label:"He speaks of women with respect",reason:"How a man speaks about his mother and the women who raised him is the most consistent predictor in relationship research of how he will treat a female partner. Contempt or dismissal is not a style quirk — it is a preview."},
+  {phase:3,key:"c1_myrepair",label:"He receives your repair attempts",reason:"A man who ignores your bids to repair and waits for you to do more is establishing an unequal emotional labour dynamic. This compounds over years into exhaustion and resentment."},
+  {phase:6,key:"jointdecision",label:"He navigates joint decisions as an equal",reason:"If one person consistently manages or overrides the other when interests compete, that is the power structure of the marriage. It will not change after the wedding."},
+  {phase:2,key:"m2_closepull",label:"No post-closeness withdrawal pattern",reason:"If he consistently pulls back after moments of genuine warmth or intimacy, that is avoidant attachment signalling. It is not shyness, it is not busyness — it is a structural pattern that becomes the rhythm of the relationship. It does not resolve on its own."},
+  {phase:5,key:"needswelcome",label:"Your needs do not make you too much",reason:"If you are editing your emotions, downplaying your needs, or managing his comfort with your feelings after 13+ months — you are already doing the emotional labour of an avoidant partnership. This is the relationship you will be in for life if you proceed."},
+  {phase:5,key:"avoidfree",label:"No push-pull cycle present",reason:"The push-pull cycle — closeness, withdrawal, distance, re-engagement — is not a quirk of early dating. After 16+ months it is the established dynamic. Avoidant attachment without deliberate work does not improve inside a relationship; it becomes its weather."},
 ];
-
 const TERMINATE_THRESHOLD = 3;
 const PHASE_UNLOCK_DAYS = {1:0,2:28,3:180,4:390,5:390,6:390,7:730,8:-1};
 const JOURNAL_PROMPTS = [
@@ -1011,15 +1228,34 @@ function friendlyElapsed(days){
   if(remM===0) return years+" year"+(years>1?"s":"")+" in";
   return years+"y "+remM+"m in";
 }
+function terminateActive(){
+  return getNNFails().length>=TERMINATE_THRESHOLD||getAvoidantCount()>=3;
+}
+function getAvoidantCount(){
+  // Count 'no' on avoidant-specific items across all phases
+  var avoidKeys=[
+    "2_m2_closepull","2_m2_vulnresp","m_2_m2_closepull","m_2_m2_vulnresp",
+    "m_2_m4_avoidpull","m_2_m4_needsresp",
+    "m_3_c2_avoidconflict","m_3_c2_comeback",
+    "m_5_m16_avoidpattern","m_5_m16_needsokay",
+    "5_needswelcome","5_avoidfree",
+    "1_pullback","1_closenessresp","1_independpride"
+  ];
+  return avoidKeys.filter(function(k){return(S.checks[k]||"none")==="no";}).length;
+}
 function isUnlocked(n){
-  // Phase 7 (engagement) — time only, no override, blocked if terminate order active
+  // Phase 1 always unlocked
+  if(n===1) return true;
+  // If terminate order is active, lock everything AFTER the current active phase
+  if(terminateActive()&&n>S.activePhase) return false;
+  // Phase 7 (engagement) — time only, blocked if terminate active
   if(n===7){
     var days7=getDaysIn();
     if(days7===null) return false;
-    return days7>=730&&getNNFails().length<TERMINATE_THRESHOLD;
+    return days7>=730&&!terminateActive();
   }
   // Phase 8 — unlocks when phase 7 >= 80%
-  if(n===8) return score(7).pct>=80;
+  if(n===8) return score(7).pct>=80&&!terminateActive();
   // All other phases — time-based with optional override
   if(S.overrides&&S.overrides[n]) return true;
   var days=getDaysIn();
@@ -1067,7 +1303,24 @@ function phClass(n){
 function cycleCheck(ph,key){
   var CYCLE=["none","yes","partial","no"],k=ph+"_"+key,cur=S.checks[k]||"none";
   S.checks[k]=CYCLE[(CYCLE.indexOf(cur)+1)%CYCLE.length];
-  save();renderAll();
+  save();
+  // Remember which month blocks are currently open before re-render
+  var openBlocks={};
+  document.querySelectorAll("[id^='mblock_']").forEach(function(el){
+    if(el.style.display!=="none") openBlocks[el.id]=true;
+  });
+  renderPhase();
+  renderTimeline();
+  renderStats();
+  // Restore open state after re-render
+  Object.keys(openBlocks).forEach(function(id){
+    var el=document.getElementById(id);
+    if(el){
+      el.style.display="block";
+      var hdr=el.previousElementSibling;
+      if(hdr){var arr=hdr.querySelector("span:last-child");if(arr)arr.innerHTML="&#9650;";}
+    }
+  });
 }
 
 // ── NON-NEGOTIABLES ───────────────────────────────────────────────────────
@@ -1116,13 +1369,17 @@ function renderStats(){
 function renderBanner(){
   var wrap=el("nnBannerWrap");if(!wrap)return;
   var fails=getNNFails(),partials=getNNPartials();
-  if(fails.length===0&&partials.length<2){wrap.innerHTML="";return;}
-  var isTerminate=fails.length>=TERMINATE_THRESHOLD;
+  var avoidCount=getAvoidantCount();
+  var isTerminate=fails.length>=TERMINATE_THRESHOLD||avoidCount>=3;
+  if(fails.length===0&&partials.length<2&&avoidCount<2){wrap.innerHTML="";return;}
   var cls=isTerminate?"terminate":"watch";
   var html="<div class='nn-banner "+cls+"'>";
   if(isTerminate){
     html+="<div class='nn-banner-title'>Terminate order</div>";
-    html+="<div class='nn-banner-sub'>"+fails.length+" non-negotiable"+(fails.length>1?"s have":" has")+" failed. Your blueprint was written for exactly this moment.</div>";
+    var reasons=[];
+    if(fails.length>=TERMINATE_THRESHOLD) reasons.push(fails.length+" non-negotiable"+(fails.length>1?"s":"")+" failed");
+    if(avoidCount>=3) reasons.push(avoidCount+" avoidant or anxious pattern"+(avoidCount>1?"s":"")+" confirmed");
+    html+="<div class='nn-banner-sub'>"+reasons.join(" and ")+". Your blueprint was written for exactly this moment — to protect you when the data is clear and feelings are negotiating.</div>";
   } else {
     html+="<div class='nn-banner-title'>Watch carefully</div>";
     html+="<div class='nn-banner-sub'>"+(fails.length>0?fails.length+" non-negotiable"+(fails.length>1?"s":"")+". ":"")+(partials.length>0?partials.length+" uncertain. ":"")+"Slow down and pay attention.</div>";
@@ -1158,14 +1415,58 @@ function renderPhase(){
     return;
   }
   var tab=S.tab[ph.num]||"input",isPre=ph.num>=6;
-  var tabsHtml="<div class='phase-tabs'><button class='ptab"+(tab==="input"?" active":"")+"' onclick='setTab("+ph.num+",\"input\")'>My inputs</button><button class='ptab"+(tab==="check"?" active":"")+"' onclick='setTab("+ph.num+",\"check\")'>Checklist</button>"+(ph.prenup?"<button class='ptab"+(tab==="prenup"?" active":"")+"' onclick='setTab("+ph.num+",\"prenup\")'>Prenup</button>":"")+"<button class='ptab"+(tab==="notes"?" active":"")+"' onclick='setTab("+ph.num+",\"notes\")'>Notes</button></div>";
+  var tabs_=["input","check"];
+    if(ph.prenup)tabs_.push("prenup");
+    tabs_.push("notes");
+    var tabLabels_={input:"My inputs",check:"Checklist",monthly:"Monthly",prenup:"Prenup",notes:"Notes"};
+    var tabsHtml="<div class='phase-tabs'>"+tabs_.map(function(t){
+      return "<button class=\"ptab"+(tab===t?" active":"")+"\" onclick=\"setTab("+ph.num+",'"+t+"')\">"+tabLabels_[t]+"</button>";
+    }).join("")+"</div>";
   var body="";
   if(tab==="input"){
     body="<div class='my-input-box'><div class='mi-title'>What is required from me in this phase</div>"+ph.myInput.map(function(t){return "<div class='mi-item'><div class='mi-dot'></div><div class='mi-text'>"+t+"</div></div>";}).join("")+"</div>";
   }
   if(tab==="check"){
-    var ICONS={none:"",yes:"\u2713",partial:"~",no:"\u2717"},LABELS={none:"not yet",yes:"yes",partial:"partially",no:"no"},SCLS={none:"state-none",yes:"state-yes",partial:"state-partial",no:"state-no"};
-    body="<div class='check-title'>Tap the circle to cycle: yes \u2192 partial \u2192 no \u2192 not yet</div>"+ph.items.map(function(it){var k=ph.num+"_"+it.key,v=S.checks[k]||"none";return "<div class='check-item'><button class='check-btn "+(v!=="none"?v:"")+"' onclick='cycleCheck("+ph.num+",\""+it.key+"\")'>"+ICONS[v]+"</button><div class='check-content'><span class='check-label'>"+it.text+"</span><div class='check-meta'><span class='check-tag'>"+it.label+"</span><span class='"+SCLS[v]+"'>"+LABELS[v]+"</span></div></div></div>";}).join("");
+    var ICONS={none:"",yes:"✓",partial:"~",no:"✗"};
+    var LABELS={none:"not yet",yes:"yes",partial:"partially",no:"no"};
+    var SCLS={none:"state-none",yes:"state-yes",partial:"state-partial",no:"state-no"};
+
+    body="<div class='check-title'>Tap the circle to cycle: yes → partial → no → not yet</div>";
+
+    if(ph.monthly&&ph.monthly.length){
+      // Phases with monthly milestones: show months as dropdowns only
+      ph.monthly.forEach(function(block,bi){
+        var isFirst=bi===0;
+        var blockId="mblock_"+ph.num+"_"+bi;
+        var doneCount=block.items.filter(function(it){return S.checks["m_"+ph.num+"_"+it.key]==="yes";}).length;
+        body+="<div style='margin-bottom:10px;border:1px solid var(--pink-100);border-radius:12px;overflow:hidden'>";
+        // header
+        body+="<div style='display:flex;align-items:center;gap:10px;padding:12px 16px;background:"+(isFirst?"var(--pink-50)":"white")+";cursor:pointer;user-select:none' onclick=\"toggleMonthBlock('"+blockId+"')\">";
+        body+="<span style='font-size:12px;font-weight:700;color:var(--deep);flex:1'>"+block.month+"</span>";
+        body+="<span style='font-size:11px;color:var(--mist);margin-right:6px'>"+doneCount+"/"+block.items.length+"</span>";
+        body+="<span style='font-size:11px;color:var(--mist)'>"+(isFirst?"▲":"▼")+"</span>";
+        body+="</div>";
+        // items
+        body+="<div id='"+blockId+"' style='display:"+(isFirst?"block":"none")+";padding:6px 14px 12px'>";
+        block.items.forEach(function(it){
+          var k="m_"+ph.num+"_"+it.key,v=S.checks[k]||"none";
+          body+="<div class='check-item'>";
+          body+="<button class=\"check-btn "+(v!=="none"?v:"")+"\" onclick=\"cycleCheck('m_"+ph.num+"','"+it.key+"')\">";
+          body+=ICONS[v]+"</button>";
+          body+="<div class='check-content'><span class='check-label'>"+it.text+"</span>";
+          body+="<div class='check-meta'><span class='check-state "+SCLS[v]+"'>"+LABELS[v]+"</span></div></div></div>";
+        });
+        body+="</div></div>";
+      });
+    } else {
+      // Phases without monthly milestones: show flat checklist
+      body+=ph.items.map(function(it){
+        var k=ph.num+"_"+it.key,v=S.checks[k]||"none";
+        return "<div class='check-item'><button class=\"check-btn "+(v!=="none"?v:"")+"\" onclick=\"cycleCheck("+ph.num+",'"+it.key+"')\">"
+          +ICONS[v]+"</button><div class='check-content'><span class='check-label'>"+it.text+"</span>"
+          +"<div class='check-meta'><span class='check-tag'>"+it.label+"</span><span class='"+SCLS[v]+"'>"+LABELS[v]+"</span></div></div></div>";
+      }).join("");
+    }
   }
   if(tab==="prenup"&&ph.prenup){
     body="<div class='prenup-box'><div class='prenup-title'>"+ph.prenup.title+"</div>"+ph.prenup.items.map(function(pi){return "<div class='prenup-item'><span class='prenup-arrow'>\u2192</span>"+pi+"</div>";}).join("")+"</div><div class='notes-lbl'>Prenup notes</div><textarea id='pn' placeholder='Lawyer name, dates, outstanding items...' onchange='saveNote("+ph.num+",\"prenup\")'>"+(S.notes[ph.num+"_prenup"]||"")+"</textarea>";
@@ -1177,6 +1478,15 @@ function renderPhase(){
 }
 
 function setTab(ph,tab){S.tab[ph]=tab;save();renderPhase();}
+function toggleMonthBlock(id){
+  var el=document.getElementById(id);
+  if(!el) return;
+  var isOpen=el.style.display!=="none";
+  el.style.display=isOpen?"none":"block";
+  // flip arrow in header
+  var hdr=el.previousElementSibling;
+  if(hdr){var arr=hdr.querySelector("span:last-child");if(arr)arr.innerHTML=isOpen?"&#9660;":"&#9650;";}
+}
 function saveNote(ph,type){var e=el("pn");if(e){S.notes[ph+"_"+type]=e.value;save();}}
 function overrideUnlock(n){if(!S.overrides)S.overrides={};S.overrides[n]=true;save();renderAll();}
 
@@ -2058,9 +2368,9 @@ function printReport(){
   var body = el("reportBody");
   if(!body) return;
   var win = window.open("","_blank","width=800,height=900");
-  win.document.write("<html><head><title>My Relationship Blueprint &mdash; Progress Report</title>");
-  win.document.write("<style>body{font-family:Georgia,serif;color:#1a1a1a;max-width:680px;margin:40px auto;padding:0 24px;line-height:1.6}h1{font-size:28px;font-weight:300;color:#5a1a30;margin-bottom:4px}h2{font-size:13px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#a08080;border-bottom:1px solid #ffd6e7;padding-bottom:8px;margin:24px 0 14px}.stat-row{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:8px}.stat{text-align:center;min-width:80px}.stat-val{font-size:24px;font-weight:500;color:#c4406b;display:block}.stat-lbl{font-size:11px;color:#a08080}.phase-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #fff0f5}.ph-num{font-size:18px;font-weight:500;color:#c4406b;min-width:24px}.ph-info{flex:1}.ph-name{font-size:13px;font-weight:500;color:#5a1a30}.ph-gate{font-size:12px;color:#a08080;font-style:italic}.bar-wrap{width:100px;height:6px;background:#fff0f5;border-radius:99px;overflow:hidden}.bar-fill{height:100%;background:#c4406b;border-radius:99px}.ph-pct{font-size:12px;font-weight:500;color:#7a2444;min-width:32px;text-align:right}.nn-item{padding:10px 0;border-bottom:1px solid #fff0f5}.nn-label{font-size:13px;font-weight:500;color:#5a1a30;margin-bottom:4px}.nn-reason{font-size:13px;color:#a08080;font-style:italic}.log-row{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid #fff0f5;font-size:13px}.flag-g{color:#2a5a08;font-weight:500;min-width:60px}.flag-r{color:#8b1a1a;font-weight:500;min-width:60px}.flag-n{color:#a08080;min-width:60px}.mantra{text-align:center;padding:32px 0 8px;font-size:18px;font-style:italic;color:#7a2444}@media print{body{margin:20px}}</style>");
-  win.document.write("</head><body>");
+  win.document.write("<ht"+"ml><he"+"ad><title>My Relationship Blueprint — Progress Report</title>");
+  win.document.write("<style>body{font-family:Georgia,serif;color:#1a1a1a;max-width:680px;margin:40px auto;padding:0 24px;line-height:1.6;font-size:12px}h1{font-size:20px;font-weight:300;color:#5a1a30;margin-bottom:4px}h2{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#a08080;border-bottom:1px solid #ffd6e7;padding-bottom:6px;margin:18px 0 10px}.stat-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px}.stat{text-align:center;min-width:70px}.stat-val{font-size:18px;font-weight:500;color:#c4406b;display:block}.stat-lbl{font-size:10px;color:#a08080}.phase-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #fff0f5}.ph-num{font-size:14px;font-weight:500;color:#c4406b;min-width:20px}.ph-info{flex:1}.ph-name{font-size:11px;font-weight:500;color:#5a1a30}.ph-gate{font-size:10px;color:#a08080;font-style:italic}.bar-wrap{width:80px;height:5px;background:#fff0f5;border-radius:99px;overflow:hidden}.bar-fill{height:100%;background:#c4406b;border-radius:99px}.ph-pct{font-size:10px;font-weight:500;color:#7a2444;min-width:28px;text-align:right}.nn-item{padding:7px 0;border-bottom:1px solid #fff0f5}.nn-label{font-size:11px;font-weight:500;color:#5a1a30;margin-bottom:3px}.nn-reason{font-size:11px;color:#a08080;font-style:italic}.log-row{display:flex;gap:8px;padding:5px 0;border-bottom:1px solid #fff0f5;font-size:11px}.flag-g{color:#2a5a08;font-weight:500;min-width:54px}.flag-r{color:#8b1a1a;font-weight:500;min-width:54px}.flag-n{color:#a08080;min-width:54px}.mantra{text-align:center;padding:24px 0 8px;font-size:14px;font-style:italic;color:#7a2444}@media print{body{margin:16px;font-size:11px}}</style>");
+  win.document.write("</he"+"ad><bo"+"dy>");
   win.document.write("<h1>My Relationship Blueprint</h1>");
   win.document.write("<p style='font-size:14px;color:#a08080;font-style:italic;margin-bottom:24px'>Progress report &mdash; "+new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})+"</p>");
 
@@ -2107,7 +2417,7 @@ function printReport(){
   }
 
   win.document.write("<div class='mantra'>&ldquo;I will no longer live my life like I am in a hurry.&rdquo; &#9825;</div>");
-  win.document.write("</body></html>");
+  win.document.write("</bo"+"dy></ht"+"ml>");
   win.document.close();
   win.focus();
   setTimeout(function(){win.print();},400);
