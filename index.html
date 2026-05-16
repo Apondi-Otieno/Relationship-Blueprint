@@ -311,60 +311,147 @@ textarea::placeholder{color:var(--mist);font-style:italic}
 .diary-empty{font-family:var(--serif);font-size:16px;font-style:italic;color:var(--mist);text-align:center;padding:16px 0}
 
 @media(max-width:700px){
-  /* layout */
+  /* layout — no overflow */
   .sidebar{display:none!important}
-  .page{padding:0 12px 60px;max-width:100%}
-  .layout{display:block}
+  .layout{display:block;overflow-x:hidden}
+  .page{padding:0 14px 80px;max-width:100%;overflow-x:hidden}
+  *{max-width:100%;word-break:break-word}
 
   /* hero */
-  .hero{padding:28px 0 20px}
-  .hero h1{font-size:32px}
-  .hero-sub{font-size:15px}
+  .hero{padding:28px 14px 20px}
+  .hero h1{font-size:28px;line-height:1.15}
+  .hero-sub{font-size:14px}
+  .hero-verse{font-size:13px}
 
-  /* stats */
+  /* stats bar */
   .stats-bar{grid-template-columns:repeat(2,1fr);gap:8px}
+  .stat-val{font-size:18px}
+  .stat-lbl{font-size:10px}
 
-  /* timeline */
-  .timeline{grid-template-columns:repeat(4,1fr);gap:3px;padding:10px 8px}
-  .tl-seg .tl-name{font-size:8px}
-  .tl-seg .tl-num{font-size:13px}
-  .tl-seg .tl-pct{font-size:8px}
+  /* timeline — 2 rows of 4 */
+  .timeline{grid-template-columns:repeat(4,1fr);gap:3px;padding:8px 6px}
+  .tl-seg{padding:6px 2px 5px}
+  .tl-seg .tl-num{font-size:12px}
+  .tl-seg .tl-name{font-size:7px}
+  .tl-seg .tl-pct{font-size:7px}
+  .tl-fill-track{height:3px}
 
-  /* cards */
+  /* all cards full width, comfortable padding */
   .phase-card,.log-card,.checkin-card,.flag-ratio-card,.him-card,
-  .selfcare-card,.save-card,.rlog-card,.mantra{border-radius:14px;padding:16px 14px}
-  .phase-card-header{flex-wrap:wrap;gap:10px}
-  .phase-body{padding:14px 14px}
-  .phase-tabs .ptab{font-size:11px;padding:8px 4px}
+  .selfcare-card,.save-card,.rlog-card,.mantra,
+  .startdate-card,.sc-history,.update-panel{
+    border-radius:12px;padding:14px 14px;margin-bottom:14px
+  }
+
+  /* phase panel */
+  .phase-card-header{flex-wrap:wrap;gap:8px}
+  .phase-num-badge{width:36px;height:36px;font-size:16px}
+  .phase-title{font-size:16px}
+  .phase-gate{font-size:12px}
+  .score-circle{width:46px;height:46px;min-width:46px}
+  .score-pct{font-size:12px}
+  .phase-body{padding:12px 12px}
+  .phase-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .phase-tabs .ptab{font-size:10px;padding:8px 6px;white-space:nowrap;min-width:fit-content}
+  .check-label{font-size:13px}
+  .check-btn{width:24px;height:24px;min-width:24px;font-size:12px}
+  .my-input-box{padding:12px 12px}
+  .mi-text{font-size:13px}
 
   /* him card */
   .him-fields{grid-template-columns:1fr}
   .him-field.full{grid-column:1}
-  .him-card-header{flex-wrap:wrap}
+  .him-card-header{flex-wrap:wrap;gap:8px}
+  .him-name input{font-size:16px}
+
+  /* startdate card */
+  .startdate-card{flex-direction:column;align-items:flex-start;gap:10px}
+  .startdate-input-wrap{flex-wrap:wrap;gap:8px}
+  input[type="date"]{width:100%}
+
+  /* observation log */
+  .log-input-row{flex-direction:column;gap:8px}
+  .log-input-row input,.log-input-row select{width:100%}
+  .log-add-block input{font-size:16px}
+  .log-add-controls{flex-direction:column;align-items:stretch;gap:8px}
+  .log-flag-toggle{justify-content:space-between}
+  .flag-toggle-btn{flex:1;text-align:center;padding:8px 6px;font-size:12px}
+  .btn-log-add{width:100%;padding:11px}
+  .log-phase-group-title{font-size:10px}
+  .log-entry-text{font-size:13px}
 
   /* selfcare */
-  .selfcare-areas{grid-template-columns:1fr}
-
-  /* rlog */
-  .rlog-form-grid{grid-template-columns:1fr}
-  .rlog-form-field.full{grid-column:1}
-  .rlog-entry-grid{grid-template-columns:1fr}
+  .selfcare-areas,.selfcare-grid{grid-template-columns:1fr}
+  .selfcare-area textarea{min-height:70px}
 
   /* checkin */
-  .heart-rating{gap:6px}
-  .heart-btn{width:36px;height:36px;font-size:16px}
-
-  /* save card */
-  .save-btns{flex-wrap:wrap;gap:6px}
-  .save-left{min-width:0}
+  .heart-rating{gap:8px;justify-content:center}
+  .heart-btn{width:40px;height:40px;font-size:18px}
+  .checkin-entry{flex-direction:column;gap:4px}
+  .checkin-hearts{min-width:unset}
 
   /* flag ratio */
   .flag-phase-row{gap:6px}
   .flag-phase-label{min-width:52px;font-size:11px}
-  .flag-counts{font-size:11px}
+  .flag-counts{font-size:12px}
+  .flag-bar-wrap{min-width:80px}
+
+  /* save / data bar */
+  .save-btns{flex-wrap:wrap;gap:8px;width:100%}
+  .save-btns .btn-save,.save-btns .btn-restore,.save-btns .btn-reset{flex:1;text-align:center;justify-content:center}
+  .save-left{min-width:0}
+
+  /* relationship log */
+  .rlog-card{overflow:hidden}
+  .rlog-add-form{padding:12px;width:100%;box-sizing:border-box}
+  .rlog-form-grid{grid-template-columns:1fr;gap:8px;width:100%}
+  .rlog-form-field{width:100%;min-width:0;box-sizing:border-box}
+  .rlog-form-field.full{grid-column:1}
+  .rlog-form-field input,.rlog-form-field textarea,.rlog-form-field select{width:100%;box-sizing:border-box;font-size:16px}
+  .rlog-add-actions{justify-content:stretch}
+  .rlog-add-actions .btn-checkin{width:100%;text-align:center;padding:12px}
+  .rlog-entry-grid{grid-template-columns:1fr}
+  .rlog-entry-header{flex-wrap:wrap}
+
+  /* endit modal */
+  .endit-backdrop{padding:10px}
+  .endit-modal{border-radius:14px;max-height:95vh}
+  .endit-modal-body{padding:14px 16px 20px}
+  .endit-actions{flex-direction:column}
+  .btn-endit-confirm,.btn-endit-cancel{width:100%;text-align:center}
+
+  /* report modal */
+  .report-backdrop{padding:0}
+  .report-modal{width:100vw;height:100vh;max-height:100vh;border-radius:0}
+  .report-modal-header{padding:14px 16px}
+  .report-body{padding:16px 16px}
+  .report-stat-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+  .report-phase-bar-wrap{width:70px}
 
   /* journal panel */
-  .journal-panel{width:100vw}
+  .journal-panel{width:100vw;max-width:100vw}
+  .journal-trigger{right:0}
+  .journal-tab{padding:14px 8px;font-size:11px}
+  .journal-modal-header,.journal-body{padding:14px 16px}
+  .journal-section-title{font-size:10px}
+
+  /* nn banner */
+  .nn-banner{padding:14px 14px}
+  .nn-fail-label{font-size:12px;flex-wrap:wrap}
+  .nn-fail-reason{font-size:12px}
+  .nn-footer{font-size:13px}
+
+  /* locked overlay */
+  .locked-overlay{padding:24px 14px}
+  .locked-title{font-size:18px}
+  .locked-sub{font-size:13px}
+
+  /* mantra / verse */
+  .mantra{padding:24px 14px}
+  .mantra-quote{font-size:16px}
+
+  /* sc history */
+  .sc-entry-grid{grid-template-columns:1fr}
 
   /* report modal */
   .report-modal{width:100vw;height:100vh;max-height:100vh;border-radius:0}
@@ -578,19 +665,17 @@ textarea::placeholder{color:var(--mist);font-style:italic}
   .rlog-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;gap:12px}
   .rlog-verse{font-family:var(--serif);font-size:13px;font-style:italic;color:var(--mauve);margin-bottom:18px;line-height:1.6}
 
-  .rlog-add-form{background:var(--blush);border:1px solid var(--pink-100);border-radius:14px;padding:16px 18px;margin-bottom:20px}
+  .rlog-add-form{background:var(--blush);border:1px solid var(--pink-100);border-radius:14px;padding:16px 18px;margin-bottom:20px;box-sizing:border-box;width:100%}
   .rlog-form-title{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mist);margin-bottom:14px}
-  .rlog-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
-  .rlog-form-field{display:flex;flex-direction:column;gap:4px}
+  .rlog-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;width:100%}
+  .rlog-form-field{display:flex;flex-direction:column;gap:4px;min-width:0}
   .rlog-form-field.full{grid-column:1/-1}
-  .rlog-form-field label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mauve)}
-  .rlog-form-field input,.rlog-form-field textarea,.rlog-form-field select{border:1px solid var(--pink-100);border-radius:10px;padding:9px 12px;font-size:13px;font-family:var(--sans);color:var(--stone);background:white;outline:none;transition:border-color .15s;font-weight:500}
+  .rlog-form-field label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mauve)}
+  .rlog-form-field input,.rlog-form-field textarea,.rlog-form-field select{width:100%;border:1px solid var(--pink-100);border-radius:10px;padding:9px 12px;font-size:13px;font-family:var(--sans);color:var(--stone);background:white;outline:none;transition:border-color .15s;font-weight:500;box-sizing:border-box}
   .rlog-form-field input:focus,.rlog-form-field textarea:focus{border-color:var(--petal)}
-  .rlog-form-field textarea{resize:none;min-height:70px;line-height:1.5}
+  .rlog-form-field textarea{resize:none;min-height:70px;line-height:1.55}
   .rlog-form-field select{cursor:pointer}
   .rlog-add-actions{display:flex;justify-content:flex-end;margin-top:12px}
-
-  .rlog-entries{display:flex;flex-direction:column;gap:14px}
   .rlog-entry{border:1px solid var(--pink-100);border-radius:16px;padding:18px 20px;position:relative;background:white}
   .rlog-entry-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;gap:10px}
   .rlog-entry-name{font-family:var(--serif);font-size:20px;font-weight:500;color:var(--deep)}
