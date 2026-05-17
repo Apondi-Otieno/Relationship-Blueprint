@@ -2935,14 +2935,50 @@ function openReport(){
   }
 
   if(log.length){
-    html+='<div class="report-section"><div class="report-section-title">Observations ('+log.length+')</div>';
-    log.slice().reverse().forEach(function(e){
-      var col=e.flag==="green"?"#2a5a08":e.flag==="red"?"#8b1a1a":"var(--mist)";
-      var lbl=e.flag==="green"?"green":e.flag==="red"?"red":"neutral";
-      html+='<div class="report-log-item"><span style="font-size:10px;font-weight:500;color:'+col+';min-width:54px;font-style:normal">'+lbl+'</span>';
-      html+='<span style="font-size:10px;color:var(--mist);min-width:48px">Ph '+e.phase+'</span>';
-      html+='<span>'+e.text+'</span></div>';
-    });
+    var obsRes2=analyseObservations();
+    var gc3=log.filter(function(l){return l.flag==="green";}).length;
+    var rc3=log.filter(function(l){return l.flag==="red";}).length;
+    var nc3=log.filter(function(l){return l.flag==="neutral";}).length;
+    var ratio3=log.length?Math.round(gc3/log.length*100):0;
+    html+='<div class="report-section"><div class="report-section-title">What your observations reveal</div>';
+    html+='<p style="font-size:12px;color:var(--mist);margin-bottom:14px">Patterns in what you have logged.</p>';
+    html+='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">';
+    html+='<div class="report-stat"><span class="report-stat-val" style="color:var(--green)">'+gc3+'</span><span class="report-stat-lbl">green</span></div>';
+    html+='<div class="report-stat"><span class="report-stat-val" style="color:var(--red)">'+rc3+'</span><span class="report-stat-lbl">red</span></div>';
+    html+='<div class="report-stat"><span class="report-stat-val" style="color:var(--mist)">'+nc3+'</span><span class="report-stat-lbl">neutral</span></div>';
+    html+='<div class="report-stat"><span class="report-stat-val">'+ratio3+'%</span><span class="report-stat-lbl">positive</span></div>';
+    html+='</div>';
+    if(obsRes2&&obsRes2.patterns.length){
+      obsRes2.patterns.forEach(function(p){
+        var borderCol=p.type==='warning'?'var(--rose)':p.type==='insight'?'var(--green)':'var(--petal)';
+        var bgCol=p.type==='warning'?'#fff5f7':p.type==='insight'?'#f0f7e8':'var(--blush)';
+        var lblCol=p.type==='warning'?'var(--rose)':p.type==='insight'?'var(--green)':'var(--mauve)';
+        html+='<div style="border-left:3px solid '+borderCol+';background:'+bgCol+';border-radius:0 10px 10px 0;padding:10px 14px;margin-bottom:10px">';
+        html+='<div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:'+lblCol+';margin-bottom:5px">'+p.label+'</div>';
+        html+='<div style="font-size:13px;color:var(--stone);line-height:1.55">'+p.text+'</div>';
+        if(p.examples&&p.examples.length){
+          p.examples.forEach(function(ex){
+            html+='<div style="font-size:12px;color:var(--mist);font-style:italic;padding:3px 0 3px 10px;border-left:2px solid var(--petal);margin-top:5px">&ldquo;'+ex+'&rdquo;</div>';
+          });
+        }
+        html+='</div>';
+      });
+    } else {
+      html+='<p style="font-size:13px;color:var(--mist);font-style:italic">No strong patterns yet. Keep logging.</p>';
+    }
+    var nudges4=getChecklistNudges();
+    if(nudges4.length){
+      html+='<div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--pink-100)">';
+      html+='<div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mauve);margin-bottom:10px">Your log is asking you to revisit</div>';
+      nudges4.forEach(function(n){
+        html+='<div style="border-left:3px solid var(--petal);background:var(--blush);border-radius:0 8px 8px 0;padding:8px 12px;margin-bottom:8px">';
+        html+='<div style="font-size:11px;font-weight:600;color:var(--stone)"><span style="font-size:10px;background:var(--pink-50);color:var(--mauve);padding:1px 6px;border-radius:99px;margin-right:4px">Phase '+n.checklistPhase+'</span>'+n.checklistLabel+'</div>';
+        html+='<div style="font-size:12px;color:var(--mist);margin-top:3px">'+n.count+' red flags about '+n.category+' — still marked &ldquo;'+n.checklistState+'&rdquo;</div>';
+        n.examples.forEach(function(ex){html+='<div style="font-size:11px;color:var(--mist);font-style:italic;margin-top:3px">&ldquo;'+ex+'&rdquo;</div>';});
+        html+='</div>';
+      });
+      html+='</div>';
+    }
     html+='</div>';
   }
 
@@ -2960,70 +2996,245 @@ function openReport(){
     html+='</div>';
   }
 
-  html+='<div style="text-align:center;padding:20px 0 8px;font-family:var(--serif);font-size:16px;font-style:italic;color:var(--mauve)">&ldquo;I will no longer live my life like I am in a hurry.&rdquo; &#9825;</div>';
+  // ── If ending: closing suggestions ────────────────────────────────────────
+  var isEnding2=terminateActive();
+  if(isEnding2){
+    var fails2=getNNFails();
+    var avoidFails2=getAvoidantFails();
+    var rfScore2=getRedFlagScore();
+    var rfThreshold2=getRedFlagThreshold();
+    var nudges5=getChecklistNudges();
+    var suggestions2=[];
+
+    if(fails2.some(function(n){return/financ|pay|money/i.test(n.label);})||nudges5.some(function(n){return n.category==='financial';})){
+      suggestions2.push('Financial independence is not a preference — it is a prerequisite. The next man must show evidence of this by the end of Phase 1, not Phase 5.');
+      suggestions2.push('Log every financial interaction in Phase 1. How he handles money early is who he is with money always.');
+    }
+    if(fails2.some(function(n){return/plan|date|effort|pursue/i.test(n.label);})||nudges5.some(function(n){return n.category==='effort';})){
+      suggestions2.push('Do not initiate. Watch what he builds toward you unprompted. A man who is interested makes it obvious.');
+      suggestions2.push('By month 3, ask yourself: is he still planning dates or has that become your job? That question has an answer early.');
+    }
+    var seen2={};
+    var uniqAvoid2=avoidFails2.filter(function(a){var k=a.text;if(seen2[k])return false;seen2[k]=true;return true;});
+    if(uniqAvoid2.length>=2){
+      suggestions2.push('Avoidant attachment does not resolve inside a relationship without deliberate work. The next time you feel yourself making excuses for emotional distance, name it in your log.');
+      suggestions2.push('Post-closeness withdrawal is the earliest avoidant signal. Name it in the first month it appears, not the sixth.');
+    }
+    if(fails2.some(function(n){return/respect|mother|women/i.test(n.label);})||nudges5.some(function(n){return n.category==='respect';})){
+      suggestions2.push('How he speaks about women — especially his mother — is a preview. This information is available in Phase 1.');
+    }
+    if(rfScore2>=rfThreshold2){
+      suggestions2.push('Your observation log reached the terminate threshold before the checklist did. Trust what you are logging. The data in your daily observations is as reliable as the structured checklist.');
+    }
+    suggestions2.push('Before you start the next blueprint, sit with what you learned about yourself in this one. The relationship log pattern analysis is the place to start.');
+    suggestions2.push('The boundary held or not held in Phase 2 sets the tone for everything that follows. Name it early and hold it completely.');
+    suggestions2.push('You do not need to explain this decision or make him understand it. You simply need to honour what you already know.');
+
+    html+='<div class="report-section" style="background:var(--deep);border-radius:14px;padding:20px 22px;margin-top:8px">';
+    html+='<div class="report-section-title" style="color:var(--petal);border-bottom-color:rgba(255,255,255,.1)">Closing this chapter — what to carry forward</div>';
+    html+='<div style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--petal);margin-bottom:12px;opacity:.7">What to do differently next time</div>';
+    suggestions2.forEach(function(s){
+      html+='<div style="padding:8px 12px;border-radius:8px;margin-bottom:8px;font-size:13px;line-height:1.6;color:#f0d0d8;border-left:2px solid var(--rose);background:rgba(255,255,255,.05)">'+s+'</div>';
+    });
+    html+='</div>';
+  }
+
+  html+='<div style="text-align:center;padding:20px 0 8px;font-family:var(--serif);font-size:16px;font-style:italic;color:var(--mauve)">&ldquo;Who shall find a noble woman? Her worth is far above rubies.&rdquo; &#9825;</div>';
 
   body.innerHTML=html;
   document.getElementById('reportBackdrop').classList.add('open');
 }
 
 function printReport(){
-  var body = el("reportBody");
-  if(!body) return;
-  var win = window.open("","_blank","width=800,height=900");
-  win.document.write("<ht"+"ml><he"+"ad><title>My Relationship Blueprint — Progress Report</title>");
-  win.document.write("<style>body{font-family:Georgia,serif;color:#1a1a1a;max-width:680px;margin:40px auto;padding:0 24px;line-height:1.6;font-size:12px}h1{font-size:20px;font-weight:300;color:#5a1a30;margin-bottom:4px}h2{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#a08080;border-bottom:1px solid #ffd6e7;padding-bottom:6px;margin:18px 0 10px}.stat-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px}.stat{text-align:center;min-width:70px}.stat-val{font-size:18px;font-weight:500;color:#c4406b;display:block}.stat-lbl{font-size:10px;color:#a08080}.phase-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #fff0f5}.ph-num{font-size:14px;font-weight:500;color:#c4406b;min-width:20px}.ph-info{flex:1}.ph-name{font-size:11px;font-weight:500;color:#5a1a30}.ph-gate{font-size:10px;color:#a08080;font-style:italic}.bar-wrap{width:80px;height:5px;background:#fff0f5;border-radius:99px;overflow:hidden}.bar-fill{height:100%;background:#c4406b;border-radius:99px}.ph-pct{font-size:10px;font-weight:500;color:#7a2444;min-width:28px;text-align:right}.nn-item{padding:7px 0;border-bottom:1px solid #fff0f5}.nn-label{font-size:11px;font-weight:500;color:#5a1a30;margin-bottom:3px}.nn-reason{font-size:11px;color:#a08080;font-style:italic}.log-row{display:flex;gap:8px;padding:5px 0;border-bottom:1px solid #fff0f5;font-size:11px}.flag-g{color:#2a5a08;font-weight:500;min-width:54px}.flag-r{color:#8b1a1a;font-weight:500;min-width:54px}.flag-n{color:#a08080;min-width:54px}.mantra{text-align:center;padding:24px 0 8px;font-size:14px;font-style:italic;color:#7a2444}@media print{body{margin:16px;font-size:11px}}</style>");
-  win.document.write("</he"+"ad><bo"+"dy>");
-  win.document.write("<h1>My Relationship Blueprint</h1>");
-  win.document.write("<p style='font-size:14px;color:#a08080;font-style:italic;margin-bottom:24px'>Progress report &mdash; "+new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})+"</p>");
-
   var him=S.him||{};
-  if(him.name) win.document.write("<p style='font-size:16px;color:#5a1a30;font-weight:500;margin-bottom:4px'>"+him.name+"</p>");
-  if(him.sentence) win.document.write("<p style='font-size:14px;font-style:italic;color:#a08080;margin-bottom:16px'>&ldquo;"+him.sentence+"&rdquo;</p>");
-
+  var _html=[];
+  var win={document:{write:function(s){_html.push(s);},close:function(){}}};
   var days=getDaysIn();
   var elapsed=days!==null?friendlyElapsed(days):"not started";
-  var gc2=(S.log||[]).filter(function(l){return l.flag==="green";}).length;
-  var rc2=(S.log||[]).filter(function(l){return l.flag==="red";}).length;
+  var log=S.log||[];
+  var gc2=log.filter(function(l){return l.flag==="green";}).length;
+  var rc2=log.filter(function(l){return l.flag==="red";}).length;
+  var nc2=log.filter(function(l){return l.flag==="neutral";}).length;
+  var fails=getNNFails();
+  var avoidFails=getAvoidantFails();
+  var rfScore=getRedFlagScore();
+  var rfThreshold=getRedFlagThreshold();
+  var nudges=getChecklistNudges();
+  var obsResults=analyseObservations();
+  var isEnding=terminateActive();
+
+  // Deduplicate avoidant fails
+  var seen={};
+  var uniqAvoid=avoidFails.filter(function(a){var k=a.text;if(seen[k])return false;seen[k]=true;return true;});
+
+  win.document.write("<ht"+"ml><he"+"ad><title>My Relationship Blueprint — Progress Report</title>");
+  win.document.write("<style>");
+  win.document.write("body{font-family:Georgia,serif;color:#1a1a1a;max-width:700px;margin:40px auto;padding:0 28px;line-height:1.65;font-size:12px}");
+  win.document.write("h1{font-size:22px;font-weight:300;color:#5a1a30;margin-bottom:4px;letter-spacing:.02em}");
+  win.document.write("h2{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#a08080;border-bottom:1px solid #ffd6e7;padding-bottom:5px;margin:22px 0 12px}");
+  win.document.write(".stat-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px}");
+  win.document.write(".stat{text-align:center;min-width:70px;background:#fdf8f5;border-radius:8px;padding:10px 14px}");
+  win.document.write(".stat-val{font-size:20px;font-weight:500;color:#c4406b;display:block}");
+  win.document.write(".stat-lbl{font-size:9px;color:#a08080;text-transform:uppercase;letter-spacing:.08em}");
+  win.document.write(".phase-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #fff0f5}");
+  win.document.write(".ph-num{font-size:13px;font-weight:500;color:#c4406b;min-width:22px}");
+  win.document.write(".ph-name{font-size:11px;font-weight:500;color:#5a1a30}");
+  win.document.write(".ph-gate{font-size:10px;color:#a08080;font-style:italic}");
+  win.document.write(".bar-wrap{width:90px;height:5px;background:#fff0f5;border-radius:99px;overflow:hidden}");
+  win.document.write(".bar-fill{height:100%;background:#c4406b;border-radius:99px}");
+  win.document.write(".ph-pct{font-size:10px;font-weight:500;color:#7a2444;min-width:28px;text-align:right}");
+  win.document.write(".card{border-left:3px solid #e8a0b8;padding:8px 12px;margin-bottom:8px;background:#fdf8f5;border-radius:0 6px 6px 0}");
+  win.document.write(".card.warning{border-left-color:#c4406b}");
+  win.document.write(".card.insight{border-left-color:#2a5a08}");
+  win.document.write(".card.red{border-left-color:#8b1a1a;background:#fff5f5}");
+  win.document.write(".card.ending{border-left-color:#5a1a30;background:#2d0a18;color:#f0d0d8}");
+  win.document.write(".card-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#a08080;margin-bottom:4px}");
+  win.document.write(".card.warning .card-label{color:#c4406b}");
+  win.document.write(".card.insight .card-label{color:#2a5a08}");
+  win.document.write(".card.red .card-label{color:#8b1a1a}");
+  win.document.write(".card.ending .card-label{color:#e8a0b8}");
+  win.document.write(".card-val{font-size:11px;line-height:1.6}");
+  win.document.write(".quote{font-size:10px;color:#a08080;font-style:italic;padding:2px 0 2px 8px;border-left:2px solid #ffd6e7;margin-top:3px}");
+  win.document.write(".tag{font-size:9px;background:#a32d2d;color:white;padding:1px 6px;border-radius:99px;font-weight:600;margin-left:4px;vertical-align:middle}");
+  win.document.write(".phase-tag{font-size:9px;background:#fff0f5;color:#7a2444;padding:1px 6px;border-radius:99px;margin-right:5px;border:1px solid #ffd6e7}");
+  win.document.write(".suggestion{padding:6px 10px;border-radius:6px;margin-bottom:5px;font-size:11px;background:#fff0f5;border-left:2px solid #c4406b}");
+  win.document.write("@media print{body{margin:20px}}");
+  win.document.write("</style></he"+"ad><bo"+"dy>");
+
+  // ── Header ────────────────────────────────────────────────────────────────
+  win.document.write("<h1>My Relationship Blueprint</h1>");
+  win.document.write("<p style='font-size:11px;color:#a08080;font-style:italic;margin-bottom:6px'>Progress report &mdash; "+new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})+"</p>");
+  if(him.name) win.document.write("<p style='font-size:15px;color:#5a1a30;font-weight:500;margin-bottom:3px'>"+him.name+"</p>");
+  if(him.sentence) win.document.write("<p style='font-size:12px;font-style:italic;color:#a08080;margin-bottom:16px'>&ldquo;"+him.sentence+"&rdquo;</p>");
+
+  // ── Overview stats ────────────────────────────────────────────────────────
   win.document.write("<h2>Overview</h2><div class='stat-row'>");
   win.document.write("<div class='stat'><span class='stat-val'>"+elapsed+"</span><span class='stat-lbl'>time in</span></div>");
   win.document.write("<div class='stat'><span class='stat-val'>"+totalPct()+"%</span><span class='stat-lbl'>complete</span></div>");
   win.document.write("<div class='stat'><span class='stat-val' style='color:#2a5a08'>"+gc2+"</span><span class='stat-lbl'>green flags</span></div>");
   win.document.write("<div class='stat'><span class='stat-val' style='color:#8b1a1a'>"+rc2+"</span><span class='stat-lbl'>red flags</span></div>");
+  win.document.write("<div class='stat'><span class='stat-val' style='color:#a08080'>"+nc2+"</span><span class='stat-lbl'>neutral</span></div>");
+  if(rfScore>0) win.document.write("<div class='stat'><span class='stat-val' style='color:"+(rfScore>=rfThreshold?"#8b1a1a":rfScore>=6?"#c4406b":"#a08080")+"'>"+rfScore+"/"+rfThreshold+"</span><span class='stat-lbl'>flag score</span></div>");
   win.document.write("</div>");
 
+  // ── Phase progress ────────────────────────────────────────────────────────
   win.document.write("<h2>Phase progress</h2>");
   PHASES.forEach(function(ph){
     var sc=score(ph.num),locked=!isUnlocked(ph.num);
-    win.document.write("<div class='phase-row'><div class='ph-num'>"+ph.num+"</div><div class='ph-info'><div class='ph-name'>"+ph.label+(locked?" (locked)":"")+"</div><div class='ph-gate'>"+ph.gate+"</div></div>");
+    win.document.write("<div class='phase-row'><div class='ph-num'>"+ph.num+"</div><div style='flex:1'><div class='ph-name'>"+ph.label+(locked?" — locked":"")+"</div><div class='ph-gate'>"+ph.gate+"</div></div>");
     if(!locked) win.document.write("<div class='bar-wrap'><div class='bar-fill' style='width:"+sc.pct+"%'></div></div><div class='ph-pct'>"+sc.pct+"%</div>");
     win.document.write("</div>");
   });
 
-  var fails=getNNFails();
-  if(fails.length){
-    win.document.write("<h2 style='color:#8b1a1a'>What is not working ("+fails.length+")</h2>");
+  // ── What is not working ───────────────────────────────────────────────────
+  if(fails.length||uniqAvoid.length){
+    win.document.write("<h2 style='color:#8b1a1a'>What the data is flagging</h2>");
     fails.forEach(function(nn){
-      win.document.write("<div class='nn-item'><div class='nn-label'>Phase "+nn.phase+" &mdash; "+nn.label+" <span style='font-size:10px;background:#a32d2d;color:white;padding:1px 7px;border-radius:99px'>dealbreaker</span></div>");
-      win.document.write("<div class='nn-reason'>Why this matters: "+nn.reason+"</div></div>");
+      win.document.write("<div class='card red'><div class='card-label'><span class='phase-tag'>Phase "+nn.phase+"</span>"+nn.label+"<span class='tag'>dealbreaker</span></div>");
+      win.document.write("<div class='card-val'>"+nn.reason+"</div></div>");
+    });
+    if(uniqAvoid.length){
+      win.document.write("<div class='card warning'><div class='card-label'>Avoidant patterns observed</div><div class='card-val'>");
+      uniqAvoid.forEach(function(a){
+        win.document.write("<div style='padding:2px 0'>• <span class='phase-tag'>"+a.label+"</span>"+a.text+"</div>");
+      });
+      win.document.write("</div></div>");
+    }
+    if(rfScore>0){
+      var barW2=Math.min(Math.round(rfScore/rfThreshold*100),100);
+      win.document.write("<div class='card "+(rfScore>=rfThreshold?"red":"warning")+"'><div class='card-label'>Weighted red flag score: "+rfScore+"/"+rfThreshold+"</div>");
+      win.document.write("<div class='card-val' style='margin-bottom:6px'><div style='height:5px;background:#ffd6e7;border-radius:99px;overflow:hidden'><div style='width:"+barW2+"%;height:100%;background:#c4406b'></div></div></div>");
+      var reds3=log.filter(function(e){return e.flag==='red';});
+      var byPhase3={};
+      reds3.forEach(function(e){if(!byPhase3[e.phase])byPhase3[e.phase]=[];byPhase3[e.phase].push(e);});
+      Object.keys(byPhase3).sort().forEach(function(ph){
+        var entries=byPhase3[ph];var w=PHASE_WEIGHTS[parseInt(ph)]||1;
+        win.document.write("<div style='font-size:10px;color:#a08080'>Phase "+ph+": "+entries.length+" red flag"+(entries.length>1?"s":"")+" × "+w+" = "+(entries.length*w)+" pts</div>");
+      });
+      win.document.write("</div>");
+    }
+  }
+
+  // ── Observation analysis ──────────────────────────────────────────────────
+  if(obsResults){
+    win.document.write("<h2>What your observations reveal</h2>");
+    obsResults.patterns.forEach(function(p){
+      var cls=p.type==='warning'?"warning":p.type==='insight'?"insight":"";
+      win.document.write("<div class='card "+cls+"'><div class='card-label'>"+p.label+"</div><div class='card-val'>"+p.text+"</div>");
+      if(p.examples&&p.examples.length){
+        p.examples.forEach(function(ex){win.document.write("<div class='quote'>&ldquo;"+ex+"&rdquo;</div>");});
+      }
+      win.document.write("</div>");
+    });
+    if(!obsResults.patterns.length) win.document.write("<p style='font-size:11px;color:#a08080;font-style:italic'>No strong patterns yet. Keep logging.</p>");
+  }
+
+  // ── Checklist nudges ──────────────────────────────────────────────────────
+  if(nudges.length){
+    win.document.write("<h2>Your log is asking you to revisit</h2>");
+    nudges.forEach(function(n){
+      win.document.write("<div class='card warning'><div class='card-label'><span class='phase-tag'>Phase "+n.checklistPhase+"</span>"+n.checklistLabel+"</div>");
+      win.document.write("<div class='card-val'>"+n.count+" red flags about "+n.category+" logged — this checklist item is still &ldquo;"+n.checklistState+"&rdquo;.</div>");
+      n.examples.forEach(function(ex){win.document.write("<div class='quote'>&ldquo;"+ex+"&rdquo;</div>");});
+      win.document.write("</div>");
     });
   }
 
-  var log=S.log||[];
-  if(log.length){
-    win.document.write("<h2>Observations</h2>");
-    log.slice().reverse().forEach(function(e){
-      var cls=e.flag==="green"?"flag-g":e.flag==="red"?"flag-r":"flag-n";
-      var lbl=e.flag==="green"?"green flag":e.flag==="red"?"red flag":"neutral";
-      win.document.write("<div class='log-row'><span class='"+cls+"'>"+lbl+"</span><span style='color:#a08080;min-width:50px'>Ph "+e.phase+"</span><span>"+e.text+"</span></div>");
+  // ── If ending: suggestions for the next relationship ─────────────────────
+  if(isEnding){
+    win.document.write("<h2 style='color:#5a1a30'>Closing this chapter — what to carry forward</h2>");
+
+    // Personalised suggestions based on what fired the terminate order
+    var suggestions=[];
+
+    if(fails.some(function(n){return/financ|pay|money/i.test(n.label);})||nudges.some(function(n){return n.category==='financial';})){
+      suggestions.push("Financial independence is not a preference — it is a prerequisite. The next man must show evidence of this by the end of Phase 1, not Phase 5.");
+      suggestions.push("Log every financial interaction in Phase 1. How he handles money early is who he is with money always.");
+    }
+    if(fails.some(function(n){return/plan|date|effort|pursue/i.test(n.label);})||nudges.some(function(n){return n.category==='effort';})){
+      suggestions.push("Do not initiate. Watch what he builds toward you unprompted. A man who is interested makes it obvious.");
+      suggestions.push("By month 3, ask yourself: is he still planning dates or has that become your job? That question has an answer early.");
+    }
+    if(uniqAvoid.length>=2){
+      suggestions.push("Avoidant attachment does not resolve inside a relationship without deliberate therapeutic work. The next time you feel yourself making excuses for emotional distance, name it in your log.");
+      suggestions.push("Post-closeness withdrawal is the earliest avoidant signal. Name it in the first month it appears, not the sixth.");
+    }
+    if(fails.some(function(n){return/respect|mother|women/i.test(n.label);})||nudges.some(function(n){return n.category==='respect';})){
+      suggestions.push("How he speaks about women — especially his mother — is a preview. This information is available in Phase 1.");
+    }
+    if(rfScore>=rfThreshold){
+      suggestions.push("Your observation log reached the terminate threshold before the checklist did. Trust what you are logging. The data in your daily observations is as reliable as the structured checklist.");
+    }
+    // Universal closing suggestions
+    suggestions.push("Before you start the next blueprint, sit with what you learned about yourself in this one. The relationship log pattern analysis is the place to start.");
+    suggestions.push("The boundary held or not held in Phase 2 sets the tone for everything that follows. Name it early and hold it completely.");
+    suggestions.push("You do not need to explain this decision or make him understand it. You simply need to honour what you already know.");
+
+    win.document.write("<div class='card ending'><div class='card-label' style='color:#e8a0b8'>What to do differently next time</div><div class='card-val'>");
+    suggestions.forEach(function(s){
+      win.document.write("<div class='suggestion' style='background:rgba(255,255,255,.05);border-left-color:#e8a0b8;color:#f0d0d8'>"+s+"</div>");
     });
+    win.document.write("</div></div>");
   }
 
-  win.document.write("<div class='mantra'>&ldquo;I will no longer live my life like I am in a hurry.&rdquo; &#9825;</div>");
+  // ── Closing verse ─────────────────────────────────────────────────────────
+  win.document.write("<div style='text-align:center;padding:28px 0 12px;font-style:italic;font-size:13px;color:#7a2444'>&ldquo;Who shall find a noble woman? Her worth is far above rubies.&rdquo;<br><span style='font-size:10px;color:#a08080;font-style:normal'>Proverbs 31:10</span></div>");
+
   win.document.write("</bo"+"dy></ht"+"ml>");
   win.document.close();
-  win.focus();
-  setTimeout(function(){win.print();},400);
+  // Build blob and open in new tab for printing/saving
+  var fullHtml=_html.join("");
+  var blob=new Blob([fullHtml],{type:"text/html"});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a");
+  a.href=url;
+  a.download="blueprint-report-"+new Date().toISOString().slice(0,10)+".html";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(url);},3000);
 }
+
 
 function closeReport(){
   var el=document.getElementById('reportBackdrop');
