@@ -839,13 +839,9 @@ textarea::placeholder{color:var(--mist);font-style:italic}
       <span class="log-count-badge" id="logCountBadge"></span>
     </div>
     <div class="log-add-block">
-      <input type="text" id="logInput" placeholder="What did you notice today?" />
+      <input type="text" id="logInput" placeholder="What did you notice today? — auto-classified" oninput="onLogInput()" />
+      <div id="classifyPreview" style="display:none;margin:8px 0 4px;padding:8px 12px;border-radius:10px;font-size:13px;font-weight:500;font-family:var(--sans);line-height:1.4"></div>
       <div class="log-add-controls">
-        <div class="log-flag-toggle">
-          <button class="flag-toggle-btn active" data-flag="green" onclick="setLogFlag('green',this)">&#129001; Green</button>
-          <button class="flag-toggle-btn" data-flag="red" onclick="setLogFlag('red',this)">&#128681; Red</button>
-          <button class="flag-toggle-btn" data-flag="neutral" onclick="setLogFlag('neutral',this)">&#9898; Neutral</button>
-        </div>
         <button class="btn-log-add" id="logAddBtn">Add</button>
       </div>
     </div>
@@ -856,6 +852,12 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     <h3>Flags by phase</h3>
     <p>Your green and red flags, broken down by phase.</p>
     <div id="flagRatioList"></div>
+  </div>
+
+  <div class="flag-ratio-card">
+    <h3>What your observations reveal</h3>
+    <p>Patterns in what you have logged.</p>
+    <div id="obsAnalysisWrap"></div>
   </div>
 
   <div class="checkin-card">
@@ -1336,38 +1338,33 @@ function terminateActive(){
   return getNNFails().length>=TERMINATE_THRESHOLD||getAvoidantCount()>=3;
 }
 var AVOIDANT_ITEMS=[
-  {keys:["1_pullback"],
-   label:"Phase 1",text:"Did not respond securely when I was naturally less available"},
-  {keys:["1_closenessresp"],
-   label:"Phase 1",text:"Did not lean in when conversation became emotionally close"},
-  {keys:["2_m2_closepull","m_2_m2_closepull"],
-   label:"Phase 2",text:"Did not stay present after closeness — pulled back after a warm moment"},
-  {keys:["2_m2_vulnresp","m_2_m2_vulnresp"],
-   label:"Phase 2",text:"Responded to vulnerability with solutions or deflection, not openness"},
-  {keys:["m_2_m4_avoidpull"],
-   label:"Phase 2",text:"Push-pull pattern visible — pulls back after closeness, re-engages when I pull away"},
-  {keys:["m_2_m4_needsresp"],
-   label:"Phase 2",text:"Signalled that my needs were too much"},
-  {keys:["m_3_c2_avoidconflict"],
-   label:"Phase 3",text:"Stonewalls in conflict — goes silent or says 'I'm fine' without engaging"},
-  {keys:["m_3_c2_comeback"],
-   label:"Phase 3",text:"Returns after conflict physically present but emotionally absent"},
-  {keys:["m_5_m16_avoidpattern"],
-   label:"Phase 5",text:"Push-pull cycle is the established pattern after 16+ months"},
-  {keys:["m_5_m16_needsokay"],
-   label:"Phase 5",text:"I find myself editing my needs to manage his comfort with my emotions"},
-  {keys:["5_needswelcome"],
+  {keys:["av_pullback"],
+   label:"Phase 1",text:"He went cold or distant when I was naturally less available"},
+  {keys:["av_closenessresp"],
+   label:"Phase 1",text:"He redirected or pulled back when conversation became emotionally close"},
+  {keys:["av_closepull"],
+   label:"Phase 2",text:"He pulled back after a warm or intimate moment — post-closeness withdrawal"},
+  {keys:["av_vulnresp"],
+   label:"Phase 2",text:"He responded to my vulnerability with solutions or deflection, not openness"},
+  {keys:["av_avoidpull"],
+   label:"Phase 2",text:"He shows a push-pull pattern — pulls back after closeness, returns when I pull away"},
+  {keys:["av_needsresp"],
+   label:"Phase 2",text:"He signals that my needs are too much"},
+  {keys:["av_avoidconflict"],
+   label:"Phase 3",text:"He stonewalls in conflict — goes silent or says he is fine without engaging"},
+  {keys:["av_comeback"],
+   label:"Phase 3",text:"After conflict he returns physically present but emotionally absent"},
+  {keys:["av_avoidpattern"],
+   label:"Phase 5",text:"The push-pull cycle is an established pattern after many months"},
+  {keys:["av_needsokay"],
+   label:"Phase 5",text:"I find myself editing my needs to manage his comfort"},
+  {keys:["av_needswelcome"],
    label:"Phase 5",text:"My needs do not feel welcome — I am shrinking what I ask for"},
-  {keys:["5_avoidfree"],
-   label:"Phase 5",text:"Push-pull cycle is present — closeness, withdrawal, distance, re-engagement"},
+  {keys:["av_avoidfree"],
+   label:"Phase 5",text:"Push-pull cycle: closeness, then withdrawal, then re-engagement only when I pull away"},
 ];
 function avoidItemFailed(a){
-  // Avoidant items fire when marked NO — meaning the healthy behaviour was NOT observed
-  // (items are phrased positively: "did he stay present?" — no = avoidant signal)
-  return a.keys.some(function(k){
-    var v=S.checks[k]||"none";
-    return v==="no";
-  });
+  return a.keys.some(function(k){return(S.checks[k]||"none")==="yes";});
 }
 function getAvoidantCount(){ return AVOIDANT_ITEMS.filter(avoidItemFailed).length; }
 function getAvoidantFails(){ return AVOIDANT_ITEMS.filter(avoidItemFailed); }
@@ -1463,9 +1460,10 @@ function phClass(n){
   return "future";
 }
 function cycleCheck(ph,key){
-  var CYCLE=["none","yes","partial","no"],k=ph+"_"+key,cur=S.checks[k]||"none";
+  var CYCLE=["none","yes","partial","no"],k=ph.toString().startsWith("m_")?ph+"_"+key:ph+"_"+key,cur=S.checks[k]||"none";
   S.checks[k]=CYCLE[(CYCLE.indexOf(cur)+1)%CYCLE.length];
   save();
+  renderBanner();
   // Remember which month blocks are currently open before re-render
   var openBlocks={};
   document.querySelectorAll("[id^='mblock_']").forEach(function(el){
@@ -1722,9 +1720,10 @@ function renderLog(){
     entries.forEach(function(item){
       var e=item.entry,ri=item.idx;
       var dotCls=e.flag==="green"?"green":e.flag==="red"?"red":"neutral";
+      var flagEmoji=e.flag==="green"?"&#129001;":e.flag==="red"?"&#128681;":"&#9898;";
       html+="<div class='log-entry-clean'>";
-      html+="<div class='log-flag-dot "+dotCls+"'></div>";
-      html+="<span class='log-entry-text'>"+e.text+"</span>";
+      html+="<button onclick='flipFlag("+ri+")' title='Tap to change' style='background:none;border:none;cursor:pointer;font-size:17px;padding:0;flex-shrink:0;line-height:1;margin-top:1px'>"+flagEmoji+"</button>";
+      html+="<span class='log-entry-text' style='flex:1'>"+e.text+"</span>";
       html+="<button class='log-entry-del' onclick='delLog("+ri+")' aria-label='Delete'>&#215;</button>";
       html+="</div>";
     });
@@ -1732,12 +1731,36 @@ function renderLog(){
   });
   list.innerHTML=html;
 }
+function onLogInput(){
+  var text=(el('logInput')||{}).value||'';
+  var p=el('classifyPreview');
+  if(!p) return;
+  if(text.trim().length<4){p.style.display='none';return;}
+  var flag=classifyObservation(text.trim());
+  var styles={
+    green:{bg:'#eaf3de',color:'#27500a',border:'1px solid #639922',icon:'&#129001;',label:'Green flag'},
+    red:  {bg:'#fdf0ec',color:'#791f1f',border:'1px solid #c94040',icon:'&#128681;',label:'Red flag'},
+    neutral:{bg:'var(--blush)',color:'var(--mauve)',border:'1px solid var(--petal)',icon:'&#9898;',label:'Neutral'},
+  };
+  var s=styles[flag]||styles.neutral;
+  p.style.display='block';
+  p.style.background=s.bg;
+  p.style.color=s.color;
+  p.style.border=s.border;
+  p.style.borderRadius='10px';
+  p.innerHTML=s.icon+' <strong>'+s.label+'</strong> — tap Add to save, or keep editing.';
+}
+
 function addLog(){
-  var inp=el("logInput"),flag=_logFlag||"green",text=inp.value.trim();
-  if(!text)return;
+  var inp=el("logInput"),text=inp.value.trim();
+  if(!text){inp.focus();return;}
+  var flag=classifyObservation(text);
   if(!S.log)S.log=[];
-  S.log.push({text:text,flag:flag,phase:S.activePhase,date:new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})});
-  inp.value="";save();renderLog();renderStats();renderBanner();renderFlagRatio();
+  S.log.push({text:text,flag:flag,phase:S.activePhase,
+    date:new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})});
+  inp.value="";
+  var prev=el("classifyPreview");if(prev)prev.style.display="none";
+  save();renderLog();renderStats();renderBanner();renderFlagRatio();renderObsAnalysis();
 }
 function delLog(i){S.log.splice(i,1);save();renderLog();renderStats();renderBanner();renderFlagRatio();}
 
@@ -2058,7 +2081,7 @@ function renderJournal(){
 // ── MAIN RENDER ───────────────────────────────────────────────────────────
 function renderAll(){
   var sdi=el("startDateInput");if(sdi&&S.startDate)sdi.value=S.startDate;
-  renderTimeline();renderStats();renderBanner();renderPhase();renderLog();renderFlagRatio();renderCheckinHistory();renderMoon();renderSelfcareHistory();renderRlogWithPatterns();
+  renderTimeline();renderStats();renderBanner();renderPhase();renderLog();renderFlagRatio();renderObsAnalysis();renderCheckinHistory();renderMoon();renderSelfcareHistory();renderRlogWithPatterns();
 }
 
 
@@ -2538,6 +2561,202 @@ function renderRlogWithPatterns(){
     var wrap=el('patternsWrap');
     if(wrap) wrap.style.display='none';
   }
+}
+
+
+// ── OBSERVATION CLASSIFIER ────────────────────────────────────────────────
+function classifyObservation(text){
+  var t=text.toLowerCase();
+
+  var redSignals=[
+    {p:/expensive|cost a lot|so much money/,w:2},
+    {p:/joke.*(pay|split|treat|money)|pay.*joke|asked.*me.*to.*pay|mentioned.*me.*pay|wants.*me.*to.*pay/,w:3},
+    {p:/asked.*support.*financial|asked.*me.*to.*support.*him/,w:3},
+    {p:/financially.*depend|relies.*on.*me|depending.*on.*me/,w:3},
+    {p:/didn.t pay|forgot.*wallet|never.*treat/,w:2},
+    {p:/didn.t plan|never plan|stopped.*planning/,w:2},
+    {p:/i planned|i initiated|i suggested|i arranged|had to remind/,w:2},
+    {p:/pulled.*away|went.*cold|went.*quiet|disappeared|ghosted/,w:3},
+    {p:/emotionally.*absent|shut.*down|stonewalled|withdrew|distant.*after/,w:3},
+    {p:/disrespect|rude to me|condescend|talked.*down|embarrassed me|belittled/,w:3},
+    {p:/told.*friends.*bad|told.*friends.*negative|negative.*things.*friends|what.*friends.*say.*about.*me/,w:3},
+    {p:/jealous.*control|possessiv|controlling|manipulat|gaslight/,w:3},
+    {p:/lied|dishonest|cheated|kept.*secret|hiding/,w:3},
+    {p:/blamed.*me|my.*fault|turned.*it.*around/,w:3},
+    {p:/pressured|pushed.*boundary|ignored.*my.*no/,w:3},
+    {p:/not.*ready|still.*depend.*parent|parents.*fund|immature|no.*direction/,w:2},
+    {p:/joke.*money|joked.*about.*money|keeps.*mentioning.*money/,w:2},
+    {p:/not.*in.*the.*kitchen|belong.*in.*kitchen|kitchen.*joke|can.t.*cook/,w:3},
+    {p:/women.*can.t|women.*don.t|women.*shouldn.t|women.*belong/,w:3},
+    {p:/girls.*can.t|girls.*don.t|girls.*shouldn.t/,w:3},
+    {p:/backhanded.*compliment|but.*you.re.*a.*woman|for.*a.*woman|for.*a.*girl/,w:3},
+    {p:/not bad.*for a|pretty good.*for a/,w:2},
+    {p:/made a joke about women|joked about women|sexist/,w:3},
+    {p:/called.*fat|called.*ugly|called.*stupid|called.*dumb|called.*crazy/,w:3},
+    {p:/fat|ugly|stupid.*to.*me|dumb.*to.*me/,w:2},
+    {p:/insulted|insult|mean to me|hurt.*my.*feeling|made me feel bad|made me feel ugly/,w:3},
+    {p:/body.*shame|shamed.*my|commented.*on.*my.*weight|weight.*comment|size.*comment/,w:3},
+    {p:/talked.*to.*me.*badly|spoke.*to.*me.*badly|treated.*me.*badly|was.*rude/,w:2},
+    {p:/yelled|shouted|screamed.*at.*me/,w:3},
+    {p:/ignored.*me|silent.*treatment|stonewalled|cold.*shoulder/,w:2},
+    {p:/stood.*me.*up|cancelled.*last.*minute|cancelled.*on.*me/,w:2},
+    {p:/made.*me.*feel.*small|made.*me.*feel.*less|made me feel worthless/,w:3},
+    {p:/compared.*me.*to|compared me to/,w:2},
+    {p:/he doesn.t listen|never listens|dismisses|dismissive/,w:2},
+  ];
+
+  var greenSignals=[
+    {p:/brought.*flower|bought.*flower|sent.*flower/,w:3},
+    {p:/surprise|unprompted|without.*asking|on.*his.*own/,w:2},
+    {p:/came.*when.*sad|came.*to.*care|showed.*up.*when|came.*check/,w:3},
+    {p:/cooked.*for.*me|made.*food.*for|brought.*food/,w:2},
+    {p:/drove.*home|brought.*home|walked.*home|picked.*up/,w:2},
+    {p:/paid|treated|covered.*bill|bought.*dinner/,w:2},
+    {p:/bought.*me|got.*me|gifted|gift/,w:2},
+    {p:/pastry|flowers|dress|bag|chocolat/,w:1},
+    {p:/asked.*consent|asked.*if.*okay|checked.*if.*comfortable/,w:3},
+    {p:/respected.*no|accepted.*no|didn.t.*push/,w:3},
+    {p:/respect.*my.*decision|respect.*my.*choice|trusts.*my.*judgment|respects.*my/,w:2},
+    {p:/listened|really.*heard|paid.*attention|remembered.*what.*i/,w:2},
+    {p:/held.*my.*emotional|can.*hold.*my|holds.*space|emotional.*depth/,w:3},
+    {p:/emotionally.*present|emotionally.*mature|emotionally.*available/,w:3},
+    {p:/opened.*up|shared.*his.*feelings|vulnerable.*with.*me/,w:2},
+    {p:/celebrated|proud.*of.*me|championed|hyped.*me|excited.*for.*me/,w:3},
+    {p:/supported.*my.*venture|supported.*me.*financially|financially.*supported|helped.*me.*financially/,w:2},
+    {p:/supported.*my|encouraged.*me|believes.*in.*me/,w:2},
+    {p:/planned.*date|asked.*me.*out|took.*me.*on.*a.*date/,w:2},
+    {p:/consistent|shows.*up.*every|always.*there|follows.*through/,w:2},
+    {p:/helped.*me|helps.*me|wash.*dish|clean.*up|assisted/,w:1},
+    {p:/apologis|apologiz|said.*sorry|owned.*up|took.*responsibility/,w:2},
+    {p:/when.*i.*was.*sick|when.*i.*was.*sad|when.*i.*wasn.t.*well|cared.*for.*me/,w:3},
+    {p:/cares.*for.*me|cares.*about.*me|caring/,w:2},
+    {p:/kind to me|thoughtful|attentive/,w:1},
+    {p:/called.*beautiful|called.*gorgeous|called.*stunning|called.*pretty|told.*me.*i.*was.*beautiful/,w:3},
+    {p:/complimented|said.*i.*look|said i was|told.*me.*i.*am|you.*are.*beautiful|you look/,w:2},
+    {p:/beautiful|gorgeous|stunning|lovely|pretty|handsome/,w:1},
+    {p:/made me feel good|made me feel special|made me feel loved|made me feel seen/,w:2},
+    {p:/sweet|romantic|affectionate|tender|warm/,w:1},
+  ];
+
+  var rs=0,gs=0;
+  redSignals.forEach(function(s){if(s.p.test(t))rs+=s.w;});
+  greenSignals.forEach(function(s){if(s.p.test(t))gs+=s.w;});
+
+  // Negation check
+  if(/didn.t|did not|hasn.t|has not|never|no longer|stopped|refused|forgot|won.t/.test(t)){
+    var negGs=greenSignals.filter(function(s){return s.p.test(t);});
+    if(negGs.length) rs+=negGs.reduce(function(a,s){return a+s.w;},0)*0.7;
+  }
+
+  if(rs===0&&gs===0) return "neutral";
+  if(rs>gs) return "red";
+  if(gs>rs) return "green";
+  return "red";
+}
+
+
+function toggleAvoidantPanel(){
+  var row=el('avoidantSignalRow');
+  if(!row) return;
+  var open=row.style.display!=='none';
+  row.style.display=open?'none':'block';
+  if(!open) renderAvoidantBtns();
+}
+function renderAvoidantBtns(){
+  var wrap=el('avoidantBtns');
+  if(!wrap) return;
+  var html='';
+  AVOIDANT_ITEMS.forEach(function(item){
+    var key=item.keys[0];
+    var active=(S.checks[key]||'none')==='yes';
+    html+='<button onclick="toggleAvoidantItem(\''+key+'\')" style="'
+      +'padding:5px 10px;border-radius:8px;font-size:11px;font-family:var(--sans);cursor:pointer;'
+      +'border:1px solid '+(active?'var(--rose)':'var(--pink-100)')+';background:'+(active?'var(--pink-50)':'white')
+      +';color:'+(active?'var(--deep)':'var(--mist)')+';font-weight:'+(active?'600':'400')+'">'
+      +(active?'✓ ':'')+item.text+'</button>';
+  });
+  wrap.innerHTML=html;
+}
+function toggleAvoidantItem(key){
+  var cur=(S.checks[key]||'none');
+  S.checks[key]=cur==='yes'?'none':'yes';
+  save();renderAvoidantBtns();renderBanner();renderTimeline();renderStats();
+}
+
+// ── FLIP FLAG ─────────────────────────────────────────────────────────────
+function flipFlag(i){
+  var cycle=["green","red","neutral"];
+  var cur=S.log[i].flag||"neutral";
+  S.log[i].flag=cycle[(cycle.indexOf(cur)+1)%cycle.length];
+  save();renderLog();renderStats();renderBanner();renderFlagRatio();
+}
+
+// ── OBSERVATION ANALYSIS ──────────────────────────────────────────────────
+function analyseObservations(){
+  var log=S.log||[];
+  if(log.length<3) return null;
+  var greens=log.filter(function(e){return e.flag==='green';});
+  var reds=log.filter(function(e){return e.flag==='red';});
+  var neutrals=log.filter(function(e){return e.flag==='neutral';});
+  var total=log.length;
+  var ratio=total?Math.round(greens.length/total*100):0;
+  var results={ratio:ratio,greens:greens.length,reds:reds.length,neutrals:neutrals.length,total:total,patterns:[]};
+
+  var finRed=reds.filter(function(e){return /pay|financ|money|split|treat|expensive|afford/i.test(e.text);});
+  if(finRed.length>=2) results.patterns.push({type:'warning',label:'Financial pattern',
+    text:finRed.length+' of your red flag observations involve money or paying. This is a recurring theme in your log.',
+    examples:finRed.slice(0,2).map(function(e){return e.text;})});
+
+  var effortRed=reds.filter(function(e){return /plan|initiat|date|pursue|effort|chase/i.test(e.text);});
+  if(effortRed.length>=2) results.patterns.push({type:'warning',label:'Effort pattern',
+    text:effortRed.length+' red flags relate to planning or pursuit. Watch whether effort is sustained.',
+    examples:effortRed.slice(0,2).map(function(e){return e.text;})});
+
+  var careGreens=greens.filter(function(e){return /cook|care|show.*up|came|flower|gift|celebrat|paid|treated|bought|cooked/i.test(e.text);});
+  if(careGreens.length>=3) results.patterns.push({type:'insight',label:'He shows up in action',
+    text:careGreens.length+' green flags are acts of care — showing up, paying, cooking, gifting. His love language appears to be action.',
+    examples:careGreens.slice(0,2).map(function(e){return e.text;})});
+
+  var emotGreens=greens.filter(function(e){return /emotion|hold|depth|listen|heard|safe|vulnerable|support/i.test(e.text);});
+  if(emotGreens.length>=2) results.patterns.push({type:'insight',label:'Emotional presence',
+    text:emotGreens.length+' green flags relate to emotional availability. He is present, not just around.',
+    examples:emotGreens.slice(0,2).map(function(e){return e.text;})});
+
+  if(greens.length>=5&&finRed.length>=2) results.patterns.push({type:'note',label:'Contradiction to hold',
+    text:'You have strong green flags alongside recurring financial red flags. Both are real. The blueprint asks you to hold both — not explain one away with the other.',
+    examples:[]});
+
+  if(neutrals.length>greens.length&&neutrals.length>reds.length) results.patterns.push({type:'note',label:'Mostly neutral',
+    text:'Most observations are neutral. A man who gives you nothing strong to flag — positive or negative — may not be showing up with intention.',
+    examples:[]});
+
+  return results;
+}
+function renderObsAnalysis(){
+  var wrap=el('obsAnalysisWrap');
+  if(!wrap) return;
+  var results=analyseObservations();
+  if(!results){wrap.innerHTML='<p style="font-size:13px;color:var(--mist);font-style:italic;font-family:var(--serif)">Add at least 3 observations to see patterns.</p>';return;}
+  var html='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px">';
+  html+='<div class="pattern-stat"><span class="pattern-stat-val" style="color:var(--green)">'+results.greens+'</span><span class="pattern-stat-lbl">green</span></div>';
+  html+='<div class="pattern-stat"><span class="pattern-stat-val" style="color:var(--red)">'+results.reds+'</span><span class="pattern-stat-lbl">red</span></div>';
+  html+='<div class="pattern-stat"><span class="pattern-stat-val" style="color:var(--mist)">'+results.neutrals+'</span><span class="pattern-stat-lbl">neutral</span></div>';
+  html+='<div class="pattern-stat"><span class="pattern-stat-val">'+results.ratio+'%</span><span class="pattern-stat-lbl">positive</span></div>';
+  html+='</div>';
+  var typeMap={warning:'pattern-card warning',insight:'pattern-card insight',note:'pattern-card'};
+  results.patterns.forEach(function(p){
+    html+='<div class="'+(typeMap[p.type]||'pattern-card')+'">';
+    html+='<div class="pattern-card-label">'+p.label+'</div>';
+    html+='<div class="pattern-card-val">'+p.text+'</div>';
+    if(p.examples&&p.examples.length){
+      p.examples.forEach(function(ex){
+        html+='<div style="font-size:12px;color:var(--mist);font-style:italic;padding:3px 0 3px 10px;border-left:2px solid var(--petal);margin-bottom:4px">&ldquo;'+ex+'&rdquo;</div>';
+      });
+    }
+    html+='</div>';
+  });
+  if(!results.patterns.length) html+='<div class="pattern-card"><div class="pattern-card-label">No strong patterns yet</div><div class="pattern-card-val">Keep logging. Patterns emerge with more data.</div></div>';
+  wrap.innerHTML=html;
 }
 
 // ── PROGRESS REPORT ───────────────────────────────────────────────────────
