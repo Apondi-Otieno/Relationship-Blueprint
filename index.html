@@ -1334,8 +1334,105 @@ const NON_NEGOTIABLES = [
   {phase:5,key:"avoidfree",     label:"No push-pull cycle present",                reason:"The push-pull cycle after 16+ months is the established dynamic. Avoidant attachment without deliberate work becomes the relationship's weather."},
 ];
 
+
+// ── OBSERVATION ANALYSIS ─────────────────────────────────────────────────
+var PHASE_WEIGHTS={1:1, 2:1.5, 3:2, 4:2.5, 5:3, 6:3, 7:3, 8:3};
+
+// Category fingerprints — map observation themes to checklist keys
+var OBS_CATEGORIES=[
+  {
+    label:"financial",
+    re:/financ|money|pay|split|treat|expensive|borrow|depend/i,
+    checklistHints:[
+      {phase:1,key:"datepays",   label:"Did he pay on dates?"},
+      {phase:2,key:"nofinancejokes", label:"No financial jokes?"},
+      {phase:2,key:"datepays2",  label:"Pays for dates consistently?"},
+      {phase:5,key:"stillpays",  label:"Still paying consistently?"},
+    ]
+  },
+  {
+    label:"effort",
+    re:/plan|initiat|date|pursue|effort|i.*planned|i.*suggested|i.*arranged/i,
+    checklistHints:[
+      {phase:1,key:"dateplans",  label:"He planned the first date?"},
+      {phase:2,key:"dateconsistent", label:"Plans dates consistently?"},
+      {phase:5,key:"stilldates", label:"Still planning intentional dates?"},
+    ]
+  },
+  {
+    label:"respect",
+    re:/insult|rude|belittl|disrespect|condescend|embarrass|called.*fat|called.*ugly|kitchen|sexist|women.*can.t/i,
+    checklistHints:[
+      {phase:1,key:"character",  label:"How does he treat people?"},
+      {phase:1,key:"motherrel",  label:"Does he speak of women with respect?"},
+    ]
+  },
+  {
+    label:"honesty",
+    re:/lied|dishonest|cheat|secret|hiding|gaslight|manipulat/i,
+    checklistHints:[
+      {phase:3,key:"account",    label:"Does he take accountability?"},
+      {phase:6,key:"records",    label:"Have you seen his records?"},
+    ]
+  },
+  {
+    label:"withdrawal",
+    re:/pulled.*away|went.*quiet|cold.*after|ghosted|disappeared|silent.*treatment|stonewalled/i,
+    checklistHints:[
+      {phase:2,key:"heasked",    label:"Does he listen without managing?"},
+      {phase:3,key:"repair",     label:"Does he repair after conflict?"},
+    ]
+  },
+];
+
+function getRedFlagScore(){
+  var log=S.log||[];
+  var reds=log.filter(function(e){return e.flag==='red';});
+  if(!reds.length) return 0;
+  var total=reds.reduce(function(sum,e){
+    var w=PHASE_WEIGHTS[e.phase]||1;
+    return sum+w;
+  },0);
+  return Math.round(total*10)/10;
+}
+
+function getRedFlagThreshold(){
+  // Terminate fires when weighted red score reaches 12
+  // (equiv: ~4 confirmed Phase 3 flags, or ~8 Phase 1 flags, or ~4 Phase 5 flags)
+  return 12;
+}
+
+function getChecklistNudges(){
+  var log=S.log||[];
+  var nudges=[];
+  OBS_CATEGORIES.forEach(function(cat){
+    var catReds=log.filter(function(e){return e.flag==='red'&&cat.re.test(e.text);});
+    if(catReds.length>=2){
+      // Check if relevant checklist items are still unresolved
+      cat.checklistHints.forEach(function(hint){
+        var k=hint.phase+'_'+hint.key;
+        var v=S.checks[k]||'none';
+        if(v==='none'||v==='partial'){
+          nudges.push({
+            category:cat.label,
+            count:catReds.length,
+            checklistPhase:hint.phase,
+            checklistLabel:hint.label,
+            checklistKey:k,
+            checklistState:v,
+            examples:catReds.slice(0,2).map(function(e){return e.text;})
+          });
+        }
+      });
+    }
+  });
+  return nudges;
+}
+
 function terminateActive(){
-  return getNNFails().length>=TERMINATE_THRESHOLD||getAvoidantCount()>=3;
+  return getNNFails().length>=TERMINATE_THRESHOLD
+      || getAvoidantCount()>=3
+      || getRedFlagScore()>=getRedFlagThreshold();
 }
 var AVOIDANT_ITEMS=[
   {keys:["av_pullback"],
@@ -1530,8 +1627,16 @@ function renderBanner(){
   var wrap=el("nnBannerWrap");if(!wrap)return;
   var fails=getNNFails(),partials=getNNPartials();
   var avoidCount=getAvoidantCount();
-  var isTerminate=fails.length>=TERMINATE_THRESHOLD||avoidCount>=3;
-  if(fails.length===0&&partials.length<2&&avoidCount<2){wrap.innerHTML="";return;}
+  var rfScore=getRedFlagScore();
+  var rfThreshold=getRedFlagThreshold();
+  var rfWarning=rfScore>=6&&rfScore<rfThreshold;
+  var nudges=getChecklistNudges();
+  var log=S.log||[];
+  var neutralCount=log.filter(function(e){return e.flag==="neutral";}).length;
+  var greenCount=log.filter(function(e){return e.flag==="green";}).length;
+  var neutralWarning=neutralCount>=5&&greenCount<3;
+  var isTerminate=fails.length>=TERMINATE_THRESHOLD||avoidCount>=3||rfScore>=rfThreshold;
+  if(fails.length===0&&partials.length<2&&avoidCount<2&&!neutralWarning&&!rfWarning&&!nudges.length){wrap.innerHTML="";return;}
   var cls=isTerminate?"terminate":"watch";
   var html="<div class='nn-banner "+cls+"'>";
   if(isTerminate){
@@ -1539,6 +1644,7 @@ function renderBanner(){
     var reasons=[];
     if(fails.length>=TERMINATE_THRESHOLD) reasons.push(fails.length+" non-negotiable"+(fails.length>1?"s":"")+" failed");
     if(avoidCount>=3) reasons.push(avoidCount+" avoidant pattern"+(avoidCount>1?"s":"")+" confirmed");
+    if(rfScore>=rfThreshold) reasons.push("weighted red flag score reached "+rfScore+" — pattern confirmed across phases");
     html+="<div class='nn-banner-sub'>"+reasons.join(" and ")+". Your blueprint was written for exactly this moment — to protect you when the data is clear and feelings are negotiating.</div>";
     // Show which avoidant patterns fired
     if(avoidCount>=3){
@@ -1563,6 +1669,7 @@ function renderBanner(){
     if(fails.length>0) watchParts.push(fails.length+" non-negotiable"+(fails.length>1?"s":"")+" failed");
     if(partials.length>0) watchParts.push(partials.length+" item"+(partials.length>1?"s":"")+" uncertain");
     if(avoidCount>0) watchParts.push(avoidCount+" avoidant signal"+(avoidCount>1?"s":"")+" observed"+(avoidCount===2?" — one more triggers terminate order":""));
+    if(rfWarning) watchParts.push("red flag score: "+rfScore+"/"+rfThreshold+" — pattern is building across phases");
     html+="<div class='nn-banner-sub'>"+watchParts.join(". ")+". Slow down and pay attention.</div>";
   }
   fails.forEach(function(nn){
@@ -1592,6 +1699,19 @@ function renderBanner(){
     html+="<div style='margin:10px 0 4px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--petal)'>Avoidant signals</div>";
     uniqWatch.forEach(function(a){
       html+="<div class='nn-fail-item' style='opacity:.85'><div class='nn-fail-label'><span class='nn-phase-tag'>"+a.label+"</span>"+a.text+"</div></div>";
+    });
+  }
+  // Checklist nudges from observation log
+  if(nudges.length){
+    html+="<div style='margin:10px 0 4px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--petal)'>Your log suggests updating the checklist</div>";
+    nudges.slice(0,3).forEach(function(n){
+      html+="<div class='nn-fail-item'>";
+      html+="<div class='nn-fail-label'><span class='nn-phase-tag'>Phase "+n.checklistPhase+"</span>"+n.checklistLabel+" <span style='font-size:10px;background:var(--amber-light);color:var(--amber);padding:2px 6px;border-radius:99px;margin-left:4px'>"+n.checklistState+"</span></div>";
+      html+="<div class='nn-fail-reason'>You have logged "+n.count+" red flags about "+n.category+". This checklist item may need revisiting.<br>";
+      n.examples.forEach(function(ex){
+        html+="<span style='font-style:italic;opacity:.8'>&ldquo;"+ex+"&rdquo;</span><br>";
+      });
+      html+="</div></div>";
     });
   }
   var quote=isTerminate?"“You do not need to explain this decision or make him understand it. You simply need to honour what you already know.”":"“Data does not lie. Feelings negotiate. Trust what you observed.”";
