@@ -1012,6 +1012,19 @@ var STATE_ICONS  = {none:"",yes:"✓",partial:"~",no:"✕"};
 var STATE_LABELS = {none:"not yet",yes:"yes",partial:"partially",no:"no"};
 var STATE_CLS    = {none:"state-none",yes:"state-yes",partial:"state-partial",no:"state-red"};
 
+const PHASE_UNLOCK_DAYS = {1:0,2:28,3:180,4:390,5:390,6:390,7:730,8:-1};
+
+const JOURNAL_PROMPTS = [
+  {key:"becoming",  q:"Who am I becoming through this process?"},
+  {key:"showed",    q:"Where did I show up fully for myself this week?"},
+  {key:"oldbelief", q:"What did the old belief say today — and what did I do anyway?"},
+  {key:"pattern",   q:"What pattern am I noticing in myself right now?"},
+  {key:"boundary",  q:"Where did I honour a boundary — or wish I had?"},
+  {key:"worthy",    q:"What reminded me of my own worth this week?"},
+  {key:"pace",      q:"Am I honouring my pace, or am I rushing?"},
+  {key:"wisest",    q:"What would the wisest version of me do next?"},
+];
+
 // ── DATA ──────────────────────────────────────────────────────────────────
 const PHASES = [
   {num:1,label:"Observe",timing:"Weeks 1–4",gate:"Does he have direction and revenue?",
@@ -1030,10 +1043,10 @@ const PHASES = [
      {key:"remembers",label:"He remembers",text:"Does he remember details you told him and follow up on them unprompted?"},
      {key:"nochase",label:"I did not chase",text:"I refrained from initiating, over-texting, or performing for his attention."},
      {key:"redflags1",label:"No red flags",text:"No dismissiveness, financial instability, or dishonesty observed."},
-     {key:"pullback",label:"Attachment signal",text:"When life made me naturally less available — a busy week, unwell, preoccupied — did he respond securely? Steady, checked in without pressure, did not chase or go cold."},
+     {key:"pullback",label:"Attachment signal",text:"When life made me naturally less available — busy week, unwell, preoccupied — did he stay steady and check in without pressure? Yes = secure. No = anxious (chased) or avoidant (went cold)."},
      {key:"motherrel",label:"How he speaks of his mother",text:"How does he speak about his mother and the women in his life? With respect, complexity, and care — or with contempt or dismissal?"},
-     {key:"closenessresp",label:"Response to closeness",text:"When the conversation got warm, personal, or emotionally close — did he lean in or subtly redirect? Avoidant men consistently steer away from depth at the first sign of real intimacy."},
-     {key:"independpride",label:"Independence as identity",text:"Does he wear his independence as a badge of honour — talks often about not needing anyone, being self-sufficient, never relying on others? This can signal avoidant attachment dressed as strength."},
+     {key:"closenessresp",label:"Response to closeness",text:"When the conversation got warm, personal, or emotionally close — did he lean in and stay present? A secure man moves toward intimacy, not away from it."},
+     {key:"independpride",label:"Independence as identity",text:"Does he show that he is capable of needing people — friends, family, you — without it threatening his sense of self? A secure man is independent AND able to depend. Avoidant men make independence their whole identity."},
    ]},
   {num:2,label:"The manual",timing:"Month 2–6",gate:"Does he open doors or need mine?",
    myInput:["Have ONE intentional in-person conversation — you choose the setting, you set the tone.","Share your truth: autism, your healing journey, what you carry. Say it plainly, without apology.","Ask him directly: ‘What are you building right now?’ and then be quiet.","Do not fill silences. Let him show you who he is.","Watch whether he plans dates or waits for you to. Watch who pays and how it feels.","Note any jokes about money, splitting, or you taking care of him. Even once.","By month 4–5: if exclusivity has not been named, you can name it. Once. His response is the data.","Hold the boundary: no sleepovers, no sex. This is non-negotiable — not a suggestion.","Do not adjust your personality, opinions, or standards to keep his interest."],
@@ -1046,8 +1059,8 @@ const PHASES = [
        {key:"m2_vision",text:"I asked what he is building. His answer was specific, not vague."},
        {key:"m2_boundary",text:"The boundary is intact. No sleepovers. No sex."},
        {key:"m2_distress",text:"I was stressed or overwhelmed at some point this month. Did he turn toward me — notice and show up — or turn away and go quiet?"},
-       {key:"m2_vulnresp",text:"When I shared something personal or vulnerable, did he match it with his own openness, or did he give a solution, a joke, or a subject change? Avoidant men respond to vulnerability with problem-solving or redirection — not emotional presence."},
-       {key:"m2_closepull",text:"After a moment of genuine closeness or warmth between us, did he pull back — go quiet, get busy, create distance? This post-closeness withdrawal is one of the clearest avoidant signals in early dating."},
+       {key:"m2_vulnresp",text:"When I shared something personal or vulnerable, did he respond with genuine emotional presence — not just a solution or a subject change? Matching vulnerability with openness is a secure attachment signal."},
+       {key:"m2_closepull",text:"After a moment of genuine closeness or warmth between us, did he stay present and continue to engage — rather than go quiet or create distance? Consistent presence after closeness is a secure signal."},
      ]},
      {month:"Month 3 — The pattern",items:[
        {key:"m3_dates",text:"He has planned at least two intentional dates without prompting from me."},
@@ -1063,8 +1076,8 @@ const PHASES = [
        {key:"m4_introduces",text:"He has introduced me to at least one person in his life — friend, colleague, family."},
        {key:"m4_speaks",text:"I have evidence he speaks about me positively to people in his life."},
        {key:"m4_myventures",text:"He has shown genuine interest in my ventures — asked questions, offered support."},
-       {key:"m4_avoidpull",text:"Is there a pattern of him pulling back after closeness, then re-engaging when I create distance? This push-pull cycle is a hallmark of avoidant attachment and becomes more pronounced, not less, over time."},
-       {key:"m4_needsresp",text:"When I expressed a need — for reassurance, connection, or support — did he respond or subtly signal that the need was too much? Avoidant men are comfortable until you actually need something."},
+       {key:"m4_avoidpull",text:"Is his engagement consistent — close when things are warm, not pulling back after intimacy? The absence of a push-pull cycle (closeness → withdrawal → re-engagement when I pull away) is a healthy sign."},
+       {key:"m4_needsresp",text:"When I expressed a need — for reassurance, connection, or support — did he respond with care rather than signalling that the need was too much? A secure man welcomes needs; he does not make you feel like a burden."},
      ]},
      {month:"Month 5 — The exclusivity window",items:[
        {key:"m5_exclusive",text:"Exclusivity has been named — by him, or clearly and seriously in response to me."},
@@ -1112,8 +1125,8 @@ const PHASES = [
        {key:"c2_account",text:"He took accountability again. It was not a one-off performance."},
        {key:"c2_pattern",text:"I can see a conflict pattern forming — and it is one I can build a life inside."},
        {key:"c2_stress",text:"Has he been under significant external pressure this window — work, money, family? How did he behave toward me when he was stressed? That is closer to the truth of who he is."},
-       {key:"c2_avoidconflict",text:"In conflict, does he shut down, go silent, or say 'I'm fine' when he clearly isn't? Avoidant men often stonewall — they do not have the conflict, they withdraw from it entirely and wait for it to pass."},
-       {key:"c2_comeback",text:"After conflict or emotional intensity, did he re-engage fully — or did he come back physically present but emotionally absent? Avoidants return to the room but not to the relationship."},
+       {key:"c2_avoidconflict",text:"In conflict, does he stay in the conversation — rather than shutting down, going silent, or saying he is fine when he clearly is not? Staying present in conflict, even when uncomfortable, is a secure sign."},
+       {key:"c2_comeback",text:"After conflict or emotional intensity, did he re-engage fully — present both physically and emotionally? Coming back to the relationship, not just the room, is what secure repair looks like."},
      ]},
      {month:"Months 11–12 — The verdict",items:[
        {key:"c3_pattern",text:"His conflict style is consistent across multiple incidents. This is who he is."},
@@ -1170,8 +1183,9 @@ const PHASES = [
        {key:"m16_free",text:"I feel more free, more myself at month 18 than I did at month 6."},
        {key:"m16_stress",text:"I have seen him under significant external pressure this period. He did not take it out on me, withdraw completely, or become someone different. Stress is the truest mirror of character."},
        {key:"m16_turnstoward",text:"When I have bid for connection — shared something, asked for support, expressed a need — he has turned toward it consistently, not away from it."},
-       {key:"m16_avoidpattern",text:"Over 16+ months, is there a consistent pattern of him pulling back after closeness, resurfacing when I pull away, and struggling to stay emotionally present when things get real? Avoidant patterns do not resolve without deliberate therapeutic work — they become the relationship's weather."},
-       {key:"m16_needsokay",text:"Does he make me feel that my needs are reasonable and welcome — or do I find myself editing what I ask for, downplaying what I feel, or managing his comfort with my emotions? That self-editing is the data."},
+       {key:"m16_avoidpattern",text:"Over 16+ months, has he remained emotionally consistent — present after closeness, not pulling back when things get real? The absence of a push-pull pattern is a meaningful sign of secure attachment."},
+       {key:"m16_needsokay",text:"Does he make me feel that my needs are reasonable and welcome — so that I do not find myself editing what I ask for or downplaying how I feel to manage his comfort? Feeling free to need things is the signal."},
+       {key:"m16_avoidfree",text:"Over this period, have I NOT found myself editing my emotions or shrinking my needs to manage his comfort? That freedom is the sign of a secure partnership."},
      ]},
      {month:"Month 19–21 — The long game",items:[
        {key:"m19_same",text:"He is still the same man. No significant drift in character, effort, or care."},
@@ -1201,8 +1215,8 @@ const PHASES = [
      {key:"freedom",label:"I feel free",text:"I feel more free, more myself in this relationship — not less."},
      {key:"wordsact",label:"Words = actions",text:"What he says and what he does are the same thing, consistently."},
      {key:"nogutdoubt",label:"No quiet doubt",text:"I do not have a nagging doubt I am explaining away. My gut is settled."},
-     {key:"needswelcome",label:"My needs are welcome",text:"I do not find myself shrinking what I ask for or editing my emotions to manage his comfort. My needs are met with care, not subtle signals that I am too much."},
-     {key:"avoidfree",label:"No push-pull pattern",text:"There is no recurring pattern of closeness followed by withdrawal, then re-engagement when I pull away. That cycle is avoidant attachment — and it becomes the architecture of the relationship."},
+     {key:"needswelcome",label:"My needs are welcome",text:"I do not find myself shrinking what I ask for or editing my emotions to manage his comfort. My needs are welcomed, not tolerated."},
+     {key:"avoidfree",label:"No push-pull pattern",text:"His engagement has been consistent — no recurring pattern of closeness followed by withdrawal, then re-engagement only when I create distance. Consistency is the architecture of a secure relationship."},
    ]},
   {num:6,label:"Blueprint",timing:"Month 13+",gate:"Can he build with me — specifically, not hypothetically?",
    myInput:["Request to see his financial records and business documentation.","Bring your own financial picture to the table. Full transparency, both ways.","Discuss location: where will you live, and what does home look like?","Discuss conflict resolution: what is the agreed approach when things get hard?","Raise the prenuptial agreement directly. State it: ‘I want a prenup. It protects both of us.’","If he reacts with resistance, that is information. A secure man will understand.","Do not soften this conversation. This is the blueprint — it must be specific."],
@@ -1221,8 +1235,8 @@ const PHASES = [
      {key:"prenupraised",label:"Prenup raised",text:"I raised the prenup directly and clearly. His response was noted."},
      {key:"prenupagree",label:"Prenup agreed",text:"He agreed to a prenuptial agreement without resistance or guilt-tripping."},
      {key:"builder",label:"He can build",text:"He can build with me — evident in how he moves, not just what he says."},
-     {key:"jointdecision",label:"Joint decision-making",text:"We have made at least one real decision together where we had competing interests or preferences. Did we navigate it as equals, or did one of us manage the other? Research shows power dynamics reveal themselves most clearly here."},
-     {key:"attachsecure",label:"Secure attachment confirmed",text:"Over the full arc of this relationship, his attachment pattern has been secure — he does not become anxious and clingy when I am independent, nor avoidant and cold when things get close."},
+     {key:"jointdecision",label:"Joint decision-making",text:"We have made at least one real decision together where we had competing interests. Did we navigate it as equals?"},
+     {key:"attachsecure",label:"Secure attachment confirmed",text:"Over the full arc of this relationship, his attachment pattern has been secure — steady, present, not avoidant or anxious."},
    ]},
   {num:7,label:"Engagement",timing:"After 2 years",gate:"Did he ask my parents before he asked me?",
    myInput:["Do not drop hints about a proposal timeline. Do not manufacture urgency.","Trust that a man who is ready will move — without being pushed.","If he asks to meet your parents in the context of a future together, receive it fully.","When he proposes, give yourself permission to feel it — you earned this by being patient.","Before accepting: sit with whether you feel peace, not just excitement.","Review your Phase 1–6 notes before saying yes. Let the data and your gut speak together."],
@@ -1251,50 +1265,6 @@ const PHASES = [
      {key:"team",label:"We are a team",text:"We move as a team — decisions made together, not one managing the other."},
      {key:"annual",label:"Annual review done",text:"We have had our annual values conversation. The agreement has been revisited."},
    ]},
-];
-
-
-const NON_NEGOTIABLES = [
-  {phase:1,key:"finindep",label:"He is financially independent",reason:"A man still financially dependent on his parents or others is not yet ready to build with you. Financial independence is the floor, not a bonus."},
-  {phase:1,key:"dateplans",label:"He planned the first date",reason:"A man who wants you will pursue you with intention. If you planned it, that is information about how much effort he is willing to invest."},
-  {phase:1,key:"datepays",label:"He paid without hesitation",reason:"A man who makes jokes about splitting, or makes you feel awkward about money on a first date, is showing you his financial character early."},
-  {phase:2,key:"nofinancejokes",label:"No jokes about you financing him",reason:"'I'm joking' is often 'I'm testing.' A man who jokes about you taking care of him financially is planting a seed. Watch whether it grows into an expectation."},
-  {phase:2,key:"exclusive",label:"He raised exclusivity clearly",reason:"A man who wants you will not leave your status ambiguous for months. If exclusivity has not been named by month 6, you are an option, not a priority."},
-  {phase:2,key:"heasked",label:"He listens without managing you",reason:"A man who manages instead of listens will never truly see you. This is not a communication style \u2014 it is a character pattern."},
-  {phase:2,key:"boundary",label:"Physical boundary held",reason:"A boundary you set before anything started. If he cannot respect this one, he will not respect the harder ones."},
-  {phase:3,key:"account",label:"He took accountability",reason:"Gaslighting and blame-reversal are not conflict styles. They are ways of erasing your reality. A man who cannot own his part cannot be a safe partner."},
-  {phase:3,key:"repair",label:"He repaired after conflict",reason:"Disappearing after rupture is a choice. Repair is how trust is built. Without it, every conflict leaves a permanent crack."},
-  {phase:3,key:"mysafety",label:"You felt safe disagreeing",reason:"If you do not feel safe being disagreeable now, you will spend the marriage managing his emotions instead of living your life."},
-  {phase:4,key:"moneyleg",label:"He understands financial legacy",reason:"A man who only thinks about income, not generational wealth, will not build the kind of family financial foundation you need. This is a values misalignment, not a gap you can teach around."},
-  {phase:4,key:"trustfund",label:"He is aligned on trust funds",reason:"You have been clear about this from the start. A man who does not see trust funds as essential for children does not share your vision of what family provision looks like."},
-  {phase:5,key:"stilldates",label:"He still plans dates consistently",reason:"When a man stops planning dates after you are secured, he is telling you the pursuit was performance. Sustained effort is what love looks like in practice."},
-  {phase:5,key:"stillpays",label:"He still pays consistently",reason:"If paying for dates has quietly shifted onto you, that shift was a decision he made. It did not happen accidentally."},
-  {phase:5,key:"finindep5",label:"He is fully financially independent",reason:"Financial dependence on family or a partner is not a temporary inconvenience \u2014 it is a dynamic that shapes the entire power structure of a relationship."},
-  {phase:5,key:"parentsindep",label:"He is an adult with his parents",reason:"A man who has not claimed his adulthood with his own parents will struggle to build a family that is truly yours. His first loyalty must be to the family you build together."},
-  {phase:5,key:"freedom",label:"You feel more free, not less",reason:"Love should expand you. If you feel smaller, more careful, more managed \u2014 that is not love. That is containment."},
-  {phase:6,key:"prenupagree",label:"He agreed to the prenup",reason:"A man who refuses a prenuptial agreement is not protecting love \u2014 he is protecting access to your assets. A secure man who loves you will understand why this matters."},
-  {phase:6,key:"trustfund6",label:"Trust fund commitment confirmed",reason:"This is not a negotiation. You have known you wanted this since before you met him. If he cannot commit to it now, he will not build it with you later."},
-  {phase:6,key:"builder",label:"He can build, not just talk",reason:"By Phase 6, evidence of whether he can actually build should be visible in how he has moved \u2014 not in what he has promised."},
-  {phase:7,key:"peace",label:"You feel peace, not just excitement",reason:"Excitement fades. Peace is what sustains a marriage. If you are walking toward a proposal with anxiety, urgency, or relief rather than peace \u2014 your body already knows something your mind is negotiating with."},
-  {phase:7,key:"prenupcommit",label:"Prenup will be signed before wedding",reason:"Commitment without the paperwork is just a feeling. The prenup signed before the wedding is what protects you if the feeling changes."},
-  {phase:1,key:"motherrel",label:"He speaks of women with respect",reason:"How a man speaks about his mother and the women who raised him is the most consistent predictor in relationship research of how he will treat a female partner. Contempt or dismissal is not a style quirk — it is a preview."},
-  {phase:3,key:"c1_myrepair",label:"He receives your repair attempts",reason:"A man who ignores your bids to repair and waits for you to do more is establishing an unequal emotional labour dynamic. This compounds over years into exhaustion and resentment."},
-  {phase:6,key:"jointdecision",label:"He navigates joint decisions as an equal",reason:"If one person consistently manages or overrides the other when interests compete, that is the power structure of the marriage. It will not change after the wedding."},
-  {phase:2,key:"m2_closepull",label:"No post-closeness withdrawal pattern",reason:"If he consistently pulls back after moments of genuine warmth or intimacy, that is avoidant attachment signalling. It is not shyness, it is not busyness — it is a structural pattern that becomes the rhythm of the relationship. It does not resolve on its own."},
-  {phase:5,key:"needswelcome",label:"Your needs do not make you too much",reason:"If you are editing your emotions, downplaying your needs, or managing his comfort with your feelings after 13+ months — you are already doing the emotional labour of an avoidant partnership. This is the relationship you will be in for life if you proceed."},
-  {phase:5,key:"avoidfree",label:"No push-pull cycle present",reason:"The push-pull cycle — closeness, withdrawal, distance, re-engagement — is not a quirk of early dating. After 16+ months it is the established dynamic. Avoidant attachment without deliberate work does not improve inside a relationship; it becomes its weather."},
-];
-const TERMINATE_THRESHOLD = 3;
-const PHASE_UNLOCK_DAYS = {1:0,2:28,3:180,4:390,5:390,6:390,7:730,8:-1};
-const JOURNAL_PROMPTS = [
-  {key:"becoming",q:"Who am I becoming through this process?"},
-  {key:"showed",q:"Where did I show up fully for myself this week?"},
-  {key:"oldbelief",q:"What did the old belief say today \u2014 and what did I do anyway?"},
-  {key:"pattern",q:"What pattern am I noticing in myself right now?"},
-  {key:"boundary",q:"Where did I honour a boundary \u2014 or wish I had?"},
-  {key:"worthy",q:"What reminded me of my own worth this week?"},
-  {key:"pace",q:"Am I honouring my pace, or am I rushing? What does the pressure feel like?"},
-  {key:"wisest",q:"What would the wisest version of me do next?"},
 ];
 const RATING_LABELS = ["","This feels very hard right now","More uncertain than hopeful","Somewhere in the middle","Feeling mostly good","This feels really right"];
 
@@ -1329,21 +1299,78 @@ function friendlyElapsed(days){
   if(remM===0) return years+" year"+(years>1?"s":"")+" in";
   return years+"y "+remM+"m in";
 }
+const TERMINATE_THRESHOLD = 3;
+
+const NON_NEGOTIABLES = [
+  {phase:1,key:"finindep",      label:"He is financially independent",              reason:"A man who is still financially dependent on his parents or others is not yet ready to build with you. Financial independence is the floor, not a bonus."},
+  {phase:1,key:"dateplans",     label:"He planned the first date",                  reason:"A man who wants you will pursue you with intention. If the date happened by accident or you arranged it, that is information about how much effort he is willing to invest."},
+  {phase:1,key:"datepays",      label:"He paid without hesitation",                 reason:"A man who makes jokes about splitting or forgets his wallet on a first date is showing you his financial character early."},
+  {phase:2,key:"nofinancejokes",label:"No jokes about you financing him",           reason:"A man who jokes about you taking care of him financially is planting a seed. Watch whether it grows into an expectation."},
+  {phase:2,key:"exclusive",     label:"He raised exclusivity clearly",              reason:"A man who wants you will not leave your status ambiguous for months. If exclusivity has not been named by month 6, you are an option, not a priority."},
+  {phase:2,key:"heasked",       label:"He listens without managing you",            reason:"A man who manages instead of listens will never truly see you. This is not a communication style — it is a character pattern."},
+  {phase:2,key:"boundary",      label:"Physical boundary held",                     reason:"A boundary you set before anything started. If he cannot respect this one, he will not respect the harder ones."},
+  {phase:3,key:"account",       label:"He took accountability",                     reason:"Gaslighting and blame-reversal are not conflict styles. They are ways of erasing your reality. A man who cannot own his part cannot be a safe partner."},
+  {phase:3,key:"repair",        label:"He repaired after conflict",                 reason:"Disappearing after rupture is a choice. Repair is how trust is built. Without it, every conflict leaves a permanent crack."},
+  {phase:3,key:"mysafety",      label:"You felt safe disagreeing",                  reason:"If you do not feel safe being disagreeable now, you will spend the marriage managing his emotions instead of living your life."},
+  {phase:4,key:"moneyleg",      label:"He understands financial legacy",            reason:"A man who only thinks about income, not generational wealth, does not share your vision of what family provision looks like."},
+  {phase:4,key:"trustfund",     label:"He is aligned on trust funds",              reason:"You have been clear about this from the start. A man who does not see trust funds as essential does not share your vision of family."},
+  {phase:5,key:"stilldates",    label:"He still plans dates consistently",          reason:"When a man stops planning dates after you are secured, he is telling you the pursuit was performance. Sustained effort is what love looks like in practice."},
+  {phase:5,key:"stillpays",     label:"He still pays consistently",                 reason:"If paying has quietly shifted onto you over time, that shift was a decision he made."},
+  {phase:5,key:"finindep5",     label:"He is fully financially independent",        reason:"Financial dependence shapes the entire power structure of a relationship."},
+  {phase:5,key:"parentsindep",  label:"He is an adult with his parents",            reason:"A man who has not claimed his adulthood with his parents will struggle to build a family that is truly yours."},
+  {phase:5,key:"freedom",       label:"You feel more free, not less",               reason:"Love should expand you. If you feel smaller, more careful, more managed — that is not love. That is containment."},
+  {phase:6,key:"prenupagree",   label:"He agreed to the prenup",                   reason:"A man who refuses a prenuptial agreement is not protecting love — he is protecting access to your assets."},
+  {phase:6,key:"trustfund6",    label:"Trust fund commitment confirmed",            reason:"This is not a negotiation. If he cannot commit to it now, he will not build it with you later."},
+  {phase:6,key:"builder",       label:"He can build, not just talk",               reason:"By Phase 6, evidence of whether he can actually build should be visible in how he has moved — not in what he has promised."},
+  {phase:7,key:"peace",         label:"You feel peace, not just excitement",        reason:"Excitement fades. Peace is what sustains a marriage. If you are walking toward a proposal with anxiety or relief rather than peace — your body already knows something."},
+  {phase:7,key:"prenupcommit",  label:"Prenup will be signed before wedding",      reason:"Commitment without the paperwork is just a feeling. The prenup signed before the wedding is what protects you if the feeling changes."},
+  {phase:1,key:"motherrel",     label:"He speaks of women with respect",            reason:"How a man speaks about his mother and the women who raised him is the most consistent predictor of how he will treat a female partner. Contempt or dismissal is not a style quirk — it is a preview."},
+  {phase:3,key:"c1_myrepair",   label:"He receives your repair attempts",           reason:"A man who ignores your bids to repair establishes an unequal emotional labour dynamic. This compounds over years into exhaustion and resentment."},
+  {phase:6,key:"jointdecision", label:"He navigates joint decisions as an equal",   reason:"If one person consistently manages or overrides the other when interests compete, that is the power structure of the marriage."},
+  {phase:2,key:"m2_closepull",  label:"No post-closeness withdrawal",              reason:"If he consistently pulls back after moments of genuine warmth or intimacy, that is avoidant attachment. It does not resolve on its own."},
+  {phase:5,key:"needswelcome",  label:"Your needs do not make you too much",        reason:"If you are editing your emotions or downplaying your needs after 13+ months, you are already doing the emotional labour of an avoidant partnership."},
+  {phase:5,key:"avoidfree",     label:"No push-pull cycle present",                reason:"The push-pull cycle after 16+ months is the established dynamic. Avoidant attachment without deliberate work becomes the relationship's weather."},
+];
+
 function terminateActive(){
   return getNNFails().length>=TERMINATE_THRESHOLD||getAvoidantCount()>=3;
 }
-function getAvoidantCount(){
-  // Count 'no' on avoidant-specific items across all phases
-  var avoidKeys=[
-    "2_m2_closepull","2_m2_vulnresp","m_2_m2_closepull","m_2_m2_vulnresp",
-    "m_2_m4_avoidpull","m_2_m4_needsresp",
-    "m_3_c2_avoidconflict","m_3_c2_comeback",
-    "m_5_m16_avoidpattern","m_5_m16_needsokay",
-    "5_needswelcome","5_avoidfree",
-    "1_pullback","1_closenessresp","1_independpride"
-  ];
-  return avoidKeys.filter(function(k){return(S.checks[k]||"none")==="no";}).length;
+var AVOIDANT_ITEMS=[
+  {keys:["1_pullback"],
+   label:"Phase 1",text:"Did not respond securely when I was naturally less available"},
+  {keys:["1_closenessresp"],
+   label:"Phase 1",text:"Did not lean in when conversation became emotionally close"},
+  {keys:["2_m2_closepull","m_2_m2_closepull"],
+   label:"Phase 2",text:"Did not stay present after closeness — pulled back after a warm moment"},
+  {keys:["2_m2_vulnresp","m_2_m2_vulnresp"],
+   label:"Phase 2",text:"Responded to vulnerability with solutions or deflection, not openness"},
+  {keys:["m_2_m4_avoidpull"],
+   label:"Phase 2",text:"Push-pull pattern visible — pulls back after closeness, re-engages when I pull away"},
+  {keys:["m_2_m4_needsresp"],
+   label:"Phase 2",text:"Signalled that my needs were too much"},
+  {keys:["m_3_c2_avoidconflict"],
+   label:"Phase 3",text:"Stonewalls in conflict — goes silent or says 'I'm fine' without engaging"},
+  {keys:["m_3_c2_comeback"],
+   label:"Phase 3",text:"Returns after conflict physically present but emotionally absent"},
+  {keys:["m_5_m16_avoidpattern"],
+   label:"Phase 5",text:"Push-pull cycle is the established pattern after 16+ months"},
+  {keys:["m_5_m16_needsokay"],
+   label:"Phase 5",text:"I find myself editing my needs to manage his comfort with my emotions"},
+  {keys:["5_needswelcome"],
+   label:"Phase 5",text:"My needs do not feel welcome — I am shrinking what I ask for"},
+  {keys:["5_avoidfree"],
+   label:"Phase 5",text:"Push-pull cycle is present — closeness, withdrawal, distance, re-engagement"},
+];
+function avoidItemFailed(a){
+  // Avoidant items fire when marked NO — meaning the healthy behaviour was NOT observed
+  // (items are phrased positively: "did he stay present?" — no = avoidant signal)
+  return a.keys.some(function(k){
+    var v=S.checks[k]||"none";
+    return v==="no";
+  });
 }
+function getAvoidantCount(){ return AVOIDANT_ITEMS.filter(avoidItemFailed).length; }
+function getAvoidantFails(){ return AVOIDANT_ITEMS.filter(avoidItemFailed); }
 function isUnlocked(n){
   // Phase 1 always unlocked
   if(n===1) return true;
@@ -1385,14 +1412,48 @@ function setStartDate(val){
 
 // ── SCORES ────────────────────────────────────────────────────────────────
 function score(n){
-  var ph=PHASES[n-1],tot=ph.items.length;
-  var yes=ph.items.filter(function(i){return S.checks[n+"_"+i.key]==="yes";}).length;
-  var par=ph.items.filter(function(i){return S.checks[n+"_"+i.key]==="partial";}).length;
+  var ph=PHASES[n-1];
+  var keys=[];
+
+  if(ph.monthly){
+    // Phases with monthly breakdowns: score ONLY from monthly items
+    // Monthly items are stored as m_[phase]_[monthcode]_[key]
+    // e.g. m_2_m2_convo, m_2_m3_dates
+    ph.monthly.forEach(function(block){
+      block.items.forEach(function(it){
+        keys.push("m_"+n+"_"+it.key);
+      });
+    });
+  } else {
+    // Phases without monthly: score from main items[]
+    ph.items.forEach(function(it){
+      keys.push(n+"_"+it.key);
+    });
+  }
+
+  var tot=keys.length;
+  var yes=keys.filter(function(k){return(S.checks[k]||"none")==="yes";}).length;
+  var par=keys.filter(function(k){return(S.checks[k]||"none")==="partial";}).length;
   return{yes:yes,par:par,tot:tot,pct:tot?Math.round((yes+par*.5)/tot*100):0};
 }
 function totalPct(){
   var t=0,y=0,p=0;
-  PHASES.forEach(function(ph){ph.items.forEach(function(it){t++;var v=S.checks[ph.num+"_"+it.key]||"none";if(v==="yes")y++;if(v==="partial")p++;});});
+  PHASES.forEach(function(ph){
+    var keys=[];
+    if(ph.monthly){
+      ph.monthly.forEach(function(block){
+        block.items.forEach(function(it){ keys.push("m_"+ph.num+"_"+it.key); });
+      });
+    } else {
+      ph.items.forEach(function(it){ keys.push(ph.num+"_"+it.key); });
+    }
+    keys.forEach(function(k){
+      t++;
+      var v=S.checks[k]||"none";
+      if(v==="yes")y++;
+      else if(v==="partial")p++;
+    });
+  });
   return t?Math.round((y+p*.5)/t*100):0;
 }
 function phClass(n){
@@ -1479,11 +1540,32 @@ function renderBanner(){
     html+="<div class='nn-banner-title'>Terminate order</div>";
     var reasons=[];
     if(fails.length>=TERMINATE_THRESHOLD) reasons.push(fails.length+" non-negotiable"+(fails.length>1?"s":"")+" failed");
-    if(avoidCount>=3) reasons.push(avoidCount+" avoidant or anxious pattern"+(avoidCount>1?"s":"")+" confirmed");
+    if(avoidCount>=3) reasons.push(avoidCount+" avoidant pattern"+(avoidCount>1?"s":"")+" confirmed");
     html+="<div class='nn-banner-sub'>"+reasons.join(" and ")+". Your blueprint was written for exactly this moment — to protect you when the data is clear and feelings are negotiating.</div>";
+    // Show which avoidant patterns fired
+    if(avoidCount>=3){
+      var avoidFails=getAvoidantFails();
+      // deduplicate by label+text (monthly and non-monthly may overlap)
+      var seen={};
+      var uniqueAvoid=avoidFails.filter(function(a){
+        var key=a.label+'_'+a.text;
+        if(seen[key]) return false;
+        seen[key]=true; return true;
+      });
+      html+="<div style='margin:10px 0 4px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--petal)'>Avoidant patterns flagged</div>";
+      uniqueAvoid.forEach(function(a){
+        html+="<div class='nn-fail-item'>";
+        html+="<div class='nn-fail-label'><span class='nn-phase-tag'>"+a.label+"</span>"+a.text+"</div>";
+        html+="</div>";
+      });
+    }
   } else {
     html+="<div class='nn-banner-title'>Watch carefully</div>";
-    html+="<div class='nn-banner-sub'>"+(fails.length>0?fails.length+" non-negotiable"+(fails.length>1?"s":"")+". ":"")+(partials.length>0?partials.length+" uncertain. ":"")+"Slow down and pay attention.</div>";
+    var watchParts=[];
+    if(fails.length>0) watchParts.push(fails.length+" non-negotiable"+(fails.length>1?"s":"")+" failed");
+    if(partials.length>0) watchParts.push(partials.length+" item"+(partials.length>1?"s":"")+" uncertain");
+    if(avoidCount>0) watchParts.push(avoidCount+" avoidant signal"+(avoidCount>1?"s":"")+" observed"+(avoidCount===2?" — one more triggers terminate order":""));
+    html+="<div class='nn-banner-sub'>"+watchParts.join(". ")+". Slow down and pay attention.</div>";
   }
   fails.forEach(function(nn){
     var isDealer=nn.reason&&nn.reason.length>0;
@@ -1494,8 +1576,25 @@ function renderBanner(){
     html+="<div class='nn-fail-reason'><strong style='font-style:normal;font-size:12px;color:inherit'>Why this matters: </strong>"+nn.reason+"</div>";
     html+="</div>";
   });
-  if(!isTerminate&&partials.length){
-    html+="<div class='nn-fail-item' style='opacity:.7'><div class='nn-fail-label' style='font-weight:400;font-style:italic'>+ "+partials.length+" uncertain item"+(partials.length>1?"s":"")+" \u2014 keep watching</div></div>";
+  // Partial (uncertain) items — always show with full detail
+  if(partials.length){
+    html+="<div style='margin:10px 0 4px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--petal)'>"+(isTerminate?"Also uncertain":"Still uncertain")+"</div>";
+    partials.forEach(function(nn){
+      html+="<div class='nn-fail-item' style='opacity:.85'>";
+      html+="<div class='nn-fail-label'><span class='nn-phase-tag'>Phase "+nn.phase+"</span>"+nn.label+" <span style='font-size:10px;background:#faeeda;color:#6b3a06;padding:2px 6px;border-radius:99px;font-weight:500;margin-left:4px'>\u223c partial</span></div>";
+      html+="<div class='nn-fail-reason' style='font-size:11px'>"+nn.reason+"</div>";
+      html+="</div>";
+    });
+  }
+  // Avoidant signals in watch banner
+  if(!isTerminate&&avoidCount>0){
+    var avoidWFails=getAvoidantFails();
+    var seen3={};
+    var uniqWatch=avoidWFails.filter(function(a){var k=a.text;if(seen3[k])return false;seen3[k]=true;return true;});
+    html+="<div style='margin:10px 0 4px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--petal)'>Avoidant signals</div>";
+    uniqWatch.forEach(function(a){
+      html+="<div class='nn-fail-item' style='opacity:.85'><div class='nn-fail-label'><span class='nn-phase-tag'>"+a.label+"</span>"+a.text+"</div></div>";
+    });
   }
   var quote=isTerminate?"“You do not need to explain this decision or make him understand it. You simply need to honour what you already know.”":"“Data does not lie. Feelings negotiate. Trust what you observed.”";
   html+="<div class='nn-footer'>"+quote+"</div>";
