@@ -12,7 +12,7 @@ html{scroll-behavior:smooth}
 body{font-family:var(--sans);background:var(--cream);color:var(--stone);min-height:100vh;overflow-x:hidden;font-weight:400;-webkit-font-smoothing:antialiased}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0}
 .layout{display:flex;align-items:flex-start;width:100%;min-height:100vh;position:relative;z-index:1}
-.sidebar{width:180px;min-width:180px;flex-shrink:0;padding:80px 16px 80px 20px;display:flex;flex-direction:column;gap:44px;position:sticky;top:0;height:100vh;overflow:hidden}
+.sidebar{width:180px;min-width:180px;flex-shrink:0;padding:80px 16px 80px 20px;display:flex;flex-direction:column;gap:44px;position:sticky;top:0;height:100vh;overflow:hidden;align-self:flex-start}
 .sidebar-right{padding:80px 20px 80px 16px}
 .side-quote{font-family:var(--serif);font-size:16px;font-style:italic;color:var(--mauve);line-height:1.7;text-align:center;opacity:.75}
 .side-hearts{text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
@@ -1418,13 +1418,6 @@ textarea::placeholder{color:var(--mist);font-style:italic}
       <button class="btn-reset" id="resetBtn">&#8635; Start fresh</button>
     </div>
     <div id="saveMsg" class="save-msg"></div>
-  </div>
-
-  <div class="mantra">
-    <p style="font-family:var(--serif);font-size:20px;font-style:italic;font-weight:500;color:var(--deep);line-height:1.7;max-width:480px;margin:0 auto 8px">
-      &ldquo;Who shall find a noble woman? Her worth is far above rubies.&rdquo;
-    </p>
-    <p style="font-size:12px;color:var(--mist);letter-spacing:.1em;">Proverbs 31:10</p>
   </div>
 
 </div>
@@ -4887,9 +4880,6 @@ document.addEventListener("DOMContentLoaded",function(){
   </div>
 </div>
 
-
-</div>
-
 <aside class="sidebar sidebar-right" aria-hidden="true">
   <div class="side-quote">"A man who wants you will make it obvious. You will not need to decode him."</div>
   <div class="side-divider"></div>
@@ -4906,6 +4896,13 @@ document.addEventListener("DOMContentLoaded",function(){
   <div class="side-divider"></div>
   <div class="side-quote">"I will no longer live my life like I am in a hurry."</div>
 </aside>
+
+</div>
+
+<footer style="width:100%;background:#fdf0f4;border-top:1px solid #e8a0b8;padding:24px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:relative;z-index:2;">
+  <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:13px;font-style:italic;color:#7a2444;letter-spacing:0.06em;">&ldquo;Her worth is far above rubies.&rdquo; &mdash; Proverbs 31:10</span>
+  <span style="font-size:11px;color:#b08898;letter-spacing:0.12em;text-transform:uppercase;font-family:'DM Sans',system-ui,sans-serif;">My Blueprint &nbsp;&#9825;&nbsp; Private &amp; local</span>
+</footer>
 
 </body>
 </html>
