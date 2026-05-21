@@ -1091,7 +1091,8 @@ textarea::placeholder{color:var(--mist);font-style:italic}
         </div>
       </div>
 
-    </div><!-- /phase-body -->
+    <div id="p0AnalysisWrap"></div>
+  </div><!-- /phase-body -->
   </div>
   <!-- END PHASE 0 -->
 
@@ -1778,8 +1779,11 @@ function avoidItemFailed(a){
 function getAvoidantCount(){ return AVOIDANT_ITEMS.filter(avoidItemFailed).length; }
 function getAvoidantFails(){ return AVOIDANT_ITEMS.filter(avoidItemFailed); }
 function isUnlocked(n){
-  // Phase 1 always unlocked
-  if(n===1) return true;
+  // Phase 1 requires Phase 0 to be complete
+  if(n===1){
+    if(!S.phase0||!S.phase0.complete) return false;
+    return true;
+  }
   // If terminate order is active, lock everything AFTER the current active phase
   if(terminateActive()&&n>S.activePhase) return false;
   // Phase 7 (engagement) — time only, blocked if terminate active
@@ -2041,7 +2045,7 @@ function renderBanner(){
 function renderPhase(){
   var ph=PHASES[S.activePhase-1],sc=score(ph.num);
   if(!isUnlocked(ph.num)){
-    el("phaseCard").innerHTML="<div class='locked-overlay'><svg width='44' height='40' viewBox='0 0 44 40' fill='var(--rose)' opacity='.3'><path d='M22 38C22 38 2 25 2 13 2 6 8 2 14 2 18 2 21 4 22 7 24 4 27 2 31 2 37 2 43 6 43 13 43 25 22 38 22 38Z'/></svg><div class='locked-title'>Phase "+ph.num+" \u2014 "+ph.label+"</div><div class='locked-sub'>"+(ph.num===7?"Engagement unlocks after 2 years together — and only if the data is clean. There is no shortcut here.":ph.num===8?"Marriage unlocks once the engagement phase is complete.":"This phase is waiting for you. Your blueprint is protecting your pace.")+"</div><div class='locked-countdown'>"+unlockLabel(ph.num)+"</div></div>";
+    el("phaseCard").innerHTML="<div class='locked-overlay'><svg width='44' height='40' viewBox='0 0 44 40' fill='var(--rose)' opacity='.3'><path d='M22 38C22 38 2 25 2 13 2 6 8 2 14 2 18 2 21 4 22 7 24 4 27 2 31 2 37 2 43 6 43 13 43 25 22 38 22 38Z'/></svg><div class='locked-title'>Phase "+ph.num+" \u2014 "+ph.label+"</div><div class='locked-sub'>"+(ph.num===7?"Engagement unlocks after 2 years together — and only if the data is clean. There is no shortcut here.":ph.num===8?"Marriage unlocks once the engagement phase is complete.":"Phase 1 unlocks after you complete Phase 0 — Conscious Completion. Scroll to the top of the page to begin.")+"</div><div class='locked-countdown'>"+unlockLabel(ph.num)+"</div></div>";
     return;
   }
   var tab=S.tab[ph.num]||"input",isPre=ph.num>=6;
@@ -3812,8 +3816,12 @@ function loadPhase0(){
   if(S.phase0.complete){
     var btn=document.getElementById('p0CompleteBtn');
     var msg=document.getElementById('p0CompleteMsg');
-    if(btn){btn.textContent='✓ Phase 0 Complete';btn.disabled=true;}
+    if(btn){btn.textContent='✓ Phase 0 Complete — Phase 1 Unlocked';btn.disabled=true;}
     if(msg) msg.style.display='block';
+  }
+  // Restore analysis if it exists
+  if(S.phase0.analysis){
+    renderPhase0Analysis(S.phase0.analysis, !!S.phase0.complete);
   }
   updatePhase0Score();
 }
@@ -3829,6 +3837,133 @@ function updatePhase0Score(){
   if(pctEl) pctEl.textContent=pct+'%';
 }
 
+/* ── PHASE 0 ANALYSIS ─────────────────────────────────────────────────────
+   Scans all 5 answers for:
+   - Depth (word count, specificity)
+   - Self-awareness vs blame
+   - Deflection / avoidance signals
+   - Readiness patterns
+   Returns a readiness score 0-100 and a set of insight cards
+─────────────────────────────────────────────────────────────────────── */
+function analysePhase0(answers){
+  var insights=[];
+  var readiness=0; // 0-100
+  var flags=[];    // things to note
+
+  var all=answers.join(' ').toLowerCase();
+  var totalWords=all.split(/\s+/).filter(Boolean).length;
+
+  // ── DEPTH CHECK ── minimum meaningful engagement
+  var wordCounts=answers.map(function(a){return a.trim().split(/\s+/).filter(Boolean).length;});
+  var avgWords=totalWords/5;
+  if(avgWords>=60) readiness+=20;
+  else if(avgWords>=30) readiness+=12;
+  else if(avgWords>=15) readiness+=6;
+
+  // ── STEP 1: RESPONSIBILITY vs BLAME ──────────────────────────────────
+  var t1=answers[0].toLowerCase();
+  var blameWords=/(his fault|because of him|he made me|he caused|he did|he never|he always|he was|all his|everything he)/gi;
+  var selfWords=/(i (could have|should have|did|avoided|assumed|ignored|allowed|stayed|chose|didn.t|wasn.t|failed|let)|my part|my role|i take|i own|i admit|i recognise|responsible for|my choice|i knew)/gi;
+  var blameCount=(t1.match(blameWords)||[]).length;
+  var selfCount=(t1.match(selfWords)||[]).length;
+
+  if(selfCount>=3){
+    readiness+=22;
+    insights.push({type:'green',step:1,title:'Genuine self-reflection',body:'You named your own part clearly in step 1. That kind of honesty is the foundation of not repeating this.',quote:answers[0].trim().slice(0,120)+'...'});
+  } else if(selfCount>=1&&blameCount<=2){
+    readiness+=12;
+    insights.push({type:'amber',step:1,title:'Partial ownership',body:'You touched on your part, but the focus still leans toward what he did. That is human — but worth noticing. The 50% question is asking specifically about you.',quote:''});
+  } else if(blameCount>selfCount){
+    readiness+=3;
+    flags.push('blame');
+    insights.push({type:'red',step:1,title:'Mostly blame',body:'Step 1 reads mostly as what he did wrong. That is understandable, especially when the hurt is fresh. But this step is asking for your 50% — not because you caused it, but because owning your part is what frees you from repeating it. Consider revisiting this one.',quote:''});
+  } else {
+    readiness+=8;
+  }
+
+  // ── STEP 2: POWER RECLAMATION ─────────────────────────────────────────
+  var t2=answers[1].toLowerCase();
+  var stillWaiting=/(still waiting|hope he|maybe he will|if he|when he comes|might apologise|one day he)/gi;
+  var reclaimedPower=/(i can give (this|that|myself)|i don.t need|i release|i let go|i choose|i have (this|that|it)|i am (my own|enough|whole)|from myself|within me|i create)/gi;
+
+  var waitingCount=(t2.match(stillWaiting)||[]).length;
+  var powerCount=(t2.match(reclaimedPower)||[]).length;
+
+  if(powerCount>=2){
+    readiness+=20;
+    insights.push({type:'green',step:2,title:'Power reclaimed',body:'You named what you were waiting for — and found a way to give it to yourself. That is the whole point of this step.',quote:answers[1].trim().slice(0,120)+'...'});
+  } else if(waitingCount>=2){
+    readiness+=4;
+    flags.push('waiting');
+    insights.push({type:'red',step:2,title:'Still waiting for him',body:'Your answer suggests you are still waiting for him to give you something — an apology, closure, an explanation. That waiting keeps you energetically tied. The question is: how could you begin to give that thing to yourself, even imperfectly?',quote:''});
+  } else {
+    readiness+=10;
+    insights.push({type:'amber',step:2,title:'Named but not released',body:'You identified what you were waiting for, which is the first move. The next move is to stop waiting for him to provide it. That is the shift this step is trying to make.',quote:''});
+  }
+
+  // ── STEP 3: PATTERN AWARENESS ────────────────────────────────────────
+  var t3=answers[2].toLowerCase();
+  var woundWords=/(unseen|abandoned|not enough|controlled|unworthy|unlovable|rejected|left|invisible|neglect|not mattering|not valued|not chosen|fear of|afraid of|pattern|this is not the first|keeps? happening|always end up|always attract)/gi;
+  var surfaceWords=/(i don.t know|not sure|nothing|no wound|fine|okay|wasn.t affected|normal|just life)/gi;
+
+  var woundCount=(t3.match(woundWords)||[]).length;
+  var surfaceCount=(t3.match(surfaceWords)||[]).length;
+
+  if(woundCount>=2){
+    readiness+=18;
+    insights.push({type:'green',step:3,title:'Pattern identified',body:'You connected this relationship to something deeper. That is the hardest step in conscious completion — and you did it.',quote:answers[2].trim().slice(0,120)+'...'});
+  } else if(surfaceCount>=2||wordCounts[2]<15){
+    readiness+=3;
+    flags.push('shallow');
+    insights.push({type:'red',step:3,title:'This answer may need more',body:'Step 3 asks for the deeper wound — the pattern, not just the event. Short or surface answers here usually mean the question feels uncomfortable. That discomfort is exactly the place to go.',quote:''});
+  } else {
+    readiness+=9;
+    insights.push({type:'amber',step:3,title:'Some depth visible',body:'You explored this, but the childhood or pattern connection could go deeper. What is the earliest memory of feeling exactly this way?',quote:''});
+  }
+
+  // ── STEP 4: ALCHEMY / GIFT-FINDING ───────────────────────────────────
+  var t4=answers[3].toLowerCase();
+  var giftWords=/(i (learned|know|understand|see|realise|gained|grew|became|discovered)|taught me|showed me|because of (this|him|that)|i now (know|understand|see|trust|value|recognise)|gift|strength|clarity|lesson|growth|wiser|stronger|clear on|what i (need|want|won.t))/gi;
+  var negativeOnly=/(nothing|no gift|waste of|ruined|only hurt|just pain|nothing good|damaged)/gi;
+
+  var giftCount=(t4.match(giftWords)||[]).length;
+  var negCount=(t4.match(negativeOnly)||[]).length;
+
+  if(giftCount>=3){
+    readiness+=16;
+    insights.push({type:'green',step:4,title:'Alchemy at work',body:'You found something real in this. That does not mean it was worth it — it means you are taking the nutrient out of the pain instead of just carrying the weight.',quote:answers[3].trim().slice(0,120)+'...'});
+  } else if(negCount>=2){
+    readiness+=3;
+    flags.push('stuck');
+    insights.push({type:'red',step:4,title:'Not ready to find the gift yet',body:'It is okay if you cannot find the gift right now. But this step matters — staying in "there was nothing good about this" keeps the wound open. Even one small thing counts: a red flag you will never ignore again, a quality you know you need now, a boundary you will hold.',quote:''});
+  } else {
+    readiness+=8;
+    insights.push({type:'amber',step:4,title:'Something is there',body:'You started to find the lesson. Push a little further — what do you know now that you did not know before?',quote:''});
+  }
+
+  // ── STEP 5: FUTURE VISION ────────────────────────────────────────────
+  var t5=answers[4].toLowerCase();
+  var futureWords=/(i (am|will be|see myself|imagine|have|feel)|my life|my (work|home|friends|peace|health|joy|morning|days)|without (him|anyone|needing)|free|whole|grounded|building|creating|doing|laughing|thriving|light|content|enough on my own)/gi;
+  var partnerFocused=/(with (someone|a man|a partner|him|them)|married|in a relationship|fall in love|meet someone|boyfriend|husband)/gi;
+
+  var futureCount=(t5.match(futureWords)||[]).length;
+  var partnerCount=(t5.match(partnerFocused)||[]).length;
+
+  if(futureCount>=3&&partnerCount<=1){
+    readiness+=14;
+    insights.push({type:'green',step:5,title:'Vision is hers',body:'Your future vision is about your life — not about finding the next person. That is the signal this step is looking for.',quote:answers[4].trim().slice(0,120)+'...'});
+  } else if(partnerCount>futureCount){
+    readiness+=3;
+    flags.push('partner-focused');
+    insights.push({type:'amber',step:5,title:'Future still centred on partnership',body:'Step 5 asks specifically about your life without anyone — what does good look like for you alone? When the vision is still mostly about finding someone, it suggests the completion work is not quite finished yet.',quote:''});
+  } else {
+    readiness+=8;
+    insights.push({type:'amber',step:5,title:'Vision is forming',body:'You are starting to see your life on its own terms. Keep going — make the picture more specific. Where are you, what are you doing, what do you feel in your body?',quote:''});
+  }
+
+  return {readiness:Math.min(readiness,100), insights:insights, flags:flags};
+}
+
 function completePhase0(){
   // Check all 5 textareas have at least 10 chars
   var empty=[];
@@ -3842,21 +3977,116 @@ function completePhase0(){
     }
   });
   if(empty.length){
-    alert('Please write honestly in all 5 steps before completing Phase 0. Step'+(empty.length>1?'s ':' ')+empty.join(', ')+' still '+(empty.length>1?'need':'needs')+' more.');
+    alert('Please write honestly in all 5 steps first. Step'+(empty.length>1?'s ':' ')+empty.join(', ')+' still '+(empty.length>1?'need':'needs')+' more.');
     return;
   }
-  // Save completion
+
+  // Run analysis
+  var answers=['1','2','3','4','5'].map(function(n){
+    var ta=document.getElementById('p0t'+n);
+    return ta?ta.value:'';
+  });
+  var result=analysePhase0(answers);
+
+  // Save everything
   if(!S.phase0) S.phase0={};
-  S.phase0.complete=true;
+  S.phase0.analysis=result;
   S.phase0.completedDate=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+
+  // Determine unlock
+  var canUnlock=result.readiness>=50&&result.flags.indexOf('blame')===-1;
+  if(canUnlock){
+    S.phase0.complete=true;
+  }
   save();
-  // Update UI
-  var btn=document.getElementById('p0CompleteBtn');
-  var msg=document.getElementById('p0CompleteMsg');
-  if(btn){btn.textContent='✓ Phase 0 Complete';btn.disabled=true;}
-  if(msg) msg.style.display='block';
+
+  // Render analysis
+  renderPhase0Analysis(result, canUnlock);
   updatePhase0Score();
+  renderTimeline();
+  renderPhase();
 }
+
+function renderPhase0Analysis(result, unlocked){
+  var wrap=document.getElementById('p0AnalysisWrap');
+  if(!wrap) return;
+
+  var scoreColor=result.readiness>=75?'var(--green)':result.readiness>=50?'var(--mauve)':'var(--red)';
+  var scoreLabel=result.readiness>=75?'Ready to begin':(result.readiness>=50?'Partially ready':'Not yet ready');
+
+  var html='<div style="margin-top:20px;border-top:1px solid var(--pink-100);padding-top:18px">';
+  html+='<div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mauve);margin-bottom:14px">What your answers reveal</div>';
+
+  // Score bar
+  html+='<div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;background:var(--blush);border-radius:14px;padding:14px 18px">';
+  html+='<div style="font-family:var(--serif);font-size:36px;font-weight:500;color:'+scoreColor+';line-height:1">'+result.readiness+'</div>';
+  html+='<div>';
+  html+='<div style="font-family:var(--serif);font-size:17px;font-weight:500;color:'+scoreColor+'">'+scoreLabel+'</div>';
+  html+='<div style="font-size:11px;color:var(--mist);margin-top:2px">Completion readiness score out of 100</div>';
+  html+='<div style="width:200px;height:6px;background:var(--pink-100);border-radius:99px;margin-top:8px;overflow:hidden">';
+  html+='<div style="width:'+result.readiness+'%;height:100%;background:'+scoreColor+';border-radius:99px;transition:width .6s ease"></div>';
+  html+='</div></div></div>';
+
+  // Insight cards
+  var typeStyles={
+    green:{bg:'#f0f7e8',border:'#a8d080',label:'var(--green)',dot:'&#9679;'},
+    amber:{bg:'#fdf3e0',border:'#e8c070',label:'#7a4a00',dot:'&#9679;'},
+    red:  {bg:'#fdf0ec',border:'#e8a090',label:'var(--red)',dot:'&#9679;'},
+  };
+
+  result.insights.forEach(function(ins){
+    var s=typeStyles[ins.type]||typeStyles.amber;
+    html+='<div style="background:'+s.bg+';border:1px solid '+s.border+';border-radius:14px;padding:14px 16px;margin-bottom:10px">';
+    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">';
+    html+='<span style="font-size:9px;color:'+s.label+'">'+s.dot+'</span>';
+    html+='<span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:'+s.label+'">Step '+ins.step+' — '+ins.title+'</span>';
+    html+='</div>';
+    html+='<div style="font-size:13px;color:var(--stone);line-height:1.65">'+ins.body+'</div>';
+    if(ins.quote){
+      html+='<div style="margin-top:8px;padding:7px 10px;background:rgba(255,255,255,.7);border-radius:8px;font-family:var(--serif);font-size:12px;font-style:italic;color:var(--mist)">&ldquo;'+ins.quote+'&rdquo;</div>';
+    }
+    html+='</div>';
+  });
+
+  // Unlock decision
+  if(unlocked){
+    html+='<div style="background:var(--green);background:linear-gradient(135deg,#2a5a08,#4a8a18);border-radius:14px;padding:16px 20px;text-align:center;margin-top:4px">';
+    html+='<div style="font-family:var(--serif);font-size:18px;font-weight:400;color:white;margin-bottom:6px">&#10003; Phase 1 is now unlocked</div>';
+    html+='<div style="font-size:12px;color:rgba(255,255,255,.75);line-height:1.6">Your answers show enough self-awareness and honest reflection to begin observing someone new. You are ready &mdash; consciously.</div>';
+    html+='</div>';
+    // Update complete button
+    var btn=document.getElementById('p0CompleteBtn');
+    var msg=document.getElementById('p0CompleteMsg');
+    if(btn){btn.textContent='✓ Phase 0 Complete — Phase 1 Unlocked';btn.disabled=true;}
+    if(msg) msg.style.display='block';
+  } else {
+    html+='<div style="background:var(--blush);border:1px solid var(--petal);border-radius:14px;padding:16px 20px;text-align:center;margin-top:4px">';
+    html+='<div style="font-family:var(--serif);font-size:17px;font-weight:400;color:var(--deep);margin-bottom:6px">Phase 1 is not yet unlocked</div>';
+    html+='<div style="font-size:12px;color:var(--mist);line-height:1.6;margin-bottom:14px">Based on your answers, there is still completion work to do. Revisit the steps flagged above and go a little deeper &mdash; especially around ownership and releasing what you are still waiting for. This is not a judgment. It is protection.</div>';
+    html+='<button onclick="retryPhase0()" style="padding:9px 22px;background:var(--rose);color:white;border:none;border-radius:99px;font-size:12px;font-weight:500;font-family:var(--sans);cursor:pointer;transition:all .2s">Revisit my answers &rarr;</button>';
+    html+='</div>';
+  }
+
+  html+='</div>';
+  wrap.innerHTML=html;
+  wrap.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function retryPhase0(){
+  // Clear analysis, let them re-edit
+  if(S.phase0){delete S.phase0.complete;delete S.phase0.analysis;}
+  save();
+  var wrap=document.getElementById('p0AnalysisWrap');
+  if(wrap) wrap.innerHTML='';
+  var btn=document.getElementById('p0CompleteBtn');
+  if(btn){btn.textContent='♥ Mark Phase 0 Complete';btn.disabled=false;}
+  // Scroll back to step 1
+  var s1=document.getElementById('p0s1');
+  if(s1) s1.scrollIntoView({behavior:'smooth',block:'start'});
+  renderTimeline();
+  renderPhase();
+}
+
 
 document.addEventListener("DOMContentLoaded",function(){
   // journal
