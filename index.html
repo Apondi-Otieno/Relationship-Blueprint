@@ -2686,92 +2686,286 @@ function renderRlogWithPatterns(){
 
 // ── OBSERVATION CLASSIFIER ────────────────────────────────────────────────
 function classifyObservation(text){
-  var t=text.toLowerCase();
+  var t = text.toLowerCase().trim();
 
-  var redSignals=[
-    {p:/expensive|cost a lot|so much money/,w:2},
-    {p:/joke.*(pay|split|treat|money)|pay.*joke|asked.*me.*to.*pay|mentioned.*me.*pay|wants.*me.*to.*pay/,w:3},
-    {p:/asked.*support.*financial|asked.*me.*to.*support.*him/,w:3},
-    {p:/financially.*depend|relies.*on.*me|depending.*on.*me/,w:3},
-    {p:/didn.t pay|forgot.*wallet|never.*treat/,w:2},
-    {p:/didn.t plan|never plan|stopped.*planning/,w:2},
-    {p:/i planned|i initiated|i suggested|i arranged|had to remind/,w:2},
-    {p:/pulled.*away|went.*cold|went.*quiet|disappeared|ghosted/,w:3},
-    {p:/emotionally.*absent|shut.*down|stonewalled|withdrew|distant.*after/,w:3},
-    {p:/disrespect|rude to me|condescend|talked.*down|embarrassed me|belittled/,w:3},
-    {p:/told.*friends.*bad|told.*friends.*negative|negative.*things.*friends|what.*friends.*say.*about.*me/,w:3},
-    {p:/jealous.*control|possessiv|controlling|manipulat|gaslight/,w:3},
-    {p:/lied|dishonest|cheated|kept.*secret|hiding/,w:3},
-    {p:/blamed.*me|my.*fault|turned.*it.*around/,w:3},
-    {p:/pressured|pushed.*boundary|ignored.*my.*no/,w:3},
-    {p:/not.*ready|still.*depend.*parent|parents.*fund|immature|no.*direction/,w:2},
-    {p:/joke.*money|joked.*about.*money|keeps.*mentioning.*money/,w:2},
-    {p:/not.*in.*the.*kitchen|belong.*in.*kitchen|kitchen.*joke|can.t.*cook/,w:3},
-    {p:/women.*can.t|women.*don.t|women.*shouldn.t|women.*belong/,w:3},
-    {p:/girls.*can.t|girls.*don.t|girls.*shouldn.t/,w:3},
-    {p:/backhanded.*compliment|but.*you.re.*a.*woman|for.*a.*woman|for.*a.*girl/,w:3},
-    {p:/not bad.*for a|pretty good.*for a/,w:2},
-    {p:/made a joke about women|joked about women|sexist/,w:3},
-    {p:/called.*fat|called.*ugly|called.*stupid|called.*dumb|called.*crazy/,w:3},
-    {p:/fat|ugly|stupid.*to.*me|dumb.*to.*me/,w:2},
-    {p:/insulted|insult|mean to me|hurt.*my.*feeling|made me feel bad|made me feel ugly/,w:3},
-    {p:/body.*shame|shamed.*my|commented.*on.*my.*weight|weight.*comment|size.*comment/,w:3},
-    {p:/talked.*to.*me.*badly|spoke.*to.*me.*badly|treated.*me.*badly|was.*rude/,w:2},
-    {p:/yelled|shouted|screamed.*at.*me/,w:3},
-    {p:/ignored.*me|silent.*treatment|stonewalled|cold.*shoulder/,w:2},
-    {p:/stood.*me.*up|cancelled.*last.*minute|cancelled.*on.*me/,w:2},
-    {p:/made.*me.*feel.*small|made.*me.*feel.*less|made me feel worthless/,w:3},
-    {p:/compared.*me.*to|compared me to/,w:2},
-    {p:/he doesn.t listen|never listens|dismisses|dismissive/,w:2},
+  /* ── CONTEXT FLAGS ─────────────────────────────────────────────────────
+     Detect negation, hedging, past-tense contrast, and sarcasm markers
+     before scoring so signals can be adjusted accordingly
+  ─────────────────────────────────────────────────────────────────────── */
+  var negation     = /\b(didn't|did not|doesn't|does not|hasn't|has not|haven't|have not|never|no longer|not once|stopped|refused|forgot|won't|would not|couldn't|could not|failed to|without ever)\b/.test(t);
+  var hedged       = /\b(kind of|sort of|a little|slightly|maybe|i think|i guess|not sure|possibly|seemed like|felt like)\b/.test(t);
+  var contrast     = /\b(but|however|except|although|even though|despite|yet|still)\b/.test(t);
+  var forcedPosit  = /\b(had to|forced|made|pressured).{0,20}(apologis|say sorry|do it|comply)\b/.test(t);
+  var sarcasm      = /\b(yeah right|sure|totally|obviously|clearly|of course).{0,20}(not|never|lol|lmao|haha)\b/.test(t);
+  var qualifiedGood= hedged || contrast; // green signals worth less when hedged
+
+  /* ── RED SIGNALS ───────────────────────────────────────────────────────
+     Weight 1 = mild / ambiguous
+     Weight 2 = notable
+     Weight 3 = clear pattern
+     Weight 4 = serious
+     Weight 5 = severe / safety concern
+  ─────────────────────────────────────────────────────────────────────── */
+  var R = [
+
+    /* FINANCIAL RED FLAGS */
+    {w:5, p:/\b(expects?|wants?|asked?).{0,25}(me|i).{0,10}(pay|cover|fund|treat|support|sponsor)\b/},
+    {w:4, p:/joke.{0,20}(pay|split|treat|money|bill|tab|fund)|money.{0,10}joke|(joked?|laughed).{0,15}(about|re).{0,10}(paying|money)/},
+    {w:4, p:/financially.{0,15}(depend|relying on me|relies on me|needs me|leans on me)/},
+    {w:4, p:/\bi.{0,5}(support|fund|pay for|cover for|finance).{0,10}him\b/},
+    {w:3, p:/didn't pay|forgot.{0,10}(wallet|card|cash|money)|never.{0,10}(treat|pay|cover|bought me)/},
+    {w:3, p:/(made|asked|suggested|expected).{0,15}(me|us).{0,10}(split|go halves|pay half|pay my own|dutch)/},
+    {w:3, p:/borrowed.{0,15}(money|cash|from me)|owes me|hasn't.{0,10}paid.{0,10}back|takes.{0,10}money/},
+    {w:3, p:/(hinted|suggested|said).{0,20}(expensive|can't afford|too pricey|out of budget)/},
+    {w:2, p:/who.{0,5}(is )?paying|are you paying|can you get.{0,5}this|you've got money/},
+    {w:2, p:/always.{0,10}(me|i).{0,10}(pay|treat|cover|pick up the tab)/},
+    {w:2, p:/never.{0,10}(offers?|volunteer|insist).{0,10}(to pay|to treat|to cover)/},
+    {w:3, p:/asked.{0,15}(for a loan|to borrow|to lend him)|needed.{0,10}money.{0,10}from me/},
+    {w:2, p:/financial.{0,10}(burden|problem|issue|mess|chaos|stress).{0,15}(on me|my problem)/},
+    {w:2, p:/said.{0,15}flowers.{0,10}(waste|expensive|pointless|unnecessary)/},
+
+    /* EFFORT / PURSUIT FAILURES */
+    {w:4, p:/\bi.{0,5}(planned|organised|arranged|initiated|set up|proposed|suggested|booked).{0,20}(the date|our date|dinner|meeting|outing|hangout|everything)\b/},
+    {w:3, p:/never.{0,10}(plans?|initiates?|organises?|asks?.{0,5}me out|takes?.{0,5}me out|makes?.{0,5}plans?)/},
+    {w:3, p:/stopped.{0,15}(planning|making effort|trying|pursuing|initiating)/},
+    {w:3, p:/had to.{0,15}(remind|chase|follow up|reach out|prompt|nudge|push|ask again)/},
+    {w:3, p:/always.{0,5}me.{0,10}(text|call|reach out|message|initiate).{0,5}first/},
+    {w:2, p:/effort.{0,10}(dropped|disappeared|gone|faded|stopped)/},
+    {w:2, p:/feels?.{0,10}like.{0,10}(i.{0,5}(am|am always)|only).{0,10}(the one|putting in|chasing|working)/},
+    {w:2, p:/he.{0,10}never.{0,10}(texts?|calls?|reaches? out|follows? up).{0,5}first/},
+    {w:2, p:/last.{0,5}minute|always.{0,10}last.{0,10}minute/},
+
+    /* AVOIDANT ATTACHMENT PATTERNS */
+    {w:5, p:/pulled?.{0,10}(away|back).{0,0,25}(after|when|following|once).{0,20}(close|intimate|warm|vulnerable|opened up|we talked|i shared)/},
+    {w:5, p:/push.{0,3}pull|pushes?.{0,10}me.{0,10}away.{0,15}(then|and then|only to).{0,10}(pull|come back|return)/},
+    {w:4, p:/went.{0,10}(cold|quiet|silent|distant|dark).{0,20}(after|when|following|out of)/},
+    {w:4, p:/disappeared|ghosted|stonewalled|withdrew|shut.{0,10}(me out|down|off)/},
+    {w:4, p:/re.{0,3}engage.{0,20}(only|when|once|after).{0,20}(i pull|i back|i distance|i stop|i give up)/},
+    {w:4, p:/comes.{0,10}back.{0,20}(only|when|once|after).{0,20}(i.{0,10}(pull|back|stop|give|distance))/},
+    {w:3, p:/emotionally.{0,15}(absent|unavailable|distant|closed off|checked out|not there)/},
+    {w:3, p:/physically.{0,10}there.{0,15}(but|and).{0,15}(emotionally|mentally|actually).{0,10}(not|absent|gone|away)/},
+    {w:3, p:/doesn't.{0,10}(open up|share|let me in|talk about feelings|get vulnerable)/},
+    {w:3, p:/(hot and cold|blows? hot and cold|runs? hot and cold)/},
+    {w:3, p:/intimacy.{0,10}(scared|fear|avoids?|uncomfortable|issue)/},
+    {w:2, p:/(pulled|backed).{0,5}(away|back)|went.{0,5}(cold|quiet|distant)/},
+    {w:2, p:/walls?.{0,15}(up|around|built)/},
+
+    /* DISRESPECT — BODY / APPEARANCE */
+    {w:5, p:/called.{0,10}(me|her|you).{0,10}(fat|ugly|disgusting|repulsive|gross|hideous|a cow|a pig)/},
+    {w:5, p:/told.{0,10}(me|her|you).{0,10}(i am|you are|you're|she is).{0,10}(fat|ugly|too big|too heavy|not attractive)/},
+    {w:4, p:/body.{0,10}(shamed?|shaming|comment|mocked|ridiculed)|commented.{0,15}(on my|about my).{0,10}(weight|body|size|shape|figure|appearance|looks)/},
+    {w:4, p:/(said|told me|mentioned).{0,20}(gained weight|put on weight|looking fat|need to lose|should lose|should diet|eat less)/},
+    {w:4, p:/made.{0,10}(me|her).{0,10}feel.{0,15}(fat|ugly|unattractive|insecure about my body|bad about how i look)/},
+    {w:3, p:/negging|backhanded.{0,10}compliment|dressed it up as a compliment/},
+
+    /* DISRESPECT — WORDS / TONE */
+    {w:4, p:/called.{0,10}(me|her|you).{0,10}(stupid|dumb|an idiot|pathetic|worthless|useless|crazy|dramatic|hysterical|too sensitive|too emotional|too much)/},
+    {w:4, p:/yelled?.{0,10}at.{0,10}(me|her)|screamed?.{0,10}at.{0,10}(me|her)|shouted?.{0,10}at.{0,10}(me|her)/},
+    {w:3, p:/(talked|spoke).{0,10}(down to|over|past|at).{0,10}(me|her)|condescend|patronis|patroniz/},
+    {w:3, p:/(insult|disrespect|berated|belittled|mocked|ridiculed|humiliated).{0,10}(me|her)/},
+    {w:3, p:/spoke.{0,15}(badly|negatively|poorly).{0,15}(about me|of me|to others about me)/},
+    {w:3, p:/made.{0,10}(me|her).{0,10}feel.{0,15}(small|worthless|stupid|less than|nothing|invisible|like a burden|like too much)/},
+    {w:2, p:/tone.{0,10}(rude|aggressive|dismissive|contemptuous)|rude.{0,10}tone/},
+    {w:2, p:/talks?.{0,10}(to|at).{0,10}me.{0,10}(like|as if).{0,10}(i.{0,5}(am|was)|i'm).{0,10}(stupid|child|burden|nothing)/},
+
+    /* SEXISM / GENDER */
+    {w:5, p:/not.{0,5}in.{0,5}the.{0,5}kitchen|women?.{0,10}(belong|should be|should stay).{0,10}(in the kitchen|at home|quiet|submissive)/},
+    {w:4, p:/(women|girls).{0,10}(can't|shouldn't|don't|aren't|not able to|not supposed to).{0,15}(lead|run|earn|build|succeed|drive|code|work in|be in|do)\b/},
+    {w:4, p:/not bad for a (woman|girl)|pretty good for a (woman|girl)|for a woman|for a girl/},
+    {w:4, p:/made.{0,10}(a|another|that).{0,10}sexist|sexist.{0,10}(joke|comment|remark)|joked.{0,10}about women/},
+    {w:3, p:/mansplain|talks?.{0,10}over.{0,10}me.{0,10}constantly|explains?.{0,10}(things|it|that).{0,10}(i already know|to me like)/},
+    {w:3, p:/your.{0,10}(place|role|job).{0,10}(is to|should be)|that.{0,10}(is|should be).{0,10}(a woman.{0,5}job|your job as a woman)/},
+
+    /* CONTROL / MANIPULATION */
+    {w:5, p:/gaslight|gaslighting|made.{0,15}(me|her).{0,15}(question|doubt).{0,15}(my|her).{0,10}(reality|sanity|memory|perception|mind)/},
+    {w:5, p:/(physically|sexually).{0,10}(hurt|harm|assault|abuse|threaten|intimidat)/},
+    {w:4, p:/(manipulat|guilt.trip|guilt.tripped|guilted).{0,20}(me|her)/},
+    {w:4, p:/blame.{0,5}(shift|shifting|shifted)|reversed?.{0,10}(it|blame).{0,15}(on me|onto me|back on me)/},
+    {w:4, p:/said.{0,15}(i was|it was|that.{0,5}was).{0,10}(my fault|imagining|overreacting|too sensitive|making it up)/},
+    {w:4, p:/lied|caught.{0,10}(him|them).{0,10}lying|in.{0,5}a lie|told.{0,10}a lie/},
+    {w:4, p:/cheated|was.{0,10}(seeing|with|sleeping with).{0,10}(someone else|another|her|them)/},
+    {w:4, p:/kept.{0,10}(a |it )?secret|hid.{0,10}(it |that |from me)|was.{0,10}hiding/},
+    {w:4, p:/(threatened|warned).{0,15}(me|her).{0,15}(if i|if she|that i|that she)/},
+    {w:3, p:/possessiv|jealous.{0,10}and.{0,15}(control|aggressive|angry|unstable)/},
+    {w:3, p:/(monitors?|tracks?|checks?).{0,15}(my phone|my messages|where i|my location|who i)/},
+    {w:3, p:/pressured.{0,15}(me|her)|pushed.{0,15}(past|through|beyond|over).{0,10}(my|her).{0,10}(boundary|limit|no)/},
+    {w:3, p:/isolated.{0,10}(me|her).{0,15}(from|away from).{0,15}(friends|family|people i)/},
+    {w:2, p:/makes?.{0,10}(me|her).{0,10}feel.{0,10}(guilty|bad|wrong).{0,10}(for|about).{0,10}(having|wanting|needing|feeling)/},
+
+    /* DISHONESTY / INCONSISTENCY */
+    {w:4, p:/stories?.{0,10}(don't add up|keep changing|contradicts?|inconsistent)/},
+    {w:3, p:/(caught|found out).{0,15}(he|him).{0,10}(lied|was lying|had lied|deceived)/},
+    {w:3, p:/says?.{0,15}(one thing|he will|he would).{0,15}(does?|another|doesn't|never does)/},
+    {w:3, p:/words?.{0,5}and.{0,5}actions?.{0,10}(don't match|contradict|are different|never match)/},
+
+    /* CONFLICT FAILURES */
+    {w:4, p:/never.{0,15}(apologis|apologiz|admit|acknowledge|own).{0,15}(wrong|mistake|fault|it)/},
+    {w:4, p:/(won't|refuses? to).{0,10}(apologis|take responsibility|admit he|acknowledge)/},
+    {w:3, p:/blamed.{0,10}(me|her)|made.{0,10}(it|everything).{0,10}(my|her).{0,5}fault/},
+    {w:3, p:/deflect|minimis|minimiz|dismisses?.{0,10}(my|her|the).{0,10}(feelings|concern|point|issue)/},
+    {w:3, p:/stood.{0,10}(me|her).{0,10}up|didn't (show up|turn up|come|appear)/},
+    {w:3, p:/cancelled.{0,10}(last.?minute|again|on me|at the last)|flaked|no.{0,3}show/},
+    {w:2, p:/ignored.{0,10}(my|her).{0,10}(message|call|text|concern|feelings)/},
+    {w:2, p:/silent treatment|cold shoulder|gives?.{0,10}(me|her).{0,10}the silent/},
+    {w:2, p:/never.{0,10}(listens?|hears?.{0,5}me|pays?.{0,5}attention)/},
+
+    /* EMOTIONAL IMPACT */
+    {w:3, p:/compared.{0,10}(me|her).{0,10}(to|with).{0,20}(his ex|another woman|someone else|her)/},
+    {w:3, p:/talked.{0,10}about.{0,15}(his ex|an ex|a past girl).{0,10}(constantly|all the time|too much|a lot)/},
+    {w:2, p:/makes?.{0,10}(me|her).{0,10}(feel|seem).{0,15}(replaceable|disposable|like an option|like one of many)/},
+    {w:2, p:/treats?.{0,10}(me|her).{0,10}(like|as).{0,15}(an option|a backup|a plan b|a convenience)/},
+
+    /* IMMATURITY */
+    {w:3, p:/not.{0,10}(ready|mature enough|grown up|independent)|still.{0,10}(depend|funded by|supported by|living off).{0,10}(parent|mum|dad|family|them)/},
+    {w:3, p:/no.{0,10}(direction|vision|plan|goal|ambition|drive)|doesn't.{0,10}know.{0,10}what.{0,10}he wants/},
+    {w:2, p:/acts?.{0,10}(like a child|immature|entitled|like the world owes)/},
   ];
 
-  var greenSignals=[
-    {p:/brought.*flower|bought.*flower|sent.*flower/,w:3},
-    {p:/surprise|unprompted|without.*asking|on.*his.*own/,w:2},
-    {p:/came.*when.*sad|came.*to.*care|showed.*up.*when|came.*check/,w:3},
-    {p:/cooked.*for.*me|made.*food.*for|brought.*food/,w:2},
-    {p:/drove.*home|brought.*home|walked.*home|picked.*up/,w:2},
-    {p:/paid|treated|covered.*bill|bought.*dinner/,w:2},
-    {p:/bought.*me|got.*me|gifted|gift/,w:2},
-    {p:/pastry|flowers|dress|bag|chocolat/,w:1},
-    {p:/asked.*consent|asked.*if.*okay|checked.*if.*comfortable/,w:3},
-    {p:/respected.*no|accepted.*no|didn.t.*push/,w:3},
-    {p:/respect.*my.*decision|respect.*my.*choice|trusts.*my.*judgment|respects.*my/,w:2},
-    {p:/listened|really.*heard|paid.*attention|remembered.*what.*i/,w:2},
-    {p:/held.*my.*emotional|can.*hold.*my|holds.*space|emotional.*depth/,w:3},
-    {p:/emotionally.*present|emotionally.*mature|emotionally.*available/,w:3},
-    {p:/opened.*up|shared.*his.*feelings|vulnerable.*with.*me/,w:2},
-    {p:/celebrated|proud.*of.*me|championed|hyped.*me|excited.*for.*me/,w:3},
-    {p:/supported.*my.*venture|supported.*me.*financially|financially.*supported|helped.*me.*financially/,w:2},
-    {p:/supported.*my|encouraged.*me|believes.*in.*me/,w:2},
-    {p:/planned.*date|asked.*me.*out|took.*me.*on.*a.*date/,w:2},
-    {p:/consistent|shows.*up.*every|always.*there|follows.*through/,w:2},
-    {p:/helped.*me|helps.*me|wash.*dish|clean.*up|assisted/,w:1},
-    {p:/apologis|apologiz|said.*sorry|owned.*up|took.*responsibility/,w:2},
-    {p:/when.*i.*was.*sick|when.*i.*was.*sad|when.*i.*wasn.t.*well|cared.*for.*me/,w:3},
-    {p:/cares.*for.*me|cares.*about.*me|caring/,w:2},
-    {p:/kind to me|thoughtful|attentive/,w:1},
-    {p:/called.*beautiful|called.*gorgeous|called.*stunning|called.*pretty|told.*me.*i.*was.*beautiful/,w:3},
-    {p:/complimented|said.*i.*look|said i was|told.*me.*i.*am|you.*are.*beautiful|you look/,w:2},
-    {p:/beautiful|gorgeous|stunning|lovely|pretty|handsome/,w:1},
-    {p:/made me feel good|made me feel special|made me feel loved|made me feel seen/,w:2},
-    {p:/sweet|romantic|affectionate|tender|warm/,w:1},
+  /* ── GREEN SIGNALS ──────────────────────────────────────────────────────
+     Context-aware: hedged greens worth less, forced positives score lower
+  ─────────────────────────────────────────────────────────────────────── */
+  var G = [
+
+    /* SHOWING UP — PHYSICAL PRESENCE */
+    {w:5, p:/came.{0,20}(when.{0,10}(i was sad|i was sick|i was upset|i was struggling|i was crying|i needed|i was going through|things were hard)|to.{0,15}(care for|check on|be with|support|look after) me)/},
+    {w:5, p:/showed?.{0,10}up.{0,20}(for me|uninvited|without.{0,10}being asked|when.{0,10}(i needed|things were hard|i was struggling)|unexpectedly|without me asking)/},
+    {w:4, p:/drove.{0,15}(me|her|home|to the)|picked.{0,10}(me|her).{0,10}up|walked.{0,10}(me|her).{0,10}(home|to|back|safely)/},
+    {w:3, p:/(cooked|made|prepared).{0,15}(me|for me|for us|a meal|dinner|lunch|food|breakfast).{0,10}(from scratch|at home|himself)?/},
+    {w:3, p:/brought.{0,15}(food|dinner|lunch|a meal|snacks|groceries|supplies).{0,15}(over|to me|for me|round)/},
+    {w:2, p:/(stayed|sat).{0,10}(with me|beside me|next to me).{0,15}(through|during|while|when)/},
+
+    /* GIFTS / THOUGHTFUL ACTS */
+    {w:4, p:/(bought|got|brought|sent|gave me).{0,20}(flowers|roses|a bouquet|chocolates|a gift|a present|a surprise|jewellery|jewelry)/},
+    {w:3, p:/planned?.{0,10}a.{0,10}surprise|surprised.{0,10}(me|her).{0,15}(with|by)/},
+    {w:3, p:/remembered.{0,20}(something i mentioned|that i liked|that i wanted|it was my favourite|my favourite|i said i loved)/},
+    {w:2, p:/(bought|got|brought).{0,15}(me|her).{0,10}(something|a little|a small|a thing|my favourite)/},
+    {w:1, p:/pastry|macaron|chocolate|perfume|candle|bouquet/},
+
+    /* PAYING / PROVIDING */
+    {w:4, p:/paid.{0,20}(for everything|without hesitation|the whole|all of it|without making it weird|without mentioning it)/},
+    {w:3, p:/(covered|treated|paid for).{0,15}(the bill|dinner|lunch|our|all|the whole)/},
+    {w:3, p:/insisted.{0,10}(on paying|to pay|on treating me)|wouldn't.{0,10}let.{0,10}me.{0,10}pay/},
+    {w:2, p:/paid.{0,15}(for dinner|for the date|for us|for lunch|for everything)/},
+
+    /* CONSENT AND RESPECT */
+    {w:5, p:/asked.{0,15}(if.{0,10}(i was okay|i'm okay|that was okay|i wanted to|i was comfortable|he could)|for.{0,10}(my consent|my okay|permission|the go.ahead))/},
+    {w:5, p:/respected.{0,10}(my no|my decision|my boundary|my limits?|my choice|my answer|my space)/},
+    {w:4, p:/accepted.{0,10}(my no|that i said no|my boundary|my answer)/},
+    {w:4, p:/didn't.{0,10}(push|pressure|insist|force|guilt me|make me feel bad).{0,15}(after|when|once).{0,10}(i said no|i wasn't ready|i declined)/},
+    {w:3, p:/trusts?.{0,10}(my judgment|my decision|my instinct|my choice)|defers?.{0,10}to.{0,10}(me|my)/},
+    {w:2, p:/(listens?|heard me|paid attention).{0,15}(without|really|carefully|genuinely|fully)/},
+    {w:2, p:/remembered.{0,20}(what i said|something i told him|a detail|that i mentioned)/},
+
+    /* EMOTIONAL INTELLIGENCE */
+    {w:5, p:/emotionally.{0,15}(present|available|safe|mature|intelligent|consistent|stable)/},
+    {w:4, p:/turned.{0,10}toward.{0,10}(me|it)|leaned.{0,10}in.{0,15}(when|instead|rather)/},
+    {w:4, p:/held.{0,10}(my|the).{0,10}(pain|feelings|grief|emotions|sadness|fear|anxiety|space)/},
+    {w:4, p:/sat.{0,10}(with me|in it|with the pain|with what i felt)|stayed.{0,10}(present|with me|in it|engaged|through it)/},
+    {w:4, p:/didn't.{0,10}(try to fix|rush to solve|minimise|dismiss|change the subject).{0,15}(when|what i|my)/},
+    {w:3, p:/(opened up|shared|got vulnerable|was vulnerable).{0,20}(about|with me|to me)/},
+    {w:3, p:/asked.{0,25}(how.{0,5}(i feel|i am|i'm doing|i was doing|i'm really doing)|what.{0,5}(i need|happened|is going on|is really going on|i'm feeling))/},
+    {w:3, p:/(checked in|followed up|texted to see|asked later).{0,20}(on me|how i was|if i was okay|after)/},
+    {w:3, p:/didn't.{0,10}(run|avoid|shut down|pull away|go quiet|disappear|withdraw).{0,15}(when|after|from|during)/},
+    {w:2, p:/the same.{0,10}(person|man|guy).{0,10}(every|all the|no matter|regardless)/},
+
+    /* CELEBRATING HER */
+    {w:5, p:/(celebrated|acknowledged|recognised).{0,20}(my|a).{0,15}(win|achievement|promotion|success|milestone|accomplishment|news|result)/},
+    {w:4, p:/proud.{0,10}of.{0,10}(me|what i|something i)/},
+    {w:4, p:/(championed|hyped|cheered).{0,10}(me|her).{0,15}(up|on|to others)/},
+    {w:3, p:/excited.{0,15}(for me|about.{0,10}my|about what i)/},
+    {w:3, p:/(encourages?|encouraged).{0,15}(me|my).{0,15}(to|about|with)/},
+    {w:3, p:/(believes?|believed).{0,10}in.{0,10}(me|what i|my ability)/},
+    {w:3, p:/(supports?|supported).{0,15}(my|the).{0,15}(goals?|dreams?|work|vision|ventures?|ambitions?)/},
+    {w:2, p:/told.{0,15}(others|his friends|his family|people).{0,15}(about me|how proud|good things)/},
+
+    /* PURSUIT AND PLANNING */
+    {w:4, p:/(he|him).{0,5}(planned|organised|arranged|set up|booked|prepared).{0,20}(the date|a date|dinner|a surprise|our evening|the whole thing|everything)/},
+    {w:4, p:/(asked|invited).{0,10}(me|her).{0,15}(out|on a date|to dinner|to go out|to join)/},
+    {w:3, p:/made.{0,10}(a reservation|the booking|an effort|proper plans?|the arrangements?)/},
+    {w:2, p:/(followed through|did what he said|kept his word|kept the plan|showed up as planned)/},
+
+    /* AFFIRMATIONS */
+    {w:4, p:/(called|told).{0,10}(me|her).{0,10}(beautiful|gorgeous|stunning|amazing|brilliant|smart|impressive|incredible)/},
+    {w:4, p:/told.{0,15}(me|her).{0,10}(i am|i look|she is|she looks|you are|you look).{0,10}(beautiful|gorgeous|stunning|amazing|smart|brilliant)/},
+    {w:3, p:/made.{0,10}(me|her).{0,10}feel.{0,15}(beautiful|seen|valued|appreciated|safe|loved|cherished|special|chosen|enough|worthy)/},
+    {w:2, p:/complimented.{0,10}(me|her|my|something about me)/},
+
+    /* PRACTICAL HELP */
+    {w:3, p:/(helped|helps?).{0,15}(me|her|us).{0,15}(with|to move|to carry|to fix|to sort|to clean|to set up|around the house)/},
+    {w:2, p:/(washed|cleaned|did|tidied).{0,15}(the dishes|up|the kitchen|together|the house|my dishes)/},
+    {w:2, p:/without.{0,15}(being asked|me asking|prompting|me having to|needing to be told)/},
+
+    /* CARE DURING DIFFICULTY */
+    {w:4, p:/(cared for|looked after|took care of|nursed|tended to).{0,10}(me|her).{0,20}(when|while|during)/},
+    {w:3, p:/when.{0,10}(i was sick|i wasn't well|i was unwell|i had|i was going through).{0,15}(he|him).{0,10}(came|stayed|helped|was there|showed up)/},
+
+    /* REPAIR AND ACCOUNTABILITY */
+    {w:5, p:/(genuinely|sincerely|really|truly).{0,10}(apologised|apologized|said sorry)/},
+    {w:4, p:/(apologised|apologized|said sorry).{0,30}(and then|then he|and he|and actually|and changed)/},
+    {w:4, p:/took.{0,15}(responsibility|accountability|ownership|the blame).{0,15}(for|of)/},
+    {w:4, p:/(owned up|admitted he was wrong|acknowledged what he did|recognised his mistake|said it was his fault)/},
+    {w:3, p:/(repaired|initiated repair|came back to it|addressed it|brought it up again).{0,20}(after|the next|later)/},
+    {w:2, p:/apologised.{0,10}(without|and didn't|and not).{0,20}(making it about him|deflecting|blaming me)/},
+
+    /* FINANCIAL SUPPORT OF HER */
+    {w:3, p:/(helped|supports?|supported|assisted).{0,15}(me|her).{0,15}(financially|with money|with the bills|with rent|with a cost)/},
+    {w:2, p:/invests?.{0,10}(in me|in us|in our future|in what i.{0,5}building)/},
+
+    /* INTEREST IN HER WORLD */
+    {w:3, p:/(interested|curious|asked).{0,20}(about my|about what i.{0,5}(do|building|working|creating)|about her).{0,15}(work|business|goals|project|venture|career|life)/},
+    {w:3, p:/(supports?|champions?|promotes?|shares?).{0,15}(my work|my business|what i do|my goals|my vision)/},
+    {w:2, p:/showed.{0,10}up.{0,15}(to|for|at).{0,20}(my|an event|the launch|the show|my presentation|my thing)/},
   ];
 
-  var rs=0,gs=0;
-  redSignals.forEach(function(s){if(s.p.test(t))rs+=s.w;});
-  greenSignals.forEach(function(s){if(s.p.test(t))gs+=s.w;});
+  /* ── SCORING ────────────────────────────────────────────────────────── */
+  var rs = 0, gs = 0;
 
-  // Negation check
-  if(/didn.t|did not|hasn.t|has not|never|no longer|stopped|refused|forgot|won.t/.test(t)){
-    var negGs=greenSignals.filter(function(s){return s.p.test(t);});
-    if(negGs.length) rs+=negGs.reduce(function(a,s){return a+s.w;},0)*0.7;
+  R.forEach(function(s){
+    try { if(s.p.test(t)) rs += s.w; } catch(e) {}
+  });
+
+  G.forEach(function(s){
+    try {
+      if(s.p.test(t)){
+        var weight = s.w;
+        // Reduce green weight if statement is hedged or contains contrast
+        if(qualifiedGood) weight = weight * 0.7;
+        gs += weight;
+      }
+    } catch(e) {}
+  });
+
+  /* ── NEGATION ADJUSTMENT ────────────────────────────────────────────── */
+  if(negation){
+    // Green signals present alongside negation = flip them red
+    var negatedGreenScore = G.filter(function(s){
+      try { return s.p.test(t); } catch(e){ return false; }
+    }).reduce(function(a,s){ return a + s.w; }, 0);
+
+    if(negatedGreenScore > 0){
+      // Remove from green, add weighted version to red
+      gs = Math.max(0, gs - negatedGreenScore);
+      rs += negatedGreenScore * 0.85;
+    }
   }
 
-  if(rs===0&&gs===0) return "neutral";
-  if(rs>gs) return "red";
-  if(gs>rs) return "green";
-  return "red";
+  /* ── FORCED POSITIVE ADJUSTMENT ─────────────────────────────────────── */
+  if(forcedPosit){
+    // "He apologised but only because I made him" = worth much less
+    gs = gs * 0.3;
+  }
+
+  /* ── SARCASM ADJUSTMENT ─────────────────────────────────────────────── */
+  if(sarcasm && gs > rs){
+    // Flip: sarcastic positive = actually negative
+    var tmp = rs; rs = gs; gs = tmp;
+  }
+
+  /* ── VERDICT ────────────────────────────────────────────────────────── */
+  if(rs === 0 && gs === 0) return "neutral";
+  if(rs > gs) return "red";
+  if(gs > rs) return "green";
+  return "red"; // ties go red — protective by design
 }
 
 
