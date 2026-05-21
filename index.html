@@ -752,9 +752,180 @@ textarea::placeholder{color:var(--mist);font-style:italic}
   .btn-endit-confirm:hover{background:var(--deep)}
   .endit-prefill-note{font-size:12px;color:var(--mist);font-style:italic;background:var(--pink-50);border-radius:10px;padding:10px 12px;margin-bottom:16px;line-height:1.5}
 
+
+  /* ── NAVBAR ── */
+  .site-header{
+    position:sticky;top:0;z-index:200;
+    background:rgba(253,248,245,.97);
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--pink-100);
+    box-shadow:0 1px 12px rgba(196,64,107,.07);
+    width:100%;box-sizing:border-box;
+  }
+  .site-header-inner{
+    max-width:1340px;margin:0 auto;
+    padding:0 clamp(16px,3vw,40px);
+    height:54px;display:flex;align-items:center;gap:14px;
+  }
+  .nav-logo{
+    display:flex;align-items:center;gap:7px;
+    font-family:var(--serif);font-size:16px;font-weight:500;
+    color:var(--deep);cursor:default;flex-shrink:0;white-space:nowrap;
+  }
+  .nav-links{display:flex;align-items:center;gap:1px;flex:1;overflow:hidden;}
+  .nav-link{
+    padding:5px 9px;border-radius:8px;
+    font-size:12px;font-weight:500;font-family:var(--sans);
+    color:var(--mist);cursor:pointer;white-space:nowrap;
+    transition:all .15s;background:none;border:none;
+    letter-spacing:.02em;
+  }
+  .nav-link:hover{background:var(--blush);color:var(--deep);}
+  .nav-link.active{background:var(--pink-50);color:var(--rose);font-weight:600;}
+  .nav-journal-btn{
+    margin-left:auto;flex-shrink:0;
+    padding:6px 16px;background:var(--rose);color:white;
+    border:none;border-radius:99px;
+    font-size:12px;font-weight:500;font-family:var(--sans);
+    cursor:pointer;white-space:nowrap;transition:all .18s;letter-spacing:.02em;
+    display:flex;align-items:center;gap:5px;
+  }
+  .nav-journal-btn:hover{background:var(--deep);}
+  .nav-hamburger{
+    display:none;flex-direction:column;justify-content:center;
+    gap:5px;width:34px;height:34px;background:none;border:none;
+    cursor:pointer;padding:5px;border-radius:8px;flex-shrink:0;
+  }
+  .nav-hamburger span{
+    display:block;height:2px;width:100%;
+    background:var(--mist);border-radius:99px;transition:all .2s;
+  }
+  .nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .nav-hamburger.open span:nth-child(2){opacity:0;}
+  .nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+  .nav-mobile{
+    display:none;flex-direction:column;background:white;
+    border-top:1px solid var(--pink-100);padding:8px 16px 14px;
+    box-shadow:0 8px 24px rgba(196,64,107,.08);
+  }
+  .nav-mobile.open{display:flex;}
+  .nav-mobile-link{
+    padding:11px 8px;font-size:13px;font-weight:500;
+    font-family:var(--sans);color:var(--stone);cursor:pointer;
+    border-bottom:1px solid var(--pink-50);background:none;
+    border-left:none;border-right:none;border-top:none;text-align:left;width:100%;
+  }
+  .nav-mobile-link:last-child{border-bottom:none;}
+  .nav-mobile-link:hover{color:var(--rose);}
+  .nav-mobile-journal{color:var(--rose)!important;font-weight:600!important;}
+  /* Hide the floating journal tab — it's in the navbar now */
+  .journal-trigger{display:none!important;}
+  @media(max-width:860px){
+    .nav-links{display:none;}
+    .nav-journal-btn{display:none;}
+    .nav-hamburger{display:flex;}
+  }
+  @media(min-width:861px){.nav-mobile{display:none!important;}}
+
+
+  /* ── Phase 0 ── */
+  .p0-step{
+    background:white;border:1px solid var(--pink-100);
+    border-radius:16px;padding:16px 18px;
+  }
+  .p0-step-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;}
+  .p0-step-num{
+    width:28px;height:28px;min-width:28px;border-radius:50%;
+    background:var(--pink-50);border:1px solid var(--petal);
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:700;color:var(--rose);flex-shrink:0;
+  }
+  .p0-step-title{font-family:var(--serif);font-size:15px;font-weight:500;color:var(--deep);margin-bottom:3px;}
+  .p0-step-sub{font-size:12px;color:var(--mist);line-height:1.55;}
+  .p0-textarea{
+    width:100%;min-height:80px;border:1px solid var(--pink-100);
+    border-radius:10px;padding:10px 12px;font-size:13px;
+    font-family:var(--serif);color:var(--stone);background:var(--blush);
+    resize:vertical;line-height:1.6;outline:none;
+    transition:border-color .15s;margin-bottom:10px;
+  }
+  .p0-textarea:focus{border-color:var(--petal);}
+  .p0-textarea::placeholder{color:var(--mist);font-style:italic;}
+  .p0-meditation{
+    border:1px solid var(--pink-100);border-radius:10px;
+    overflow:hidden;
+  }
+  .p0-meditation summary{
+    padding:9px 14px;font-size:12px;font-weight:500;
+    color:var(--mauve);cursor:pointer;list-style:none;
+    background:var(--pink-50);
+  }
+  .p0-meditation summary::-webkit-details-marker{display:none;}
+  .p0-meditation[open] summary{border-bottom:1px solid var(--pink-100);}
+  .p0-med-body{
+    padding:14px 16px;font-size:13px;color:var(--stone);
+    line-height:1.65;font-family:var(--serif);
+  }
+  .p0-med-body p{margin-bottom:8px;}
+  .p0-med-body em{color:var(--mauve);}
+  .p0-word{
+    width:100%;border:1px solid var(--pink-100);border-radius:8px;
+    padding:7px 10px;font-size:13px;font-family:var(--sans);
+    color:var(--stone);background:white;outline:none;margin-top:4px;
+  }
+  .p0-ritual{
+    display:flex;gap:14px;align-items:flex-start;
+    background:var(--blush);border:1px solid var(--petal);
+    border-radius:16px;padding:18px 20px;margin-top:20px;
+  }
+  .p0-complete-btn{
+    padding:10px 24px;background:var(--rose);color:white;
+    border:none;border-radius:99px;font-size:13px;font-weight:500;
+    font-family:var(--sans);cursor:pointer;
+    box-shadow:0 3px 14px rgba(196,64,107,.2);
+    transition:all .2s;letter-spacing:.03em;
+  }
+  .p0-complete-btn:hover{background:var(--deep);transform:translateY(-1px);}
+  .p0-complete-btn:disabled{background:var(--green);opacity:.8;cursor:default;transform:none;}
+
 </style>
 </head>
 <body>
+<header class="site-header" id="siteHeader">
+  <div class="site-header-inner">
+    <div class="nav-logo">
+      <svg width="15" height="14" viewBox="0 0 20 18" fill="var(--rose)"><path d="M10 17C10 17 1 10.5 1 5.5 1 2.9 3 1 5.5 1 7.5 1 9 2.5 10 4 11 2.5 12.5 1 14.5 1 17 1 19 2.9 19 5.5 19 10.5 10 17Z"/></svg>
+      My Blueprint
+    </div>
+    <nav class="nav-links" id="navLinks">
+      <button class="nav-link" onclick="navTo('phaseCard')">Phases</button>
+      <button class="nav-link" onclick="navTo('sec-log')">Observations</button>
+      <button class="nav-link" onclick="navTo('sec-flags')">Flags</button>
+      <button class="nav-link" onclick="navTo('sec-checkin')">Check-in</button>
+      <button class="nav-link" onclick="navTo('sec-selfcare')">Self-care</button>
+      <button class="nav-link" onclick="navTo('sec-rlog')">Past men</button>
+      <button class="nav-link" onclick="navTo('sec-save')">Data</button>
+    </nav>
+    <button class="nav-journal-btn" onclick="openJournal()">
+      <svg width="13" height="12" viewBox="0 0 20 18" fill="white"><path d="M10 17C10 17 1 10.5 1 5.5 1 2.9 3 1 5.5 1 7.5 1 9 2.5 10 4 11 2.5 12.5 1 14.5 1 17 1 19 2.9 19 5.5 19 10.5 10 17Z"/></svg>
+      Journal
+    </button>
+    <button class="nav-hamburger" id="navHamburger" onclick="toggleMobileNav()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-mobile" id="navMobile">
+    <button class="nav-mobile-link" onclick="navTo('phaseCard');closeMobileNav()">Phases</button>
+    <button class="nav-mobile-link" onclick="navTo('sec-log');closeMobileNav()">Observations</button>
+    <button class="nav-mobile-link" onclick="navTo('sec-flags');closeMobileNav()">Flags</button>
+    <button class="nav-mobile-link" onclick="navTo('sec-checkin');closeMobileNav()">Check-in</button>
+    <button class="nav-mobile-link" onclick="navTo('sec-selfcare');closeMobileNav()">Self-care</button>
+    <button class="nav-mobile-link" onclick="navTo('sec-rlog');closeMobileNav()">Past men</button>
+    <button class="nav-mobile-link" onclick="navTo('sec-save');closeMobileNav()">Data</button>
+    <button class="nav-mobile-link nav-mobile-journal" onclick="openJournal();closeMobileNav()">&#9825; Journal</button>
+  </div>
+</header>
+
 <div class="layout">
 
 <aside class="sidebar" aria-hidden="true">
@@ -782,6 +953,147 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     <h1>My Relationship <em>Blueprint</em></h1>
     <p class="hero-sub">A slow, intentional guide to finding out if he's the one your mother warned you about — or the one you can't wait to introduce her to</p>
   </div>
+
+
+  <!-- PHASE 0: CONSCIOUS COMPLETION -->
+  <div class="phase-card" id="phase0Card" style="margin-bottom:22px;animation:fadeUp .6s ease both">
+    <div class="phase-card-header">
+      <div class="phase-num-badge" style="background:var(--blush);border-color:var(--petal);color:var(--mauve)">0</div>
+      <div class="phase-title-block">
+        <div class="phase-title">Phase 0 &mdash; Conscious Completion</div>
+        <div class="phase-gate">&ldquo;Complete this before you begin Phase 1&rdquo;</div>
+        <div class="phase-timing">Before you start observing a new person</div>
+      </div>
+      <div class="score-circle" id="phase0ScoreCircle">
+        <span class="score-pct" id="phase0Pct">0%</span>
+        <span class="score-sub">done</span>
+      </div>
+    </div>
+
+    <div class="phase-body" style="padding:20px 26px">
+      <div style="font-family:var(--serif);font-size:14px;font-style:italic;color:var(--mauve);margin-bottom:18px;padding:12px 16px;background:var(--blush);border-radius:10px;line-height:1.6">
+        &ldquo;The wise woman builds her house, but the foolish tears it down with her own hands.&rdquo; &mdash; Proverbs 14:1
+      </div>
+      <p style="font-size:13px;color:var(--mist);margin-bottom:22px;line-height:1.65">This phase is not about staying or leaving. It is about <strong style="color:var(--deep)">completing</strong> &mdash; so you carry no ghost into your next chapter. Work through all five steps honestly before moving to Phase 1.</p>
+
+      <div style="display:flex;flex-direction:column;gap:16px">
+
+        <!-- Step 1 -->
+        <div class="p0-step" id="p0s1">
+          <div class="p0-step-head">
+            <span class="p0-step-num">1</span>
+            <div>
+              <div class="p0-step-title">Find Emotional Freedom</div>
+              <div class="p0-step-sub">What was my 50% responsibility in how this ended? Not 100% &mdash; just my honest part. What did I do, avoid, or assume?</div>
+            </div>
+          </div>
+          <textarea class="p0-textarea" id="p0t1" placeholder="Write freely here..." oninput="savePhase0();updatePhase0Score()"></textarea>
+          <details class="p0-meditation">
+            <summary>&#9825; Meditation prompt</summary>
+            <div class="p0-med-body">
+              <p>Sit quietly, hand on heart. Breathe in: <em>&ldquo;Something happened, but I am not a victim.&rdquo;</em> Breathe out any blame toward them.</p>
+              <p>Repeat for 5 minutes. Each exhale, release one specific complaint. Each inhale, receive one breath of your own freedom.</p>
+              <p style="margin-top:8px"><strong>One word that came up:</strong><br><input type="text" class="p0-word" id="p0w1" placeholder="e.g. relief, sadness, lightness" oninput="savePhase0()"></p>
+            </div>
+          </details>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="p0-step" id="p0s2">
+          <div class="p0-step-head">
+            <span class="p0-step-num">2</span>
+            <div>
+              <div class="p0-step-title">Reclaim Your Power</div>
+              <div class="p0-step-sub">What have I been waiting for them to give me? An apology? Closure? A sign that I mattered?</div>
+            </div>
+          </div>
+          <textarea class="p0-textarea" id="p0t2" placeholder="Name it. Then ask: how can I begin to give this to myself?" oninput="savePhase0();updatePhase0Score()"></textarea>
+          <details class="p0-meditation">
+            <summary>&#9825; Meditation prompt</summary>
+            <div class="p0-med-body">
+              <p>Close your eyes. Visualise an energetic cord connecting your belly to theirs. With a slow out-breath, gently dissolve that cord. Say inwardly: <em>&ldquo;I release you to your path, and I reclaim my energy for my own life.&rdquo;</em></p>
+              <p>Repeat 3 times. Breathe normally for 1 minute between each.</p>
+              <p style="margin-top:8px"><strong>One word that came up:</strong><br><input type="text" class="p0-word" id="p0w2" placeholder="e.g. lighter, sad, free" oninput="savePhase0()"></p>
+            </div>
+          </details>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="p0-step" id="p0s3">
+          <div class="p0-step-head">
+            <span class="p0-step-num">3</span>
+            <div>
+              <div class="p0-step-title">Break the Pattern, Heal Your Heart</div>
+              <div class="p0-step-sub">What childhood wound did this relationship tap into? Feeling unseen? Abandoned? Not good enough?</div>
+            </div>
+          </div>
+          <textarea class="p0-textarea" id="p0t3" placeholder="The first time I remember feeling this way was..." oninput="savePhase0();updatePhase0Score()"></textarea>
+          <details class="p0-meditation">
+            <summary>&#9825; Meditation prompt</summary>
+            <div class="p0-med-body">
+              <p>Imagine your current, wise self meeting your wounded inner child at the age you first felt this wound. Simply hold that child&rsquo;s hand. Say: <em>&ldquo;I see you. You are safe now. I will never leave you.&rdquo;</em></p>
+              <p>Stay for 5&ndash;10 minutes. If tears come, let them.</p>
+              <p style="margin-top:8px"><strong>One word that came up:</strong><br><input type="text" class="p0-word" id="p0w3" placeholder="e.g. tender, angry, peaceful" oninput="savePhase0()"></p>
+            </div>
+          </details>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="p0-step" id="p0s4">
+          <div class="p0-step-head">
+            <span class="p0-step-num">4</span>
+            <div>
+              <div class="p0-step-title">Become a Love Alchemist</div>
+              <div class="p0-step-sub">What is one genuine gift this relationship gave me? Even if it was painful &mdash; clarity, a lesson, a red flag I will never ignore again?</div>
+            </div>
+          </div>
+          <textarea class="p0-textarea" id="p0t4" placeholder="Because of this relationship, I now know..." oninput="savePhase0();updatePhase0Score()"></textarea>
+          <details class="p0-meditation">
+            <summary>&#9825; Meditation prompt</summary>
+            <div class="p0-med-body">
+              <p>Think of one small, genuine thing your ex did that was kind &mdash; even something tiny. Breathe in: <em>&ldquo;May you be happy. May you be free from suffering.&rdquo;</em> If anger arises, go smaller: <em>&ldquo;May you find a parking space.&rdquo;</em></p>
+              <p>This is not for them. It is to unclench <strong>your</strong> heart.</p>
+              <p style="margin-top:8px"><strong>One word that came up:</strong><br><input type="text" class="p0-word" id="p0w4" placeholder="e.g. resistant, soft, nothing" oninput="savePhase0()"></p>
+            </div>
+          </details>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="p0-step" id="p0s5">
+          <div class="p0-step-head">
+            <span class="p0-step-num">5</span>
+            <div>
+              <div class="p0-step-title">Create Your Happy, Even Without Them</div>
+              <div class="p0-step-sub">One year from now, single and whole &mdash; what does your good life look like? Not a partnered life. Your life.</div>
+            </div>
+          </div>
+          <textarea class="p0-textarea" id="p0t5" placeholder="Describe one scene: where you are, what you are doing, how you feel." oninput="savePhase0();updatePhase0Score()"></textarea>
+          <details class="p0-meditation">
+            <summary>&#9825; Meditation prompt</summary>
+            <div class="p0-med-body">
+              <p>Close your eyes. Imagine yourself one year from today &mdash; not with anyone, just you. See yourself laughing with friends. Doing work you care about. Sleeping peacefully alone. Walking somewhere with no one to answer to. Feel the satisfaction in your body.</p>
+              <p>Ask: <em>&ldquo;What is one small step I can take toward this vision this week?&rdquo;</em></p>
+              <p style="margin-top:8px"><strong>My one small step this week:</strong><br><input type="text" class="p0-word" id="p0w5" placeholder="e.g. sign up for that class, call that friend" oninput="savePhase0()"></p>
+            </div>
+          </details>
+        </div>
+
+      </div><!-- /steps -->
+
+      <!-- Release ritual -->
+      <div class="p0-ritual" id="p0Ritual">
+        <svg width="22" height="20" viewBox="0 0 20 18" fill="var(--rose)"><path d="M10 17C10 17 1 10.5 1 5.5 1 2.9 3 1 5.5 1 7.5 1 9 2.5 10 4 11 2.5 12.5 1 14.5 1 17 1 19 2.9 19 5.5 19 10.5 10 17Z"/></svg>
+        <div>
+          <div style="font-family:var(--serif);font-size:16px;font-weight:500;color:var(--deep);margin-bottom:6px">Ritual of Release</div>
+          <p style="font-size:13px;color:var(--mist);line-height:1.6;margin-bottom:14px">When you have written honestly in all five prompts, tap the heart below. Then light a candle. Write a letter to the relationship &mdash; do not send it. Then plant something or start a new class. A small beginning just for you.</p>
+          <button class="p0-complete-btn" id="p0CompleteBtn" onclick="completePhase0()">&#9825; Mark Phase 0 Complete</button>
+          <div id="p0CompleteMsg" style="display:none;font-family:var(--serif);font-size:14px;font-style:italic;color:var(--green);margin-top:10px">&#10003; Phase 0 complete. You are ready to begin &mdash; consciously.</div>
+        </div>
+      </div>
+
+    </div><!-- /phase-body -->
+  </div>
+  <!-- END PHASE 0 -->
 
   <div class="stats-bar">
     <div class="stat"><span class="stat-val" id="statPhase">&mdash;</span><span class="stat-lbl">active phase</span></div>
@@ -830,7 +1142,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
   <div class="phase-card" id="phaseCard"></div>
   <div id="nnBannerWrap"></div>
 
-  <div class="log-card">
+  <div id="sec-log" class="log-card">
     <div class="log-card-header">
       <div>
         <h2 style="font-family:var(--serif);font-size:22px;font-weight:500;color:var(--deep);margin-bottom:3px">Observation log</h2>
@@ -848,7 +1160,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     <div id="logList"></div>
   </div>
 
-  <div class="flag-ratio-card">
+  <div id="sec-flags" class="flag-ratio-card">
     <h3>Flags by phase</h3>
     <p>Your green and red flags, broken down by phase.</p>
     <div id="flagRatioList"></div>
@@ -860,7 +1172,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     <div id="obsAnalysisWrap"></div>
   </div>
 
-  <div class="checkin-card">
+  <div id="sec-checkin" class="checkin-card">
     <h3>Weekly check-in</h3>
     <p>How does this feel right now? Rate with hearts &mdash; once a week, honestly.</p>
     <div class="heart-rating" id="heartRating">
@@ -882,7 +1194,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     <div class="checkin-history" id="checkinHistory"></div>
   </div>
 
-  <div class="selfcare-card">
+  <div id="sec-selfcare" class="selfcare-card">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px">
       <div>
         <h3 style="margin-bottom:4px">Meanwhile &mdash; what am I building?</h3>
@@ -905,7 +1217,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
 
 
   <!-- RELATIONSHIP LOG -->
-  <div class="rlog-card">
+  <div id="sec-rlog" class="rlog-card">
     <div class="rlog-card-header">
       <div>
         <h2 style="font-family:var(--serif);font-size:22px;font-weight:500;color:var(--deep);margin-bottom:4px">The ones before him</h2>
@@ -946,7 +1258,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     </div>
   </div>
 
-  <div class="save-card">
+  <div id="sec-save" class="save-card">
     <div class="save-left">
       <div class="save-title">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
@@ -3448,6 +3760,104 @@ function resetData(){
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────
+
+/* ── NAVBAR ── */
+function navTo(id){
+  var target=document.getElementById(id);
+  if(!target) return;
+  var hh=document.getElementById('siteHeader')?document.getElementById('siteHeader').offsetHeight:54;
+  window.scrollTo({top:target.getBoundingClientRect().top+window.pageYOffset-hh-8,behavior:'smooth'});
+}
+function toggleMobileNav(){
+  var n=document.getElementById('navMobile'),b=document.getElementById('navHamburger');
+  if(n)n.classList.toggle('open');if(b)b.classList.toggle('open');
+}
+function closeMobileNav(){
+  var n=document.getElementById('navMobile'),b=document.getElementById('navHamburger');
+  if(n)n.classList.remove('open');if(b)b.classList.remove('open');
+}
+function updateActiveNav(){
+  var ids=['phaseCard','sec-log','sec-flags','sec-checkin','sec-selfcare','sec-rlog','sec-save'];
+  var links=document.querySelectorAll('.nav-link');
+  var cur=-1;
+  ids.forEach(function(id,i){
+    var t=document.getElementById(id);
+    if(t&&t.getBoundingClientRect().top<80) cur=i;
+  });
+  links.forEach(function(l,i){l.classList.toggle('active',i===cur);});
+}
+window.addEventListener('scroll',updateActiveNav,{passive:true});
+
+/* ── PHASE 0 ── */
+function savePhase0(){
+  if(!S.phase0) S.phase0={};
+  ['1','2','3','4','5'].forEach(function(n){
+    var ta=document.getElementById('p0t'+n);
+    var w=document.getElementById('p0w'+n);
+    if(ta) S.phase0['t'+n]=ta.value;
+    if(w)  S.phase0['w'+n]=w.value;
+  });
+  save();
+}
+
+function loadPhase0(){
+  if(!S.phase0) return;
+  ['1','2','3','4','5'].forEach(function(n){
+    var ta=document.getElementById('p0t'+n);
+    var w=document.getElementById('p0w'+n);
+    if(ta&&S.phase0['t'+n]) ta.value=S.phase0['t'+n];
+    if(w&&S.phase0['w'+n])  w.value=S.phase0['w'+n];
+  });
+  // Restore completed state
+  if(S.phase0.complete){
+    var btn=document.getElementById('p0CompleteBtn');
+    var msg=document.getElementById('p0CompleteMsg');
+    if(btn){btn.textContent='✓ Phase 0 Complete';btn.disabled=true;}
+    if(msg) msg.style.display='block';
+  }
+  updatePhase0Score();
+}
+
+function updatePhase0Score(){
+  var filled=0;
+  ['1','2','3','4','5'].forEach(function(n){
+    var ta=document.getElementById('p0t'+n);
+    if(ta&&ta.value.trim().length>=10) filled++;
+  });
+  var pct=Math.round(filled/5*100);
+  var pctEl=document.getElementById('phase0Pct');
+  if(pctEl) pctEl.textContent=pct+'%';
+}
+
+function completePhase0(){
+  // Check all 5 textareas have at least 10 chars
+  var empty=[];
+  ['1','2','3','4','5'].forEach(function(n){
+    var ta=document.getElementById('p0t'+n);
+    if(!ta||ta.value.trim().length<10){
+      empty.push(n);
+      if(ta) ta.style.borderColor='var(--red)';
+    } else {
+      if(ta) ta.style.borderColor='';
+    }
+  });
+  if(empty.length){
+    alert('Please write honestly in all 5 steps before completing Phase 0. Step'+(empty.length>1?'s ':' ')+empty.join(', ')+' still '+(empty.length>1?'need':'needs')+' more.');
+    return;
+  }
+  // Save completion
+  if(!S.phase0) S.phase0={};
+  S.phase0.complete=true;
+  S.phase0.completedDate=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  save();
+  // Update UI
+  var btn=document.getElementById('p0CompleteBtn');
+  var msg=document.getElementById('p0CompleteMsg');
+  if(btn){btn.textContent='✓ Phase 0 Complete';btn.disabled=true;}
+  if(msg) msg.style.display='block';
+  updatePhase0Score();
+}
+
 document.addEventListener("DOMContentLoaded",function(){
   // journal
   el("journalTrigger").addEventListener("click",openJournal);
@@ -3474,7 +3884,7 @@ document.addEventListener("DOMContentLoaded",function(){
   el("restoreFileInput").addEventListener("change",restoreFile);
   el("resetBtn").addEventListener("click",resetData);
   // load saved data into fields
-  loadHim();loadSelfCare();
+  loadHim();loadSelfCare();loadPhase0();
   // auto-select first unlocked phase
   if(!isUnlocked(S.activePhase)){var first=PHASES.find(function(ph){return isUnlocked(ph.num);});if(first)S.activePhase=first.num;}
   renderAll();
