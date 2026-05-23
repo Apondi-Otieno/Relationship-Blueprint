@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  
 <head>
-  
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Relationship Blueprint</title>
@@ -4555,7 +4553,7 @@ function renderPhase0Analysis(result){
     if(result.flags.indexOf('performance-A1')>-1)blockReasons.push('Replace therapy language with specific examples (Section A, step 1)');
     if(result.flags.indexOf('contradiction-A1')>-1)blockReasons.push('Remove the contradiction in step A1 — own it or do not');
     html+='<div style="background:var(--blush);border:1px solid var(--petal);border-radius:14px;padding:18px 20px;margin-top:6px">';
-    html+='<div style="font-family:var(--serif);font-size:18px;color:var(--deep);margin-bottom:8px">Phase 1 is not yet unlocked ('+result.readiness+'/90 needed)</div>';
+    html+='<div style="font-family:var(--serif);font-size:18px;color:var(--deep);margin-bottom:8px">Phase 1 is not yet unlocked ('+result.readiness+'/100. You need 90 to unlock.</div>';
     if(blockReasons.length){
       html+='<div style="font-size:12px;color:var(--mist);margin-bottom:10px">Hard requirements not met:</div>';
       blockReasons.forEach(function(r){html+='<div style="font-size:12px;color:var(--deep);padding:5px 0 5px 14px;border-left:3px solid var(--rose);margin-bottom:6px;font-weight:500">'+r+'</div>';});
