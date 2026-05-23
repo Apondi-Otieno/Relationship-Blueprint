@@ -897,6 +897,165 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     color:var(--mist);
   }
 
+
+  /* ── VISUAL ENHANCEMENTS ── */
+
+  /* Animated hero hearts */
+  .hero-hearts-anim { display:flex;align-items:center;gap:8px;margin:10px 0 20px; }
+  .hero-heart-pulse {
+    animation: heartpulse 2.2s ease-in-out infinite;
+    display:inline-block;
+    transform-origin:center;
+  }
+  .hero-heart-pulse:nth-child(2){ animation-delay:.3s; }
+  .hero-heart-pulse:nth-child(3){ animation-delay:.6s; }
+  @keyframes heartpulse {
+    0%,100%{ transform:scale(1); opacity:.5; }
+    50%{ transform:scale(1.25); opacity:1; }
+  }
+
+  /* Phase 0 section header with decorative line */
+  .p0-section-hd::before {
+    content:'♥';
+    font-size:9px;
+    color:var(--rose);
+    margin-right:6px;
+    opacity:.6;
+  }
+
+  /* Score circle ring animation */
+  .p0-score-ring { position:relative;width:68px;height:68px;flex-shrink:0; }
+  .p0-score-ring svg { position:absolute;top:0;left:0;transform:rotate(-90deg); }
+  .p0-score-ring-inner {
+    position:absolute;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    font-family:var(--serif);
+  }
+  .p0-ring-circle {
+    stroke-dasharray: 188;
+    stroke-dashoffset: 188;
+    transition: stroke-dashoffset 1s ease;
+  }
+
+  /* Observation flag dots — enhance */
+  .flag-dot {
+    width:10px;height:10px;border-radius:50%;flex-shrink:0;
+    box-shadow:0 0 0 2px rgba(255,255,255,.8);
+  }
+
+  /* Stats bar card lift on hover */
+  .stat {
+    transition:transform .2s,box-shadow .2s;
+    cursor:default;
+  }
+  .stat:hover {
+    transform:translateY(-2px);
+    box-shadow:0 4px 16px rgba(196,64,107,.12);
+  }
+
+  /* Phase card progress bar glow */
+  .tl-fill-bar {
+    transition: width .6s cubic-bezier(.4,0,.2,1);
+    position:relative;overflow:hidden;
+  }
+  .tl-fill-bar::after {
+    content:'';position:absolute;top:0;left:-100%;
+    width:60%;height:100%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);
+    animation:shimmer 2.5s infinite;
+  }
+  @keyframes shimmer { to{ left:200%; } }
+
+  /* Locked phase rows — lock icon pulse */
+  .lp-lock { animation:lockpulse 3s ease-in-out infinite; }
+  @keyframes lockpulse {
+    0%,100%{ opacity:.3; }
+    50%{ opacity:.6; }
+  }
+
+  /* Journal button heartbeat */
+  .nav-journal-btn svg, .nav-journal-btn {
+    transition:transform .15s;
+  }
+  .nav-journal-btn:hover {
+    transform:scale(1.04);
+  }
+
+  /* Phase 0 ritual box — subtle glow */
+  .p0-ritual {
+    position:relative;overflow:hidden;
+  }
+  .p0-ritual::before {
+    content:'';position:absolute;
+    top:-30px;right:-30px;
+    width:120px;height:120px;
+    background:radial-gradient(circle,rgba(196,64,107,.08) 0%,transparent 70%);
+    pointer-events:none;
+  }
+
+  /* Him card avatar initial — styled */
+  .him-avatar {
+    width:52px;height:52px;border-radius:50%;
+    background:linear-gradient(135deg,var(--rose),var(--mauve));
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--serif);font-size:22px;font-weight:400;
+    color:white;flex-shrink:0;
+    box-shadow:0 3px 12px rgba(196,64,107,.25);
+  }
+
+  /* Phase card tab active indicator */
+  .tab-btn.active-tab {
+    position:relative;
+  }
+  .tab-btn.active-tab::after {
+    content:'';position:absolute;bottom:-1px;left:0;right:0;
+    height:2px;background:var(--rose);border-radius:99px;
+  }
+
+  /* Checklist item checkmark animation */
+  .check-item input[type=radio]:checked + label::before,
+  .check-item input[type=checkbox]:checked + label::before {
+    animation:checkpop .2s ease;
+  }
+  @keyframes checkpop {
+    0%{ transform:scale(1.4); }
+    100%{ transform:scale(1); }
+  }
+
+  /* Footer glow dot */
+  .footer-logo svg {
+    filter:drop-shadow(0 0 6px rgba(232,160,184,.5));
+  }
+
+  /* Observation log entry hover */
+  .log-entry {
+    transition:transform .15s,box-shadow .15s;
+  }
+  .log-entry:hover {
+    transform:translateX(2px);
+    box-shadow:2px 0 0 var(--rose) inset;
+  }
+
+  /* Phase number badge glow when active */
+  .phase-num-badge {
+    transition:box-shadow .3s;
+  }
+  .phase-card .phase-num-badge {
+    box-shadow:0 0 0 4px rgba(196,64,107,.1);
+  }
+
+  /* Mantra card */
+  .mantra {
+    position:relative;overflow:hidden;
+  }
+  .mantra::before {
+    content:'"';
+    position:absolute;top:-20px;left:10px;
+    font-family:var(--serif);font-size:120px;font-weight:600;
+    color:var(--rose);opacity:.06;line-height:1;
+    pointer-events:none;
+  }
+
 </style>
 </head>
 <body>
@@ -968,9 +1127,16 @@ textarea::placeholder{color:var(--mist);font-style:italic}
         <div class="phase-gate">&ldquo;Know yourself before you observe him&rdquo;</div>
         <div class="phase-timing">Complete before Phase 1 unlocks &mdash; saves automatically</div>
       </div>
-      <div class="score-circle" id="phase0ScoreCircle">
-        <span class="score-pct" id="phase0Pct">0%</span>
-        <span class="score-sub" id="phase0Sub">0/16</span>
+      <div class="p0-score-ring" id="phase0ScoreCircle">
+        <svg width="68" height="68" viewBox="0 0 68 68">
+          <circle cx="34" cy="34" r="30" fill="none" stroke="var(--pink-100)" stroke-width="5"/>
+          <circle cx="34" cy="34" r="30" fill="none" stroke="var(--rose)" stroke-width="5"
+            stroke-linecap="round" class="p0-ring-circle" id="p0RingCircle"/>
+        </svg>
+        <div class="p0-score-ring-inner">
+          <span style="font-family:var(--serif);font-size:14px;font-weight:500;color:var(--deep)" id="phase0Pct">0%</span>
+          <span style="font-size:9px;color:var(--mist);text-align:center;letter-spacing:.02em" id="phase0Sub">0/16</span>
+        </div>
       </div>
     </div>
 
