@@ -3808,6 +3808,12 @@ function savePhase0(){
 
 function loadPhase0(){
   if(!S.phase0) return;
+  // Revoke stale completions — if stored readiness is below 90, unlock is not valid
+  if(S.phase0.complete && S.phase0.analysis && S.phase0.analysis.readiness < 90){
+    S.phase0.complete = false;
+    delete S.phase0.completedDate;
+    save();
+  }
   for(var n=1;n<=P0_TOTAL;n++){
     var ta=document.getElementById('p0t'+n);
     if(ta&&S.phase0['t'+n]){ta.value=S.phase0['t'+n];ta.classList.toggle('p0-filled',ta.value.trim().length>=20);}
@@ -4789,7 +4795,14 @@ document.addEventListener("DOMContentLoaded",function(){
   el("restoreFileInput").addEventListener("change",restoreFile);
   el("resetBtn").addEventListener("click",resetData);
   // load saved data into fields
-  loadHim();loadSelfCare();loadPhase0();Object.keys(P0_SECTION_MAP).forEach(function(s){updateSectionProgress(s);});loadPhase0();
+  loadHim();loadSelfCare();loadPhase0();
+  // Migration: if phase0 marked complete but readiness < 90, clear it
+  if(S.phase0&&S.phase0.complete&&(!S.phase0.analysis||S.phase0.analysis.readiness<90)){
+    S.phase0.complete=false;
+    delete S.phase0.completedDate;
+    save();
+    renderAll();
+  }Object.keys(P0_SECTION_MAP).forEach(function(s){updateSectionProgress(s);});loadPhase0();
   // auto-select first unlocked phase
   if(!isUnlocked(S.activePhase)){var first=PHASES.find(function(ph){return isUnlocked(ph.num);});if(first)S.activePhase=first.num;}
   renderAll();
