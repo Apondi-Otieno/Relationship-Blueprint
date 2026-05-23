@@ -1066,6 +1066,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
       My Blueprint
     </div>
     <nav class="nav-links">
+      <button class="nav-link" onclick="navTo('phase0Card')">Self-report</button>
       <button class="nav-link" onclick="navTo('phaseCard')">Phases</button>
       <button class="nav-link" onclick="navTo('sec-log')">Observations</button>
       <button class="nav-link" onclick="navTo('sec-flags')">Flags</button>
@@ -1079,6 +1080,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     <button class="nav-hamburger" id="navHamburger" onclick="toggleMobileNav()"><span></span><span></span><span></span></button>
   </div>
   <div class="nav-mobile" id="navMobile">
+    <button class="nav-mobile-link" onclick="navTo('phase0Card');closeMobileNav()">Self-report</button>
     <button class="nav-mobile-link" onclick="navTo('phaseCard');closeMobileNav()">Phases</button>
     <button class="nav-mobile-link" onclick="navTo('sec-log');closeMobileNav()">Observations</button>
     <button class="nav-mobile-link" onclick="navTo('sec-flags');closeMobileNav()">Flags</button>
@@ -3944,7 +3946,7 @@ function closeMobileNav(){
   if(n)n.classList.remove('open');if(b)b.classList.remove('open');
 }
 function updateActiveNav(){
-  var ids=['phaseCard','sec-log','sec-flags','sec-checkin','sec-selfcare','sec-rlog','sec-save'];
+  var ids=['phase0Card','phaseCard','sec-log','sec-flags','sec-checkin','sec-selfcare','sec-rlog','sec-save'];
   var links=document.querySelectorAll('.nav-link');
   var cur=-1;
   ids.forEach(function(id,i){var t=document.getElementById(id);if(t&&t.getBoundingClientRect().top<80)cur=i;});
@@ -4576,6 +4578,14 @@ function retryPhase0(){
   if(btn){btn.textContent='\u2665 Analyse my self-report \u2192';btn.disabled=false;}
   expandPhase0();
   renderTimeline();renderPhase();
+  // Scroll to top of Phase 0 card
+  setTimeout(function(){
+    var card=document.getElementById('phase0Card');
+    if(card){
+      var hh=document.getElementById('siteHeader')?document.getElementById('siteHeader').offsetHeight:54;
+      window.scrollTo({top:card.getBoundingClientRect().top+window.pageYOffset-hh-12,behavior:'smooth'});
+    }
+  },100);
 }
 
 
