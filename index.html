@@ -2282,6 +2282,24 @@ function setLogFlag(flag,btn){
   if(btn) btn.classList.add("active");
 }
 function renderLog(){
+  // Gate: Phase 0 must be complete (90%) before observations open
+  var card=document.getElementById('sec-log');
+  if(!S.phase0||!S.phase0.complete){
+    if(card){
+      var hd=card.querySelector('.log-card-header');
+      var body=card.querySelector('.log-add-block');
+      var list=el('logList');
+      if(body) body.style.display='none';
+      if(list){ list.innerHTML='<div style="text-align:center;padding:28px 20px;font-family:var(--serif);font-size:15px;font-style:italic;color:var(--mist);line-height:1.7">&#128274; The observation log opens once Phase 0 is complete.<br><span style="font-size:13px">Complete your relationship self-report at the top of the page first.<br>Your readiness must reach 90% before you begin recording him.</span></div>';
+      }
+    }
+    return;
+  }
+  // Phase 0 complete — restore the add block
+  if(card){
+    var body2=card.querySelector('.log-add-block');
+    if(body2) body2.style.display='';
+  }
   var list=el("logList");
   var log=S.log||[];
   var badge=el("logCountBadge");
@@ -2338,6 +2356,7 @@ function onLogInput(){
 }
 
 function addLog(){
+  if(!S.phase0||!S.phase0.complete){return;}
   var inp=el("logInput"),text=inp.value.trim();
   if(!text){inp.focus();return;}
   var flag=classifyObservation(text);
