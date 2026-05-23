@@ -4221,7 +4221,29 @@ function analysePhase0(){
 
   var blocked=flags.indexOf('wound-unnamed')>-1||flags.indexOf('blame')>-1||flags.indexOf('no-plan')>-1;
   var unlockable=readiness>=90&&!blocked;
-  return {readiness:readiness,insights:insights,flags:flags,unlockable:unlockable,dims:dims,dimPct:dimPct,weakest:weakest,dimNames:dimNames,dimDesc:dimDesc};
+  // Detect wound type from answers for personalised recommendations
+  var woundTags=[];
+  var allText=(ans.join(' ')).toLowerCase();
+
+  if(/(abandon|left|alone|won.t leave|they.ll leave|fear.*left|left me|he left|she left|they left|losing them|keep leaving)/.test(allText)) woundTags.push('abandonment');
+  if(/(not enough|not good enough|not worthy|not deserving|prove myself|earn.*love|earn.*place|have to earn|work for love|deserve love|am i enough)/.test(allText)) woundTags.push('unworthiness');
+  if(/(control|controlled|controlled by|lost control|no say|no autonomy|powerless|over.?power|dominate|manipulat|my boundaries|no choice|couldn.t say no)/.test(allText)) woundTags.push('control');
+  if(/(invisible|unseen|not seen|not heard|ignored|dismissed|didn.t matter|like i wasn.t there|like i don.t exist|overlooked|no one noticed)/.test(allText)) woundTags.push('invisibility');
+  if(/(self.abandon|people.pleas|keep the peace|manage his|manage their|his feelings|their comfort|make them happy|not upset them|shrink|made myself smaller|my needs don.t matter)/.test(allText)) woundTags.push('self-abandonment');
+  if(/(too much|overwhelming|too intense|too emotional|tone it down|dial it back|too needy|too sensitive|too loud|too big|too much for)/.test(allText)) woundTags.push('too-much');
+  if(/(intimacy|getting close|vulnerability|letting in|opening up|fear of closeness|walls up|guard up|push away|run when|distance when)/.test(allText)) woundTags.push('intimacy-avoidance');
+  if(/(anxiety|anxious|obsess|can.t stop thinking|checking|reassurance|need to know|uncertainty|not knowing|the chase|intensity|exciting because)/.test(allText)) woundTags.push('anxious-attachment');
+
+  // Detect behavioural patterns
+  var patternTags=[];
+  if(/(chase|chased|chasing|pursuit|pursue|they pull away|i chase|always the one chasing)/.test(allText)) patternTags.push('chasing');
+  if(/(unavailable|emotionally unavailable|not available|closed off|walls|distant men|push.pull|hot and cold)/.test(allText)) patternTags.push('unavailable-partners');
+  if(/(over.?explain|explain myself|justify|defend|prove|seek approval|need validation|reassurance seeking)/.test(allText)) patternTags.push('over-explaining');
+  if(/(people.pleas|people please|fawn|accommodate|put myself last|his needs first|their needs first|not assertive)/.test(allText)) patternTags.push('people-pleasing');
+  if(/(stayed too long|should have left|ignored red flags|kept ignoring|told myself|convinced myself|made excuses for)/.test(allText)) patternTags.push('ignoring-red-flags');
+  if(/(nervous system|body|felt it|freeze|shutdown|dissociat|numb|overwhelm|flooded|activated|triggered|body knew)/.test(allText)) patternTags.push('body-aware');
+
+  return {readiness:readiness,insights:insights,flags:flags,unlockable:unlockable,dims:dims,dimPct:dimPct,weakest:weakest,dimNames:dimNames,dimDesc:dimDesc,woundTags:woundTags,patternTags:patternTags};
 }
 
 function completePhase0(){
@@ -4573,24 +4595,79 @@ function downloadPhase0PDF(){
   var answers = [];
   for(var n=1;n<=16;n++) answers.push(p0['t'+n]||'');
 
-  var BOOKS = [
-    {t:'Attached',a:'Amir Levine & Rachel Heller',w:'Maps your attachment style and explains why you keep attracting the same person.',u:'https://www.goodreads.com/book/show/9547888'},
-    {t:'Women Who Love Too Much',a:'Robin Norwood',w:'If the pattern involves giving more than receiving or staying too long, this is the foundational text.',u:'https://www.goodreads.com/book/show/349091'},
-    {t:'The Body Keeps the Score',a:'Bessel van der Kolk',w:'Why your nervous system responds the way it does \u2014 and what actually changes it.',u:'https://www.goodreads.com/book/show/18693771'},
-    {t:'Adult Children of Emotionally Immature Parents',a:'Lindsay C. Gibson',w:'If your wound traces back to a parent who could not meet you emotionally, this names it precisely.',u:'https://www.goodreads.com/book/show/23129659'},
-    {t:'Hold Me Tight',a:'Sue Johnson',w:'What genuine emotional safety looks like in a relationship \u2014 useful for recognising it in Phase 1.',u:'https://www.goodreads.com/book/show/2994632'},
-    {t:'Not Nice',a:'Dr Aziz Gazipura',w:'For the self-abandonment pattern \u2014 learning to stop managing other people\'s feelings at the cost of your own.',u:'https://www.goodreads.com/book/show/33120493'},
-    {t:'Codependent No More',a:'Melody Beattie',w:'If you lose yourself in relationships or make his wellbeing your responsibility.',u:'https://www.goodreads.com/book/show/720077'},
+  // ── PERSONALISED BOOK + VIDEO SELECTION ────────────────────────────
+  var woundTags   = (analysis && analysis.woundTags)   || [];
+  var patternTags = (analysis && analysis.patternTags) || [];
+  var weakest     = (analysis && analysis.weakest)     || '';
+
+  // Full library
+  var ALL_BOOKS = [
+    {t:'Attached',                             a:'Amir Levine & Rachel Heller',    tags:['anxious-attachment','unavailable-partners','chasing'],              w:'Maps your attachment style and explains exactly why you keep attracting the same person.',                                    u:'https://www.goodreads.com/book/show/9547888'},
+    {t:'Women Who Love Too Much',              a:'Robin Norwood',                   tags:['chasing','people-pleasing','ignoring-red-flags','self-abandonment'], w:'The foundational text on staying too long and giving more than you receive.',                                              u:'https://www.goodreads.com/book/show/349091'},
+    {t:'The Body Keeps the Score',             a:'Bessel van der Kolk',             tags:['body-aware','anxious-attachment','control'],                         w:'Why your nervous system responds the way it does — and what actually changes it.',                                          u:'https://www.goodreads.com/book/show/18693771'},
+    {t:'Adult Children of Emotionally Immature Parents', a:'Lindsay C. Gibson',    tags:['unworthiness','invisibility','self-abandonment','abandonment'],       w:'If your wound traces to a parent who could not meet you emotionally, this names it precisely.',                            u:'https://www.goodreads.com/book/show/23129659'},
+    {t:'Hold Me Tight',                        a:'Sue Johnson',                     tags:['abandonment','intimacy-avoidance','anxious-attachment'],              w:'What genuine emotional safety looks like in a relationship — useful for recognising it in Phase 1.',                       u:'https://www.goodreads.com/book/show/2994632'},
+    {t:'Not Nice',                             a:'Dr Aziz Gazipura',                tags:['people-pleasing','self-abandonment','over-explaining'],               w:'For the self-abandonment pattern — stopping the management of other people\'s feelings at the cost of your own.',           u:'https://www.goodreads.com/book/show/33120493'},
+    {t:'Codependent No More',                  a:'Melody Beattie',                  tags:['self-abandonment','people-pleasing','chasing'],                       w:'If you lose yourself in relationships or make his wellbeing your responsibility.',                                          u:'https://www.goodreads.com/book/show/720077'},
+    {t:'The Disease to Please',                a:'Harriet B. Braiker',              tags:['people-pleasing','over-explaining','self-abandonment'],               w:'Direct, practical work on breaking the approval-seeking pattern without losing yourself.',                                  u:'https://www.goodreads.com/book/show/110695'},
+    {t:'Wired for Love',                       a:'Stan Tatkin',                     tags:['intimacy-avoidance','anxious-attachment','unavailable-partners'],     w:'On how the nervous system shapes who we choose and how we bond — and how to actually change it.',                         u:'https://www.goodreads.com/book/show/13235716'},
+    {t:'Running on Empty',                     a:'Jonice Webb',                     tags:['invisibility','unworthiness','self-abandonment'],                     w:'On childhood emotional neglect — the wound that leaves no visible scar but shapes everything.',                            u:'https://www.goodreads.com/book/show/13262681'},
+    {t:'Why Does He Do That?',                 a:'Lundy Bancroft',                  tags:['control','ignoring-red-flags'],                                       w:'The clearest book on control, manipulation, and why smart women stay. Read this before Phase 1.',                          u:'https://www.goodreads.com/book/show/224552'},
+    {t:'The Emotionally Absent Mother',        a:'Jasmin Lee Cori',                 tags:['abandonment','unworthiness','invisibility'],                          w:'On how maternal emotional absence creates the wound of never quite feeling enough.',                                         u:'https://www.goodreads.com/book/show/6896468'},
+    {t:'Too Good to Leave, Too Bad to Stay',   a:'Mira Kirshenbaum',               tags:['ignoring-red-flags','chasing','self-abandonment'],                    w:'A diagnostic guide for when you cannot decide whether to stay or go — written to make the answer clear.',                  u:'https://www.goodreads.com/book/show/119385'},
+    {t:'The Power of Now',                     a:'Eckhart Tolle',                   tags:['anxious-attachment','over-explaining','too-much'],                    w:'For the anxious mind that cannot stop replaying, planning, and catastrophising inside a relationship.',                     u:'https://www.goodreads.com/book/show/6708'},
+    {t:'I Thought It Was Just Me',             a:'Bren\xe9 Brown',                 tags:['unworthiness','too-much','self-abandonment'],                         w:'On shame, perfectionism, and the belief that you are too much or not enough — the twin faces of the same wound.',          u:'https://www.goodreads.com/book/show/21807'},
   ];
-  var VIDEOS = [
-    {t:'How Childhood Trauma Shapes Adult Relationships',ch:'Dr Gabor Mat\xe9',w:'On how early wounding creates the patterns you identified in Section B.',u:'https://www.youtube.com/watch?v=szuberORMGQ'},
-    {t:'The Four Attachment Styles \u2014 Explained',ch:'The School of Life',w:'Clear explanation of why you respond to closeness and distance the way you do.',u:'https://www.youtube.com/watch?v=2s9ACDMcpjA'},
-    {t:'Why We Confuse Anxious Attachment for Love',ch:'Therapy in a Nutshell',w:'Directly addresses the love confusion you explored in Section C9.',u:'https://www.youtube.com/watch?v=PsGBJX4ZN7A'},
-    {t:'Self-Compassion vs Self-Esteem',ch:'Kristin Neff',w:'The difference between performing self-worth and actually having it.',u:'https://www.youtube.com/watch?v=IvtZBUSplr4'},
-    {t:'Bessel van der Kolk \u2014 Trauma, Body, and Healing',ch:'Impact Theory',w:'Why intellectual insight alone does not change nervous-system patterns.',u:'https://www.youtube.com/watch?v=yFCMdsFuA4c'},
-    {t:'The Real Reason You Keep Choosing the Wrong Person',ch:'Matthew Hussey',w:'A direct challenge to the pattern recognition work in Section C8.',u:'https://www.youtube.com/watch?v=MeZ5FGi7CwU'},
-    {t:'How to Regulate Your Nervous System',ch:'Sukie Baxter',w:'Practical tools for the body-based navigation plan you wrote in Section D.',u:'https://www.youtube.com/watch?v=d2D6RD0bZrA'},
+
+  var ALL_VIDEOS = [
+    {t:'How Childhood Trauma Shapes Adult Relationships',    ch:'Dr Gabor Mat\xe9',    tags:['abandonment','unworthiness','self-abandonment','invisibility'],     w:'On how early wounding creates the patterns you identified in Section B.',                                                  u:'https://www.youtube.com/watch?v=szuberORMGQ'},
+    {t:'The Four Attachment Styles Explained',               ch:'The School of Life',  tags:['anxious-attachment','intimacy-avoidance','unavailable-partners'],   w:'Clear, non-clinical explanation of why you respond to closeness and distance the way you do.',                              u:'https://www.youtube.com/watch?v=2s9ACDMcpjA'},
+    {t:'Why We Confuse Anxious Attachment for Love',         ch:'Therapy in a Nutshell',tags:['anxious-attachment','chasing','unavailable-partners'],             w:'Directly addresses the love confusion you explored in Section C9.',                                                        u:'https://www.youtube.com/watch?v=PsGBJX4ZN7A'},
+    {t:'Self-Compassion vs Self-Esteem',                     ch:'Kristin Neff',        tags:['unworthiness','too-much','self-abandonment'],                       w:'The difference between performing self-worth and actually having it.',                                                     u:'https://www.youtube.com/watch?v=IvtZBUSplr4'},
+    {t:'Bessel van der Kolk — Trauma, Body, and Healing',   ch:'Impact Theory',       tags:['body-aware','control','anxious-attachment'],                        w:'Why intellectual insight alone does not change nervous-system patterns.',                                                  u:'https://www.youtube.com/watch?v=yFCMdsFuA4c'},
+    {t:'The Real Reason You Keep Choosing the Wrong Person', ch:'Matthew Hussey',      tags:['chasing','ignoring-red-flags','unavailable-partners'],              w:'A direct challenge to the pattern recognition work in Section C8.',                                                        u:'https://www.youtube.com/watch?v=MeZ5FGi7CwU'},
+    {t:'How to Regulate Your Nervous System',                ch:'Sukie Baxter',        tags:['body-aware','anxious-attachment','too-much'],                       w:'Practical tools for the body-based navigation plan you wrote in Section D.',                                              u:'https://www.youtube.com/watch?v=d2D6RD0bZrA'},
+    {t:'People Pleasing — Why You Do It and How to Stop',   ch:'Dr Ramani',           tags:['people-pleasing','self-abandonment','over-explaining'],             w:'A direct breakdown of the fawn response and how it operates inside romantic relationships.',                               u:'https://www.youtube.com/watch?v=ROeHCpMFd-0'},
+    {t:'Emotional Neglect — The Invisible Wound',           ch:'Dr Jonice Webb',      tags:['invisibility','unworthiness','abandonment'],                        w:'On childhood emotional neglect — the wound that leaves no scar but shapes all your relationships.',                       u:'https://www.youtube.com/watch?v=GKlUoLCiTOA'},
+    {t:'Why You Keep Attracting Emotionally Unavailable Men',ch:'Lisa Romano',        tags:['unavailable-partners','chasing','self-abandonment'],                w:'Connects the pull toward unavailable partners to the original wound — and what actually breaks the cycle.',                u:'https://www.youtube.com/watch?v=5H2V7yOZx6U'},
+    {t:'The Fawn Response — People Pleasing as a Trauma Response',ch:'Patrick Teahan',tags:['people-pleasing','self-abandonment','control'],                    w:'On fawning as a survival strategy and how it keeps you stuck in relationships that require you to be small.',              u:'https://www.youtube.com/watch?v=0sVjWSB818E'},
+    {t:'Shame vs Guilt — Brené Brown',                      ch:'Bren\xe9 Brown TED', tags:['unworthiness','too-much'],                                          w:'The clearest articulation of the difference between "I did something bad" and "I am bad" — and why it matters.',          u:'https://www.youtube.com/watch?v=psN1DORYYV0'},
+    {t:'Disorganised Attachment — What It Looks Like',      ch:'Heidi Priebe',        tags:['intimacy-avoidance','abandonment','control'],                       w:'On the push-pull pattern — wanting closeness and fearing it simultaneously.',                                             u:'https://www.youtube.com/watch?v=lhK6RJqxNsg'},
+    {t:'How to Stop Overthinking in Relationships',         ch:'Therapy in a Nutshell',tags:['anxious-attachment','over-explaining','too-much'],                 w:'For the anxious mind that cannot stop replaying interactions and seeking reassurance.',                                    u:'https://www.youtube.com/watch?v=TA-4nqLp-aQ'},
   ];
+
+  // Score each resource by how many of the user's tags it matches
+  var allTags = woundTags.concat(patternTags);
+  // Always add weakest dimension as a tag
+  if(weakest) allTags.push(weakest);
+
+  function scoreResource(r){
+    if(!allTags.length) return 1; // no analysis yet — show default
+    var score=0;
+    r.tags.forEach(function(tag){
+      if(allTags.indexOf(tag)>-1) score+=2;
+    });
+    // Partial match bonus
+    r.tags.forEach(function(tag){
+      allTags.forEach(function(ut){
+        if(tag!==ut&&(tag.indexOf(ut)>-1||ut.indexOf(tag)>-1)) score+=1;
+      });
+    });
+    return score;
+  }
+
+  // Sort by score descending, take top N
+  var scoredBooks  = ALL_BOOKS.map(function(b){return {r:b,s:scoreResource(b)};}).sort(function(a,b){return b.s-a.s;});
+  var scoredVideos = ALL_VIDEOS.map(function(v){return {r:v,s:scoreResource(v)};}).sort(function(a,b){return b.s-a.s;});
+
+  // Take top 5 books and top 6 videos, ensuring at least 3 even if score=0
+  var BOOKS  = scoredBooks.slice(0,6).map(function(x){return x.r;});
+  var VIDEOS = scoredVideos.slice(0,6).map(function(x){return x.r;});
+
+  // Add relevance note to each resource based on user's specific wound
+  var woundLabel = woundTags.length ? woundTags[0].replace(/-/g,' ') : '';
+
+
 
   function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -4740,6 +4817,7 @@ function downloadPhase0PDF(){
     h+='<div class="res-item"><div class="res-num">'+(i+1)+'</div><div>';
     h+='<div class="res-title">'+esc(b.t)+'</div>';
     h+='<div class="res-author">'+esc(b.a)+'</div>';
+    if(woundLabel) h+='<div style="font-size:10px;color:#c4406b;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px">Matched to: '+esc(woundLabel)+'</div>';
     h+='<div class="res-why">'+esc(b.w)+'</div>';
     h+='<div class="res-link"><a href="'+b.u+'" target="_blank">'+b.u+'</a></div>';
     h+='</div></div>';
