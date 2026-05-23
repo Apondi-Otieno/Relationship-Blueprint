@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Relationship Blueprint</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 85C50 85 10 58 10 32 10 18 20 8 33 8 41 8 48 13 50 20 52 13 59 8 67 8 80 8 90 18 90 32 90 58 50 85Z' fill='%23c4406b'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -3720,12 +3721,43 @@ function closeReport(){
 
 
 function resetData(){
-  if(!confirm("Start fresh? This will clear all your progress, checks, observations and notes. Your blueprint structure stays. This cannot be undone.")) return;
-  S={activePhase:1,tab:{},checks:{},notes:{},log:[],checkins:[],journal:{prompts:{},entries:[]},selfcare:{},him:{}};
+  if(!confirm("Start fresh? This will clear everything — including your Phase 0 self-report, all observations, check-ins, and notes. This cannot be undone.")) return;
+  // Full wipe — nothing preserved
+  S={activePhase:1,tab:{},checks:{},notes:{},log:[],checkins:[],
+     journal:{prompts:{},entries:[]},selfcare:{},him:{},
+     phase0:{},rlog:[],selfcareHistory:[],startDate:null,overrides:{}};
   save();
   renderAll();
   loadHim();
   loadSelfCare();
+  // Clear all Phase 0 text fields
+  for(var n=1;n<=16;n++){
+    var ta=document.getElementById('p0t'+n);
+    if(ta){ta.value='';ta.classList.remove('p0-filled');}
+  }
+  ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16'].forEach(function(n){
+    var w=document.getElementById('p0w'+n);if(w)w.value='';
+  });
+  // Clear all wound tags selection
+  document.querySelectorAll('.p0-tag.selected').forEach(function(t){t.classList.remove('selected');});
+  // Reset Phase 0 UI
+  var btn=document.getElementById('p0CompleteBtn');
+  if(btn){btn.textContent='♥ Submit for Phase 1 unlock →';btn.disabled=false;}
+  var msg2=document.getElementById('p0CompleteMsg');
+  if(msg2) msg2.style.display='none';
+  var wrap=document.getElementById('p0AnalysisWrap');
+  if(wrap) wrap.innerHTML='';
+  expandPhase0();
+  updatePhase0Score();
+  // Clear section result divs and buttons
+  ['A','B','C','D','E'].forEach(function(s){
+    var res=document.getElementById('p0SecResult'+s);
+    if(res) res.innerHTML='';
+    var btn2=document.getElementById('p0SecBtn'+s);
+    if(btn2){btn2.textContent='Analyse section '+s;btn2.disabled=false;}
+    var prog=document.getElementById('p0SecProgress'+s);
+    if(prog) prog.textContent='0/'+({'A':3,'B':4,'C':3,'D':3,'E':3}[s])+' answered';
+  });
   var msg=el("saveMsg");
   if(msg){msg.textContent="All data cleared. Fresh start. ♥";setTimeout(function(){msg.textContent="";},3000);}
 }
@@ -4573,7 +4605,15 @@ function analyseSectionE(ans){
 
 function downloadPhase0PDF(){
   var p0 = S.phase0 || {};
-  var analysis = p0.analysis || null;
+  // Always run fresh analysis from current answers — don't rely on stored result
+  // First load current textarea values into p0 so analysePhase0 reads them
+  for(var _n=1;_n<=16;_n++){
+    var _ta=document.getElementById('p0t'+_n);
+    if(_ta) p0['t'+_n]=_ta.value;
+  }
+  S.phase0 = p0;
+  var analysis = null;
+  try{ analysis = analysePhase0(); } catch(e){ analysis = p0.analysis || null; }
   var questions = [
     'A1 \u2014 Your honest 50%',
     'A2 \u2014 What you are still waiting for',
