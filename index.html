@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1056,26 +1057,340 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     pointer-events:none;
   }
 
+
+
+
+
+  /* ══ APP SHELL — mode-gated visibility ══ */
+  #appShell{display:none;}
+  #appShell.active{display:block;}
+
+  /* sections hidden by default, shown per mode */
+  .rel-section{display:none;}
+  .single-section{display:none;}
+  body.mode-relationship .rel-section{display:block;}
+  body.mode-single .single-section{display:block;}
+  /* phase0 always shows inside app */
+  .always-section{display:block;}
+
+  /* ══ SINGLE: focus card ══ */
+  .single-focus-card{
+    background:white;border:1px solid var(--pink-100);
+    border-radius:18px;padding:22px 24px;margin-bottom:22px;
+  }
+  .single-focus-hd{
+    font-size:10px;font-weight:700;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--rose);margin-bottom:14px;
+  }
+  .single-focus-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  }
+  .single-focus-item{
+    background:var(--blush);border-radius:12px;padding:13px 15px;
+  }
+  .single-focus-item label{
+    font-size:11px;font-weight:600;color:var(--mauve);
+    display:block;margin-bottom:5px;letter-spacing:.06em;text-transform:uppercase;
+  }
+  .single-focus-item textarea{
+    width:100%;border:none;background:transparent;
+    font-family:var(--serif);font-size:13px;color:var(--stone);
+    resize:none;outline:none;line-height:1.6;min-height:60px;
+  }
+  @media(max-width:600px){.single-focus-grid{grid-template-columns:1fr;}}
+
+  /* I started dating button */
+  .dating-now-btn{
+    display:flex;align-items:center;gap:8px;
+    padding:10px 20px;background:white;border:1.5px solid var(--petal);
+    border-radius:99px;font-size:12px;font-weight:500;
+    font-family:var(--sans);color:var(--rose);cursor:pointer;
+    transition:all .2s;margin:0 auto 24px;
+  }
+  .dating-now-btn:hover{background:var(--blush);border-color:var(--rose);}
+
+  /* hide old mode selector overlay */
+  #modeSelectorOverlay{display:none!important;}
+
+
+
+  /* Single mode — hide all relationship sections via CSS as backup */
+  body.mode-single .rel-section,
+  body.mode-single #phaseCard,
+  body.mode-single .timeline,
+  body.mode-single .progress-row,
+  body.mode-single .him-card,
+  body.mode-single .startdate-card,
+  body.mode-single .stats-bar,
+  body.mode-single .mantra,
+  body.mode-single .log-card,
+  body.mode-single .flag-ratio-card,
+  body.mode-single .checkin-card,
+  body.mode-single .rlog-card,
+  body.mode-single #nnBannerWrap,
+  body.mode-single .obs-analysis-card,
+  body.mode-single .data-explain { display:none!important; }
+  /* Relationship mode — show them */
+  body.mode-relationship .rel-section { display:block; }
+  body.mode-relationship .log-card,
+  body.mode-relationship .flag-ratio-card,
+  body.mode-relationship .checkin-card,
+  body.mode-relationship .rlog-card { display:block; }
+
+
+
+
+
+
+
+  /* ══ LANDING PAGE ══ */
+  #landingPage{
+    display:none;position:fixed;inset:0;z-index:9000;
+    background:var(--cream);overflow:hidden;
+  }
+  #landingPage.active{display:flex;align-items:stretch;}
+
+  /* One column, full height, flex column */
+
+
+  /* floating hearts */
+  .lp-hearts-bg{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+  .lp-float-heart{position:absolute;bottom:-60px;animation:floatUp linear infinite;opacity:0;}
+  @keyframes floatUp{
+    0%  {transform:translateY(0) scale(1) rotate(0deg);opacity:0;}
+    10% {opacity:.45;}
+    80% {opacity:.12;}
+    100%{transform:translateY(-110vh) scale(1.3) rotate(18deg);opacity:0;}
+  }
+
+  /* TOP: title + tagline side by side with carousel */
+
+
+  /* Title block */
+
+  .lp-eyebrow{
+    font-size:10px;font-weight:700;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--mauve);
+  }
+  .lp-h1{
+    font-family:var(--serif);
+    font-size:clamp(32px,4vw,56px);
+    font-weight:300;line-height:1.05;
+    color:var(--deep);margin:0;
+  }
+  .lp-h1 em{font-style:italic;color:var(--rose);}
+  .lp-sub{
+    font-family:var(--serif);font-size:clamp(13px,1.2vw,15px);
+    font-style:italic;color:var(--mist);line-height:1.75;margin:0;
+  }
+
+  /* Feature carousel */
+  .lp-carousel::before{
+    content:'';position:absolute;
+    top:-80px;right:-80px;
+    width:280px;height:280px;
+    background:radial-gradient(circle,rgba(255,255,255,.08) 0%,transparent 70%);
+    border-radius:50%;pointer-events:none;
+  }
+  .lp-carousel::after{
+    content:'';position:absolute;
+    bottom:-60px;left:-40px;
+    width:200px;height:200px;
+    background:radial-gradient(circle,rgba(255,255,255,.05) 0%,transparent 70%);
+    border-radius:50%;pointer-events:none;
+  }
+  .lp-carousel{
+    position:relative;display:flex;flex-direction:column;
+    background:var(--rose);border:none;
+    border-radius:20px;
+    padding:clamp(28px,4vh,44px) clamp(28px,4vw,48px);
+    flex:1;justify-content:space-between;
+    box-shadow:0 8px 40px rgba(196,64,107,.22);
+    overflow:hidden;
+  }
+  .lp-carousel-content{flex:1;display:flex;flex-direction:column;justify-content:center;}
+  .lp-carousel-heart{
+    display:flex;align-items:center;gap:8px;margin-bottom:14px;
+  }
+  .lp-carousel-heart svg{flex-shrink:0;}
+  .lp-carousel-dot-row{
+    display:flex;gap:5px;margin-bottom:16px;
+  }
+  .lp-dot{
+    width:8px;height:8px;border-radius:50%;
+    background:rgba(255,255,255,.3);transition:all .25s;
+  }
+  .lp-dot.active{background:white;width:24px;border-radius:99px;}
+  .lp-carousel-title{
+    font-family:var(--serif);
+    font-size:clamp(22px,2.2vw,32px);
+    font-weight:300;font-style:italic;
+    letter-spacing:-.01em;
+    color:white;margin-bottom:12px;
+    line-height:1.15;
+  }
+  .lp-carousel-desc{
+    font-family:var(--sans);
+    font-size:clamp(12px,1.1vw,14px);
+    font-weight:300;
+    color:rgba(255,255,255,.8);
+    line-height:1.75;
+  }
+  .lp-carousel-nav{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-top:18px;
+  }
+  .lp-carousel-counter{
+    font-size:11px;color:rgba(255,255,255,.55);letter-spacing:.06em;
+  }
+  .lp-carousel-arrows{display:flex;gap:8px;}
+  .lp-arrow{
+    width:44px;height:44px;border-radius:50%;
+    border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.15);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:all .18s;font-size:18px;color:white;
+  }
+  .lp-arrow:hover{background:rgba(255,255,255,.28);border-color:rgba(255,255,255,.7);}
+  .lp-arrow:disabled{opacity:.25;cursor:default;}
+
+  /* BOTTOM: label + buttons + verse */
+
+  .lp-mode-label{
+    font-size:10px;font-weight:700;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--mauve);
+  }
+  .lp-btns{display:flex;gap:10px;flex-wrap:wrap;}
+  .lp-btn{
+    padding:12px 28px;border-radius:99px;font-size:13px;
+    font-weight:500;font-family:var(--sans);cursor:pointer;
+    transition:all .2s;letter-spacing:.02em;white-space:nowrap;
+  }
+  .lp-btn-primary{
+    background:var(--rose);color:white;border:none;
+    box-shadow:0 3px 14px rgba(196,64,107,.22);
+  }
+  .lp-btn-primary:hover{background:var(--deep);transform:translateY(-1px);}
+  .lp-btn-outline{background:white;color:var(--deep);border:1.5px solid var(--pink-100);}
+  .lp-btn-outline:hover{border-color:var(--rose);color:var(--rose);}
+  .lp-verse{
+    font-family:var(--serif);font-size:11px;font-style:italic;
+    color:var(--mist);opacity:.55;line-height:1.6;margin:0;
+  }
+
+  @media(max-width:640px){
+    #landingPage{overflow-y:auto;}
+  
+  
+    .lp-h1{font-size:36px;}
+    .lp-carousel{min-height:360px;padding:32px 28px 28px;}
+  }
+
+
+
+
+  /* ── Landing layout ── */
+  .lp-grid{
+    display:flex;flex-direction:column;
+    width:100%;height:100vh;
+    padding:clamp(28px,4.5vh,52px) clamp(36px,6vw,80px) clamp(24px,4vh,48px);
+    box-sizing:border-box;
+    position:relative;overflow:hidden;
+    gap:clamp(16px,2.5vh,28px);
+  }
+  /* top row: title left, carousel right — SAME vertical bounds */
+  .lp-top{
+    display:grid;
+    grid-template-columns:42fr 58fr;
+    gap:clamp(24px,4vw,52px);
+    align-items:stretch;
+    position:relative;z-index:1;
+    flex:1;min-height:0;
+  }
+  .lp-title-block{
+    display:flex;flex-direction:column;
+    justify-content:center;gap:14px;
+  }
+  /* bottom row: buttons — naturally below top */
+  .lp-bottom{
+    display:flex;flex-direction:column;gap:10px;
+    position:relative;z-index:1;
+    flex-shrink:0;
+  }
+
 </style>
 </head>
 <body>
+<!-- LANDING PAGE -->
+<div id="landingPage" class="active">
+  <div class="lp-grid">
+
+    <div class="lp-hearts-bg" id="lpHeartsContainer"></div>
+
+    <!-- TOP: title + carousel side by side -->
+    <div class="lp-top">
+
+      <!-- Title block -->
+      <div class="lp-title-block">
+        <p class="lp-eyebrow">A woman&rsquo;s guide to paced romantic relationships</p>
+        <h1 class="lp-h1">My<br>Relationship<br><em>Blueprint</em></h1>
+        <p class="lp-sub">A slow, intentional guide to finding out if he&rsquo;s the one your mother warned you about &mdash; or the one you can&rsquo;t wait to introduce her to.</p>
+      </div>
+
+      <!-- Feature carousel -->
+      <div class="lp-carousel">
+        <div class="lp-carousel-content">
+          <div class="lp-dot-row" id="lpDots"></div>
+          <div class="lp-carousel-heart">
+            <svg width="22" height="20" viewBox="0 0 20 18" fill="white"><path d="M10 17C10 17 1 10.5 1 5.5 1 2.9 3 1 5.5 1 7.5 1 9 2.5 10 4 11 2.5 12.5 1 14.5 1 17 1 19 2.9 19 5.5 19 10.5 10 17Z"/></svg>
+            <span id="lpCarouselNum" style="font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.65)"></span>
+          </div>
+          <div class="lp-carousel-title" id="lpCarouselTitle"></div>
+          <div class="lp-carousel-desc"  id="lpCarouselDesc"></div>
+        </div>
+        <div class="lp-carousel-nav">
+          <span class="lp-carousel-counter" id="lpCarouselCounter"></span>
+          <div class="lp-carousel-arrows">
+            <button class="lp-arrow" id="lpPrev" onclick="lpNav(-1)">&#8592;</button>
+            <button class="lp-arrow" id="lpNext" onclick="lpNav(1)">&#8594;</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM: buttons -->
+    <div class="lp-bottom">
+      <p class="lp-mode-label">Where are you right now?</p>
+      <div class="lp-btns">
+        <button class="lp-btn lp-btn-primary" onclick="setMode('relationship')">&#9829;&thinsp; I am seeing someone</button>
+        <button class="lp-btn lp-btn-outline" onclick="setMode('single')">&#9825;&thinsp; I am single</button>
+      </div>
+      <p class="lp-verse">&ldquo;Her worth is far above rubies.&rdquo; &mdash; Proverbs 31:10</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div id="appShell">
 <header class="site-header" id="siteHeader">
   <div class="site-header-inner">
-    <div class="nav-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <div class="nav-logo" onclick="goToLanding()">
       <svg width="15" height="14" viewBox="0 0 20 18" fill="var(--rose)"><path d="M10 17C10 17 1 10.5 1 5.5 1 2.9 3 1 5.5 1 7.5 1 9 2.5 10 4 11 2.5 12.5 1 14.5 1 17 1 19 2.9 19 5.5 19 10.5 10 17Z"/></svg>
       My Blueprint
     </div>
     <nav class="nav-links">
       <button class="nav-link" onclick="navTo('phase0Card')">Self-report</button>
+      <button class="nav-link single-section" onclick="switchToRelationship()" style="color:var(--rose)">I started dating &#8594;</button>
       <button class="nav-link" onclick="navTo('phaseCard')">Phases</button>
-      <button class="nav-link" onclick="navTo('sec-log')">Observations</button>
-      <button class="nav-link" onclick="navTo('sec-flags')">Flags</button>
-      <button class="nav-link" onclick="navTo('sec-checkin')">Check-in</button>
+      <button onclick="navTo('sec-log')" class="nav-link rel-section">Observations</button>
+      <button onclick="navTo('sec-flags')" class="nav-link rel-section">Flags</button>
+      <button onclick="navTo('sec-checkin')" class="nav-link rel-section">Check-in</button>
       <button class="nav-link" onclick="navTo('sec-selfcare')">Self-care</button>
-      <button class="nav-link" onclick="navTo('sec-rlog')">Past men</button>
+      <button onclick="navTo('sec-rlog')" class="nav-link rel-section">Past men</button>
       <button class="nav-link" onclick="navTo('sec-save')">Data</button>
     </nav>
-    <button class="nav-report-btn" onclick="openReport()">&#128196; Progress</button>
+    <button class="nav-report-btn" onclick="openReport()">&#128196; Progress report</button>
     <button class="nav-journal-btn" onclick="openJournal()">&#9825; Journal</button>
     <button class="nav-hamburger" id="navHamburger" onclick="toggleMobileNav()"><span></span><span></span><span></span></button>
   </div>
@@ -1410,16 +1725,70 @@ textarea::placeholder{color:var(--mist);font-style:italic}
 
     </div><!-- /phase0Body -->
   </div>
+
+  <!-- Single mode: I started dating button -->
+  <div class="single-section" style="text-align:center;margin-bottom:16px;">
+    <button class="dating-now-btn" onclick="switchToRelationship()">
+      <svg width="14" height="13" viewBox="0 0 20 18" fill="var(--rose)"><path d="M10 17C10 17 1 10.5 1 5.5 1 2.9 3 1 5.5 1 7.5 1 9 2.5 10 4 11 2.5 12.5 1 14.5 1 17 1 19 2.9 19 5.5 19 10.5 10 17Z"/></svg>
+      I started seeing someone
+    </button>
+  </div>
+
 <!-- END PHASE 0 -->
 
-  <div class="stats-bar">
+  <!-- SINGLE MODE: What I am focusing on -->
+  <div class="single-focus-card mode-single-only" id="singleFocusCard" class="single-section">
+    <div class="single-focus-hd">While I observe &mdash; what I am building</div>
+    <p style="font-size:13px;color:var(--mist);font-family:var(--serif);font-style:italic;margin-bottom:14px;line-height:1.6">He is not the whole story. What are you tending to while you wait for data?</p>
+    <div class="single-focus-grid">
+      <div class="single-focus-item">
+        <label>My work &amp; ventures</label>
+        <textarea id="sfWork" placeholder="What I am building..." oninput="saveSingleFocus()"></textarea>
+      </div>
+      <div class="single-focus-item">
+        <label>My health &amp; body</label>
+        <textarea id="sfHealth" placeholder="What I am tending to..." oninput="saveSingleFocus()"></textarea>
+      </div>
+      <div class="single-focus-item">
+        <label>My friendships</label>
+        <textarea id="sfFriends" placeholder="Who I am investing in..." oninput="saveSingleFocus()"></textarea>
+      </div>
+      <div class="single-focus-item">
+        <label>My spiritual practice</label>
+        <textarea id="sfSpirit" placeholder="What I am returning to..." oninput="saveSingleFocus()"></textarea>
+      </div>
+      <div class="single-focus-item">
+        <label>My healing work</label>
+        <textarea id="sfHeal" placeholder="What I am working through..." oninput="saveSingleFocus()"></textarea>
+      </div>
+      <div class="single-focus-item">
+        <label>My non-negotiables this season</label>
+        <textarea id="sfNonneg" placeholder="What I will not compromise on..." oninput="saveSingleFocus()"></textarea>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- RELATIONSHIP MODE: Topics to discuss -->
+  <div class="single-focus-card mode-relationship-only" id="relTopicsCard" class="rel-section" style="border-color:var(--petal);">
+    <div class="single-focus-hd">Conversations to have this phase</div>
+    <p style="font-size:13px;color:var(--mist);font-family:var(--serif);font-style:italic;margin-bottom:14px;line-height:1.6">These are not interrogations. They are observations of how he moves through a real conversation.</p>
+    <div id="relTopicsList" style="font-size:13px;color:var(--stone);line-height:1.8;"></div>
+    <div style="margin-top:14px;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--rose);margin-bottom:8px;">Red flags I am noticing in myself</div>
+      <textarea id="relSelfFlags" placeholder="What my wound is doing right now... Where I am shrinking, performing, or chasing..." oninput="saveRelFocus()" style="width:100%;min-height:70px;border:1px solid var(--pink-100);border-radius:10px;padding:10px 12px;font-family:var(--serif);font-size:13px;color:var(--stone);background:var(--blush);resize:vertical;outline:none;box-sizing:border-box;"></textarea>
+    </div>
+  </div>
+
+
+  <div class="stats-bar rel-section">
     <div class="stat"><span class="stat-val" id="statPhase">&mdash;</span><span class="stat-lbl">active phase</span></div>
     <div class="stat"><span class="stat-val" id="statPct">0%</span><span class="stat-lbl">items complete</span></div>
     <div class="stat"><span class="stat-val" id="statGreen" style="color:var(--green)">0</span><span class="stat-lbl">green flags</span></div>
     <div class="stat"><span class="stat-val" id="statRed" style="color:var(--red)">0</span><span class="stat-lbl">red flags</span></div>
   </div>
 
-  <div class="him-card">
+  <div class="him-card rel-section">
     <div class="him-card-header">
       <div class="him-avatar" id="himAvatar">&#9825;</div>
       <div class="him-title-block">
@@ -1435,7 +1804,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
   </div>
 
 
-  <div class="startdate-card">
+  <div class="startdate-card rel-section">
     <div class="startdate-icon">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
     </div>
@@ -1450,16 +1819,16 @@ textarea::placeholder{color:var(--mist);font-style:italic}
   </div>
 
   <p class="section-label">Your journey &mdash; tap a phase</p>
-  <div class="timeline" id="timeline"></div>
-  <div class="progress-row">
+  <div class="timeline rel-section" id="timeline"></div>
+  <div class="progress-row rel-section">
     <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
     <span class="progress-txt" id="progressTxt">0 / 8 phases unlocked</span>
   </div>
 
-  <div class="phase-card" id="phaseCard"></div>
-  <div id="nnBannerWrap"></div>
+  <div class="phase-card rel-section" id="phaseCard"></div>
+  <div id="nnBannerWrap" class="rel-section"></div>
 
-  <div id="sec-log" class="log-card">
+  <div id="sec-log" class="log-card rel-section">
     <div class="log-card-header">
       <div>
         <h2 style="font-family:var(--serif);font-size:22px;font-weight:500;color:var(--deep);margin-bottom:3px">Observation log</h2>
@@ -1477,7 +1846,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     <div id="logList"></div>
   </div>
 
-  <div id="sec-flags" class="flag-ratio-card">
+  <div id="sec-flags" class="flag-ratio-card rel-section">
     <h3>Flags by phase</h3>
     <p>Your green and red flags, broken down by phase.</p>
     <div id="flagRatioList"></div>
@@ -1489,7 +1858,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     <div id="obsAnalysisWrap"></div>
   </div>
 
-  <div id="sec-checkin" class="checkin-card">
+  <div id="sec-checkin" class="checkin-card rel-section">
     <h3>Weekly check-in</h3>
     <p>How does this feel right now? Rate with hearts &mdash; once a week, honestly.</p>
     <div class="heart-rating" id="heartRating">
@@ -1511,7 +1880,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     <div class="checkin-history" id="checkinHistory"></div>
   </div>
 
-  <div id="sec-selfcare" class="selfcare-card">
+  <div id="sec-selfcare" class="selfcare-card always-section">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px">
       <div>
         <h3 style="margin-bottom:4px">Meanwhile &mdash; what am I building?</h3>
@@ -1534,7 +1903,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
 
 
   <!-- RELATIONSHIP LOG -->
-  <div id="sec-rlog" class="rlog-card">
+  <div id="sec-rlog" class="rlog-card rel-section">
     <div class="rlog-card-header">
       <div>
         <h2 style="font-family:var(--serif);font-size:22px;font-weight:500;color:var(--deep);margin-bottom:4px">The ones before him</h2>
@@ -1575,7 +1944,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     </div>
   </div>
 
-  <div id="sec-save" class="save-card">
+  <div id="sec-save" class="save-card always-section">
     <div class="save-left">
       <div class="save-title">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
@@ -1591,7 +1960,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     <div id="saveMsg" class="save-msg"></div>
   </div>
 
-  <div class="mantra">
+  <div class="mantra rel-section">
     <p style="font-family:var(--serif);font-size:20px;font-style:italic;font-weight:500;color:var(--deep);line-height:1.7;max-width:480px;margin:0 auto 8px">
       &ldquo;Who shall find a noble woman? Her worth is far above rubies.&rdquo;
     </p>
@@ -1678,10 +2047,15 @@ const PHASES = [
      {key:"remembers",label:"He remembers",text:"Does he remember details you told him and follow up on them unprompted?"},
      {key:"nochase",label:"I did not chase",text:"I refrained from initiating, over-texting, or performing for his attention."},
      {key:"redflags1",label:"No red flags",text:"No dismissiveness, financial instability, or dishonesty observed."},
-     {key:"pullback",label:"Attachment signal",text:"When life made me naturally less available — busy week, unwell, preoccupied — did he stay steady and check in without pressure? Yes = secure. No = anxious (chased) or avoidant (went cold)."},
+     {key:"pullback",label:"Attachment signal",text:"He went cold or distant when I was naturally less available"},
+     {key:"physattract",label:"Physical attraction",text:"Am I genuinely and fully attracted to him — how he looks, how he moves, how he carries himself — without rationalising?"},
+     {key:"voicepresence",label:"Voice and presence",text:"Do I find his voice, the way he speaks, and the way he occupies a room attractive — not just acceptable?"},
+     {key:"noredflagsphys",label:"No physical discomfort",text:"There is no physical aversion I am overlooking or explaining away because other things are good."},
+     {key:"voicepresence",label:"Voice and presence",text:"Do I find his voice, the way he speaks, and the way he occupies a room attractive? Not just acceptable — actually attractive?"},
+     {key:"noredflagsphys",label:"No physical discomfort",text:"There is no physical aversion I am overlooking or explaining away because other things are good."},
      {key:"motherrel",label:"How he speaks of his mother",text:"How does he speak about his mother and the women in his life? With respect, complexity, and care — or with contempt or dismissal?"},
      {key:"closenessresp",label:"Response to closeness",text:"When the conversation got warm, personal, or emotionally close — did he lean in and stay present? A secure man moves toward intimacy, not away from it."},
-     {key:"independpride",label:"Independence as identity",text:"Does he show that he is capable of needing people — friends, family, you — without it threatening his sense of self? A secure man is independent AND able to depend. Avoidant men make independence their whole identity."},
+     {key:"independpride",label:"Independence as identity",text:"Does he show that he is capable of needing people — friends, family, you — without it threatening his sense of self? A secure man is independent AND able to depend. Avoidant men make independence their whole identity."}
    ]},
   {num:2,label:"The manual",timing:"Month 2–6",gate:"Does he open doors or need mine?",
    myInput:["Have ONE intentional in-person conversation — you choose the setting, you set the tone.","Share your truth: autism, your healing journey, what you carry. Say it plainly, without apology.","Ask him directly: ‘What are you building right now?’ and then be quiet.","Do not fill silences. Let him show you who he is.","Watch whether he plans dates or waits for you to. Watch who pays and how it feels.","Note any jokes about money, splitting, or you taking care of him. Even once.","By month 4–5: if exclusivity has not been named, you can name it. Once. His response is the data.","Hold the boundary: no sleepovers, no sex. This is non-negotiable — not a suggestion.","Do not adjust your personality, opinions, or standards to keep his interest."],
@@ -3380,6 +3754,27 @@ function classifyObservation(text){
     {w:3,p:/made.{0,8}(me|her).{0,8}feel.{0,12}(worthless|small|stupid|invisible)/},
     {w:4,p:/\b(hit|slap|push|shove|scream.{0,4}at|yell.{0,4}at|threaten)\b/},
     {w:4,p:/sexist|misogyn|not bad for a (woman|girl)/},
+  ,
+    /* ── physical aversion signals ── */
+    {w:3,p:/(not.{0,8}attract|don.t find.{0,10}attract|not.{0,6}physical|no.{0,6}chemistry|not.{0,8}my type|settle|settling|not.{0,6}into him|make myself|trying to be attract)/},
+    {w:2,p:/(flinch|cringe|don.t like.{0,10}(his|the way he)|bothers me|kind of repuls|slightly off.putting|not great looking|doesn.t do it for me)/},
+    /* ── dismissiveness ── */
+    {w:3,p:/(dismissed.{0,12}(my|her)|talked over|cut me off|not listening|eye.roll|rolled his eyes|made me feel stupid|talked down)/},
+    {w:4,p:/(laughed at me|mocked|ridiculed|sneered|contempt|disgusted by|looked at me like)/},
+    /* ── secretive / inconsistent ── */
+    {w:4,p:/(hides? (his )?phone|turned (the )?screen|changed subject when|deflected when|got defensive when|story (changed|doesn.t add up)|inconsistent)/},
+    {w:3,p:/(still (texting|talking to|seeing)|found (messages?|texts?)|going through his|something (off|wrong)|gut (says|feeling|instinct|told me))/},
+    /* ── entitlement ── */
+    {w:3,p:/(sense of entitlement|acts? entitled|expects? to be served|can.t take (no|rejection)|sulks?|pouts?|gives? me the silent)/},
+    {w:3,p:/(has to (win|be right|have the last word)|never wrong|can.t apologise|won.t back down|always has to)/},
+    /* ── love bombing ── */
+    {w:3,p:/(love.?bomb|too (much|fast|soon|intense|overwhelming)|moving (fast|quickly)|already (talking about|planning)|future.fak)/},
+    {w:2,p:/(felt (overwhelm|suffocate|crowd)|too.{0,6}(clingy|needy|intense|much contact)|doesn.t give me space)/},
+    /* ── financial manipulation ── */
+    {w:4,p:/(keep(s)? (score|track)|counts? (every|what he|what i)|reminds? me (he paid|he bought|he did)|uses.{0,10}money.{0,10}(control|power|against))/},
+    /* ── disrespect to others ── */
+    {w:3,p:/(rude to (staff|waiter|driver|cleaner|server)|spoke (badly|poorly|negatively) (about|of).{0,20}(his (ex|mother|sister|friend)|women|her))/},
+    {w:4,p:/(spoke badly about (his )?ex|all his exes are crazy|she.s (crazy|unstable|psycho)|they.re all the same)/}
   ];
   var G=[
     {w:5,p:/came.{0,15}(when.{0,8}(sad|sick|upset|struggling)|to.{0,12}(care|check on))/},
@@ -3405,7 +3800,29 @@ function classifyObservation(text){
     {w:4,p:/took.{0,12}(responsibility|accountability).{0,8}(for|of)/},
     {w:3,p:/(helped|helps).{0,12}(me|us).{0,12}(with|to|fix|sort)/},
     {w:2,p:/without.{0,12}(being asked|me asking|prompting)/},
-    {w:2,p:/(consistent|reliable|follows.{0,8}through)/},
+    {w:2,p:/(consistent|reliable|follows.{0,8}through)/},,
+    /* ── physical presence signals ── */
+    {w:3,p:/(find him (attractive|genuinely attractive)|attracted to (him|the way)|love (how he|the way he) (looks?|moves?|carries?|walks?|talks?|dresses?))/},
+    {w:2,p:/(good.?looking|handsome|beautiful|lovely (eyes|smile|voice)|drawn to|pulled toward|presence|commanding)/},
+    /* ── emotional regulation ── */
+    {w:4,p:/(stayed (calm|regulated|grounded)|didn.t (escalate|react|spiral)|took a breath|paused before|responded (not|rather than) react)/},
+    {w:3,p:/(de.?escalat|brought (the|it) down|calmed (me|the situation)|level.?headed|steady|grounded)/},
+    /* ── generosity ── */
+    {w:3,p:/(generous|gave (without|freely|openly)|always (offers|insists|treats)|never (lets me pay|makes it awkward)|picked up (the tab|everything))/},
+    {w:2,p:/(tipped (well|generously)|left a good tip|treated (the staff|server|everyone) (well|kindly|with respect))/},
+    /* ── introductions ── */
+    {w:4,p:/(introduced me (to|as)|met his (friends?|family|colleague|mother|sister|brother)|brought me (to|along|with him)|included me)/},
+    {w:3,p:/(told (his friends|people|them) about me|spoke (well|highly|proudly) (of|about) me)/},
+    /* ── protection / safety ── */
+    {w:3,p:/(made (me|her) feel (safe|protected|secure)|walked (on the|outside|road side)|checked (i was|she was) safe|waited (until|till) i got (in|home|inside))/},
+    {w:2,p:/(felt (safe|protected|secure|comfortable) (with|around) him|at ease|relaxed around)/},
+    /* ── intellectual engagement ── */
+    {w:3,p:/(challenged me|made me think|interesting (conversation|perspective|view)|intellectually (stimulat|engag|challeng)|learns? from me|taught me)/},
+    {w:2,p:/(curious (about|mind)|reads?|well.?read|thoughtful|articulate|interesting (man|person))/},
+    /* ── spiritual / values alignment ── */
+    {w:3,p:/(shares? my (faith|values?|belief|view on)|aligned (on|with|about)|same (faith|values?|outlook|page on)|complementary (values?|beliefs?))/},
+    /* ── patience ── */
+    {w:3,p:/(patient (with|around|about)|didn.t (rush|pressure|push)|gave me (time|space|room)|waited (for me|without))/}
   ];
   var rs=0,gs=0;
   R.forEach(function(s){try{if(s.p.test(t))rs+=s.w;}catch(e){}});
@@ -5053,7 +5470,7 @@ function downloadPhase0PDF(){
   h+='</div>';
 
   h+='<div class="verse">&ldquo;Who shall find a noble woman? Her worth is far above rubies.&rdquo; \u2014 Proverbs 31:10</div>';
-  h+='</div></body></html>';
+  h+='</div></div>\n</body></html>';
 
   // Open as blob URL — no popup blocking, no document.write issues
   var blob=new Blob([h],{type:'text/html;charset=utf-8'});
@@ -5061,6 +5478,197 @@ function downloadPhase0PDF(){
   window.open(url,'_blank');
   // Clean up the URL after a short delay
   setTimeout(function(){URL.revokeObjectURL(url);},60000);
+}
+
+
+/* ── APP MODE ── */
+function goToLanding(){
+  document.getElementById('landingPage').classList.add('active');
+  document.getElementById('appShell').classList.remove('active');
+  window.scrollTo({top:0,behavior:'instant'});
+  spawnLandingHearts();
+}
+
+function setMode(mode){
+  S.mode = mode;
+  save();
+  // Hide landing, show app
+  document.getElementById('landingPage').classList.remove('active');
+  document.getElementById('appShell').classList.add('active');
+  document.body.classList.remove('mode-single','mode-relationship');
+  document.body.classList.add('mode-'+mode);
+  window.scrollTo({top:0,behavior:'instant'});
+  // For relationship mode, scroll to phase 0
+  if(mode==='relationship'){
+    renderRelTopics();
+    setTimeout(function(){
+      var p0=document.getElementById('phase0Card');
+      if(p0){var hh=document.getElementById('siteHeader')?document.getElementById('siteHeader').offsetHeight:54;window.scrollTo({top:p0.getBoundingClientRect().top+window.pageYOffset-hh-8,behavior:'smooth'});}
+    },200);
+  }
+  loadSingleFocus();
+  loadRelFocus();
+  renderAll();
+}
+
+function switchToRelationship(){
+  if(!confirm('Great! Switching to relationship mode. Your self-report and focus notes are saved.')) return;
+  setMode('relationship');
+}
+
+function loadMode(){
+  if(!S.mode){
+    // No mode yet — show landing
+    document.getElementById('landingPage').classList.add('active');
+    document.getElementById('appShell').classList.remove('active');
+    return;
+  }
+  // Mode already chosen — go straight to app
+  document.getElementById('landingPage').classList.remove('active');
+  document.getElementById('appShell').classList.add('active');
+  document.body.classList.add('mode-'+S.mode);
+  if(S.mode==='relationship') renderRelTopics();
+  loadSingleFocus();
+  loadRelFocus();
+}
+
+function saveSingleFocus(){
+  if(!S.singleFocus) S.singleFocus={};
+  ['Work','Health','Friends','Spirit','Heal','Nonneg'].forEach(function(k){
+    var el=document.getElementById('sf'+k);
+    if(el) S.singleFocus[k]=el.value;
+  });
+  save();
+}
+
+function loadSingleFocus(){
+  if(!S.singleFocus) return;
+  ['Work','Health','Friends','Spirit','Heal','Nonneg'].forEach(function(k){
+    var el=document.getElementById('sf'+k);
+    if(el&&S.singleFocus[k]) el.value=S.singleFocus[k];
+  });
+}
+
+function saveRelFocus(){
+  if(!S.relFocus) S.relFocus={};
+  var el=document.getElementById('relSelfFlags');
+  if(el) S.relFocus.selfFlags=el.value;
+  save();
+}
+
+function loadRelFocus(){
+  if(!S.relFocus) return;
+  var el=document.getElementById('relSelfFlags');
+  if(el&&S.relFocus.selfFlags) el.value=S.relFocus.selfFlags;
+}
+
+function renderRelTopics(){
+  var wrap=document.getElementById('relTopicsList');
+  if(!wrap) return;
+  var phase=S.activePhase||1;
+  // Get conversation guide for current phase
+  var guide=CONV_GUIDES&&CONV_GUIDES[phase];
+  if(!guide){wrap.innerHTML='<p style="color:var(--mist);font-style:italic">Complete Phase 0 to unlock conversation topics.</p>';return;}
+  var html='';
+  if(guide.context) html+='<p style="font-family:var(--serif);font-size:13px;font-style:italic;color:var(--mist);margin-bottom:12px;line-height:1.65">'+guide.context+'</p>';
+  if(guide.sections&&guide.sections.length){
+    html+='<div style="display:flex;flex-direction:column;gap:8px;">';
+    guide.sections.slice(0,2).forEach(function(sec){
+      if(sec.questions&&sec.questions.length){
+        sec.questions.slice(0,2).forEach(function(q){
+          html+='<div style="padding:10px 13px;background:var(--blush);border-radius:10px;border-left:3px solid var(--petal)">';
+          html+='<div style="font-size:10px;font-weight:700;color:var(--rose);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px">'+q.cat+'</div>';
+          html+='<div style="font-family:var(--serif);font-size:13px;color:var(--stone);line-height:1.6">&ldquo;'+q.q+'&rdquo;</div>';
+          html+='</div>';
+        });
+      }
+    });
+    html+='</div>';
+  }
+  wrap.innerHTML=html;
+}
+
+
+
+
+
+/* ── Landing carousel ── */
+var LP_FEATURES = [
+  {title:'Click → to learn more',    desc:'My Relationship Blueprint is a private, data-driven guide for women who refuse to rush love. Tap the arrow to see what it does.'},
+  {title:'Know yourself first',     desc:'A 16-question self-report maps your wounds, patterns, and navigation plan before you observe anyone. You cannot skip it.'},
+  {title:'8 time-locked phases',    desc:'From first date to marriage. Each phase unlocks by real time only — Phase 2 at month 2, Phase 7 at 2 years. No skipping. The pace is the point.'},
+  {title:'Observation, not feeling',desc:'You log what you actually see him do — not what you hope. Every entry is auto-classified as a green or red flag instantly.'},
+  {title:'The terminate order',     desc:'When dealbreakers accumulate across phases, the data speaks before your feelings can negotiate on his behalf.'},
+  {title:'Conversation guides',     desc:'Every phase has real questions to weave into natural conversation. His answers — and his silence — are both data.'},
+  {title:'Completely private',      desc:'Your browser only. No account, no server, no one else reads this. Everything stays on your device. Download a backup anytime.'},
+];
+var lpIdx = 0;
+
+// Render as soon as DOM is ready
+if(document.readyState!=="loading"){setTimeout(lpRender,0);}else{document.addEventListener("DOMContentLoaded",lpRender);}
+
+function lpRender(){
+  var f = LP_FEATURES[lpIdx];
+  var t = document.getElementById('lpCarouselTitle');
+  var d = document.getElementById('lpCarouselDesc');
+  var n = document.getElementById('lpCarouselNum');
+  var ctr = document.getElementById('lpCarouselCounter');
+  if(t) t.textContent = f.title;
+  if(d) d.textContent = f.desc;
+  if(n) n.textContent = (lpIdx+1) + ' of ' + LP_FEATURES.length;
+  if(ctr) ctr.textContent = '';
+  // dots
+  var dotsEl = document.getElementById('lpDots');
+  if(dotsEl){
+    dotsEl.innerHTML = '';
+    dotsEl.className = 'lp-dot-row';
+    LP_FEATURES.forEach(function(_,i){
+      var d2 = document.createElement('div');
+      d2.className = 'lp-dot' + (i===lpIdx?' active':'');
+      dotsEl.appendChild(d2);
+    });
+  }
+  // arrows
+  var prev = document.getElementById('lpPrev');
+  var next = document.getElementById('lpNext');
+  if(prev) prev.disabled = lpIdx===0;
+  if(next) next.disabled = lpIdx===LP_FEATURES.length-1;
+}
+
+function lpNav(dir){
+  lpIdx = Math.max(0, Math.min(LP_FEATURES.length-1, lpIdx+dir));
+  lpRender();
+}
+
+/* ── Floating hearts ── */
+function spawnLandingHearts(){
+  var container = document.getElementById('lpHeartsContainer');
+  if(!container) return;
+  // Clear existing hearts and reset
+  container.innerHTML = '';
+  if(window._lpHeartsInterval) clearInterval(window._lpHeartsInterval);
+  var sizes  = [8,12,16,20,26,32,18,14,10,24];
+  var colors = ['var(--rose)','var(--petal)','var(--mauve)','#e8a0b8'];
+  var lefts  = [5,12,20,28,36,44,52,60,68,76,84,92];
+
+  function spawn(){
+    var h    = document.createElement('div');
+    h.className = 'lp-float-heart';
+    var sz   = sizes[Math.floor(Math.random()*sizes.length)];
+    var col  = colors[Math.floor(Math.random()*colors.length)];
+    var left = lefts[Math.floor(Math.random()*lefts.length)];
+    var dur  = 7 + Math.random()*9;
+    var del  = Math.random()*3;
+    h.style.cssText='left:'+left+'%;width:'+sz+'px;height:'+sz+'px;'+
+      'animation-duration:'+dur+'s;animation-delay:'+del+'s;';
+    h.innerHTML='<svg viewBox="0 0 20 18" fill="'+col+'" width="100%" height="100%">'+
+      '<path d="M10 17C10 17 1 10.5 1 5.5 1 2.9 3 1 5.5 1 7.5 1 9 2.5 10 4 11 2.5 12.5 1 14.5 1 17 1 19 2.9 19 5.5 19 10.5 10 17Z"/></svg>';
+    container.appendChild(h);
+    setTimeout(function(){if(h.parentNode)h.parentNode.removeChild(h);},(dur+del+1)*1000);
+  }
+  spawn(); spawn(); spawn();
+  for(var i=0;i<10;i++) setTimeout(spawn,Math.random()*2000);
+  window._lpHeartsInterval = setInterval(spawn,900);
 }
 
 document.addEventListener("DOMContentLoaded",function(){
@@ -5089,7 +5697,9 @@ document.addEventListener("DOMContentLoaded",function(){
   el("restoreFileInput").addEventListener("change",restoreFile);
   el("resetBtn").addEventListener("click",resetData);
   // load saved data into fields
-  loadHim();loadSelfCare();loadPhase0();
+  loadHim();loadSelfCare();loadPhase0();loadMode();
+  lpRender();
+  spawnLandingHearts();
   // Migration: if phase0 marked complete but readiness < 90, clear it
   if(S.phase0&&S.phase0.complete&&(!S.phase0.analysis||S.phase0.analysis.readiness<90)){
     S.phase0.complete=false;
