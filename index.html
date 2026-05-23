@@ -11,14 +11,14 @@
 html{scroll-behavior:smooth}
 body{font-family:var(--sans);background:var(--cream);color:var(--stone);min-height:100vh;overflow-x:hidden;font-weight:400;-webkit-font-smoothing:antialiased}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0}
-.layout{display:flex;align-items:flex-start;width:100%;position:relative;z-index:1}
-.sidebar{width:180px;min-width:180px;flex-shrink:0;padding:80px 16px 40px 20px;display:flex;flex-direction:column;gap:44px;position:sticky;top:0;height:100vh;overflow:hidden;align-self:flex-start;-webkit-mask-image:linear-gradient(to bottom,black 70%,transparent 100%);mask-image:linear-gradient(to bottom,black 70%,transparent 100%)}
-.sidebar-right{padding:80px 20px 40px 16px}
+.layout{display:flex;align-items:flex-start;width:100%;min-height:100vh;position:relative;z-index:1}
+.sidebar{width:180px;min-width:180px;flex-shrink:0;padding:80px 16px 80px 20px;display:flex;flex-direction:column;gap:44px;position:sticky;top:0;height:100vh;overflow:hidden}
+.sidebar-right{display:flex;flex-direction:column;gap:44px;width:180px;min-width:180px;flex-shrink:0;padding:80px 20px 80px 16px;position:sticky;top:0;height:100vh;overflow:hidden}
 .side-quote{font-family:var(--serif);font-size:16px;font-style:italic;color:var(--mauve);line-height:1.7;text-align:center;opacity:.75}
 .side-hearts{text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
 .side-divider{width:1px;height:50px;background:var(--petal);margin:0 auto;opacity:.5}
 .page{position:relative;z-index:1;max-width:960px;width:100%;padding:0 20px 80px;flex:1;min-width:0}
-@media(max-width:900px){.sidebar{display:none}}
+@media(max-width:900px){.sidebar{display:none}.sidebar-right{display:none}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
 /* hero */
@@ -88,9 +88,9 @@ input[type="date"]{border:1px solid var(--petal);border-radius:10px;padding:8px 
 .phase-title{font-family:var(--serif);font-size:21px;font-weight:500;color:var(--deep);line-height:1.2;margin-bottom:4px}
 .phase-gate{font-family:var(--serif);font-size:16px;font-style:italic;color:var(--mauve);margin-bottom:3px}
 .phase-timing{font-size:16px;color:var(--mist)}
-.score-circle{width:64px;height:64px;min-width:64px;border-radius:50%;border:2.5px solid var(--petal);background:var(--pink-50);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px}
-.score-pct{font-family:var(--serif);font-size:13px;font-weight:500;color:var(--deep);line-height:1.2;text-align:center}
-.score-sub{font-size:10px;color:var(--mist);margin-top:2px;text-align:center}
+.score-circle{width:58px;height:58px;min-width:58px;border-radius:50%;border:2.5px solid var(--petal);background:var(--pink-50);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-pct{font-family:var(--serif);font-size:16px;font-weight:500;color:var(--deep);line-height:1}
+.score-sub{font-size:16px;color:var(--mist);margin-top:2px}
 .phase-tabs{display:flex;border-bottom:1px solid var(--pink-100);background:var(--blush)}
 .ptab{flex:1;padding:11px 6px;font-size:16px;font-weight:500;text-align:center;cursor:pointer;color:var(--mist);border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;transition:color .15s;letter-spacing:.02em}
 .ptab:hover{color:var(--rose)}.ptab.active{color:var(--rose);border-bottom-color:var(--rose);background:white}
@@ -752,7 +752,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
   .nav-link{padding:5px 9px;border-radius:8px;font-size:12px;font-weight:500;font-family:var(--sans);color:var(--mist);cursor:pointer;white-space:nowrap;transition:all .15s;background:none;border:none;}
   .nav-link:hover{background:var(--blush);color:var(--deep);}
   .nav-link.active{background:var(--pink-50);color:var(--rose);font-weight:600;}
-  .nav-journal-btn{margin-left:auto;flex-shrink:0;padding:6px 16px;background:var(--rose);color:white;border:none;border-radius:99px;font-size:12px;font-weight:500;font-family:var(--sans);cursor:pointer;transition:all .18s;}
+  .nav-journal-btn{margin-left:8px;flex-shrink:0;padding:6px 16px;background:var(--rose);color:white;border:none;border-radius:99px;font-size:12px;font-weight:500;font-family:var(--sans);cursor:pointer;transition:all .18s;}
   .nav-journal-btn:hover{background:var(--deep);}
   .nav-hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:34px;height:34px;background:none;border:none;cursor:pointer;padding:5px;border-radius:8px;flex-shrink:0;}
   .nav-hamburger span{display:block;height:2px;width:100%;background:var(--mist);border-radius:99px;transition:all .2s;}
@@ -818,12 +818,195 @@ textarea::placeholder{color:var(--mist);font-style:italic}
   .conv-warning{background:var(--red-light);border:1px solid #e8a090;border-radius:10px;padding:10px 13px;margin-bottom:8px;font-size:12px;color:#791f1f;line-height:1.55;}
   .conv-tip{background:var(--green-light);border:1px solid #a8d080;border-radius:10px;padding:10px 13px;margin-top:14px;font-size:12px;color:#2a5a08;line-height:1.55;}
 
+
+  /* ── Phase 0 paced sections ── */
+  .p0-section-card{
+    background:white;border:1px solid var(--pink-100);
+    border-radius:18px;margin-bottom:14px;overflow:hidden;
+  }
+  .p0-section-card.p0-locked{
+    background:var(--blush);opacity:.7;
+  }
+  .p0-section-hdr{
+    display:flex;align-items:center;gap:14px;
+    padding:16px 20px;cursor:pointer;
+    transition:background .15s;
+  }
+  .p0-section-hdr:hover:not(.p0-locked-hdr){background:var(--pink-50);}
+  .p0-section-hdr.p0-locked-hdr{cursor:default;}
+  .p0-section-badge{
+    width:34px;height:34px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:700;flex-shrink:0;
+    border:2px solid var(--pink-100);
+  }
+  .p0-section-badge.unlocked{background:var(--pink-50);color:var(--rose);border-color:var(--petal);}
+  .p0-section-badge.passed{background:var(--green);color:white;border-color:var(--green);}
+  .p0-section-badge.locked{background:var(--blush);color:var(--mist);border-color:var(--pink-100);}
+  .p0-section-meta{flex:1;}
+  .p0-section-title{font-family:var(--serif);font-size:15px;font-weight:500;color:var(--deep);}
+  .p0-section-sub{font-size:11px;color:var(--mist);margin-top:2px;}
+  .p0-section-status{
+    font-size:11px;font-weight:600;padding:4px 10px;
+    border-radius:99px;letter-spacing:.04em;
+  }
+  .p0-section-status.unlocked{background:var(--pink-50);color:var(--rose);}
+  .p0-section-status.passed{background:#e8f5d8;color:#3a6a0a;}
+  .p0-section-status.locked{background:var(--blush);color:var(--mist);}
+  .p0-section-body{
+    padding:0 20px 20px;
+    transition:all .3s ease;
+  }
+  .p0-section-body.p0-sec-collapsed{
+    display:none;
+  }
+  .p0-lock-msg{
+    display:flex;align-items:center;gap:10px;
+    padding:14px 20px;font-size:13px;
+    color:var(--mist);font-family:var(--serif);font-style:italic;
+  }
+  .p0-submit-section{
+    margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  }
+  .p0-submit-btn{
+    padding:9px 22px;background:var(--rose);color:white;
+    border:none;border-radius:99px;font-size:12px;font-weight:500;
+    font-family:var(--sans);cursor:pointer;transition:all .2s;
+  }
+  .p0-submit-btn:hover{background:var(--deep);}
+  .p0-submit-btn:disabled{background:var(--green);cursor:default;}
+  .p0-section-progress{
+    font-size:11px;color:var(--mist);font-family:var(--sans);
+  }
+  /* Celebration popup */
+  .p0-celebrate-backdrop{
+    position:fixed;inset:0;background:rgba(90,26,48,.45);
+    z-index:9000;display:flex;align-items:center;justify-content:center;
+    animation:fadeIn .2s ease;
+  }
+  .p0-celebrate-modal{
+    background:white;border-radius:24px;padding:40px 36px;
+    text-align:center;max-width:380px;width:90%;
+    box-shadow:0 20px 60px rgba(90,26,48,.25);
+    animation:slideUp .3s ease;
+  }
+  .p0-celebrate-hearts{font-size:32px;margin-bottom:12px;}
+  .p0-celebrate-title{
+    font-family:var(--serif);font-size:26px;font-weight:400;
+    color:var(--deep);margin-bottom:8px;
+  }
+  .p0-celebrate-msg{
+    font-family:var(--serif);font-size:14px;font-style:italic;
+    color:var(--mist);line-height:1.65;margin-bottom:22px;
+  }
+  .p0-celebrate-next{
+    font-size:12px;color:var(--rose);font-weight:600;
+    letter-spacing:.06em;text-transform:uppercase;
+    margin-bottom:18px;
+  }
+  .p0-celebrate-btn{
+    padding:11px 30px;background:var(--rose);color:white;
+    border:none;border-radius:99px;font-size:13px;font-weight:500;
+    font-family:var(--sans);cursor:pointer;transition:all .2s;
+  }
+  .p0-celebrate-btn:hover{background:var(--deep);}
+  @keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+
+
+  .nav-report-btn{
+    flex-shrink:0;padding:6px 14px;
+    background:white;color:var(--mauve);
+    border:1px solid var(--petal);border-radius:99px;
+    font-size:12px;font-weight:500;font-family:var(--sans);
+    cursor:pointer;white-space:nowrap;transition:all .18s;
+  }
+  .nav-report-btn:hover{background:var(--blush);border-color:var(--rose);color:var(--rose);}
+
+
+  .nav-report-btn{
+    flex-shrink:0;padding:6px 14px;
+    background:white;color:var(--deep);
+    border:1px solid var(--pink-100);border-radius:99px;
+    font-size:12px;font-weight:500;font-family:var(--sans);
+    cursor:pointer;white-space:nowrap;transition:all .18s;margin-left:auto;
+  }
+  .nav-report-btn:hover{background:var(--blush);border-color:var(--petal);}
+
+
+  /* ── FOOTER ── */
+  .site-footer{
+    background:var(--deep);
+    padding:48px clamp(20px,5vw,80px) 36px;
+    margin-top:60px;
+    position:relative;
+    overflow:hidden;
+  }
+  .site-footer::before{
+    content:'';position:absolute;
+    top:-60px;right:-40px;
+    width:280px;height:280px;
+    background:radial-gradient(circle,rgba(196,64,107,.18) 0%,transparent 70%);
+    pointer-events:none;
+  }
+  .footer-inner{
+    max-width:960px;margin:0 auto;
+    display:grid;grid-template-columns:1fr 1fr 1fr;
+    gap:40px;align-items:start;
+  }
+  .footer-brand{}
+  .footer-logo{
+    display:flex;align-items:center;gap:8px;
+    font-family:var(--serif);font-size:20px;font-weight:400;
+    color:white;margin-bottom:10px;
+  }
+  .footer-tagline{
+    font-family:var(--serif);font-size:13px;font-style:italic;
+    color:rgba(255,255,255,.45);line-height:1.7;max-width:220px;
+  }
+  .footer-col-label{
+    font-size:10px;font-weight:700;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--petal);
+    margin-bottom:14px;opacity:.7;
+  }
+  .footer-links{display:flex;flex-direction:column;gap:8px;}
+  .footer-link{
+    font-size:13px;color:rgba(255,255,255,.5);
+    cursor:pointer;transition:color .15s;
+    background:none;border:none;text-align:left;
+    font-family:var(--sans);padding:0;
+  }
+  .footer-link:hover{color:var(--petal);}
+  .footer-verse{
+    font-family:var(--serif);font-size:13px;font-style:italic;
+    color:rgba(255,255,255,.35);line-height:1.75;
+  }
+  .footer-verse cite{
+    display:block;margin-top:6px;font-style:normal;
+    font-size:11px;letter-spacing:.08em;color:rgba(255,255,255,.2);
+  }
+  .footer-bottom{
+    max-width:960px;margin:32px auto 0;
+    padding-top:20px;border-top:1px solid rgba(255,255,255,.08);
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    flex-wrap:wrap;
+  }
+  .footer-privacy{
+    font-size:11px;color:rgba(255,255,255,.2);
+    display:flex;align-items:center;gap:6px;
+  }
+  .footer-privacy svg{opacity:.4;}
+  .footer-copy{font-size:11px;color:rgba(255,255,255,.15);letter-spacing:.06em;}
+  @media(max-width:700px){
+    .footer-inner{grid-template-columns:1fr;gap:28px;}
+    .footer-bottom{flex-direction:column;align-items:flex-start;gap:8px;}
+  }
+
 </style>
 </head>
 <body>
 <header class="site-header" id="siteHeader">
   <div class="site-header-inner">
-    <div class="nav-logo">
+    <div class="nav-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="cursor:pointer">
       <svg width="15" height="14" viewBox="0 0 20 18" fill="var(--rose)"><path d="M10 17C10 17 1 10.5 1 5.5 1 2.9 3 1 5.5 1 7.5 1 9 2.5 10 4 11 2.5 12.5 1 14.5 1 17 1 19 2.9 19 5.5 19 10.5 10 17Z"/></svg>
       My Blueprint
     </div>
@@ -836,6 +1019,8 @@ textarea::placeholder{color:var(--mist);font-style:italic}
       <button class="nav-link" onclick="navTo('sec-rlog')">Past men</button>
       <button class="nav-link" onclick="navTo('sec-save')">Data</button>
     </nav>
+    <button class="nav-report-btn" onclick="openProgressReport()">&#128202; Progress report</button>
+    <button class="nav-report-btn" onclick="openReport()">&#128196; Progress</button>
     <button class="nav-journal-btn" onclick="openJournal()">&#9825; Journal</button>
     <button class="nav-hamburger" id="navHamburger" onclick="toggleMobileNav()"><span></span><span></span><span></span></button>
   </div>
@@ -847,6 +1032,8 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     <button class="nav-mobile-link" onclick="navTo('sec-selfcare');closeMobileNav()">Self-care</button>
     <button class="nav-mobile-link" onclick="navTo('sec-rlog');closeMobileNav()">Past men</button>
     <button class="nav-mobile-link" onclick="navTo('sec-save');closeMobileNav()">Data</button>
+    <button class="nav-mobile-link" onclick="openProgressReport();closeMobileNav()">&#128202; Progress report</button>
+    <button class="nav-mobile-link" onclick="openReport();closeMobileNav()">&#128196; Progress report</button>
     <button class="nav-mobile-link" style="color:var(--rose);font-weight:600" onclick="openJournal();closeMobileNav()">&#9825; Journal</button>
   </div>
 </header>
@@ -887,7 +1074,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
       <div class="phase-title-block">
         <div class="phase-title">Phase 0 &mdash; Your Relationship Self-Report</div>
         <div class="phase-gate">&ldquo;Know yourself before you observe him&rdquo;</div>
-        <div class="phase-timing">Complete before Phase 1 unlocks &mdash; saves automatically</div>
+        <div class="phase-timing">5 sections &middot; each unlocks after 3 days &middot; saves automatically</div>
       </div>
       <div class="score-circle" id="phase0ScoreCircle">
         <span class="score-pct" id="phase0Pct">0%</span>
@@ -895,351 +1082,39 @@ textarea::placeholder{color:var(--mist);font-style:italic}
       </div>
     </div>
 
-    <!-- Collapsed summary bar -->
-    <div class="phase-collapsed-bar" id="phase0CollapsedBar" style="display:none" onclick="expandPhase0()">
-      <div class="phase-collapsed-check">&#10003;</div>
-      <span class="phase-collapsed-label">Phase 0 complete &mdash; tap to review your self-report</span>
-      <button class="phase-collapsed-toggle" onclick="event.stopPropagation();expandPhase0()">Expand</button>
-    </div>
+    <div class="phase-accordion" id="phase0Body" style="padding:20px 22px 24px">
 
-    <div class="phase-accordion" id="phase0Body" style="padding:22px 26px 28px">
-
-      <div style="font-family:var(--serif);font-size:14px;font-style:italic;color:var(--mauve);padding:13px 16px;background:var(--blush);border-radius:10px;line-height:1.6;margin-bottom:16px">
+      <div style="font-family:var(--serif);font-size:14px;font-style:italic;color:var(--mauve);padding:12px 16px;background:var(--blush);border-radius:10px;line-height:1.6;margin-bottom:20px">
         &ldquo;The wise woman builds her house, but the foolish tears it down with her own hands.&rdquo; &mdash; Proverbs 14:1
       </div>
-      <p style="font-size:13px;color:var(--mist);line-height:1.65;margin-bottom:24px">This is not about one relationship. It is a complete picture of <strong style="color:var(--deep)">how safe you currently are inside a relationship</strong> &mdash; your wounds, your patterns, your triggers, and your navigation plan. Answer every section honestly. The blueprint analyses your answers and tells you whether Phase 1 is ready to open.</p>
+      <p style="font-size:13px;color:var(--mist);line-height:1.65;margin-bottom:22px">This is a complete picture of <strong style="color:var(--deep)">how safe you currently are inside a relationship</strong>. Each section unlocks three days after you complete the one before it &mdash; the same pacing that protects you in Phase 1 through 8. Write honestly. The blueprint reads the depth of your answers.</p>
 
-      <!-- ░░ SECTION A — CLOSING THE LAST CHAPTER ░░ -->
-      <div class="p0-section-hd">A &mdash; Closing the last chapter</div>
-      <p class="p0-section-desc">Before a new phase begins, the last one must close. These questions are about the most recent significant relationship &mdash; or the one that still lives rent-free in your head.</p>
+      <!-- Sections rendered by JS into here -->
+      <div id="p0SectionsWrap"></div>
 
-      <div class="p0-step" id="p0s1">
-        <div class="p0-step-head"><span class="p0-num">1</span>
-          <div><div class="p0-step-title">Your honest 50%</div>
-          <div class="p0-step-q">What was your part in how it ended? Not his failures &mdash; yours specifically. What did you do, avoid, permit, or ignore that you already knew?</div></div>
-        </div>
-        <textarea class="p0-ta" id="p0t1" placeholder="I contributed to this by..." oninput="p0autosave(1)"></textarea>
-        <details class="p0-med">
-          <summary>&#9825; Freedom meditation</summary>
-          <div class="p0-med-body">
-            <p>Sit quietly, one hand on your heart. Take three slow breaths.</p>
-            <p>Breathe in the thought: <em>&ldquo;Something happened, and I played a part. I am not a victim and I am not a villain. I am someone who is learning to see clearly.&rdquo;</em></p>
-            <p>On each exhale, release one specific thing you did that you wish you had done differently. Not with shame &mdash; with honesty. There is a difference.</p>
-            <p>Repeat for 5 minutes. Each exhale: one thing you owned. Each inhale: one breath of your own freedom to choose differently next time.</p>
-            <div class="p0-word-row"><label>One word that came up:</label><input type="text" class="p0-word" id="p0w1" placeholder="e.g. relief, guilt, clarity, heaviness" oninput="p0autosave('1')"></div>
-          </div>
-        </details>
-      </div>
-
-      <div class="p0-step" id="p0s2">
-        <div class="p0-step-head"><span class="p0-num">2</span>
-          <div><div class="p0-step-title">What you are still waiting for</div>
-          <div class="p0-step-q">What are you still waiting for him to give you? An apology, closure, an explanation, proof that you mattered? Name it &mdash; then name how you could begin giving it to yourself.</div></div>
-        </div>
-        <textarea class="p0-ta" id="p0t2" placeholder="I am still waiting for... I can begin giving this to myself by..." oninput="p0autosave(2)"></textarea>
-        <details class="p0-med">
-          <summary>&#9825; Cord-cutting meditation</summary>
-          <div class="p0-med-body">
-            <p>Close your eyes. Breathe slowly. Imagine an energetic cord connecting your belly to theirs.</p>
-            <p>On each out-breath, gently dissolve a little more of it. Say inwardly: <em>&ldquo;I release you to your path. I reclaim my energy for my own life.&rdquo;</em></p>
-            <p>Repeat 3 times. One minute of normal breathing between each. Notice what rises &mdash; resistance, grief, or relief. All of it is useful data.</p>
-            <div class="p0-word-row"><label>One word that came up:</label><input type="text" class="p0-word" id="p0w2" placeholder="e.g. lighter, sad, free, angry" oninput="p0autosave('2')"></div>
-          </div>
-        </details>
-      </div>
-
-      <div class="p0-step" id="p0s3">
-        <div class="p0-step-head"><span class="p0-num">3</span>
-          <div><div class="p0-step-title">The gift</div>
-          <div class="p0-step-q">What did this relationship genuinely give you &mdash; even if it hurt? A lesson, a clarity, a red flag you will never ignore again, a standard you now hold.</div></div>
-        </div>
-        <textarea class="p0-ta" id="p0t3" placeholder="Because of this relationship I now know..." oninput="p0autosave(3)"></textarea>
-        <details class="p0-med">
-          <summary>&#9825; Loving-kindness meditation</summary>
-          <div class="p0-med-body">
-            <p>Sit quietly. Think of the smallest genuinely kind thing he did &mdash; even something tiny. Hold it without minimising it and without inflating it.</p>
-            <p>Breathe in: <em>&ldquo;May you be happy. May you be free from suffering.&rdquo;</em></p>
-            <p>If anger rises, go smaller: <em>&ldquo;May you find a parking space.&rdquo;</em> This is not for him. It is to unclench <strong>your</strong> heart so you can receive the gift without the resentment blocking it.</p>
-            <div class="p0-word-row"><label>One word that came up:</label><input type="text" class="p0-word" id="p0w3" placeholder="e.g. resistant, soft, nothing, peace" oninput="p0autosave('3')"></div>
-          </div>
-        </details>
-      </div>
-
-      <!-- ░░ SECTION B — YOUR WOUNDS ░░ -->
-      <div class="p0-section-hd" style="margin-top:28px">B &mdash; Your wounds</div>
-      <p class="p0-section-desc">A wound is not a flaw. It is a place that was hurt before you had the tools to protect it. Every person carries them. The question is whether yours are named &mdash; because unnamed wounds make all your relationship decisions on your behalf.</p>
-
-      <div class="p0-step" id="p0s4">
-        <div class="p0-step-head"><span class="p0-num">4</span>
-          <div><div class="p0-step-title">Name the wound</div>
-          <div class="p0-step-q">Which of these do you recognise in yourself? Choose what fits and write about it:<br><br>
-            <span class="p0-wound-tags">
-              <span class="p0-tag" onclick="p0tagClick(this,'p0t4')">Fear of abandonment</span>
-              <span class="p0-tag" onclick="p0tagClick(this,'p0t4')">I am not enough</span>
-              <span class="p0-tag" onclick="p0tagClick(this,'p0t4')">I must earn love</span>
-              <span class="p0-tag" onclick="p0tagClick(this,'p0t4')">Fear of being controlled</span>
-              <span class="p0-tag" onclick="p0tagClick(this,'p0t4')">Fear of intimacy</span>
-              <span class="p0-tag" onclick="p0tagClick(this,'p0t4')">I am invisible</span>
-              <span class="p0-tag" onclick="p0tagClick(this,'p0t4')">I am too much</span>
-              <span class="p0-tag" onclick="p0tagClick(this,'p0t4')">I self-abandon to keep peace</span>
-              <span class="p0-tag" onclick="p0tagClick(this,'p0t4')">I do not trust my own judgment</span>
-              <span class="p0-tag" onclick="p0tagClick(this,'p0t4')">I am only valuable if I am useful</span>
-            </span>
-          </div></div>
-        </div>
-        <textarea class="p0-ta" id="p0t4" placeholder="The wound I recognise most is... The first time I remember feeling this way was..." oninput="p0autosave(4)"></textarea>
-        <details class="p0-med">
-          <summary>&#9825; Naming meditation</summary>
-          <div class="p0-med-body">
-            <p>Sit still. Place one hand on your chest. Take three slow breaths.</p>
-            <p>Say the wound you named out loud &mdash; even quietly, even in a whisper. Notice what your body does when you say it. Tightening, softness, recognition, shame. All of it is information.</p>
-            <p>Then say: <em>&ldquo;I see this in me. It does not define me. And I am no longer going to let it make my decisions.&rdquo;</em></p>
-            <p>Breathe. Stay with that for 2 minutes.</p>
-            <div class="p0-word-row"><label>One word your body felt:</label><input type="text" class="p0-word" id="p0w4" placeholder="e.g. recognition, heavy, relieved, ashamed" oninput="p0autosave('4')"></div>
-          </div>
-        </details>
-      </div>
-
-      <div class="p0-step" id="p0s5">
-        <div class="p0-step-head"><span class="p0-num">5</span>
-          <div><div class="p0-step-title">Where it came from</div>
-          <div class="p0-step-q">When did you first feel this? Was it a parent, a sibling, an early experience of loss or humiliation or neglect? You do not need to over-explain &mdash; just locate it.</div></div>
-        </div>
-        <textarea class="p0-ta" id="p0t5" placeholder="The first time I remember feeling this wound was..." oninput="p0autosave(5)"></textarea>
-        <details class="p0-med">
-          <summary>&#9825; Inner child meditation</summary>
-          <div class="p0-med-body">
-            <p>Imagine your wise, current self meeting your inner child at the age you first felt this wound. Do not fix or explain. Simply hold her hand and say: <em>&ldquo;I see you. You are safe now. I will never leave you.&rdquo;</em> Stay 5&ndash;10 minutes. If tears come, let them.</p>
-            <div class="p0-word-row"><label>One word that came up:</label><input type="text" class="p0-word" id="p0w5" placeholder="e.g. tender, angry, small, relieved" oninput="p0autosave(5)"></div>
-          </div>
-        </details>
-      </div>
-
-      <div class="p0-step" id="p0s6">
-        <div class="p0-step-head"><span class="p0-num">6</span>
-          <div><div class="p0-step-title">How it behaves inside a relationship</div>
-          <div class="p0-step-q">When this wound is active, what does it make you do? Be specific &mdash; not emotional, behavioural. What do you tolerate, chase, avoid, perform, shrink from, or become?</div></div>
-        </div>
-        <textarea class="p0-ta" id="p0t6" placeholder="When this wound is active I tend to... I have tolerated... I have chased... I have become..." oninput="p0autosave(6)"></textarea>
-        <details class="p0-med">
-          <summary>&#9825; Body scan meditation</summary>
-          <div class="p0-med-body">
-            <p>Sit comfortably. Close your eyes. Bring to mind a specific moment when your wound was active inside a relationship &mdash; not the whole relationship, one specific moment.</p>
-            <p>Scan your body from head to toe. Where do you feel the wound? Chest tightening, stomach dropping, throat closing, shoulders rising?</p>
-            <p>Now name what the wound made you do in that moment. Did you go quiet? Chase? Perform? Shrink? Over-explain?</p>
-            <p>Do not judge the behaviour. Just see it clearly. Say: <em>&ldquo;This is what the wound looks like in motion. I can see it now. Seeing it is the first step to interrupting it.&rdquo;</em></p>
-            <div class="p0-word-row"><label>One word that names what the wound makes you do:</label><input type="text" class="p0-word" id="p0w6" placeholder="e.g. chase, shrink, perform, disappear, over-explain" oninput="p0autosave('6')"></div>
-          </div>
-        </details>
-      </div>
-
-      <div class="p0-step" id="p0s7">
-        <div class="p0-step-head"><span class="p0-num">7</span>
-          <div><div class="p0-step-title">The red flag you kept ignoring</div>
-          <div class="p0-step-q">What is the signal you have seen in more than one relationship and stayed anyway? What did you tell yourself each time to justify it?</div></div>
-        </div>
-        <textarea class="p0-ta" id="p0t7" placeholder="The red flag I have ignored more than once is... Each time I told myself..." oninput="p0autosave(7)"></textarea>
-        <details class="p0-med">
-          <summary>&#9825; Recognition meditation</summary>
-          <div class="p0-med-body">
-            <p>Close your eyes. Bring to mind the moment you first saw the red flag you named. The actual moment &mdash; not the memory you have polished, the raw one.</p>
-            <p>Notice what you felt in your body then. Notice what you did instead of acting on it.</p>
-            <p>Say to yourself: <em>&ldquo;I saw it. I chose to look away. I understand now why I did. And I am building a different response for next time.&rdquo;</em></p>
-            <p>This is not self-punishment. It is pattern-closing.</p>
-            <div class="p0-word-row"><label>One word that came up:</label><input type="text" class="p0-word" id="p0w7" placeholder="e.g. guilt, clarity, grief, recognition" oninput="p0autosave('7')"></div>
-          </div>
-        </details>
-      </div>
-
-      <!-- ░░ SECTION C — YOUR PATTERNS ░░ -->
-      <div class="p0-section-hd" style="margin-top:28px">C &mdash; Your patterns</div>
-      <p class="p0-section-desc">Patterns are the wound in motion. They run without your permission unless you make them visible.</p>
-
-      <div class="p0-step" id="p0s8">
-        <div class="p0-step-head"><span class="p0-num">8</span>
-          <div><div class="p0-step-title">The thread across relationships</div>
-          <div class="p0-step-q">Look at more than one relationship. What is the common thread? Not the men &mdash; the feeling they activated. What kept coming back?</div></div>
-        </div>
-        <textarea class="p0-ta" id="p0t8" placeholder="Across my relationships the common thread is... I keep choosing men who... Because when I am with them I feel..." oninput="p0autosave(8)"></textarea>
-        <details class="p0-med">
-          <summary>&#9825; Thread meditation</summary>
-          <div class="p0-med-body">
-            <p>Sit quietly. Bring to mind two or three of the significant relationships you have had.</p>
-            <p>Do not think about the men themselves. Think about the <em>feeling</em> that showed up in each one. The familiar feeling. The one you kept coming back to.</p>
-            <p>Ask yourself: <em>&ldquo;What is this feeling reminding me of? When did I first feel it?&rdquo;</em></p>
-            <p>Stay with the question for 5 minutes. You do not need an answer immediately &mdash; you need the question to land.</p>
-            <div class="p0-word-row"><label>One word that names the thread:</label><input type="text" class="p0-word" id="p0w8" placeholder="e.g. longing, proving, chasing, invisible" oninput="p0autosave('8')"></div>
-          </div>
-        </details>
-      </div>
-
-      <div class="p0-step" id="p0s9">
-        <div class="p0-step-head"><span class="p0-num">9</span>
-          <div><div class="p0-step-title">What you confuse with love</div>
-          <div class="p0-step-q">What feeling do you mistake for love or connection? Intensity, being needed, anxiety, the chase, being rescued, feeling special to someone unavailable?</div></div>
-        </div>
-        <textarea class="p0-ta" id="p0t9" placeholder="I have confused _____ with love. It feels like love because... but it is actually..." oninput="p0autosave(9)"></textarea>
-        <details class="p0-med">
-          <summary>&#9825; Distinction meditation</summary>
-          <div class="p0-med-body">
-            <p>Bring to mind the last time you felt what you described &mdash; the intensity, the anxiety, the pull, the feeling of being chosen by someone unavailable.</p>
-            <p>Locate it in your body. Where do you feel it? Chest, stomach, throat?</p>
-            <p>Now bring to mind a moment of genuine calm connection &mdash; with a friend, a family member, anyone who made you feel safe without drama. Locate that in your body.</p>
-            <p>Feel the difference. That difference is the compass. <em>The thing you confuse with love lives in your body as urgency. Real love lives as ease.</em></p>
-            <div class="p0-word-row"><label>One word that describes real love in your body:</label><input type="text" class="p0-word" id="p0w9" placeholder="e.g. ease, warmth, stillness, space" oninput="p0autosave('9')"></div>
-          </div>
-        </details>
-      </div>
-
-      <div class="p0-step" id="p0s10">
-        <div class="p0-step-head"><span class="p0-num">10</span>
-          <div><div class="p0-step-title">How safe you have been as a partner</div>
-          <div class="p0-step-q">Honestly &mdash; how safe have you been for a partner to be vulnerable with? Have you been consistent, regulated, non-retaliatory? Where have you caused harm?</div></div>
-        </div>
-        <textarea class="p0-ta" id="p0t10" placeholder="As a partner I have been safe in these ways... I have caused harm or been unsafe by..." oninput="p0autosave(10)"></textarea>
-        <details class="p0-med">
-          <summary>&#9825; Accountability meditation</summary>
-          <div class="p0-med-body">
-            <p>This one requires courage. Sit quietly and bring to mind a partner you were not fully safe for.</p>
-            <p>Not to punish yourself &mdash; to see clearly. What did your behaviour look like when you were reactive, inconsistent, or withdrawn? What impact did it have?</p>
-            <p>Say: <em>&ldquo;I caused harm here. I understand now where it came from. And I am choosing to become someone safer.&rdquo;</em></p>
-            <p>Breathe. The capacity to hold your own accountability without collapsing or defending is one of the most mature things a person can do.</p>
-            <div class="p0-word-row"><label>One word that came up:</label><input type="text" class="p0-word" id="p0w10" placeholder="e.g. regret, clarity, grief, determined" oninput="p0autosave('10')"></div>
-          </div>
-        </details>
-      </div>
-
-      <!-- ░░ SECTION D — NAVIGATION PLAN ░░ -->
-      <div class="p0-section-hd" style="margin-top:28px">D &mdash; Your navigation plan</div>
-      <p class="p0-section-desc">Knowing the wound is not enough. You need a specific plan for what to do when it fires inside a new relationship &mdash; before your feelings negotiate on its behalf.</p>
-
-      <div class="p0-step" id="p0s11">
-        <div class="p0-step-head"><span class="p0-num">11</span>
-          <div><div class="p0-step-title">Your activation triggers</div>
-          <div class="p0-step-q">What specific things does a man do or not do that activate your wound? What is the earliest signal &mdash; before it becomes a full emotional response?</div></div>
-        </div>
-        <textarea class="p0-ta" id="p0t11" placeholder="My wound activates when a man... The earliest signal I feel is..." oninput="p0autosave(11)"></textarea>
-        <details class="p0-med">
-          <summary>&#9825; Trigger awareness meditation</summary>
-          <div class="p0-med-body">
-            <p>Sit still. Bring to mind a recent moment when your wound activated inside a relationship &mdash; the moment just before the emotional response, not the response itself.</p>
-            <p>What was happening in the room? What did he do or not do? What did your body feel first?</p>
-            <p>Stay with that earliest signal &mdash; the tightening, the shift, the thing that happened before the reaction. That is the trigger.</p>
-            <p>Say: <em>&ldquo;I know what this feels like now. And next time I feel it, I will pause before I respond.&rdquo;</em></p>
-            <div class="p0-word-row"><label>One word that describes your earliest trigger signal:</label><input type="text" class="p0-word" id="p0w11" placeholder="e.g. tightening, shrinking, heat, disappearing" oninput="p0autosave('11')"></div>
-          </div>
-        </details>
-      </div>
-
-      <div class="p0-step" id="p0s12">
-        <div class="p0-step-head"><span class="p0-num">12</span>
-          <div><div class="p0-step-title">Your response plan</div>
-          <div class="p0-step-q">When the wound activates in a new relationship, what is your specific plan? Write it as a sequence &mdash; not a vague intention.</div></div>
-        </div>
-        <textarea class="p0-ta" id="p0t12" placeholder="When I feel [the wound] activate my plan is: 1. Pause and... 2. Ask myself... 3. Then I will..." oninput="p0autosave(12)"></textarea>
-        <details class="p0-med">
-          <summary>&#9825; Rehearsal meditation</summary>
-          <div class="p0-med-body">
-            <p>Read back the response plan you just wrote.</p>
-            <p>Now close your eyes and rehearse it. Imagine your wound activating in a new relationship &mdash; feel the trigger signal in your body &mdash; and then watch yourself follow the plan. Step by step. Slowly.</p>
-            <p>The brain does not distinguish between a vividly imagined experience and a real one. Rehearsing the plan in your body makes it available when you need it.</p>
-            <p>Do this once now. Then read the plan again before you begin Phase 1.</p>
-            <div class="p0-word-row"><label>One word that describes how the rehearsed version of you felt:</label><input type="text" class="p0-word" id="p0w12" placeholder="e.g. steady, uncertain, capable, calm" oninput="p0autosave('12')"></div>
-          </div>
-        </details>
-      </div>
-
-      <div class="p0-step" id="p0s13">
-        <div class="p0-step-head"><span class="p0-num">13</span>
-          <div><div class="p0-step-title">The non-negotiable you will not move on</div>
-          <div class="p0-step-q">Based on everything you know about your wound and your pattern, what is the one thing you will absolutely not do again? Name it and explain why.</div></div>
-        </div>
-        <textarea class="p0-ta" id="p0t13" placeholder="I will not... because every time I have, it has led to..." oninput="p0autosave(13)"></textarea>
-        <details class="p0-med">
-          <summary>&#9825; Commitment meditation</summary>
-          <div class="p0-med-body">
-            <p>Read the non-negotiable you wrote out loud. Even quietly. Even to yourself.</p>
-            <p>Feel whether you believe it. Not whether you want to believe it &mdash; whether you actually do.</p>
-            <p>If doubt rises, do not suppress it. Ask it: <em>&ldquo;What are you protecting?&rdquo;</em> The answer is usually more wound. Write it in the notes field if it comes up.</p>
-            <p>If you believe it, say: <em>&ldquo;This is not negotiable. Not for comfort, not for loneliness, not for love.&rdquo;</em></p>
-            <div class="p0-word-row"><label>One word that describes your conviction level:</label><input type="text" class="p0-word" id="p0w13" placeholder="e.g. solid, shaky, clear, scared" oninput="p0autosave('13')"></div>
-          </div>
-        </details>
-      </div>
-
-      <!-- ░░ SECTION E — YOUR READINESS ░░ -->
-      <div class="p0-section-hd" style="margin-top:28px">E &mdash; Your readiness</div>
-      <p class="p0-section-desc">Not readiness for him. Readiness to observe clearly &mdash; with your own life full and your own needs met, so you are not looking for someone to complete something in you.</p>
-
-      <div class="p0-step" id="p0s14">
-        <div class="p0-step-head"><span class="p0-num">14</span>
-          <div><div class="p0-step-title">What healed looks like</div>
-          <div class="p0-step-q">Describe the version of you with this wound genuinely healed, inside a relationship. What does she do differently? What does she no longer tolerate? What does she feel?</div></div>
-        </div>
-        <textarea class="p0-ta" id="p0t14" placeholder="The healed version of me would... She would not... She would feel..." oninput="p0autosave(14)"></textarea>
-        <details class="p0-med">
-          <summary>&#9825; Future self meditation</summary>
-          <div class="p0-med-body">
-            <p>Close your eyes. Imagine the version of you who has done this work &mdash; the woman with this wound genuinely healed. Not perfect. Healed.</p>
-            <p>Watch her in a moment of conflict inside a relationship. Watch how she holds her ground without cruelty, how she states her needs without apology, how she leaves what does not serve her without drama.</p>
-            <p>Feel what it feels like to be her &mdash; in your chest, your stomach, your posture.</p>
-            <p>That feeling is not a fantasy. It is a direction. Stay in it for 5 minutes.</p>
-            <div class="p0-word-row"><label>One word that describes her:</label><input type="text" class="p0-word" id="p0w14" placeholder="e.g. grounded, free, whole, quiet, steady" oninput="p0autosave('14')"></div>
-          </div>
-        </details>
-      </div>
-
-      <div class="p0-step" id="p0s15">
-        <div class="p0-step-head"><span class="p0-num">15</span>
-          <div><div class="p0-step-title">Your life, regardless of him</div>
-          <div class="p0-step-q">One year from now, single and whole &mdash; what does your good life look like? One specific scene. Not a partnered life. Yours.</div></div>
-        </div>
-        <textarea class="p0-ta" id="p0t15" placeholder="One year from now I am..." oninput="p0autosave(15)"></textarea>
-        <details class="p0-med">
-          <summary>&#9825; Future self meditation</summary>
-          <div class="p0-med-body">
-            <p>Close your eyes. See yourself one year from now &mdash; no one else, just you. Laughing with friends. Doing work that matters. Sleeping peacefully. Walking somewhere with no one to answer to. Feel the satisfaction in your body. Ask: <em>&ldquo;What is one small step toward this vision this week?&rdquo;</em></p>
-            <div class="p0-word-row"><label>My one small step this week:</label><input type="text" class="p0-word" id="p0w15" placeholder="e.g. sign up for that class, call that friend" oninput="p0autosave(15)"></div>
-          </div>
-        </details>
-      </div>
-
-      <div class="p0-step" id="p0s16">
-        <div class="p0-step-head"><span class="p0-num">16</span>
-          <div><div class="p0-step-title">What you are building while you observe</div>
-          <div class="p0-step-q">Phase 1 asks you to watch without emotional investment. What are you building for yourself during that time? What will your life look like while you are watching?</div></div>
-        </div>
-        <textarea class="p0-ta" id="p0t16" placeholder="While I am in Phase 1 I am also building... I will not put my life on hold for..." oninput="p0autosave(16)"></textarea>
-        <details class="p0-med">
-          <summary>&#9825; Anchor meditation</summary>
-          <div class="p0-med-body">
-            <p>Bring to mind the things you named that you are building. Your work, your friendships, your health, your healing.</p>
-            <p>Feel them as real &mdash; not abstract. Where in your body do you feel a sense of purpose and investment when you think about them?</p>
-            <p>Say: <em>&ldquo;My life does not wait for him. My life is happening now. He is being observed from inside a full life, not from an empty one.&rdquo;</em></p>
-            <p>That fullness is your greatest protection in Phase 1. A woman with a full life observes clearly. A woman waiting for her life to begin does not.</p>
-            <div class="p0-word-row"><label>One word that describes how your life feels right now:</label><input type="text" class="p0-word" id="p0w16" placeholder="e.g. full, building, quiet, ready, still forming" oninput="p0autosave('16')"></div>
-          </div>
-        </details>
-      </div>
-
-      </div><!-- /steps grid -->
-
-      <!-- Ritual -->
-      <div class="p0-ritual" style="margin-top:24px">
+      <!-- Overall ritual / completion -->
+      <div class="p0-ritual" id="p0Ritual" style="display:none;margin-top:4px">
         <svg width="22" height="20" viewBox="0 0 20 18" fill="var(--rose)"><path d="M10 17C10 17 1 10.5 1 5.5 1 2.9 3 1 5.5 1 7.5 1 9 2.5 10 4 11 2.5 12.5 1 14.5 1 17 1 19 2.9 19 5.5 19 10.5 10 17Z"/></svg>
         <div style="flex:1">
-          <div style="font-family:var(--serif);font-size:16px;font-weight:500;color:var(--deep);margin-bottom:6px">Ritual of Release</div>
-          <p style="font-size:13px;color:var(--mist);line-height:1.6;margin-bottom:14px">When you have written honestly through all 16 prompts, tap the button below. The blueprint will analyse your self-report and tell you whether Phase 1 is ready to open. Then light a candle. Write a letter to the last relationship &mdash; do not send it. Plant something or start a new class. A small beginning just for you.</p>
-          <button class="p0-complete-btn" id="p0CompleteBtn" onclick="completePhase0()">&#9825; Analyse my self-report &rarr;</button>
-          <div id="p0CompleteMsg" style="display:none;font-family:var(--serif);font-size:13px;font-style:italic;color:var(--green);margin-top:10px">&#10003; Phase 0 complete. Phase 1 is now unlocked.</div>
+          <div style="font-family:var(--serif);font-size:16px;font-weight:500;color:var(--deep);margin-bottom:6px">All sections complete</div>
+          <div id="p0CompleteMsg" style="font-family:var(--serif);font-size:13px;font-style:italic;color:var(--green)">&#10003; Phase 0 complete. Phase 1 is now unlocked.</div>
         </div>
       </div>
 
       <div id="p0AnalysisWrap"></div>
 
-    </div><!-- /phase0Body accordion -->
-  
+    </div><!-- /phase0Body -->
+
+    <!-- Collapsed bar -->
+    <div class="phase-collapsed-bar" id="phase0CollapsedBar" style="display:none" onclick="expandPhase0()">
+      <div class="phase-collapsed-check">&#10003;</div>
+      <span class="phase-collapsed-label">Phase 0 complete &mdash; tap to review your self-report</span>
+      <button class="phase-collapsed-toggle" onclick="event.stopPropagation();expandPhase0()">Expand</button>
+    </div>
+  </div>
 <!-- END PHASE 0 -->
+
+  <div id="p0TransitionBanner" style="display:none"></div>
 
   <div class="stats-bar">
     <div class="stat"><span class="stat-val" id="statPhase">&mdash;</span><span class="stat-lbl">active phase</span></div>
@@ -1418,6 +1293,13 @@ textarea::placeholder{color:var(--mist);font-style:italic}
       <button class="btn-reset" id="resetBtn">&#8635; Start fresh</button>
     </div>
     <div id="saveMsg" class="save-msg"></div>
+  </div>
+
+  <div class="mantra">
+    <p style="font-family:var(--serif);font-size:20px;font-style:italic;font-weight:500;color:var(--deep);line-height:1.7;max-width:480px;margin:0 auto 8px">
+      &ldquo;Who shall find a noble woman? Her worth is far above rubies.&rdquo;
+    </p>
+    <p style="font-size:12px;color:var(--mist);letter-spacing:.1em;">Proverbs 31:10</p>
   </div>
 
 </div>
@@ -2638,7 +2520,7 @@ function renderJournal(){
 // ── MAIN RENDER ───────────────────────────────────────────────────────────
 function renderAll(){
   var sdi=el("startDateInput");if(sdi&&S.startDate)sdi.value=S.startDate;
-  renderTimeline();renderStats();renderBanner();renderPhase();renderLog();renderFlagRatio();renderObsAnalysis();renderCheckinHistory();renderMoon();renderSelfcareHistory();renderRlogWithPatterns();checkPhaseCollapse();
+  renderTimeline();renderStats();renderBanner();renderPhase();renderLog();renderFlagRatio();renderObsAnalysis();renderCheckinHistory();renderMoon();renderSelfcareHistory();renderRlogWithPatterns();checkPhaseCollapse();renderP0TransitionBanner();
 }
 
 
@@ -3700,8 +3582,6 @@ function updateActiveNav(){
 }
 window.addEventListener('scroll',updateActiveNav,{passive:true});
 
-var P0_TOTAL = 16;
-var P0_WORD_STEPS = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16'];
 
 var CONV_GUIDES = {
   1: {
@@ -3913,396 +3793,29 @@ var CONV_GUIDES = {
 };
 
 
-function p0autosave(n){
-  if(!S.phase0) S.phase0={};
-  var ta = document.getElementById('p0t'+n);
-  if(ta){
-    S.phase0['t'+n] = ta.value;
-    ta.classList.toggle('p0-filled', ta.value.trim().length >= 20);
-  }
-  // Also save word input for this step if it exists
-  var w = document.getElementById('p0w'+n);
-  if(w) S.phase0['w'+n] = w.value;
-  save();
-  updatePhase0Score();
-}
 
-function savePhase0(){
-  if(!S.phase0) S.phase0={};
-  for(var n=1;n<=P0_TOTAL;n++){
-    var ta=document.getElementById('p0t'+n);
-    if(ta) S.phase0['t'+n]=ta.value;
-  }
-  P0_WORD_STEPS.forEach(function(n){
-    var w=document.getElementById('p0w'+n);
-    if(w) S.phase0['w'+n]=w.value;
-  });
-  save();
-}
 
-function loadPhase0(){
-  if(!S.phase0) return;
-  for(var n=1;n<=P0_TOTAL;n++){
-    var ta=document.getElementById('p0t'+n);
-    if(ta && S.phase0['t'+n]){
-      ta.value = S.phase0['t'+n];
-      ta.classList.toggle('p0-filled', ta.value.trim().length >= 20);
-    }
-  }
-  // Load all word inputs that exist
-  ['2','3','4','5','7','8','9','10','11','12','13','14','15','16'].forEach(function(n){
-    var w=document.getElementById('p0w'+n);
-    if(w && S.phase0['w'+n]) w.value = S.phase0['w'+n];
-  });
-  if(S.phase0.complete){
-    var btn=document.getElementById('p0CompleteBtn');
-    var msg=document.getElementById('p0CompleteMsg');
-    if(btn){btn.textContent='✓ Self-report complete — Phase 1 unlocked';btn.disabled=true;}
-    if(msg) msg.style.display='block';
-  }
-  if(S.phase0.analysis){
-    renderPhase0Analysis(S.phase0.analysis, !!S.phase0.complete);
-  }
-  updatePhase0Score();
-  if(S.phase0 && S.phase0.complete && !(S.phaseOpen && S.phaseOpen[0])){
-    collapsePhase0();
-  }
-}
 
-function updatePhase0Score(){
-  var filled=0;
-  for(var n=1;n<=P0_TOTAL;n++){
-    var ta=document.getElementById('p0t'+n);
-    if(ta && ta.value.trim().length>=15) filled++;
-  }
-  var pct = Math.round(filled/P0_TOTAL*100);
-  var pctEl=document.getElementById('phase0Pct');
-  var subEl=document.getElementById('phase0Sub');
-  if(pctEl) pctEl.textContent=pct+'%';
-  if(subEl) subEl.textContent=filled+'/'+P0_TOTAL+' answered';
-  // update score circle color
-  var circle=document.getElementById('phase0ScoreCircle');
-  if(circle){
-    circle.style.borderColor = pct>=80?'var(--green)':pct>=50?'var(--petal)':'var(--pink-100)';
-  }
-}
 
-function p0tagClick(tag, textareaId){
-  tag.classList.toggle('selected');
-  var ta = document.getElementById(textareaId);
-  if(!ta) return;
-  var label = tag.textContent;
-  if(tag.classList.contains('selected')){
-    if(ta.value && ta.value.charAt(ta.value.length-1) !== String.fromCharCode(10)) ta.value += String.fromCharCode(10);
-    ta.value += label + ' — ';
-  } else {
-    ta.value = ta.value.replace(new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'[\s\S]{0,5}','g'),'').trim();
-  }
-  p0autosave(4);
-}
 
-function analysePhase0(){
-  var ans = [];
-  for(var n=1;n<=P0_TOTAL;n++){
-    var ta=document.getElementById('p0t'+n);
-    ans.push(ta ? ta.value.trim() : '');
-  }
 
-  var score=0, flags=[], insights=[];
-  var wc=ans.map(function(a){return a.split(' ').join(' ').split(/[ \t\n]+/).filter(Boolean).length;});
 
-  /* ── SECTION A: CLOSING THE LAST CHAPTER (steps 1-3) ── */
 
-  // A1 — ownership vs blame
-  var t1=ans[0].toLowerCase();
-  var blame=(t1.match(/(his fault|because of him|he made|he caused|he never|he always|all his|he was the one)/gi)||[]).length;
-  var own=(t1.match(/(i (could have|should have|avoided|ignored|allowed|stayed|chose|permitted|kept|knew|failed|didn.t)|my part|my role|i own|i take responsibility|i recognise|my choice|i see now)/gi)||[]).length;
-  if(own>=3 && blame<=1){ score+=18; insights.push({t:'green',s:'A1',h:'Genuine ownership',b:'You named your part clearly and specifically. This is the foundation that protects your next chapter.',q:ans[0].slice(0,120)});}
-  else if(own>=1 && blame<=3){ score+=10; insights.push({t:'amber',s:'A1',h:'Partial ownership',b:'You touched on your part. The more specific you can be about what you did, avoided, or permitted, the more protection this gives you.'});}
-  else { score+=2; flags.push('blame'); insights.push({t:'red',s:'A1',h:'Still mostly focused on his failures',b:'Step 1 asks for your 50% specifically. Not to punish you — but because you can only change your part. What did you overlook, excuse, or permit that you already knew?'});}
 
-  // A2 — power reclaimed
-  var t2=ans[1].toLowerCase();
-  var waiting=(t2.match(/(still waiting|hope he|maybe he will|if he|when he comes back|just want him to|need him to)/gi)||[]).length;
-  var reclaimed=(t2.match(/(i can give (this|myself)|i release|i let go|i choose|i no longer need|from myself|within me|i create|i stop waiting|i take back|i am enough)/gi)||[]).length;
-  if(reclaimed>=2 && waiting===0){ score+=16; insights.push({t:'green',s:'A2',h:'Power reclaimed',b:'You named what you were waiting for and found a way to give it to yourself. That is what this step is for.',q:ans[1].slice(0,120)});}
-  else if(waiting>=2){ score+=2; flags.push('waiting'); insights.push({t:'red',s:'A2',h:'Still waiting for him',b:'Your answer suggests you are still holding out for something from him. That waiting keeps the chapter open. How could you give yourself that thing — even imperfectly?'});}
-  else { score+=8; insights.push({t:'amber',s:'A2',h:'Named but not yet released',b:'You identified what you are waiting for. The next step is to stop waiting and find a way to provide it to yourself.'});}
 
-  // A3 — gift found
-  var t3=ans[2].toLowerCase();
-  var gift=(t3.match(/(i (learned|know now|understand|gained|grew|discovered|will never|now see)|taught me|showed me|because of this|gift|lesson|clarity|boundary i|red flag i|standard i|i now hold)/gi)||[]).length;
-  var nogift=(t3.match(/(nothing|no gift|waste|ruined|only hurt|nothing good|pointless|zero|nothing came)/gi)||[]).length;
-  if(gift>=3){ score+=12; insights.push({t:'green',s:'A3',h:'Alchemy found',b:'You extracted something real from the pain. That is not minimising it — it is refusing to let it be only loss.',q:ans[2].slice(0,120)});}
-  else if(nogift>=2){ score+=2; flags.push('stuck'); insights.push({t:'red',s:'A3',h:'Still in the wound',b:'Staying in “there was nothing good” keeps the wound open. Even a red flag you will never ignore again is a genuine gift. What do you know now that you did not know when you started?'});}
-  else { score+=6; insights.push({t:'amber',s:'A3',h:'Something is forming',b:'You started to find the lesson. Push a little further: what do you know now that you did not know before?'});}
 
-  /* ── SECTION B: THE WOUNDS (steps 4-7) ── */
 
-  // B4 — wound named
-  var t4=ans[3].toLowerCase();
-  var woundNamed=(t4.match(/(abandon|not enough|earn love|earn my place|fear of (intimacy|being controlled|being seen|closeness)|invisible|too much|self.abandon|people.pleas|not valued|not chosen|not worthy|unlovable|judgment|useful|performance|prove)/gi)||[]).length;
-  var woundVague=(t4.match(/(i don.t know|not sure|nothing|fine|okay|no wound|wasn.t)/gi)||[]).length;
-  if(woundNamed>=2){ score+=18; insights.push({t:'green',s:'B4',h:'Wound named',b:'You named it. A named wound can be watched. An unnamed wound makes all your relationship decisions without you.',q:ans[3].slice(0,120)});}
-  else if(woundVague>=2 || wc[3]<12){ score+=2; flags.push('wound-unnamed'); insights.push({t:'red',s:'B4',h:'Wound not yet named',b:'This is the most important step in the entire self-report. Short or uncertain answers usually mean the question feels uncomfortable. That discomfort is exactly the place to go. Try one sentence: “My core wound is a fear of ______.”'});}
-  else { score+=8; insights.push({t:'amber',s:'B4',h:'Circling the wound',b:'You are near it. Try naming it in one sentence. The more specific, the more it can protect you.'});}
 
-  // B5 — origin located
-  var t5=ans[4].toLowerCase();
-  var origin=(t5.match(/(first time|child|young|growing up|parent|mother|father|school|age \d|years old|early|before i|family|raised|sibling|remember feeling)/gi)||[]).length;
-  if(origin>=2){ score+=12; insights.push({t:'green',s:'B5',h:'Origin located',b:'You found where it started. That does not excuse it in you or in them — it just means you can stop living as if you are still that age.',q:ans[4].slice(0,120)});}
-  else if(wc[4]<12){ score+=3; flags.push('origin-vague'); insights.push({t:'red',s:'B5',h:'Origin not located',b:'The question asks where you first felt this wound. It does not need to be a dramatic answer — even a small early memory of feeling unseen, not enough, or unsafe is useful.'});}
-  else { score+=7; insights.push({t:'amber',s:'B5',h:'Partially located',b:'You got close. When did you first feel exactly what this wound makes you feel? How old were you?'});}
 
-  // B6 — how it behaves (behavioural specificity)
-  var t6=ans[5].toLowerCase();
-  var behav=(t6.match(/(i (tolerate|chase|avoid|perform|shrink|become|overexplain|abandon (myself|my needs)|ignore|stay|excuse|justify|minimise|pretend|go quiet|people.pleas|seek|need approval)|makes me|causes me|find myself|catch myself|end up)/gi)||[]).length;
-  if(behav>=3){ score+=16; insights.push({t:'green',s:'B6',h:'Behaviour pattern visible',b:'You can see the wound in motion. That visibility is the most practical thing in this entire self-report.',q:ans[5].slice(0,120)});}
-  else if(wc[5]<15){ score+=3; flags.push('behaviour-vague'); insights.push({t:'red',s:'B6',h:'More specificity needed here',b:'This step asks what the wound makes you do — not how it feels, but how it behaves. What do you specifically tolerate, chase, avoid, or become?'});}
-  else { score+=8; insights.push({t:'amber',s:'B6',h:'Behaviour emerging',b:'Go further. What do you specifically do when the wound is active? What have you tolerated? What have you chased?'});}
 
-  // B7 — ignored red flag
-  var t7=ans[6].toLowerCase();
-  var repeatedRe=(t7.match(/(more than once|again|every time|kept seeing|same sign|always|pattern|knew|saw it coming|ignored it|excused it|told myself)/gi)||[]).length;
-  if(repeatedRe>=2){ score+=12; insights.push({t:'green',s:'B7',h:'Repeated signal identified',b:'You named the flag you keep seeing and staying. That awareness is what Phase 1 is designed to catch early — before you are invested.',q:ans[6].slice(0,120)});}
-  else { score+=5; insights.push({t:'amber',s:'B7',h:'Flag mentioned',b:'Try to be more specific: what is the exact signal you have seen more than once? What did you tell yourself each time to stay?'});}
 
-  /* ── SECTION C: PATTERNS (steps 8-10) ── */
 
-  // C8 — thread across relationships
-  var t8=ans[7].toLowerCase();
-  var thread=(t8.match(/(thread|pattern|same|always|keep|common|cycle|repeat|different face|familiar feeling|keeps? (happening|coming back|showing up))/gi)||[]).length;
-  if(thread>=2){ score+=14; insights.push({t:'green',s:'C8',h:'Pattern recognised',b:'You can see the thread. Knowing what feeling you keep seeking is the clearest possible protection for Phase 1.',q:ans[7].slice(0,120)});}
-  else { score+=5; insights.push({t:'amber',s:'C8',h:'Pattern forming',b:'Look across at least two relationships. Not the men — the feeling they all activated in you. What kept coming back?'});}
 
-  // C9 — what confuses you for love
-  var t9=ans[8].toLowerCase();
-  var confusion=(t9.match(/(confuse|mistake|thought was love|felt like love|intensity|anxiety|chase|being needed|rescue|unavailable|familiar|exciting|obsess|can.t stop thinking|pull|electric)/gi)||[]).length;
-  if(confusion>=2){ score+=12; insights.push({t:'green',s:'C9',h:'Love confusion identified',b:'Naming what you confuse for love is one of the most protective things in this self-report. It means you will recognise it in Phase 1 before it takes hold.',q:ans[8].slice(0,120)});}
-  else { score+=5; insights.push({t:'amber',s:'C9',h:'Worth exploring further',b:'What feelings have you chased that felt like love but were something else? Intensity, anxiety, the feeling of being chosen by someone unavailable?'});}
 
-  // C10 — how safe as a partner (self-honesty)
-  var t10=ans[9].toLowerCase();
-  var honest=(t10.match(/(i (was not|have not been|caused|hurt|was inconsistent|was reactive|withdrew|lashed out|controlled|became|have been unsafe|need to work on)|harm i caused|ways i was unsafe|not always|my own patterns|my own behaviour|i admit|i recognise in myself)/gi)||[]).length;
-  var defensive=(t10.match(/(i was (always|never|perfect|fine|good)|i never hurt|i was the safe one|i am safe|i was fine)/gi)||[]).length;
-  if(honest>=2 && defensive===0){ score+=16; insights.push({t:'green',s:'C10',h:'Self-accountability present',b:'You are honest about where you have not been safe. That is rare and it is what makes genuine change possible.',q:ans[9].slice(0,120)});}
-  else if(defensive>=2){ score+=3; flags.push('defensive'); insights.push({t:'red',s:'C10',h:'Possible defensiveness',b:'This step asks how you have been unsafe as a partner — not whether you are a bad person. Every person has been reactive, inconsistent, or withdrawn at some point. What does that look like in you?'});}
-  else { score+=7; insights.push({t:'amber',s:'C10',h:'Some self-honesty present',b:'Go deeper here. Where specifically have you caused harm, been inconsistent, or made yourself unsafe to be vulnerable with?'});}
 
-  /* ── SECTION D: NAVIGATION PLAN (steps 11-13) ── */
 
-  // D11-13 — specificity of plan
-  var planTotal=0;
-  var specific=(ans[10]+' '+ans[11]+' '+ans[12]).toLowerCase();
-  var planWords=(specific.match(/(when i feel|i will|i will pause|i will ask myself|my plan is|i will not|i will stop|i commit to|step 1|step 2|first i|then i|before i)/gi)||[]).length;
-  if(planWords>=5){ planTotal=22; insights.push({t:'green',s:'D11-13',h:'Navigation plan built',b:'You have a specific plan — not a vague intention. That is the difference between knowing your wound and being protected by that knowledge.',q:ans[11].slice(0,120)});}
-  else if(planWords>=2){ planTotal=12; insights.push({t:'amber',s:'D11-13',h:'Plan starting to form',b:'Your triggers are named but the response plan is still vague. Make it a sequence: when X happens, I will do Y first, then Z.'});}
-  else { planTotal=4; flags.push('no-plan'); insights.push({t:'red',s:'D11-13',h:'Navigation plan missing',b:'Knowing the wound without a plan is like knowing a storm is coming without leaving the field. What will you specifically do the next time this activates? Write it as a sequence.'});}
-  score += planTotal;
 
-  /* ── SECTION E: READINESS (steps 14-16) ── */
 
-  // E14 — healed vision
-  var t14=ans[13].toLowerCase();
-  var healed=(t14.match(/(she (would|will|does|is)|the healed|i would (no longer|not|feel|be)|feels (free|whole|safe|grounded|steady)|no longer tolerate|would not stay|would leave|would say no|would honour|would trust)/gi)||[]).length;
-  if(healed>=3){ score+=12; insights.push({t:'green',s:'E14',h:'Healed vision present',b:'You can see her. The woman who can see her is already partway to becoming her.',q:ans[13].slice(0,120)});}
-  else { score+=5; insights.push({t:'amber',s:'E14',h:'Vision forming',b:'Be more specific about the healed version. What would she specifically not tolerate? What would she feel in her body?'});}
-
-  // E15-16 — life without a partner
-  var lifeText=(ans[14]+' '+ans[15]).toLowerCase();
-  var partnerFocus=(lifeText.match(/(with (someone|a man|a partner|him)|married|in a relationship|fall in love|meet someone|boyfriend|husband|find love)/gi)||[]).length;
-  var selfFocus=(lifeText.match(/(i am|my (work|life|friends|health|peace|morning|home|business|ventures?|self)|without (needing|anyone|him)|free|whole|building|creating|laughing|thriving|enough on my own|my own)/gi)||[]).length;
-  if(selfFocus>=4 && partnerFocus<=1){ score+=12; insights.push({t:'green',s:'E15-16',h:'Life is hers',b:'Your vision of a good life does not require him. That is the clearest signal of readiness in this entire self-report.',q:ans[14].slice(0,100)});}
-  else if(partnerFocus>selfFocus){ score+=3; flags.push('partner-focus'); insights.push({t:'amber',s:'E15-16',h:'Future still centred on partnership',b:'These questions ask about your life specifically — not a partnered life. When the vision is still mostly about finding someone, the completion work is not quite finished.'});}
-  else { score+=6; insights.push({t:'amber',s:'E15-16',h:'Life vision forming',b:'Make the picture more specific. Where are you, what are you doing, what do you feel in your body when you imagine it?'});}
-
-  /* ── FINAL READINESS ── */
-  var maxScore=200;
-  var readiness=Math.round(Math.min(score,maxScore)/maxScore*100);
-
-  // Hard blocks: certain flags prevent unlock regardless of score
-  var blocked = flags.indexOf('wound-unnamed')>-1 ||
-                flags.indexOf('blame')>-1 ||
-                flags.indexOf('no-plan')>-1;
-
-  var unlockable = readiness>=55 && !blocked;
-
-  return {readiness:readiness, insights:insights, flags:flags, unlockable:unlockable};
-}
-
-function completePhase0(){
-  // Require all 16 answered minimally
-  var empty=[];
-  for(var n=1;n<=P0_TOTAL;n++){
-    var ta=document.getElementById('p0t'+n);
-    if(!ta||ta.value.trim().length<10) empty.push(n);
-    else if(ta) ta.style.borderColor='';
-  }
-  if(empty.length>4){
-    // Highlight the first 3 empty ones
-    empty.slice(0,3).forEach(function(n){
-      var ta=document.getElementById('p0t'+n);
-      if(ta){ta.style.borderColor='var(--red)';ta.scrollIntoView({behavior:'smooth',block:'center'});}
-    });
-    alert(empty.length+' of 16 prompts still need answers. Please write honestly in each section before submitting.');
-    return;
-  }
-  savePhase0();
-  var result = analysePhase0();
-  if(!S.phase0) S.phase0={};
-  S.phase0.analysis = result;
-  if(result.unlockable){
-    S.phase0.complete = true;
-    S.phase0.completedDate = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-  }
-  save();
-  renderPhase0Analysis(result);
-  updatePhase0Score();
-  renderTimeline();
-  renderPhase();
-  // Auto-collapse Phase 0 and switch to Phase 1 if unlocked
-  if(result.unlockable){
-    setTimeout(function(){
-      collapsePhase0();
-      S.activePhase = 1;
-      save();
-      renderAll();
-      var card = document.getElementById('phaseCard');
-      if(card){
-        var hh = document.getElementById('siteHeader') ? document.getElementById('siteHeader').offsetHeight : 54;
-        window.scrollTo({top: card.getBoundingClientRect().top + window.pageYOffset - hh - 8, behavior:'smooth'});
-      }
-    }, 2000); // 2s delay so user can read the unlock message
-  }
-}
-
-function renderPhase0Analysis(result){
-  var wrap=document.getElementById('p0AnalysisWrap');
-  if(!wrap) return;
-
-  var unlocked = result.unlockable;
-  var pct = result.readiness;
-  var scoreCol = pct>=75?'var(--green)':pct>=55?'var(--mauve)':'#b5614a';
-  var scoreLabel = pct>=75?'Ready to begin':pct>=55?'Mostly ready':'More work to do';
-
-  var html='<div style="margin-top:22px;padding-top:20px;border-top:1px solid var(--pink-100)">';
-  html+='<div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mauve);margin-bottom:14px">What your self-report reveals</div>';
-
-  // Score bar
-  html+='<div style="display:flex;align-items:center;gap:16px;background:var(--blush);border-radius:14px;padding:16px 18px;margin-bottom:18px">';
-  html+='<div style="text-align:center;min-width:60px">';
-  html+='<div style="font-family:var(--serif);font-size:40px;font-weight:400;color:'+scoreCol+';line-height:1">'+pct+'</div>';
-  html+='<div style="font-size:10px;color:var(--mist);letter-spacing:.06em">/ 100</div>';
-  html+='</div>';
-  html+='<div style="flex:1">';
-  html+='<div style="font-family:var(--serif);font-size:18px;font-weight:400;color:'+scoreCol+';margin-bottom:4px">'+scoreLabel+'</div>';
-  html+='<div style="font-size:11px;color:var(--mist);margin-bottom:8px">Readiness score based on depth, honesty, and specificity across all 5 sections</div>';
-  html+='<div style="width:100%;height:6px;background:var(--pink-100);border-radius:99px;overflow:hidden">';
-  html+='<div style="width:'+pct+'%;height:100%;background:'+scoreCol+';border-radius:99px;transition:width .6s ease"></div>';
-  html+='</div></div></div>';
-
-  // Insights
-  var typeMap={
-    green:{bg:'#f0f7e8',br:'#a8d080',lc:'var(--green)'},
-    amber:{bg:'#fdf3e0',br:'#e8c070',lc:'#7a4a00'},
-    red:  {bg:'#fdf0ec',br:'#e8a090',lc:'var(--red)'}
-  };
-  result.insights.forEach(function(ins){
-    var s=typeMap[ins.t]||typeMap.amber;
-    html+='<div style="background:'+s.bg+';border:1px solid '+s.br+';border-radius:14px;padding:13px 16px;margin-bottom:9px">';
-    html+='<div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:'+s.lc+';margin-bottom:5px">Section '+ins.s+' — '+ins.h+'</div>';
-    html+='<div style="font-size:13px;color:var(--stone);line-height:1.65">'+ins.b+'</div>';
-    if(ins.q&&ins.q.trim()){
-      html+='<div style="margin-top:8px;padding:8px 10px;background:rgba(255,255,255,.7);border-radius:8px;font-family:var(--serif);font-size:12px;font-style:italic;color:var(--mist)">&ldquo;'+ins.q.trim()+'&hellip;&rdquo;</div>';
-    }
-    html+='</div>';
-  });
-
-  // Verdict
-  if(unlocked){
-    html+='<div style="background:linear-gradient(135deg,#2a5a08,#3d7a14);border-radius:14px;padding:18px 20px;text-align:center;margin-top:6px">';
-    html+='<div style="font-family:var(--serif);font-size:20px;font-weight:300;color:white;margin-bottom:6px">&#10003; Phase 1 is now unlocked</div>';
-    html+='<div style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.65">Your self-report shows genuine self-awareness, a named wound, and enough honesty to begin observing someone new. You are ready — consciously.</div>';
-    html+='</div>';
-    var btn=document.getElementById('p0CompleteBtn');
-    var msg=document.getElementById('p0CompleteMsg');
-    if(btn){btn.textContent='✓ Self-report complete — Phase 1 unlocked';btn.disabled=true;}
-    if(msg) msg.style.display='block';
-  } else {
-    // Show which flags are blocking
-    var blockReasons=[];
-    if(result.flags.indexOf('wound-unnamed')>-1) blockReasons.push('Name your wound (Section B, step 4)');
-    if(result.flags.indexOf('blame')>-1) blockReasons.push('Find your 50% ownership (Section A, step 1)');
-    if(result.flags.indexOf('no-plan')>-1) blockReasons.push('Build your navigation plan (Section D, steps 11–13)');
-
-    html+='<div style="background:var(--blush);border:1px solid var(--petal);border-radius:14px;padding:18px 20px;margin-top:6px">';
-    html+='<div style="font-family:var(--serif);font-size:18px;font-weight:400;color:var(--deep);margin-bottom:8px">Phase 1 is not yet unlocked</div>';
-    if(blockReasons.length){
-      html+='<div style="font-size:12px;color:var(--mist);margin-bottom:10px">The following must be completed before the blueprint will open:</div>';
-      blockReasons.forEach(function(r){
-        html+='<div style="font-size:12px;color:var(--deep);padding:5px 0 5px 14px;border-left:3px solid var(--rose);margin-bottom:6px;font-weight:500">'+r+'</div>';
-      });
-    } else {
-      html+='<div style="font-size:12px;color:var(--mist);line-height:1.65;margin-bottom:12px">Your readiness score is '+pct+'/100. Revisit the sections flagged amber and red above and go deeper — especially around ownership, your wound, and your navigation plan.</div>';
-    }
-    html+='<button onclick="retryPhase0()" style="margin-top:8px;padding:9px 22px;background:var(--rose);color:white;border:none;border-radius:99px;font-size:12px;font-weight:500;font-family:var(--sans);cursor:pointer">Revisit my answers &rarr;</button>';
-    html+='</div>';
-  }
-
-  html+='</div>';
-  wrap.innerHTML=html;
-  wrap.scrollIntoView({behavior:'smooth',block:'start'});
-}
-
-function retryPhase0(){
-  if(S.phase0){delete S.phase0.complete;delete S.phase0.analysis;}
-  save();
-  var wrap=document.getElementById('p0AnalysisWrap');
-  if(wrap) wrap.innerHTML='';
-  var btn=document.getElementById('p0CompleteBtn');
-  if(btn){btn.textContent='♥ Analyse my self-report →';btn.disabled=false;}
-  var s1=document.getElementById('p0s1');
-  if(s1) s1.scrollIntoView({behavior:'smooth',block:'start'});
-  renderTimeline();
-  renderPhase();
-}
-
-function collapsePhase0(){
-  var body = document.getElementById('phase0Body');
-  if(body) body.classList.add('collapsed');
-  var bar = document.getElementById('phase0CollapsedBar');
-  if(bar) bar.style.display = 'flex';
-}
-
-function expandPhase0(){
-  var body = document.getElementById('phase0Body');
-  if(body) body.classList.remove('collapsed');
-  var bar = document.getElementById('phase0CollapsedBar');
-  if(bar) bar.style.display = 'none';
-}
-
-function checkPhaseCollapse(){
-  // Phase 0: collapse when complete
-  if(S.phase0 && S.phase0.complete){
-    var opened = S.phaseOpen || {};
-    if(!opened[0]) collapsePhase0();
-  }
-  // Phases 1-8: collapse when score >= 80% and next is unlocked
-  PHASES.forEach(function(ph){
-    if(score(ph.num).pct >= 80 && ph.num < 8){
-      var opened = S.phaseOpen || {};
-      if(!opened[ph.num]){
-        collapsePhaseCard(ph.num);
-        // Auto-switch to next phase
-        var next = ph.num + 1;
-        if(isUnlocked(next)){
-          S.activePhase = next;
-          save();
-        }
-      }
-    }
-  });
-}
 
 function collapsePhaseCard(n){
   var body = document.getElementById('phaseBody_'+n);
@@ -4575,6 +4088,12 @@ function completePhase0(){
       S.activePhase = 1;
       save();
       renderAll();
+      // Show anchor message
+      var anchor = document.getElementById('phase1AnchorMsg');
+      if(anchor){
+        anchor.style.display='block';
+        anchor.style.animation='fadeUp .5s ease both';
+      }
       var card = document.getElementById('phaseCard');
       if(card){
         var hh = document.getElementById('siteHeader') ? document.getElementById('siteHeader').offsetHeight : 54;
@@ -4799,6 +4318,561 @@ function buildConvGuide(phaseNum){
   html += '</div>';
   return html;
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   PHASE 0 — PACED SELF-REPORT CARD
+   5 sections (A-E), each unlocks 3 days after previous section starts
+   and only if previous section's analysis passed.
+   S.phase0 = {
+     sectionStarted: {A: isoDate, B: isoDate, ...},
+     sectionPassed:  {A: true, ...},
+     answers: {A: {t1,t2,t3,w1,...}, B: {...}, ...},
+     complete: true/false
+   }
+══════════════════════════════════════════════════════════════════ */
+
+var P0_SECTIONS = [
+  {
+    id:'A', label:'Closing the last chapter',
+    desc:'Before a new chapter begins, the last one must close. These three questions are about the most significant relationship — or the one that still lives rent-free in your head.',
+    days:0,  // always available first
+    questions:[
+      {id:'t1', title:'Your honest 50%',
+       q:'What was your part in how it ended? Not his failures — yours specifically. What did you do, avoid, permit, or ignore that you already knew?',
+       ph:'I contributed to this by...', med:true,
+       medTitle:'Freedom meditation',
+       medBody:'Sit quietly, hand on heart. Breathe in: <em>&ldquo;Something happened, but I am not a victim.&rdquo;</em> Breathe out blame. Each exhale: one thing you owned. Each inhale: one breath of your own freedom.',
+       wordId:'w1', wordPh:'e.g. relief, guilt, clarity'},
+      {id:'t2', title:'What you are still waiting for',
+       q:'What are you still waiting for him to give you? An apology, closure, proof that you mattered? Name it — then name how you could begin giving it to yourself.',
+       ph:'I am still waiting for... I can give this to myself by...',med:false},
+      {id:'t3', title:'The gift',
+       q:'What did this relationship genuinely give you — even if it hurt? A lesson, a clarity, a red flag you will never ignore again.',
+       ph:'Because of this relationship I now know...',med:false},
+    ]
+  },
+  {
+    id:'B', label:'Your wounds',
+    desc:'A wound is not a flaw. It is a place that was hurt before you had the tools to protect it. Unnamed wounds make all your relationship decisions on your behalf.',
+    days:3,
+    questions:[
+      {id:'t4', title:'Name the wound',
+       q:'Which of these do you recognise in yourself?',
+       ph:'The wound I recognise most is... The first time I remember feeling this way was...',
+       tags:['Fear of abandonment','I am not enough','I must earn love','Fear of being controlled','Fear of intimacy','I am invisible','I am too much','I self-abandon to keep peace','I do not trust my own judgment','I am only valuable if I am useful'],
+       med:false},
+      {id:'t5', title:'Where it came from',
+       q:'When did you first feel this? A parent, an early experience of loss or humiliation? You do not need to over-explain — just locate it.',
+       ph:'The first time I remember feeling this was...',med:true,
+       medTitle:'Inner child meditation',
+       medBody:'Imagine your wise self meeting your inner child at the age you first felt this wound. Hold her hand. Say: <em>&ldquo;I see you. You are safe now. I will never leave you.&rdquo;</em>',
+       wordId:'w5', wordPh:'e.g. tender, small, relieved'},
+      {id:'t6', title:'How it behaves inside a relationship',
+       q:'When this wound is active, what does it make you do? Be specific — what do you tolerate, chase, avoid, perform, shrink from, or become?',
+       ph:'When this wound is active I tend to... I have tolerated... I have chased...',med:true,
+       medTitle:'Body scan meditation',
+       medBody:'Close your eyes. Bring to mind a specific moment when the wound was active. Scan your body — where do you feel it? Name what the wound made you do in that moment. Say: <em>&ldquo;This is what the wound looks like in motion. Seeing it is the first step to interrupting it.&rdquo;</em>',
+       wordId:'w6', wordPh:'e.g. chase, shrink, perform'},
+      {id:'t7', title:'The red flag you kept ignoring',
+       q:'What is the signal you have seen in more than one relationship and stayed anyway? What did you tell yourself each time?',
+       ph:'The red flag I have ignored more than once is... Each time I told myself...',med:false},
+    ]
+  },
+  {
+    id:'C', label:'Your patterns',
+    desc:'Patterns are the wound in motion. They run without your permission unless you make them visible.',
+    days:3,
+    questions:[
+      {id:'t8', title:'The thread across relationships',
+       q:'Look at more than one relationship. What is the common thread — not the men, the feeling they activated? What kept coming back?',
+       ph:'Across my relationships the common thread is... I keep choosing men who... Because when I am with them I feel...',med:false},
+      {id:'t9', title:'What you confuse with love',
+       q:'What feeling do you mistake for love or connection? Intensity, being needed, anxiety, the chase, feeling special to someone unavailable?',
+       ph:'I have confused _____ with love. It feels like love because... but it is actually...',med:false},
+      {id:'t10', title:'How safe you have been as a partner',
+       q:'Honestly — how safe have you been for a partner to be vulnerable with? Where have you been inconsistent, reactive, or withdrawn? Where have you caused harm?',
+       ph:'As a partner I have been safe in these ways... I have caused harm by...',med:false},
+    ]
+  },
+  {
+    id:'D', label:'Your navigation plan',
+    desc:'Knowing the wound is not enough. You need a specific plan for what to do when it fires — before your feelings negotiate on its behalf.',
+    days:3,
+    questions:[
+      {id:'t11', title:'Your activation triggers',
+       q:'What specific things does a man do — or not do — that activate your wound? What is the earliest signal, before it becomes a full emotional response?',
+       ph:'My wound activates when a man... The earliest signal I feel is...',med:false},
+      {id:'t12', title:'Your response plan',
+       q:'When the wound activates in a new relationship, what is your specific plan? Write it as a sequence — not a vague intention.',
+       ph:'When I feel the wound activate my plan is: 1. Pause and... 2. Ask myself... 3. Then I will...',med:false},
+      {id:'t13', title:'The non-negotiable you will not move on',
+       q:'Based on everything you know about your wound and your pattern, what is the one thing you will absolutely not do again? Name it and explain why.',
+       ph:'I will not... because every time I have, it has led to...',med:false},
+    ]
+  },
+  {
+    id:'E', label:'Your readiness',
+    desc:'Not readiness for him. Readiness to observe clearly — with your own life full enough that you are not looking for someone to complete something in you.',
+    days:3,
+    questions:[
+      {id:'t14', title:'What healed looks like',
+       q:'Describe the version of you with this wound genuinely healed, inside a relationship. What does she do differently? What does she no longer tolerate?',
+       ph:'The healed version of me would... She would not... She would feel...',med:false},
+      {id:'t15', title:'Your life, regardless of him',
+       q:'One year from now, single and whole — what does your good life look like? Not a partnered life. Yours. One specific scene.',
+       ph:'One year from now I am...',med:true,
+       medTitle:'Future self meditation',
+       medBody:'Close your eyes. See yourself one year from now — just you. Laughing with friends. Doing work you care about. Sleeping peacefully. Feel the satisfaction. Ask: <em>&ldquo;What is one small step toward this vision this week?&rdquo;</em>',
+       wordId:'w15', wordPh:'e.g. my one small step this week'},
+      {id:'t16', title:'What you are building while you observe',
+       q:'Phase 1 asks you to watch without emotional investment. What are you building for yourself during that time? What will your life look like while you are watching?',
+       ph:'While I am in Phase 1 I am also building... I will not put my life on hold for...',med:false},
+    ]
+  },
+];
+
+function p0DaysIn(sectionId){
+  if(!S.phase0||!S.phase0.sectionStarted||!S.phase0.sectionStarted[sectionId]) return 0;
+  var start = new Date(S.phase0.sectionStarted[sectionId]);
+  return Math.floor((new Date()-start)/864e5);
+}
+
+function p0SectionUnlocked(idx){
+  var sec = P0_SECTIONS[idx];
+  if(idx===0) return true;
+  var prev = P0_SECTIONS[idx-1];
+  // Previous must be passed
+  if(!S.phase0||!S.phase0.sectionPassed||!S.phase0.sectionPassed[prev.id]) return false;
+  // 3 days must have passed since previous section was started
+  return p0DaysIn(prev.id) >= 3;
+}
+
+function p0DaysUntilUnlock(idx){
+  if(idx===0) return 0;
+  var prev = P0_SECTIONS[idx-1];
+  var daysIn = p0DaysIn(prev.id);
+  return Math.max(0, 3 - daysIn);
+}
+
+function p0Autosave(secId, qId){
+  if(!S.phase0) S.phase0={};
+  if(!S.phase0.answers) S.phase0.answers={};
+  if(!S.phase0.answers[secId]) S.phase0.answers[secId]={};
+  var el = document.getElementById('p0_'+secId+'_'+qId);
+  if(el) S.phase0.answers[secId][qId] = el.value;
+  save();
+  p0UpdateProgress(secId);
+}
+
+function p0UpdateProgress(secId){
+  var sec = P0_SECTIONS.find(function(s){return s.id===secId;});
+  if(!sec) return;
+  var filled = 0;
+  sec.questions.forEach(function(q){
+    var el = document.getElementById('p0_'+secId+'_'+q.id);
+    if(el && el.value.trim().length >= 15) filled++;
+  });
+  var pctEl = document.getElementById('p0prog_'+secId);
+  if(pctEl) pctEl.textContent = filled+'/'+sec.questions.length+' answered';
+
+  // Update overall score
+  var totalFilled=0, totalQ=0;
+  P0_SECTIONS.forEach(function(s){
+    s.questions.forEach(function(q){
+      totalQ++;
+      var el2 = document.getElementById('p0_'+s.id+'_'+q.id);
+      if(el2 && el2.value.trim().length>=15) totalFilled++;
+    });
+  });
+  var pct = Math.round(totalFilled/totalQ*100);
+  var pctMain = document.getElementById('phase0Pct');
+  var subMain = document.getElementById('phase0Sub');
+  if(pctMain) pctMain.textContent = pct+'%';
+  if(subMain) subMain.textContent = totalFilled+'/'+totalQ+' answered';
+}
+
+function p0TagClick(tag, secId, qId){
+  tag.classList.toggle('selected');
+  var el = document.getElementById('p0_'+secId+'_'+qId);
+  if(!el) return;
+  var label = tag.textContent;
+  if(tag.classList.contains('selected')){
+    if(el.value && el.value.charAt(el.value.length-1)!=='\n') el.value+='\n';
+    el.value += label+' \u2014 ';
+  } else {
+    el.value = el.value.replace(label+' \u2014 ','').replace(label+'\n','').trim();
+  }
+  p0Autosave(secId, qId);
+}
+
+function p0AnalyseSection(secId){
+  var sec = P0_SECTIONS.find(function(s){return s.id===secId;});
+  if(!sec) return {pass:false, score:0, flags:[]};
+  var answers = [];
+  sec.questions.forEach(function(q){
+    var el = document.getElementById('p0_'+secId+'_'+q.id);
+    answers.push(el ? el.value.trim() : '');
+  });
+  var all = answers.join(' ').toLowerCase();
+  var wc = answers.map(function(a){return a.split(/\s+/).filter(Boolean).length;});
+  var score=0, flags=[];
+
+  // Depth check
+  var avg = wc.reduce(function(a,b){return a+b;},0)/wc.length;
+  if(avg>=50) score+=25;
+  else if(avg>=25) score+=15;
+  else if(avg>=12) score+=8;
+  else {flags.push('too_short'); score+=2;}
+
+  if(secId==='A'){
+    // Ownership vs blame
+    var own=(all.match(/\b(i (could have|should have|avoided|ignored|allowed|stayed|chose|knew|failed|let|permitted)|my part|i own|i take|i recognise|my choice|my role)\b/gi)||[]).length;
+    var blame=(all.match(/\b(his fault|because of him|he made|he caused|he never|he always|all his)\b/gi)||[]).length;
+    if(own>=3&&blame<=1) score+=40;
+    else if(own>=1) score+=22;
+    else {score+=5;flags.push('blame');}
+    // Gift found
+    var gift=(all.match(/\b(i (learned|know now|understand|gained|now see|will never)|gift|lesson|clarity|because of this)\b/gi)||[]).length;
+    if(gift>=2) score+=20; else score+=8;
+  }
+  else if(secId==='B'){
+    // Wound named
+    var wound=(all.match(/\b(abandon|not enough|earn love|earn my place|fear of (intimacy|control)|invisible|too much|self.abandon|people.pleas|not worthy|unlovable|not chosen|not valued)\b/gi)||[]).length;
+    if(wound>=2) score+=35;
+    else if(wound>=1) score+=18;
+    else {flags.push('wound-unnamed');score+=5;}
+    // Behaviour specific
+    var behav=(all.match(/\b(i (tolerate|chase|avoid|perform|shrink|become|abandon myself|ignore|excuse|justify))\b/gi)||[]).length;
+    if(behav>=3) score+=25; else score+=10;
+  }
+  else if(secId==='C'){
+    // Pattern recognition
+    var pattern=(all.match(/\b(pattern|thread|same|always|keep|common|cycle|repeat|familiar|keeps? (happening|coming back))\b/gi)||[]).length;
+    if(pattern>=3) score+=35; else score+=15;
+    // Self-accountability
+    var honest=(all.match(/\b(i (was not|have not been|caused|hurt|was inconsistent|lashed out|withdrew|need to work on)|harm i caused|ways i was unsafe)\b/gi)||[]).length;
+    if(honest>=2) score+=30; else {flags.push('defensive');score+=10;}
+  }
+  else if(secId==='D'){
+    // Plan specificity
+    var plan=(all.match(/\b(when i feel|i will (pause|ask myself|stop|not|step back)|my plan is|i commit to|step 1|first i|then i|before i)\b/gi)||[]).length;
+    if(plan>=4) score+=50;
+    else if(plan>=2) score+=28;
+    else {flags.push('no-plan');score+=8;}
+  }
+  else if(secId==='E'){
+    // Healed vision
+    var healed=(all.match(/\b(she (would|will|does)|healed|i would (not|feel|be)|no longer tolerate|would leave|would say no|would trust)\b/gi)||[]).length;
+    if(healed>=3) score+=30; else score+=12;
+    // Life without partner
+    var self=(all.match(/\b(my (work|life|friends|health|peace|morning|home|business)|without (needing|anyone|him)|free|whole|building|enough on my own)\b/gi)||[]).length;
+    var partner=(all.match(/\b(with (someone|a man|a partner)|married|in a relationship|find love|boyfriend|husband)\b/gi)||[]).length;
+    if(self>=3&&partner<=1) score+=30; else score+=12;
+  }
+
+  var pass = score>=55 && flags.indexOf('blame')===-1 && flags.indexOf('wound-unnamed')===-1 && flags.indexOf('no-plan')===-1 && flags.indexOf('too_short')===-1;
+  return {pass:pass, score:Math.min(score,100), flags:flags};
+}
+
+function p0SubmitSection(secId){
+  // Check all questions filled
+  var sec = P0_SECTIONS.find(function(s){return s.id===secId;});
+  var empty=[];
+  sec.questions.forEach(function(q){
+    var el=document.getElementById('p0_'+secId+'_'+q.id);
+    if(!el||el.value.trim().length<10){
+      empty.push(q.title);
+      if(el) el.style.borderColor='var(--red)';
+    } else {
+      if(el) el.style.borderColor='';
+    }
+  });
+  if(empty.length){
+    alert('Please write honestly in all '+sec.questions.length+' questions before submitting. Still needs: '+empty.slice(0,2).join(', ')+(empty.length>2?' +'+( empty.length-2)+' more':'')+'.');
+    return;
+  }
+
+  var result = p0AnalyseSection(secId);
+  if(!S.phase0) S.phase0={};
+  if(!S.phase0.answers) S.phase0.answers={};
+  if(!S.phase0.sectionStarted) S.phase0.sectionStarted={};
+  if(!S.phase0.sectionPassed) S.phase0.sectionPassed={};
+
+  // Save answers
+  sec.questions.forEach(function(q){
+    var el=document.getElementById('p0_'+secId+'_'+q.id);
+    if(!S.phase0.answers[secId]) S.phase0.answers[secId]={};
+    if(el) S.phase0.answers[secId][q.id]=el.value;
+    // Save word inputs
+    if(q.wordId){
+      var w=document.getElementById('p0_'+secId+'_'+q.wordId);
+      if(w) S.phase0.answers[secId][q.wordId]=w.value;
+    }
+  });
+
+  if(result.pass){
+    S.phase0.sectionPassed[secId] = true;
+    // Start the next section's timer now
+    var idx = P0_SECTIONS.findIndex(function(s){return s.id===secId;});
+    if(idx+1 < P0_SECTIONS.length){
+      var nextId = P0_SECTIONS[idx+1].id;
+      if(!S.phase0.sectionStarted[nextId]){
+        S.phase0.sectionStarted[nextId] = new Date().toISOString();
+      }
+    }
+    // Check if all sections passed
+    var allPassed = P0_SECTIONS.every(function(s){return S.phase0.sectionPassed[s.id];});
+    if(allPassed){
+      S.phase0.complete = true;
+      S.phase0.completedDate = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+    }
+    save();
+    p0ShowCelebration(secId, result, allPassed);
+  } else {
+    save();
+    p0ShowFail(secId, result);
+  }
+  renderTimeline();
+  renderPhase();
+}
+
+function p0ShowCelebration(secId, result, allDone){
+  var sec = P0_SECTIONS.find(function(s){return s.id===secId;});
+  var idx = P0_SECTIONS.findIndex(function(s){return s.id===secId;});
+  var nextSec = idx+1 < P0_SECTIONS.length ? P0_SECTIONS[idx+1] : null;
+
+  var nextMsg = allDone
+    ? 'All five sections complete. Phase 1 is now unlocked.'
+    : nextSec
+      ? 'Section '+nextSec.id+' \u2014 <em>'+nextSec.label+'</em> \u2014 unlocks in 3 days. Come back then.'
+      : '';
+
+  var backdrop = document.createElement('div');
+  backdrop.className = 'p0-celebrate-backdrop';
+  backdrop.innerHTML = '<div class="p0-celebrate-modal">'
+    + '<div class="p0-celebrate-hearts">\u2665 \u2665 \u2665</div>'
+    + '<div class="p0-celebrate-title">Well done.</div>'
+    + '<div class="p0-celebrate-msg">Section '+(secId)+' \u2014 <em>'+sec.label+'</em> \u2014 is complete. Your honesty here is the work. This is not easy and you did it.</div>'
+    + (nextMsg ? '<div class="p0-celebrate-next">'+nextMsg+'</div>' : '')
+    + '<button class="p0-celebrate-btn" onclick="this.closest(\'.p0-celebrate-backdrop\').remove();renderP0Sections();">'
+    + (allDone ? 'View Phase 1 \u2192' : 'Close')
+    + '</button>'
+    + '</div>';
+  document.body.appendChild(backdrop);
+}
+
+function p0ShowFail(secId, result){
+  var reasons=[];
+  if(result.flags.indexOf('too_short')>-1) reasons.push('Your answers need more depth \u2014 write at least 15 words per question.');
+  if(result.flags.indexOf('blame')>-1) reasons.push('Section A needs more personal ownership \u2014 focus on your 50%, not his failures.');
+  if(result.flags.indexOf('wound-unnamed')>-1) reasons.push('Section B needs a clearly named wound.');
+  if(result.flags.indexOf('no-plan')>-1) reasons.push('Section D needs a specific step-by-step plan.');
+  if(result.flags.indexOf('defensive')>-1) reasons.push('Section C needs more honest self-accountability.');
+  if(!reasons.length) reasons.push('Your answers need more depth and specificity. Go deeper and try again.');
+
+  alert('Not quite yet.\n\n'+reasons.join('\n\n')+'\n\nRevise your answers and try again.');
+}
+
+function renderP0Sections(){
+  var wrap = document.getElementById('p0SectionsWrap');
+  if(!wrap) return;
+  if(!S.phase0) S.phase0={};
+  if(!S.phase0.sectionStarted) S.phase0.sectionStarted={};
+  if(!S.phase0.sectionStarted['A']) S.phase0.sectionStarted['A'] = new Date().toISOString();
+  save();
+
+  var html='';
+  P0_SECTIONS.forEach(function(sec, idx){
+    var unlocked = p0SectionUnlocked(idx);
+    var passed   = !!(S.phase0.sectionPassed && S.phase0.sectionPassed[sec.id]);
+    var daysLeft = p0DaysUntilUnlock(idx);
+    var state    = passed?'passed':unlocked?'unlocked':'locked';
+
+    html += '<div class="p0-section-card'+(unlocked?'':' p0-locked')+'" id="p0sec_'+sec.id+'">';
+
+    // Header
+    html += '<div class="p0-section-hdr'+(unlocked?'':' p0-locked-hdr')+'" onclick="'+(unlocked?'p0ToggleSec(\''+sec.id+'\')':'')+'">';
+    html += '<div class="p0-section-badge '+state+'">';
+    if(passed) html+='&#10003;';
+    else if(unlocked) html+=sec.id;
+    else html+='&#128274;';
+    html += '</div>';
+    html += '<div class="p0-section-meta">';
+    html += '<div class="p0-section-title">'+sec.id+' &mdash; '+sec.label+'</div>';
+    html += '<div class="p0-section-sub">'+sec.questions.length+' questions &middot; <span id="p0prog_'+sec.id+'"></span></div>';
+    html += '</div>';
+    if(passed){
+      html += '<span class="p0-section-status passed">&#10003; Passed</span>';
+    } else if(unlocked){
+      html += '<span class="p0-section-status unlocked">Open</span>';
+    } else {
+      var prevPassed = !!(S.phase0.sectionPassed && S.phase0.sectionPassed[P0_SECTIONS[idx-1].id]);
+      if(!prevPassed){
+        html += '<span class="p0-section-status locked">Complete '+P0_SECTIONS[idx-1].id+' first</span>';
+      } else {
+        html += '<span class="p0-section-status locked">'+daysLeft+' day'+(daysLeft!==1?'s':'')+' to go</span>';
+      }
+    }
+    html += '</div>';// /hdr
+
+    if(!unlocked){
+      var prevPassed2 = idx>0 && S.phase0.sectionPassed && S.phase0.sectionPassed[P0_SECTIONS[idx-1].id];
+      html += '<div class="p0-lock-msg">&#128274; ';
+      if(!prevPassed2){
+        html += 'Complete and pass Section '+P0_SECTIONS[idx-1].id+' to unlock this section.';
+      } else {
+        html += 'This section unlocks in '+daysLeft+' day'+(daysLeft!==1?'s':'')+'. Come back on '+p0UnlockDate(idx)+'.';
+      }
+      html += '</div>';
+    } else {
+      // Body — collapsed if passed, open if current active section
+      var collapsed = passed;
+      html += '<div class="p0-section-body'+(collapsed?' p0-sec-collapsed':'')+'" id="p0body_'+sec.id+'">';
+      html += '<div style="font-family:var(--serif);font-size:13px;font-style:italic;color:var(--mist);margin-bottom:16px;line-height:1.6">'+sec.desc+'</div>';
+
+      sec.questions.forEach(function(q){
+        html += '<div class="p0-step" style="margin-bottom:12px">';
+        html += '<div class="p0-step-head"><span class="p0-num">'+sec.id+(sec.questions.indexOf(q)+1)+'</span>';
+        html += '<div><div class="p0-step-title">'+q.title+'</div>';
+        html += '<div class="p0-step-q">'+q.q+'</div></div></div>';
+
+        // Tags
+        if(q.tags){
+          html += '<div class="p0-wound-tags">';
+          q.tags.forEach(function(tag){
+            var selected = S.phase0.answers&&S.phase0.answers[sec.id]&&S.phase0.answers[sec.id][q.id]&&S.phase0.answers[sec.id][q.id].indexOf(tag)>-1;
+            html += '<span class="p0-tag'+(selected?' selected':'')+'" onclick="p0TagClick(this,\''+sec.id+'\',\''+q.id+'\')">'+tag+'</span>';
+          });
+          html += '</div>';
+        }
+
+        var savedVal = S.phase0.answers&&S.phase0.answers[sec.id]&&S.phase0.answers[sec.id][q.id]?S.phase0.answers[sec.id][q.id]:'';
+        html += '<textarea class="p0-ta'+(savedVal.trim().length>=20?' p0-filled':'')+'" id="p0_'+sec.id+'_'+q.id+'" placeholder="'+q.ph+'" oninput="p0Autosave(\''+sec.id+'\',\''+q.id+'\')">'+savedVal+'</textarea>';
+
+        // Meditation
+        if(q.med){
+          html += '<details class="p0-med"><summary>&#9825; '+q.medTitle+'</summary>';
+          html += '<div class="p0-med-body"><p>'+q.medBody+'</p>';
+          if(q.wordId){
+            var wv = S.phase0.answers&&S.phase0.answers[sec.id]&&S.phase0.answers[sec.id][q.wordId]?S.phase0.answers[sec.id][q.wordId]:'';
+            html += '<div class="p0-word-row"><label>One word that came up:</label>';
+            html += '<input type="text" class="p0-word" id="p0_'+sec.id+'_'+q.wordId+'" placeholder="'+q.wordPh+'" value="'+wv+'" oninput="p0Autosave(\''+sec.id+'\',\''+q.wordId+'\')">';
+            html += '</div>';
+          }
+          html += '</div></details>';
+        }
+        html += '</div>';// /step
+      });
+
+      if(!passed){
+        html += '<div class="p0-submit-section">';
+        html += '<button class="p0-submit-btn" onclick="p0SubmitSection(\''+sec.id+'\')">Submit Section '+sec.id+' for analysis &rarr;</button>';
+        html += '<span class="p0-section-progress" id="p0prog_'+sec.id+'"></span>';
+        html += '</div>';
+      }
+
+      html += '</div>';// /body
+    }
+
+    html += '</div>';// /card
+  });
+
+  wrap.innerHTML = html;
+
+  // Update progress for each open section
+  P0_SECTIONS.forEach(function(sec){
+    p0UpdateProgress(sec.id);
+  });
+
+  // Show ritual if all done
+  var allPassed = P0_SECTIONS.every(function(s){return S.phase0.sectionPassed&&S.phase0.sectionPassed[s.id];});
+  var ritual = document.getElementById('p0Ritual');
+  if(ritual) ritual.style.display = allPassed?'flex':'none';
+}
+
+function p0UnlockDate(idx){
+  if(idx===0) return 'now';
+  var prev = P0_SECTIONS[idx-1];
+  if(!S.phase0||!S.phase0.sectionStarted||!S.phase0.sectionStarted[prev.id]) return 'after completing Section '+prev.id;
+  var d = new Date(S.phase0.sectionStarted[prev.id]);
+  d.setDate(d.getDate()+3);
+  return d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+}
+
+function p0ToggleSec(secId){
+  var body = document.getElementById('p0body_'+secId);
+  if(body) body.classList.toggle('p0-sec-collapsed');
+}
+
+function savePhase0(){
+  P0_SECTIONS.forEach(function(sec){
+    sec.questions.forEach(function(q){
+      p0Autosave(sec.id, q.id);
+      if(q.wordId) p0Autosave(sec.id, q.wordId);
+    });
+  });
+}
+
+function loadPhase0(){
+  if(!S.phase0) S.phase0={};
+  renderP0Sections();
+  // Restore completed state
+  if(S.phase0.complete){
+    var bar = document.getElementById('phase0CollapsedBar');
+    var body = document.getElementById('phase0Body');
+    if(bar) bar.style.display='flex';
+    if(body) body.classList.add('collapsed');
+  }
+}
+
+function collapsePhase0(){
+  var body = document.getElementById('phase0Body');
+  var bar  = document.getElementById('phase0CollapsedBar');
+  if(body) body.classList.add('collapsed');
+  if(bar)  bar.style.display='flex';
+}
+
+function expandPhase0(){
+  var body = document.getElementById('phase0Body');
+  var bar  = document.getElementById('phase0CollapsedBar');
+  if(body) body.classList.remove('collapsed');
+  if(bar)  bar.style.display='none';
+  if(!S.phase0) S.phase0={};
+  if(!S.phase0.phaseOpen) S.phase0.phaseOpen={};
+  S.phase0.phaseOpen[0]=true;
+  save();
+}
+
+function checkPhaseCollapse(){
+  if(S.phase0&&S.phase0.complete){
+    var opened = S.phase0&&S.phase0.phaseOpen&&S.phase0.phaseOpen[0];
+    if(!opened) collapsePhase0();
+  }
+}
+
+function updatePhase0Score(){
+  // Called from renderAll — refresh section display
+  renderP0Sections();
+}
+
+
+
+function renderP0TransitionBanner(){
+  var wrap = document.getElementById('p0TransitionBanner');
+  if(!wrap) return;
+  if(S.phase0&&S.phase0.complete){
+    wrap.innerHTML = '<div style="background:linear-gradient(135deg,var(--blush),white);border:1px solid var(--petal);border-radius:16px;padding:18px 22px;margin-bottom:22px;animation:fadeUp .5s ease both">'
+      + '<div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--rose);margin-bottom:8px">You are ready</div>'
+      + '<div style="font-family:var(--serif);font-size:17px;font-weight:400;color:var(--deep);margin-bottom:6px">Phase 1 is now open — you can begin recording your relationship data.</div>'
+      + '<div style="font-size:13px;color:var(--mist);line-height:1.65">From here, you observe. You log what you notice. You work the checklist one question at a time — only what you have genuinely seen. The blueprint does the rest. Set your start date below to begin.</div>'
+      + '</div>';
+    wrap.style.display='block';
+  } else {
+    wrap.innerHTML='';
+    wrap.style.display='none';
+  }
+}
+
 document.addEventListener("DOMContentLoaded",function(){
   // journal
   el("journalTrigger").addEventListener("click",openJournal);
@@ -4880,6 +4954,9 @@ document.addEventListener("DOMContentLoaded",function(){
   </div>
 </div>
 
+
+
+
 <aside class="sidebar sidebar-right" aria-hidden="true">
   <div class="side-quote">"A man who wants you will make it obvious. You will not need to decode him."</div>
   <div class="side-divider"></div>
@@ -4898,10 +4975,52 @@ document.addEventListener("DOMContentLoaded",function(){
 </aside>
 
 </div>
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
 
-<footer style="width:100%;background:#3d0f20;border-top:2px solid #7a2444;padding:20px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;position:relative;z-index:10;">
-  <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:14px;font-style:italic;color:#e8b4c8;letter-spacing:0.05em;">&ldquo;Her worth is far above rubies.&rdquo; &mdash; Proverbs 31:10</span>
-  <span style="font-size:10px;color:#9a5570;letter-spacing:0.14em;text-transform:uppercase;font-family:'DM Sans',system-ui,sans-serif;">My Blueprint &nbsp;&#9825;&nbsp; Private &amp; Local</span>
+    <!-- Brand -->
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <svg width="18" height="16" viewBox="0 0 20 18" fill="var(--petal)"><path d="M10 17C10 17 1 10.5 1 5.5 1 2.9 3 1 5.5 1 7.5 1 9 2.5 10 4 11 2.5 12.5 1 14.5 1 17 1 19 2.9 19 5.5 19 10.5 10 17Z"/></svg>
+        My Blueprint
+      </div>
+      <p class="footer-tagline">A slow, intentional guide for a woman who knows her worth.</p>
+    </div>
+
+    <!-- Navigate -->
+    <div>
+      <div class="footer-col-label">Navigate</div>
+      <div class="footer-links">
+        <button class="footer-link" onclick="window.scrollTo({top:0,behavior:'smooth'})">Start</button>
+        <button class="footer-link" onclick="navTo('phaseCard')">Phases</button>
+        <button class="footer-link" onclick="navTo('sec-log')">Observations</button>
+        <button class="footer-link" onclick="navTo('sec-flags')">Flags</button>
+        <button class="footer-link" onclick="navTo('sec-checkin')">Check-in</button>
+        <button class="footer-link" onclick="navTo('sec-selfcare')">Self-care</button>
+        <button class="footer-link" onclick="navTo('sec-rlog')">Past men</button>
+        <button class="footer-link" onclick="navTo('sec-save')">Data</button>
+      </div>
+    </div>
+
+    <!-- Verse -->
+    <div>
+      <div class="footer-col-label">Your anchor</div>
+      <p class="footer-verse">
+        &ldquo;Who shall find a noble woman? Her worth is far above rubies. The heart of her husband doth safely trust in her&hellip; She girdeth her loins with strength, and strengtheneth her arms.&rdquo;
+        <cite>&mdash; Proverbs 31:10&ndash;17</cite>
+      </p>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <div class="footer-privacy">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Everything you write stays in your browser only. No server. No account. No one else reads this.
+    </div>
+    <div class="footer-copy">My Relationship Blueprint &mdash; Private by design</div>
+  </div>
 </footer>
 
 </body>
