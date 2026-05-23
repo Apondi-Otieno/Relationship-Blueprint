@@ -4544,126 +4544,167 @@ function analyseSectionE(ans){
 
 
 function downloadPhase0PDF(){
-  var S_local = S;
-  var p0 = S_local.phase0 || {};
+  var p0 = S.phase0 || {};
   var analysis = p0.analysis || null;
-  var answers = [];
   var questions = [
-    'A1 — Your honest 50%',
-    'A2 — What you are still waiting for',
-    'A3 — The gift',
-    'B4 — Name the wound',
-    'B5 — Where it came from',
-    'B6 — How it behaves inside a relationship',
-    'B7 — The red flag you kept ignoring',
-    'C8 — The thread across relationships',
-    'C9 — What you confuse with love',
-    'C10 — How safe you have been as a partner',
-    'D11 — Your activation triggers',
-    'D12 — Your response plan',
-    'D13 — The non-negotiable you will not move on',
-    'E14 — What healed looks like',
-    'E15 — Your good life without anyone',
-    'E16 — What you are building while you observe'
+    'A1 \u2014 Your honest 50%',
+    'A2 \u2014 What you are still waiting for',
+    'A3 \u2014 The gift',
+    'B4 \u2014 Name the wound',
+    'B5 \u2014 Where it came from',
+    'B6 \u2014 How it behaves inside a relationship',
+    'B7 \u2014 The red flag you kept ignoring',
+    'C8 \u2014 The thread across relationships',
+    'C9 \u2014 What you confuse with love',
+    'C10 \u2014 How safe you have been as a partner',
+    'D11 \u2014 Your activation triggers',
+    'D12 \u2014 Your response plan',
+    'D13 \u2014 The non-negotiable you will not move on',
+    'E14 \u2014 What healed looks like',
+    'E15 \u2014 Your good life without anyone',
+    'E16 \u2014 What you are building while you observe'
   ];
-  for(var n=1;n<=16;n++){
-    answers.push(p0['t'+n]||'');
-  }
+  var answers = [];
+  for(var n=1;n<=16;n++) answers.push(p0['t'+n]||'');
 
   var BOOKS = [
-    {title:'Attached',author:'Amir Levine & Rachel Heller',why:'Maps your attachment style and explains exactly why you keep attracting the same person.',link:'https://www.goodreads.com/book/show/9547888'},
-    {title:'Women Who Love Too Much',author:'Robin Norwood',why:'If the pattern involves giving more than receiving or staying too long, this is the foundational text.',link:'https://www.goodreads.com/book/show/349091'},
-    {title:'The Body Keeps the Score',author:'Bessel van der Kolk',why:'For understanding why your nervous system responds the way it does — and what changes it.',link:'https://www.goodreads.com/book/show/18693771'},
-    {title:'Adult Children of Emotionally Immature Parents',author:'Lindsay C. Gibson',why:'If your wound traces back to a parent who could not meet you emotionally, this names it precisely.',link:'https://www.goodreads.com/book/show/23129659'},
-    {title:'Hold Me Tight',author:'Sue Johnson',why:'On what genuine emotional safety looks like in a relationship — useful for recognising it in Phase 1.',link:'https://www.goodreads.com/book/show/2994632'},
-    {title:'Not Nice',author:'Dr Aziz Gazipura',why:'For the self-abandonment pattern — learning to stop managing other people\'s feelings at the cost of your own.',link:'https://www.goodreads.com/book/show/33120493'},
-    {title:'Codependent No More',author:'Melody Beattie',why:'If you notice a pattern of losing yourself in relationships or making his wellbeing your responsibility.',link:'https://www.goodreads.com/book/show/720077'},
+    {t:'Attached',a:'Amir Levine & Rachel Heller',w:'Maps your attachment style and explains why you keep attracting the same person.',u:'https://www.goodreads.com/book/show/9547888'},
+    {t:'Women Who Love Too Much',a:'Robin Norwood',w:'If the pattern involves giving more than receiving or staying too long, this is the foundational text.',u:'https://www.goodreads.com/book/show/349091'},
+    {t:'The Body Keeps the Score',a:'Bessel van der Kolk',w:'Why your nervous system responds the way it does \u2014 and what actually changes it.',u:'https://www.goodreads.com/book/show/18693771'},
+    {t:'Adult Children of Emotionally Immature Parents',a:'Lindsay C. Gibson',w:'If your wound traces back to a parent who could not meet you emotionally, this names it precisely.',u:'https://www.goodreads.com/book/show/23129659'},
+    {t:'Hold Me Tight',a:'Sue Johnson',w:'What genuine emotional safety looks like in a relationship \u2014 useful for recognising it in Phase 1.',u:'https://www.goodreads.com/book/show/2994632'},
+    {t:'Not Nice',a:'Dr Aziz Gazipura',w:'For the self-abandonment pattern \u2014 learning to stop managing other people\'s feelings at the cost of your own.',u:'https://www.goodreads.com/book/show/33120493'},
+    {t:'Codependent No More',a:'Melody Beattie',w:'If you lose yourself in relationships or make his wellbeing your responsibility.',u:'https://www.goodreads.com/book/show/720077'},
   ];
-
   var VIDEOS = [
-    {title:'How Childhood Trauma Shapes Adult Relationships',channel:'Dr Gabor Maté',why:'On how early wounding creates the patterns you identified in Section B.',link:'https://www.youtube.com/watch?v=szuberORMGQ'},
-    {title:'The Four Attachment Styles — Explained',channel:'The School of Life',why:'Clear, non-clinical explanation of why you respond to closeness and distance the way you do.',link:'https://www.youtube.com/watch?v=2s9ACDMcpjA'},
-    {title:'Why We Confuse Anxious Attachment for Love',channel:'Therapy in a Nutshell',why:'Directly addresses the love confusion you explored in Section C9.',link:'https://www.youtube.com/watch?v=PsGBJX4ZN7A'},
-    {title:'Self-Compassion vs Self-Esteem — Kristin Neff',channel:'Kristin Neff',why:'The difference between performing self-worth and actually having it — relevant to Sections A and E.',link:'https://www.youtube.com/watch?v=IvtZBUSplr4'},
-    {title:'Bessel van der Kolk — Trauma, Body, and Healing',channel:'Impact Theory',why:'On nervous-system regulation and why intellectual insight alone does not change patterns.',link:'https://www.youtube.com/watch?v=yFCMdsFuA4c'},
-    {title:'The Real Reason You Keep Choosing the Wrong Person',channel:'Matthew Hussey',why:'A direct challenge to the pattern recognition work in Section C8.',link:'https://www.youtube.com/watch?v=MeZ5FGi7CwU'},
-    {title:'How to Regulate Your Nervous System',channel:'Sukie Baxter',why:'Practical tools for the body-based navigation plan you wrote in Section D.',link:'https://www.youtube.com/watch?v=d2D6RD0bZrA'},
+    {t:'How Childhood Trauma Shapes Adult Relationships',ch:'Dr Gabor Mat\xe9',w:'On how early wounding creates the patterns you identified in Section B.',u:'https://www.youtube.com/watch?v=szuberORMGQ'},
+    {t:'The Four Attachment Styles \u2014 Explained',ch:'The School of Life',w:'Clear explanation of why you respond to closeness and distance the way you do.',u:'https://www.youtube.com/watch?v=2s9ACDMcpjA'},
+    {t:'Why We Confuse Anxious Attachment for Love',ch:'Therapy in a Nutshell',w:'Directly addresses the love confusion you explored in Section C9.',u:'https://www.youtube.com/watch?v=PsGBJX4ZN7A'},
+    {t:'Self-Compassion vs Self-Esteem',ch:'Kristin Neff',w:'The difference between performing self-worth and actually having it.',u:'https://www.youtube.com/watch?v=IvtZBUSplr4'},
+    {t:'Bessel van der Kolk \u2014 Trauma, Body, and Healing',ch:'Impact Theory',w:'Why intellectual insight alone does not change nervous-system patterns.',u:'https://www.youtube.com/watch?v=yFCMdsFuA4c'},
+    {t:'The Real Reason You Keep Choosing the Wrong Person',ch:'Matthew Hussey',w:'A direct challenge to the pattern recognition work in Section C8.',u:'https://www.youtube.com/watch?v=MeZ5FGi7CwU'},
+    {t:'How to Regulate Your Nervous System',ch:'Sukie Baxter',w:'Practical tools for the body-based navigation plan you wrote in Section D.',u:'https://www.youtube.com/watch?v=d2D6RD0bZrA'},
   ];
 
-  var win=window.open('','_blank');
-  if(!win){alert('Allow pop-ups to download your self-report.');return;}
-  win.document.write('<!DOCTYPE html><html><head><title>My Relationship Blueprint \u2014 Phase 0 Self-Report</title>');
-  win.document.write('<meta charset="UTF-8">');
-  win.document.write('<style>');
-  win.document.write('@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500&display=swap");');
-  win.document.write('*{box-sizing:border-box;margin:0;padding:0;}');
-  win.document.write('body{font-family:"DM Sans",sans-serif;color:#1a1a1a;background:#fdf8f5;line-height:1.65;font-size:12px;}');
-  win.document.write('.page{max-width:720px;margin:0 auto;padding:48px 40px;}');
-  win.document.write('h1{font-family:"Cormorant Garamond",serif;font-size:28px;font-weight:400;color:#5a1a30;margin-bottom:4px;}');
-  win.document.write('h1 em{font-style:italic;color:#c4406b;}');
-  win.document.write('.meta{font-size:11px;color:#999;margin-bottom:32px;letter-spacing:.04em;}');
-  win.document.write('.section{margin-bottom:32px;break-inside:avoid;}');
-  win.document.write('.section-hd{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#c4406b;border-bottom:1px solid #ffd6e7;padding-bottom:6px;margin-bottom:14px;}');
-  win.document.write('.q-block{margin-bottom:18px;padding:14px 16px;background:white;border-radius:10px;border-left:3px solid #ffd6e7;}');
-  win.document.write('.q-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#7a2444;margin-bottom:6px;}');
-  win.document.write('.q-ans{font-family:"Cormorant Garamond",serif;font-size:14px;color:#2a1a20;line-height:1.7;white-space:pre-wrap;}');
-  win.document.write('.q-ans.empty{color:#bbb;font-style:italic;}');
-  win.document.write('.analysis{background:#fdf8f5;border:1px solid #ffd6e7;border-radius:14px;padding:20px 22px;margin-bottom:32px;}');
-  win.document.write('.analysis-hd{font-family:"Cormorant Garamond",serif;font-size:18px;color:#5a1a30;margin-bottom:12px;}');
-  win.document.write('.dim-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}');
-  win.document.write('.dim-name{font-size:11px;font-weight:500;color:#5a1a30;width:160px;flex-shrink:0;}');
-  win.document.write('.dim-bar{flex:1;height:6px;background:#ffd6e7;border-radius:99px;overflow:hidden;}');
-  win.document.write('.dim-fill{height:100%;border-radius:99px;}');
-  win.document.write('.dim-pct{font-size:11px;font-weight:600;width:32px;text-align:right;}');
-  win.document.write('.ins-card{padding:10px 12px;border-radius:8px;margin-bottom:8px;font-size:12px;}');
-  win.document.write('.ins-hd{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;}');
-  win.document.write('.resources{margin-bottom:32px;}');
-  win.document.write('.resource-hd{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#c4406b;border-bottom:1px solid #ffd6e7;padding-bottom:6px;margin-bottom:14px;}');
-  win.document.write('.resource-item{padding:10px 14px;background:white;border-radius:10px;margin-bottom:8px;display:flex;gap:12px;}');
-  win.document.write('.resource-num{font-family:"Cormorant Garamond",serif;font-size:18px;color:#ffd6e7;flex-shrink:0;line-height:1;}');
-  win.document.write('.resource-title{font-size:12px;font-weight:600;color:#5a1a30;margin-bottom:2px;}');
-  win.document.write('.resource-author{font-size:11px;color:#888;margin-bottom:3px;}');
-  win.document.write('.resource-why{font-size:11px;color:#555;line-height:1.5;}');
-  win.document.write('.resource-link{font-size:10px;color:#c4406b;margin-top:3px;}');
-  win.document.write('.footer-verse{font-family:"Cormorant Garamond",serif;font-size:13px;font-style:italic;color:#bbb;text-align:center;padding:24px 0;border-top:1px solid #ffd6e7;margin-top:32px;}');
-  win.document.write('@media print{body{background:white;}.page{padding:24px 20px;}button{display:none;}}');
-  win.document.write('</style></head><body><div class="page">');
+  function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  var dimNames={ownership:'Ownership',emotional:'Emotional depth',behavioural:'Behavioural specificity',nervous:'Nervous-system awareness',planning:'Actionable planning'};
+  var dimDesc=analysis&&analysis.dimDesc||{};
+  var dimPct=analysis&&analysis.dimPct||{};
+  var weakest=analysis&&analysis.weakest||'';
+  var readiness=analysis?analysis.readiness:0;
+  var scoreLabel=readiness>=90?'Ready to begin':readiness>=65?'Getting closer':'More depth needed';
+  var scoreCol=readiness>=90?'#639922':readiness>=65?'#7a2444':'#c4406b';
+
+  // Build full HTML string
+  var h='';
+  h+='<!DOCTYPE html><html lang="en"><head>';
+  h+='<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">';
+  h+='<title>My Relationship Blueprint \u2014 Phase 0 Self-Report</title>';
+  h+='<link rel="preconnect" href="https://fonts.googleapis.com">';
+  h+='<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">';
+  h+='<style>';
+  h+='*{box-sizing:border-box;margin:0;padding:0;}';
+  h+='body{font-family:"DM Sans",sans-serif;color:#1a1a1a;background:#fdf8f5;line-height:1.65;font-size:13px;}';
+  h+='.page{max-width:740px;margin:0 auto;padding:52px 44px;}';
+  h+='.print-btn{position:fixed;top:20px;right:20px;padding:10px 22px;background:#c4406b;color:white;border:none;border-radius:99px;font-size:13px;font-weight:500;cursor:pointer;font-family:"DM Sans",sans-serif;box-shadow:0 2px 12px rgba(196,64,107,.25);}';
+  h+='.print-btn:hover{background:#5a1a30;}';
+  h+='h1{font-family:"Cormorant Garamond",serif;font-size:32px;font-weight:400;color:#5a1a30;margin-bottom:4px;}';
+  h+='h1 em{font-style:italic;color:#c4406b;}';
+  h+='.sub{font-family:"Cormorant Garamond",serif;font-size:16px;font-style:italic;color:#7a2444;margin-bottom:8px;}';
+  h+='.meta{font-size:11px;color:#999;margin-bottom:36px;letter-spacing:.04em;}';
+  h+='.block{background:white;border:1px solid #ffd6e7;border-radius:14px;padding:22px 24px;margin-bottom:24px;}';
+  h+='.block-hd{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#c4406b;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid #ffd6e7;}';
+  h+='.score-row{display:flex;align-items:center;gap:20px;margin-bottom:16px;}';
+  h+='.score-num{font-family:"Cormorant Garamond",serif;font-size:52px;font-weight:400;line-height:1;}';
+  h+='.score-detail{flex:1;}';
+  h+='.score-label{font-family:"Cormorant Garamond",serif;font-size:20px;margin-bottom:6px;}';
+  h+='.score-note{font-size:11px;color:#999;margin-bottom:8px;}';
+  h+='.bar-outer{width:100%;height:7px;background:#ffd6e7;border-radius:99px;overflow:hidden;}';
+  h+='.bar-inner{height:100%;border-radius:99px;}';
+  h+='.dim-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;}';
+  h+='.dim-name{font-size:11px;font-weight:500;color:#5a1a30;width:180px;flex-shrink:0;}';
+  h+='.dim-name.weak{color:#c4406b;font-weight:700;}';
+  h+='.dim-pct{font-size:11px;font-weight:600;width:36px;text-align:right;}';
+  h+='.weak-note{font-size:11px;color:#c4406b;margin-top:4px;padding:8px 10px;background:#fdf0ec;border-radius:8px;line-height:1.5;}';
+  h+='.ins{border-radius:10px;padding:11px 14px;margin-bottom:8px;}';
+  h+='.ins-hd{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px;}';
+  h+='.ins-body{font-size:12px;line-height:1.6;}';
+  h+='.ins-q{margin-top:7px;font-family:"Cormorant Garamond",serif;font-size:13px;font-style:italic;color:#999;}';
+  h+='.sec-hd{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#c4406b;padding-bottom:8px;border-bottom:1px solid #ffd6e7;margin-bottom:16px;}';
+  h+='.q-block{margin-bottom:16px;padding:14px 16px;background:#fdf8f5;border-radius:10px;border-left:3px solid #ffd6e7;}';
+  h+='.q-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#7a2444;margin-bottom:7px;}';
+  h+='.q-ans{font-family:"Cormorant Garamond",serif;font-size:14px;color:#2a1a20;line-height:1.75;white-space:pre-wrap;}';
+  h+='.q-empty{font-family:"Cormorant Garamond",serif;font-size:13px;color:#ccc;font-style:italic;}';
+  h+='.res-item{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid #ffd6e7;}';
+  h+='.res-item:last-child{border-bottom:none;}';
+  h+='.res-num{font-family:"Cormorant Garamond",serif;font-size:22px;color:#ffd6e7;line-height:1;flex-shrink:0;width:24px;}';
+  h+='.res-title{font-size:13px;font-weight:600;color:#5a1a30;margin-bottom:2px;}';
+  h+='.res-author{font-size:11px;color:#888;margin-bottom:4px;}';
+  h+='.res-why{font-size:12px;color:#555;line-height:1.5;margin-bottom:4px;}';
+  h+='.res-link{font-size:11px;color:#c4406b;}';
+  h+='.res-link a{color:#c4406b;}';
+  h+='.verse{font-family:"Cormorant Garamond",serif;font-size:14px;font-style:italic;color:#bbb;text-align:center;padding:28px 0;border-top:1px solid #ffd6e7;margin-top:8px;}';
+  h+='@media print{.print-btn{display:none;}body{background:white;}.page{padding:24px 20px;}@page{margin:1.5cm;}}';
+  h+='</style></head><body>';
+  h+='<button class="print-btn" onclick="window.print()">&#8595; Save as PDF</button>';
+  h+='<div class="page">';
 
   // Header
-  win.document.write('<h1>My Relationship <em>Blueprint</em></h1>');
-  win.document.write('<p style="font-family:Cormorant Garamond,serif;font-size:15px;font-style:italic;color:#7a2444;margin-bottom:8px;">Phase 0 \u2014 Your Relationship Self-Report</p>');
-  win.document.write('<p class="meta">Generated: '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+' &nbsp;|&nbsp; Private &amp; local &mdash; for your eyes only</p>');
+  h+='<h1>My Relationship <em>Blueprint</em></h1>';
+  h+='<p class="sub">Phase 0 \u2014 Your Relationship Self-Report</p>';
+  h+='<p class="meta">Generated: '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+' &nbsp;|&nbsp; Private &amp; local \u2014 for your eyes only</p>';
 
-  // Analysis summary if available
+  // Analysis block
   if(analysis){
-    win.document.write('<div class="analysis">');
-    win.document.write('<div class="analysis-hd">Your readiness score: '+analysis.readiness+'/100 &mdash; '+(analysis.readiness>=90?'Ready to begin':analysis.readiness>=65?'Getting closer':'More depth needed')+'</div>');
-    if(analysis.dimPct){
-      var dimNames={ownership:'Ownership',emotional:'Emotional depth',behavioural:'Behavioural specificity',nervous:'Nervous-system awareness',planning:'Actionable planning'};
-      Object.keys(analysis.dimPct).forEach(function(d){
-        var pct=analysis.dimPct[d];
-        var col=pct>=80?'#639922':pct>=50?'#7a2444':'#c4406b';
-        var isWeak=d===analysis.weakest;
-        win.document.write('<div class="dim-row">');
-        win.document.write('<div class="dim-name" style="color:'+(isWeak?'#c4406b':'#5a1a30')+';font-weight:'+(isWeak?'700':'400')+'">'+dimNames[d]+(isWeak?' \u25c4':'')+'</div>');
-        win.document.write('<div class="dim-bar"><div class="dim-fill" style="width:'+pct+'%;background:'+col+'"></div></div>');
-        win.document.write('<div class="dim-pct" style="color:'+col+'">'+pct+'%</div></div>');
+    h+='<div class="block">';
+    h+='<div class="block-hd">Your readiness score</div>';
+    h+='<div class="score-row">';
+    h+='<div class="score-num" style="color:'+scoreCol+'">'+readiness+'</div>';
+    h+='<div class="score-detail">';
+    h+='<div class="score-label" style="color:'+scoreCol+'">'+scoreLabel+'</div>';
+    h+='<div class="score-note">Pass mark: 90 &nbsp;|&nbsp; Five dimensions scored</div>';
+    h+='<div class="bar-outer"><div class="bar-inner" style="width:'+readiness+'%;background:'+scoreCol+'"></div></div>';
+    h+='</div></div>';
+
+    // Dimension bars
+    if(dimPct&&Object.keys(dimPct).length){
+      h+='<div style="margin-top:4px">';
+      Object.keys(dimPct).forEach(function(d){
+        var p=dimPct[d];
+        var col=p>=80?'#639922':p>=50?'#7a2444':'#c4406b';
+        var isWeak=d===weakest;
+        h+='<div class="dim-row">';
+        h+='<div class="dim-name'+(isWeak?' weak':'')+'">'+dimNames[d]+(isWeak?' \u25c4':'')+'</div>';
+        h+='<div class="bar-outer" style="flex:1"><div class="bar-inner" style="width:'+p+'%;background:'+col+'"></div></div>';
+        h+='<div class="dim-pct" style="color:'+col+'">'+p+'%</div>';
+        h+='</div>';
+        if(isWeak&&dimDesc[d]){
+          h+='<div class="weak-note">'+esc(dimDesc[d])+'</div>';
+        }
       });
+      h+='</div>';
     }
-    win.document.write('<div style="margin-top:12px;font-size:11px;color:#555;">Weakest dimension: <strong>'+analysis.dimNames[analysis.weakest]+'</strong> &mdash; '+analysis.dimDesc[analysis.weakest]+'</div>');
+
+    // Insight cards
     if(analysis.insights&&analysis.insights.length){
-      win.document.write('<div style="margin-top:14px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#7a2444;margin-bottom:8px;">Section insights</div>');
+      h+='<div style="margin-top:18px">';
       analysis.insights.forEach(function(ins){
         var bg=ins.t==='green'?'#f0f7e8':ins.t==='red'?'#fdf0ec':'#fdf3e0';
         var lc=ins.t==='green'?'#639922':ins.t==='red'?'#c4406b':'#7a4a00';
-        win.document.write('<div class="ins-card" style="background:'+bg+'">');
-        win.document.write('<div class="ins-hd" style="color:'+lc+'">Section '+ins.s+' \u2014 '+ins.h+'</div>');
-        win.document.write('<div>'+ins.b+'</div>');
-        if(ins.q&&ins.q.trim()) win.document.write('<div style="margin-top:6px;font-style:italic;color:#888;font-family:Cormorant Garamond,serif;">&ldquo;'+ins.q+'&hellip;&rdquo;</div>');
-        win.document.write('</div>');
+        h+='<div class="ins" style="background:'+bg+';border:1px solid '+(ins.t==='green'?'#a8d080':ins.t==='red'?'#e8a090':'#e8c070')+'">';
+        h+='<div class="ins-hd" style="color:'+lc+'">Section '+esc(ins.s)+' \u2014 '+esc(ins.h)+'</div>';
+        h+='<div class="ins-body">'+esc(ins.b)+'</div>';
+        if(ins.q&&ins.q.trim()) h+='<div class="ins-q">&ldquo;'+esc(ins.q)+'&hellip;&rdquo;</div>';
+        h+='</div>';
       });
+      h+='</div>';
     }
-    win.document.write('</div>');
+    h+='</div>'; // end analysis block
+  } else {
+    h+='<div class="block"><div class="block-hd">Analysis</div>';
+    h+='<p style="color:#999;font-style:italic;font-family:Cormorant Garamond,serif">Submit your self-report first to see your analysis here.</p>';
+    h+='</div>';
   }
 
   // Answers by section
@@ -4675,45 +4716,51 @@ function downloadPhase0PDF(){
     {label:'E \u2014 Your readiness',qs:[13,14,15]},
   ];
   sections.forEach(function(sec){
-    win.document.write('<div class="section"><div class="section-hd">'+sec.label+'</div>');
+    h+='<div class="block"><div class="sec-hd">'+sec.label+'</div>';
     sec.qs.forEach(function(qi){
       var ans=answers[qi]||'';
-      win.document.write('<div class="q-block">');
-      win.document.write('<div class="q-label">'+questions[qi]+'</div>');
-      win.document.write('<div class="q-ans'+(ans?'':' empty')+'">'+(ans?ans.replace(/</g,'&lt;').replace(/>/g,'&gt;'):'Not answered')+'</div>');
-      win.document.write('</div>');
+      h+='<div class="q-block">';
+      h+='<div class="q-label">'+esc(questions[qi])+'</div>';
+      if(ans) h+='<div class="q-ans">'+esc(ans)+'</div>';
+      else     h+='<div class="q-empty">Not yet answered</div>';
+      h+='</div>';
     });
-    win.document.write('</div>');
+    h+='</div>';
   });
 
   // Books
-  win.document.write('<div class="resources"><div class="resource-hd">Books to increase your coherence</div>');
+  h+='<div class="block"><div class="block-hd">Books to read \u2014 to increase your coherence</div>';
   BOOKS.forEach(function(b,i){
-    win.document.write('<div class="resource-item">');
-    win.document.write('<div class="resource-num">'+(i+1)+'</div>');
-    win.document.write('<div><div class="resource-title">'+b.title+'</div>');
-    win.document.write('<div class="resource-author">'+b.author+'</div>');
-    win.document.write('<div class="resource-why">'+b.why+'</div>');
-    win.document.write('<div class="resource-link">'+b.link+'</div></div></div>');
+    h+='<div class="res-item"><div class="res-num">'+(i+1)+'</div><div>';
+    h+='<div class="res-title">'+esc(b.t)+'</div>';
+    h+='<div class="res-author">'+esc(b.a)+'</div>';
+    h+='<div class="res-why">'+esc(b.w)+'</div>';
+    h+='<div class="res-link"><a href="'+b.u+'" target="_blank">'+b.u+'</a></div>';
+    h+='</div></div>';
   });
-  win.document.write('</div>');
+  h+='</div>';
 
   // Videos
-  win.document.write('<div class="resources"><div class="resource-hd">Videos to watch</div>');
+  h+='<div class="block"><div class="block-hd">Videos to watch</div>';
   VIDEOS.forEach(function(v,i){
-    win.document.write('<div class="resource-item">');
-    win.document.write('<div class="resource-num">'+(i+1)+'</div>');
-    win.document.write('<div><div class="resource-title">'+v.title+'</div>');
-    win.document.write('<div class="resource-author">'+v.channel+'</div>');
-    win.document.write('<div class="resource-why">'+v.why+'</div>');
-    win.document.write('<div class="resource-link"><a href="'+v.link+'" target="_blank">'+v.link+'</a></div></div></div>');
+    h+='<div class="res-item"><div class="res-num">'+(i+1)+'</div><div>';
+    h+='<div class="res-title">'+esc(v.t)+'</div>';
+    h+='<div class="res-author">'+esc(v.ch)+'</div>';
+    h+='<div class="res-why">'+esc(v.w)+'</div>';
+    h+='<div class="res-link"><a href="'+v.u+'" target="_blank">'+v.u+'</a></div>';
+    h+='</div></div>';
   });
-  win.document.write('</div>');
+  h+='</div>';
 
-  win.document.write('<div class="footer-verse">&ldquo;Who shall find a noble woman? Her worth is far above rubies.&rdquo; &mdash; Proverbs 31:10</div>');
-  win.document.write('<div style="text-align:center;margin-top:12px"><button onclick="window.print()" style="padding:10px 24px;background:#c4406b;color:white;border:none;border-radius:99px;font-size:13px;cursor:pointer;font-family:DM Sans,sans-serif;">Save as PDF \u2192</button></div>');
-  win.document.write('</div></body></html>');
-  win.document.close();
+  h+='<div class="verse">&ldquo;Who shall find a noble woman? Her worth is far above rubies.&rdquo; \u2014 Proverbs 31:10</div>';
+  h+='</div></body></html>';
+
+  // Open as blob URL — no popup blocking, no document.write issues
+  var blob=new Blob([h],{type:'text/html;charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  window.open(url,'_blank');
+  // Clean up the URL after a short delay
+  setTimeout(function(){URL.revokeObjectURL(url);},60000);
 }
 
 document.addEventListener("DOMContentLoaded",function(){
