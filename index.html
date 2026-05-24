@@ -737,9 +737,9 @@ textarea::placeholder{color:var(--mist);font-style:italic}
   /* ── end it modal ── */
   .endit-backdrop{display:none;position:fixed;inset:0;background:rgba(90,26,48,.25);backdrop-filter:blur(3px);z-index:400}
   .endit-backdrop.open{display:flex;align-items:center;justify-content:center;padding:20px}
-  .endit-modal{background:white;border-radius:24px;border:1px solid var(--petal);width:min(540px,94vw);max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(90,26,48,.18);animation:fadeUp .3s ease}
+  .endit-modal{background:var(--cream);border-radius:24px;border:1px solid var(--petal);width:min(540px,94vw);max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(90,26,48,.18);animation:fadeUp .3s ease}
   .endit-modal-header{padding:22px 26px 16px;border-bottom:1px solid var(--pink-100)}
-  .endit-modal-title{font-family:var(--serif);font-size:22px;font-weight:500;color:var(--deep);margin-bottom:4px}
+  .endit-modal-title{font-family:var(--serif);font-size:22px;font-weight:400;color:var(--deep);margin-bottom:4px}
   .endit-modal-sub{font-size:13px;color:var(--mist);font-style:italic}
   .endit-modal-body{padding:20px 26px 28px}
   .endit-field{margin-bottom:14px}
@@ -1068,6 +1068,9 @@ textarea::placeholder{color:var(--mist);font-style:italic}
   .rel-section{display:none;}
   .single-section{display:none;}
   body.mode-relationship .rel-section{display:block;}
+  body.mode-relationship .stats-bar{display:grid!important;}
+  body.mode-relationship .timeline{display:grid!important;}
+  body.mode-relationship .progress-row{display:flex!important;}
   body.mode-single .single-section{display:block;}
   /* phase0 always shows inside app */
   .always-section{display:block;}
@@ -1085,7 +1088,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     display:grid;grid-template-columns:1fr 1fr;gap:12px;
   }
   .single-focus-item{
-    background:var(--blush);border-radius:12px;padding:13px 15px;
+    background:white;border:1px solid var(--pink-100);border-radius:12px;padding:13px 15px;
   }
   .single-focus-item label{
     font-size:11px;font-weight:600;color:var(--mauve);
@@ -1093,6 +1096,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
   }
   .single-focus-item textarea{
     width:100%;border:none;background:transparent;
+    min-height:72px;
     font-family:var(--serif);font-size:13px;color:var(--stone);
     resize:none;outline:none;line-height:1.6;min-height:60px;
   }
@@ -1131,6 +1135,9 @@ textarea::placeholder{color:var(--mist);font-style:italic}
   body.mode-single .data-explain { display:none!important; }
   /* Relationship mode — show them */
   body.mode-relationship .rel-section { display:block; }
+  body.mode-relationship .stats-bar { display:grid!important; }
+  body.mode-relationship .timeline { display:grid!important; }
+  body.mode-relationship .progress-row { display:flex!important; }
   body.mode-relationship .log-card,
   body.mode-relationship .flag-ratio-card,
   body.mode-relationship .checkin-card,
@@ -1339,6 +1346,133 @@ textarea::placeholder{color:var(--mist);font-style:italic}
       order:3;align-self:auto;
     }
   }
+
+
+  /* ══ BRANDED MODALS ══ */
+  .bm-backdrop{
+    position:fixed;inset:0;z-index:8000;
+    background:rgba(90,26,48,.38);backdrop-filter:blur(5px);
+    display:flex;align-items:center;justify-content:center;
+    opacity:0;pointer-events:none;transition:opacity .22s;
+  }
+  .bm-backdrop.open{opacity:1;pointer-events:all;}
+  .bm-box{
+    background:var(--cream);border-radius:24px;
+    width:min(460px,92vw);max-height:88vh;overflow-y:auto;
+    padding:32px 28px 26px;position:relative;
+    box-shadow:0 14px 56px rgba(90,26,48,.22);
+    border:1px solid var(--pink-100);
+    transform:translateY(14px);transition:transform .22s;
+  }
+  .bm-backdrop.open .bm-box{transform:translateY(0);}
+  .bm-hearts{
+    position:absolute;top:14px;right:16px;
+    display:flex;gap:5px;pointer-events:none;
+  }
+  .bm-hearts svg{opacity:.22;}
+  .bm-icon{text-align:center;font-size:26px;margin-bottom:10px;color:var(--rose);}
+  .bm-title{
+    font-family:var(--serif);font-size:22px;font-weight:400;
+    color:var(--deep);text-align:center;margin-bottom:6px;line-height:1.25;
+  }
+  .bm-sub{
+    font-family:var(--serif);font-size:13px;font-style:italic;
+    color:var(--mist);text-align:center;margin-bottom:20px;line-height:1.65;
+  }
+  .bm-field{margin-bottom:13px;}
+  .bm-label{
+    font-size:10px;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--mauve);display:block;margin-bottom:5px;
+  }
+  .bm-input,.bm-textarea,.bm-select{
+    width:100%;border:1px solid var(--pink-100);border-radius:10px;
+    padding:9px 12px;font-family:var(--serif);font-size:13px;
+    color:var(--stone);background:white;outline:none;
+    transition:border-color .15s;box-sizing:border-box;
+  }
+  .bm-input:focus,.bm-textarea:focus,.bm-select:focus{border-color:var(--petal);}
+  .bm-textarea{min-height:72px;resize:vertical;line-height:1.6;}
+  .bm-actions{
+    display:flex;gap:10px;justify-content:center;
+    margin-top:20px;flex-wrap:wrap;
+  }
+  .bm-btn-primary{
+    padding:11px 26px;background:var(--rose);color:white;
+    border:none;border-radius:99px;font-size:13px;font-weight:500;
+    font-family:var(--sans);cursor:pointer;transition:all .18s;
+  }
+  .bm-btn-primary:hover{background:var(--deep);}
+  .bm-btn-ghost{
+    padding:11px 20px;background:white;color:var(--mist);
+    border:1.5px solid var(--pink-100);border-radius:99px;
+    font-size:13px;font-weight:500;font-family:var(--sans);cursor:pointer;
+  }
+  .bm-btn-ghost:hover{border-color:var(--petal);color:var(--deep);}
+  .bm-btn-danger{
+    padding:11px 20px;background:white;color:#b5614a;
+    border:1.5px solid #e8a090;border-radius:99px;
+    font-size:13px;font-weight:500;font-family:var(--sans);cursor:pointer;
+  }
+  .bm-btn-danger:hover{background:#fdf0ec;}
+
+  /* ══ PHONE FIXES ══ */
+  @media(max-width:700px){
+    .page{padding-top:70px!important;}
+    .site-footer{margin-bottom:0!important;padding-bottom:env(safe-area-inset-bottom,0)!important;}
+    body{padding-bottom:0!important;}
+    .bm-box{
+      position:fixed;bottom:0;left:0;right:0;width:100%;
+      border-radius:20px 20px 0 0;max-height:92vh;
+      transform:translateY(100%)!important;
+    }
+    .bm-backdrop.open .bm-box{transform:translateY(0)!important;}
+  }
+
+  /* ══ NARC CHECKER ══ */
+  .narc-check-card{
+    background:linear-gradient(135deg,#fdf0f4,#fdf8f5);
+    border:1.5px solid var(--petal);border-radius:16px;
+    padding:18px 20px;margin-top:16px;
+  }
+  .narc-check-hd{
+    font-size:10px;font-weight:700;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--rose);margin-bottom:10px;
+    display:flex;align-items:center;gap:6px;
+  }
+  .narc-flag{
+    background:#fdf0ec;border-left:3px solid #e07060;
+    border-radius:8px;padding:8px 12px;margin-bottom:6px;
+    font-size:12px;color:var(--stone);line-height:1.55;
+  }
+  .narc-green{
+    background:#f0f7e8;border-left:3px solid #6a9940;
+    border-radius:8px;padding:8px 12px;margin-bottom:6px;
+    font-size:12px;color:var(--stone);line-height:1.55;
+  }
+  .narc-label-red{font-size:9px;font-weight:700;color:#c05040;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:2px;}
+  .narc-label-grn{font-size:9px;font-weight:700;color:#4a8030;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:2px;}
+
+  /* ══ SELF-FLAG FEED ══ */
+  .self-flag-feed{display:flex;flex-direction:column;gap:5px;margin-top:10px;}
+  .sf-entry{padding:7px 11px;border-radius:9px;font-size:12px;line-height:1.55;}
+  .sf-entry-red{background:#fdf0ec;border-left:3px solid var(--rose);}
+  .sf-entry-amber{background:#fdf3e0;border-left:3px solid #c08030;}
+  .sf-entry-neutral{background:var(--blush);border-left:3px solid var(--pink-100);}
+  .sf-entry-meta{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px;}
+  .sf-meta-red{color:var(--rose);}
+  .sf-meta-amber{color:#7a4a00;}
+  .sf-meta-neutral{color:var(--mist);}
+
+  /* ══ END THINGS BUTTON ══ */
+  .end-things-btn{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    width:100%;padding:11px 0;margin-top:14px;
+    background:white;border:1.5px solid var(--pink-100);
+    border-radius:12px;font-size:12px;font-weight:500;
+    font-family:var(--sans);color:var(--mist);cursor:pointer;
+    transition:all .2s;
+  }
+  .end-things-btn:hover{border-color:var(--rose);color:var(--rose);}
 
 </style>
 </head>
@@ -1760,17 +1894,18 @@ textarea::placeholder{color:var(--mist);font-style:italic}
 <!-- END PHASE 0 -->
 
   <!-- SINGLE MODE: What I am focusing on -->
-  <div class="single-focus-card mode-single-only" id="singleFocusCard" class="single-section">
-    <div class="single-focus-hd">While I observe &mdash; what I am building</div>
-    <p style="font-size:13px;color:var(--mist);font-family:var(--serif);font-style:italic;margin-bottom:14px;line-height:1.6">He is not the whole story. What are you tending to while you wait for data?</p>
+  <div id="singleFocusCard" class="single-focus-card single-section">
+    <div class="single-focus-hd">What I am observing this week</div>
+    <p style="font-size:13px;color:var(--mist);font-family:var(--serif);font-style:italic;margin-bottom:16px;line-height:1.6">&ldquo;She considers a field and buys it; with the fruit of her hands she plants a vineyard.&rdquo; &mdash; Proverbs 31:16</p>
+    <p style="font-size:12px;color:var(--mist);margin-bottom:14px;">He is not the whole story. What are you tending to while you observe?</p>
     <div class="single-focus-grid">
       <div class="single-focus-item">
         <label>My work &amp; ventures</label>
         <textarea id="sfWork" placeholder="What I am building..." oninput="saveSingleFocus()"></textarea>
       </div>
       <div class="single-focus-item">
-        <label>My health &amp; body</label>
-        <textarea id="sfHealth" placeholder="What I am tending to..." oninput="saveSingleFocus()"></textarea>
+        <label>My health</label>
+        <textarea id="sfHealth" placeholder="How I am moving my body..." oninput="saveSingleFocus()"></textarea>
       </div>
       <div class="single-focus-item">
         <label>My friendships</label>
@@ -1778,16 +1913,20 @@ textarea::placeholder{color:var(--mist);font-style:italic}
       </div>
       <div class="single-focus-item">
         <label>My spiritual practice</label>
-        <textarea id="sfSpirit" placeholder="What I am returning to..." oninput="saveSingleFocus()"></textarea>
+        <textarea id="sfSpirit" placeholder="What I am tending to..." oninput="saveSingleFocus()"></textarea>
       </div>
       <div class="single-focus-item">
-        <label>My healing work</label>
+        <label>My healing</label>
         <textarea id="sfHeal" placeholder="What I am working through..." oninput="saveSingleFocus()"></textarea>
       </div>
       <div class="single-focus-item">
-        <label>My non-negotiables this season</label>
-        <textarea id="sfNonneg" placeholder="What I will not compromise on..." oninput="saveSingleFocus()"></textarea>
+        <label>My non-negotiables</label>
+        <textarea id="sfNonneg" placeholder="What I will not compromise..." oninput="saveSingleFocus()"></textarea>
       </div>
+    </div>
+    <div id="sfSavedMsg" style="font-size:11px;color:var(--green);font-style:italic;min-height:16px;opacity:0;transition:opacity .3s;margin-top:8px;"></div>
+    <div style="text-align:right;margin-top:14px;">
+      <button class="btn-checkin" onclick="saveSingleFocusManual()">&#10003; Save this week</button>
     </div>
   </div>
 
@@ -1903,7 +2042,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     <div class="checkin-history" id="checkinHistory"></div>
   </div>
 
-  <div id="sec-selfcare" class="selfcare-card always-section">
+  <div id="sec-selfcare" class="selfcare-card rel-section">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px">
       <div>
         <h3 style="margin-bottom:4px">Meanwhile &mdash; what am I building?</h3>
@@ -2032,6 +2171,137 @@ textarea::placeholder{color:var(--mist);font-style:italic}
 </div>
 
 <script>
+
+/* ══ CONV_GUIDES — conversation questions per phase ══ */
+var CONV_GUIDES = {
+  1: {
+    context: "Phase 1 is observation only. You are not interrogating him. These are casual questions you weave into natural conversation. Watch how he moves, not just what he says.",
+    sections: [
+      { label: "His life", questions: [
+        {cat:"Curiosity", q:"What has been taking up most of your energy lately?", why:"Reveals whether he is building something or drifting."},
+        {cat:"Values",    q:"What does a good week look like for you?",            why:"His definition of a good week tells you what he actually prioritises."},
+        {cat:"People",   q:"Who do you tend to go to when something is actually hard?", why:"Reveals emotional support structure and vulnerability capacity."}
+      ]},
+      { label: "How he engages", questions: [
+        {cat:"Observe", q:"Does he ask you questions back?",          why:"Reciprocity is a Phase 1 signal."},
+        {cat:"Observe", q:"Does he listen or wait to talk?",          why:"Presence under conversation is data."}
+      ]}
+    ],
+    warnings: ["Do not share too much about yourself yet. You are observing, not bonding."],
+    tip: "His answers are less important than whether he asks about yours."
+  },
+  2: {
+    context: "Phase 2 is about consistency and financial character. Watch what happens when there is friction, inconvenience, or cost.",
+    sections: [
+      { label: "Character under pressure", questions: [
+        {cat:"Consistency", q:"How do you usually handle it when plans change at the last minute?", why:"His answer versus his behaviour when plans change is the data."},
+        {cat:"Finances",    q:"What is your relationship with money — are you a saver or a spender?", why:"Financial character is relationship character."},
+        {cat:"Conflict",   q:"When you disagree with someone you respect, how do you handle it?",   why:"How he handles disagreement with others predicts how he will handle it with you."}
+      ]}
+    ],
+    warnings: ["Three financial red flags in Phase 2 should end Phase 3."],
+    tip: "Watch the gap between what he says about himself and what you observe."
+  },
+  3: {
+    context: "Phase 3 is emotional depth. Test whether he can be present, not just pleasant. Introduce something real and see what he does with it.",
+    sections: [
+      { label: "Emotional capacity", questions: [
+        {cat:"Depth",       q:"What is something you changed your mind about in the last few years?",  why:"Intellectual flexibility and self-awareness are emotionally mature traits."},
+        {cat:"Vulnerability",q:"What has been the hardest thing you have navigated as an adult?",      why:"Watch how he holds difficulty — does he blame, minimise, or reflect?"},
+        {cat:"Present",    q:"How are you actually doing — not the short answer?",                     why:"Can he receive a genuine question and give a genuine answer?"}
+      ]}
+    ],
+    warnings: ["If he cannot hold one real conversation by month 6, the depth is not there."],
+    tip: "Share something real yourself first. See if he matches depth or deflects."
+  },
+  4: {
+    context: "Phase 4 is values and vision. You need to know whether your lives are directionally compatible — not identical, but aligned on what cannot be compromised.",
+    sections: [
+      { label: "Values alignment", questions: [
+        {cat:"Faith",   q:"Does spirituality or faith play a role in your life?",               why:"Alignment on this is not optional for a long-term partnership."},
+        {cat:"Family",  q:"What does family mean to you — the one you came from and the one you might build?", why:"His relationship to family of origin shapes everything downstream."},
+        {cat:"Vision",  q:"Where do you see your life in ten years?",                           why:"You are looking for compatible answers, not identical ones."}
+      ]}
+    ],
+    warnings: ["Incompatibility on faith, children, or family structure is not workable."],
+    tip: "His vision should have room for a partner. If it is entirely solitary, note it."
+  },
+  5: {
+    context: "Phase 5 is conflict and repair. See how he handles being wrong, being challenged, and being hurt. This is the most predictive phase for long-term viability.",
+    sections: [
+      { label: "Conflict capacity", questions: [
+        {cat:"Accountability", q:"What is something you handled badly that you wish you had done differently?",    why:"Can he name a specific failure without deflecting?"},
+        {cat:"Repair",         q:"When you hurt someone you care about, what do you usually do?",                  why:"Repair behaviour is the single most predictive trait in long-term relationships."},
+        {cat:"Boundaries",     q:"How do you feel when someone you are close to needs space?",                     why:"Reveals anxiety or security under relational pressure."}
+      ]}
+    ],
+    warnings: ["No accountability by month 13 is a disqualifying pattern."],
+    tip: "Introduce a mild disagreement and observe. The conversation after is the test."
+  },
+  6: {
+    context: "Phase 6 is the blueprint conversation — explicit discussion of what you are building together. Clarity is not pressure.",
+    sections: [
+      { label: "Explicit alignment", questions: [
+        {cat:"Commitment", q:"What does commitment mean to you — what does it look like in practice?", why:"His definition of commitment is the one you will live inside."},
+        {cat:"Marriage",   q:"Is marriage something you see in your future?",                          why:"Direct. Necessary. Non-negotiable to ask by this phase."},
+        {cat:"Partnership",q:"What would you need from a partner to feel genuinely supported?",        why:"Reveals his needs and whether he has thought about reciprocity."}
+      ]}
+    ],
+    warnings: ["Vagueness about commitment at year 2 is an answer. Read it as one."],
+    tip: "You are allowed to say what you want. Clarity is not pressure."
+  },
+  7: {
+    context: "Phase 7 is integration — does your life with him expand or contract? Does he fit the full picture of who you are?",
+    sections: [
+      { label: "Integration", questions: [
+        {cat:"Wholeness", q:"What parts of my life have you seen me invest in that you genuinely respect?", why:"Can he name specific things? Or is his admiration general and performative?"},
+        {cat:"Growth",    q:"How do you feel about the person I am becoming?",                              why:"Does he see your growth as a benefit or a threat?"},
+        {cat:"Future",    q:"How do you imagine us navigating the hard seasons — health, loss, failure?",   why:"Practical imagination about difficulty is a maturity signal."}
+      ]}
+    ],
+    warnings: ["If your ambitions make him insecure, that insecurity scales with your success."],
+    tip: "You are not looking for a man who completes you. You are looking for one who witnesses you."
+  },
+  8: {
+    context: "Phase 8 is the final evaluation before a lifetime commitment. Nothing is assumed. Everything is confirmed.",
+    sections: [
+      { label: "Final evaluation", questions: [
+        {cat:"Peace",  q:"Do I feel more like myself or less like myself in this relationship?", why:"The answer to this question contains everything."},
+        {cat:"Safety", q:"Can I tell him the full truth about who I am without editing myself?", why:"Psychological safety is the foundation of everything that follows."},
+        {cat:"Choice", q:"Am I choosing him from wholeness or from fear of being alone?",        why:"The quality of the choice determines the quality of what is built on it."}
+      ]}
+    ],
+    warnings: ["Do not proceed to a lifetime commitment from uncertainty. Uncertainty is an answer."],
+    tip: "If you are asking whether it is right, it is not yet right. When it is right, you will know."
+  }
+};
+
+function buildConvGuide(phNum){
+  var guide = CONV_GUIDES[phNum];
+  if(!guide) return '<p style="color:var(--mist);font-family:var(--serif);font-style:italic;font-size:13px;">Guide coming soon.</p>';
+  var html = '<div style="font-family:var(--serif);font-size:13px;color:var(--stone);line-height:1.7;">';
+  html += '<p style="font-style:italic;color:var(--mist);margin-bottom:14px;line-height:1.65;">'+guide.context+'</p>';
+  guide.sections.forEach(function(sec){
+    if(sec.label) html += '<div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mauve);margin-bottom:8px;">'+sec.label+'</div>';
+    sec.questions.forEach(function(q){
+      html += '<div style="background:var(--blush);border-radius:10px;padding:10px 13px;margin-bottom:8px;">';
+      html += '<div style="font-size:10px;font-weight:700;color:var(--rose);letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px;">'+q.cat+'</div>';
+      html += '<div style="font-style:italic;margin-bottom:4px;">&ldquo;'+q.q+'&rdquo;</div>';
+      if(q.why) html += '<div style="font-size:11px;color:var(--mist);">'+q.why+'</div>';
+      html += '</div>';
+    });
+  });
+  if(guide.warnings&&guide.warnings.length){
+    guide.warnings.forEach(function(w){
+      html += '<div style="background:#fdf0ec;border-left:3px solid var(--rose);border-radius:8px;padding:8px 12px;margin-bottom:6px;font-size:12px;">&#9888; '+w+'</div>';
+    });
+  }
+  if(guide.tip){
+    html += '<div style="background:white;border:1px solid var(--pink-100);border-radius:10px;padding:10px 13px;font-size:12px;color:var(--deep);font-style:italic;">&#9825; '+guide.tip+'</div>';
+  }
+  html += '</div>';
+  return html;
+}
 
 // ── CONSTANTS ─────────────────────────────────────────────────────────────
 var STATE_CYCLE  = ["none","yes","partial","no"];
@@ -2504,10 +2774,10 @@ function isUnlocked(n){
   if(n===7){
     var days7=getDaysIn();
     if(days7===null) return false;
-    return days7>=730&&!terminateActive();
+    return days7>=730&&n>S.activePhase?!terminateActive():days7>=730;
   }
   // Phase 8 — unlocks when phase 7 >= 80%
-  if(n===8) return score(7).pct>=80&&!terminateActive();
+  if(n===8) return score(7).pct>=80&&(n>S.activePhase?!terminateActive():true);
   // All other phases — time-based with optional override
   if(S.overrides&&S.overrides[n]) return true;
   var days=getDaysIn();
@@ -4127,6 +4397,43 @@ function openReport(){
 
   html+='<div style="text-align:center;padding:20px 0 8px;font-family:var(--serif);font-size:16px;font-style:italic;color:var(--mauve)">&ldquo;Who shall find a noble woman? Her worth is far above rubies.&rdquo; &#9825;</div>';
 
+  // Self-flag pattern section
+  var sfData = analyseSelfFlagPatterns();
+  if(sfData && sfData.total > 0){
+    var patNames={shrink:'Self-shrinking',chase:'Chasing',overexplain:'Over-explaining',
+      anxiety:'Anxious thoughts',tooneedy:'Too much/needy',selfabandon:'Self-abandonment',
+      jealous:'Insecurity/jealousy',testing:'Testing/sabotage',dishonest:'Inauthenticity',ignore:'Ignoring gut'};
+    html += '<div class="report-section"><div class="report-section-title">\u2665 My inner patterns</div>';
+    html += '<p style="font-size:12px;color:var(--mist);margin-bottom:12px;font-family:var(--serif);font-style:italic">Based on '+sfData.total+' self-reflection entries.</p>';
+    sfData.top.forEach(function(tag,i){
+      var cnt=sfData.counts[tag];
+      var pct=Math.round(cnt/sfData.total*100);
+      var name=patNames[tag]||tag;
+      html += '<div style="margin-bottom:10px;">';
+      html += '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;">';
+      html += '<span style="color:var(--deep);font-weight:500">'+(i===0?'\u25c4 ':'')+(name)+'</span>';
+      html += '<span style="color:var(--mist)">'+cnt+'x ('+pct+'%)</span></div>';
+      html += '<div style="height:5px;background:var(--pink-100);border-radius:99px;overflow:hidden;">';
+      html += '<div style="width:'+pct+'%;height:100%;background:var(--rose);border-radius:99px;"></div></div></div>';
+    });
+    var advice={
+      shrink:'You keep making yourself smaller. When exactly does this happen? What does he do that triggers it?',
+      chase:'Chasing is anxiety, not love. Next urge — pause 24 hours before acting.',
+      overexplain:'You defend yourself to someone who should not require a defence. Explanation without request is anxiety in disguise.',
+      anxiety:'Your nervous system is working harder than the data justifies. Ground in what you have actually observed.',
+      tooneedy:'You are giving at a pace that is not sustainable. Pull back to your own life deliberately.',
+      selfabandon:'You keep putting him first. What did you need this week that you did not give yourself?',
+      jealous:'The insecurity is data about your wound, not about him.',
+      testing:'You are creating problems to see how he handles them. That is fear — not observation.',
+      dishonest:'You are performing. He cannot choose the real you if she is not present.',
+      ignore:'Your gut is speaking. Write down exactly what it is saying.'
+    };
+    if(sfData.top[0] && advice[sfData.top[0]]){
+      html += '<div style="margin-top:10px;padding:12px 14px;background:var(--blush);border-radius:12px;font-family:var(--serif);font-size:13px;color:var(--stone);line-height:1.65;font-style:italic;">'+advice[sfData.top[0]]+'</div>';
+    }
+    html += '</div>';
+  }
+
   body.innerHTML=html;
   document.getElementById('reportBackdrop').classList.add('open');
 }
@@ -4478,6 +4785,14 @@ function updatePhase0Score(){
   var subEl=document.getElementById('phase0Sub');
   if(pctEl)pctEl.textContent=pct+'%';
   if(subEl)subEl.textContent=filled+'/'+P0_TOTAL;
+  // Update SVG ring — dasharray is 188, 0=full 188=empty
+  var ring=document.getElementById('p0RingCircle');
+  if(ring){
+    var offset=188-(188*(pct/100));
+    ring.style.strokeDashoffset=offset;
+    // Colour: rose when progressing, deep when complete
+    ring.style.stroke=pct>=100?'var(--deep)':pct>=50?'var(--rose)':'var(--petal)';
+  }
 }
 
 function p0tagClick(tag,textareaId){
@@ -5590,7 +5905,8 @@ function renderRelTopics(){
   if(!wrap) return;
   var phase=S.activePhase||1;
   // Get conversation guide for current phase
-  var guide=CONV_GUIDES&&CONV_GUIDES[phase];
+  var guide=
+CONV_GUIDES&&CONV_GUIDES[phase];
   if(!guide){wrap.innerHTML='<p style="color:var(--mist);font-style:italic">Complete Phase 0 to unlock conversation topics.</p>';return;}
   var html='';
   if(guide.context) html+='<p style="font-family:var(--serif);font-size:13px;font-style:italic;color:var(--mist);margin-bottom:12px;line-height:1.65">'+guide.context+'</p>';
@@ -5628,7 +5944,234 @@ var LP_FEATURES = [
 var lpIdx = 0;
 
 // Render as soon as DOM is ready
-if(document.readyState!=="loading"){setTimeout(lpRender,0);}else{document.addEventListener("DOMContentLoaded",lpRender);}
+if(document.readyState!=="loading"){setTimeout(lpRender,0);}else{
+/* ══ SELF-REFLECTION CLASSIFIER ══ */
+var SELF_FLAG_PATTERNS = [
+  {tag:'shrink',    label:'Self-shrinking',    re:/\b(shrink|smaller|people.pleas|fawn|fawning|made myself|held back)\b/i},
+  {tag:'chase',     label:'Chasing',           re:/\b(chase|chasing|checking|obsess|why hasn.t|follow.{0,6}up|waiting for him)\b/i},
+  {tag:'overexplain',label:'Over-explaining',  re:/\b(over.?explain|justify|defend myself|prove myself|seek.{0,8}approval|apologis)\b/i},
+  {tag:'anxiety',   label:'Anxious thoughts',  re:/\b(anxi|spiral|overthink|replay|can.t stop thinking|rumina)\b/i},
+  {tag:'tooneedy',  label:'Too much/needy',    re:/\b(too (much|needy|intense)|desperate|came on (strong|too)|clingy)\b/i},
+  {tag:'selfabandon',label:'Self-abandonment', re:/\b(self.abandon|put him first|lost myself|forgot who i am|ignored my needs)\b/i},
+  {tag:'jealous',   label:'Insecurity',        re:/\b(jealous|possessive|insecure|compared myself|not good enough)\b/i},
+  {tag:'testing',   label:'Testing/sabotage',  re:/\b(test(ing|ed) him|push(ed|ing).{0,6}away|pick(ed|ing).{0,6}fight|created drama|sabotage)\b/i},
+  {tag:'dishonest', label:'Inauthenticity',    re:/\b(lied|hid|pretended|performed|wasn.t honest|fake|not authentic)\b/i},
+  {tag:'ignore',    label:'Ignoring gut',      re:/\b(ignor.{0,8}(gut|instinct|red flag)|told myself it was fine|convinced myself|made excuses)\b/i},
+];
+
+function classifySelfFlag(text){
+  var t = text.toLowerCase();
+  var hits = SELF_FLAG_PATTERNS.filter(function(p){ return p.re.test(t); });
+  if(!hits.length) return 'neutral';
+  return hits.length >= 2 ? 'red' : 'amber';
+}
+
+function tagSelfFlag(text){
+  var t = text.toLowerCase();
+  return SELF_FLAG_PATTERNS.filter(function(p){ return p.re.test(t); }).map(function(p){ return p.tag; });
+}
+
+function saveSelfFlagEntry(){
+  var ta = document.getElementById('relSelfFlags');
+  if(!ta || !ta.value.trim()) return;
+  var text = ta.value.trim();
+  var cls = classifySelfFlag(text);
+  var tags = tagSelfFlag(text);
+  if(!S.selfFlagLog) S.selfFlagLog = [];
+  S.selfFlagLog.push({
+    text: text, cls: cls, tags: tags,
+    phase: S.activePhase || 1,
+    date: new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})
+  });
+  if(!S.relFocus) S.relFocus = {};
+  S.relFocus.selfFlags = text;
+  save();
+  renderSelfFlagFeed();
+  var msg = document.getElementById('selfFlagMsg');
+  if(msg){
+    var lbl = cls==='red' ? '\u26a0 Wound active \u2014 logged' : cls==='amber' ? '\u25b2 Pattern noticed \u2014 logged' : '\u2713 Logged';
+    var col = cls==='red' ? 'var(--rose)' : cls==='amber' ? '#7a4a00' : 'var(--green)';
+    msg.textContent = lbl; msg.style.color = col; msg.style.opacity = 1;
+    setTimeout(function(){ msg.style.opacity = 0; }, 3000);
+  }
+}
+
+function renderSelfFlagFeed(){
+  var wrap = document.getElementById('selfFlagFeed');
+  if(!wrap) return;
+  var entries = (S.selfFlagLog || []).slice().reverse().slice(0,5);
+  if(!entries.length){ wrap.innerHTML=''; return; }
+  var html = '<div class="self-flag-feed">';
+  entries.forEach(function(e){
+    var clsKey = e.cls==='red'?'red':e.cls==='amber'?'amber':'neutral';
+    var metaCls = 'sf-meta-'+clsKey;
+    html += '<div class="sf-entry sf-entry-'+clsKey+'">';
+    html += '<span class="sf-entry-meta '+metaCls+'">Phase '+e.phase+' \u2014 '+e.date+'</span>';
+    html += (e.text||'').slice(0,120) + (e.text&&e.text.length>120?'\u2026':'');
+    html += '</div>';
+  });
+  html += '</div>';
+  wrap.innerHTML = html;
+}
+
+function analyseSelfFlagPatterns(){
+  var entries = S.selfFlagLog || [];
+  if(!entries.length) return null;
+  var counts = {};
+  entries.forEach(function(e){
+    (e.tags||[]).forEach(function(tag){ counts[tag]=(counts[tag]||0)+1; });
+  });
+  var sorted = Object.keys(counts).sort(function(a,b){ return counts[b]-counts[a]; });
+  return { counts: counts, top: sorted.slice(0,3), total: entries.length };
+}
+
+function saveSingleFocusManual(){
+  saveSingleFocus();
+  var msg = document.getElementById('sfSavedMsg');
+  if(msg){ msg.textContent='\u2713 Saved'; msg.style.opacity=1; setTimeout(function(){ msg.style.opacity=0; },2000); }
+}
+
+
+/* ══ NARCISSISM CHECKER ══ */
+var NARC_RED_FLAGS = [
+  // Love bombing
+  {phase:[1],tag:'love-bomb',label:'Love bombing',
+   desc:'He pursued intensely and fast — overwhelming attention, gifts, or declarations early on.',
+   re:/\b(overwhelming|too much too soon|so intense|moved so fast|constant attention|flooded|too many compliments|felt chosen|never felt so seen)\b/i},
+  // Future faking
+  {phase:[1,2],tag:'future-fake',label:'Future faking',
+   desc:'He made big plans or promises early that felt real but never materialised.',
+   re:/\b(promised|said we.d|talked about future|mentioned kids|mentioned moving|plans that never|didn.t follow through|said one thing)\b/i},
+  // Intermittent reinforcement
+  {phase:[2,3],tag:'intermittent',label:'Hot and cold pattern',
+   desc:'Cycles of warmth then withdrawal that keep you hooked and off-balance.',
+   re:/\b(hot and cold|pulls away|then comes back|never know where|inconsistent|one day amazing|next day distant|blowing hot)\b/i},
+  // DARVO
+  {phase:[2,3,4],tag:'darvo',label:'DARVO (Deny, Attack, Reverse Victim)',
+   desc:'When you raise a concern he denies, attacks your character, or positions himself as the victim.',
+   re:/\b(turned it around|made me feel crazy|suddenly the victim|denied it|attacked my character|said i was too sensitive|i became the problem)\b/i},
+  // Gaslighting
+  {phase:[2,3,4,5],tag:'gaslight',label:'Gaslighting',
+   desc:'He made you question your own perception of events you witnessed clearly.',
+   re:/\b(didn.t happen|never said|you imagined|you.re too sensitive|you.re crazy|questioning my memory|made me doubt|felt confused about what i saw)\b/i},
+  // Isolation
+  {phase:[3,4],tag:'isolate',label:'Isolation tactics',
+   desc:'He subtly discouraged your friendships, family connections, or outside interests.',
+   re:/\b(pulled me from|less time with friends|discouraged|said my friends|said my family|doesn.t like when i|jealous of my|isolated)\b/i},
+  // Entitlement
+  {phase:[1,2,3],tag:'entitle',label:'Entitlement signals',
+   desc:'He expects special treatment, reacts badly to normal boundaries, or keeps score.',
+   re:/\b(expected|feels entitled|reacts badly|doesn.t take no|keeps score|owes him|his rules|his way|i had to|not allowed)\b/i},
+  // Lack of empathy
+  {phase:[3,4,5],tag:'no-empathy',label:'Absence of empathy',
+   desc:'He showed no genuine curiosity or concern when you shared something painful.',
+   re:/\b(didn.t care|not interested in my|changed subject|about him|minimised|laughed at|no response when i said|couldn.t hold space)\b/i},
+  // Triangulation
+  {phase:[2,3,4],tag:'triangle',label:'Triangulation',
+   desc:'He introduced a third person (ex, colleague, friend) to create jealousy or insecurity.',
+   re:/\b(mentioned his ex|talked about|she always|other women|made me jealous|compare me|used to date|she.s just a friend)\b/i},
+  // Grandiosity
+  {phase:[1,2],tag:'grandiose',label:'Grandiosity',
+   desc:'He speaks of himself as exceptional, misunderstood, or above normal rules.',
+   re:/\b(nobody understands|most people can.t|i.m different|not like other|above|exceptional|they.re all jealous|i.m the only one who)\b/i},
+];
+
+var NARC_SAFE_SIGNS = [
+  'He accepted a boundary without argument or sulking.',
+  'He acknowledged making a mistake without deflecting.',
+  'He showed genuine curiosity about your inner life.',
+  'He introduced you to people in his life voluntarily.',
+  'His stories about himself are consistent over time.',
+  'He responds to your pain with warmth, not competition.',
+];
+
+function checkNarcIndicators(phaseNum){
+  // Check observation log entries for this phase or all phases
+  var log = S.log || [];
+  var flags = [];
+  var entries = log.filter(function(e){ return e.text && e.text.length > 10; });
+  
+  NARC_RED_FLAGS.forEach(function(rule){
+    if(rule.phase.indexOf(phaseNum) === -1 && rule.phase.indexOf(0) === -1) return;
+    var matched = entries.some(function(e){ return rule.re.test(e.text); });
+    if(matched) flags.push(rule);
+  });
+  return flags;
+}
+
+function renderNarcChecker(phaseNum){
+  var flags = checkNarcIndicators(phaseNum);
+  var html = '<div class="narc-check-card">';
+  html += '<div class="narc-check-hd">';
+  html += '<svg width="14" height="13" viewBox="0 0 20 18" fill="var(--rose)"><path d="M10 17C10 17 1 10.5 1 5.5 1 2.9 3 1 5.5 1 7.5 1 9 2.5 10 4 11 2.5 12.5 1 14.5 1 17 1 19 2.9 19 5.5 19 10.5 10 17Z"/></svg>';
+  html += 'Narcissism pattern check';
+  html += '</div>';
+  
+  if(flags.length === 0){
+    html += '<div class="narc-green">';
+    html += '<span class="narc-label-grn">No patterns detected</span>';
+    html += 'Your observation log does not yet show narcissistic red flags in his behaviour. Keep observing.';
+    html += '</div>';
+    // Show one safe sign
+    var safe = NARC_SAFE_SIGNS[phaseNum % NARC_SAFE_SIGNS.length];
+    html += '<div style="font-size:11px;color:var(--mist);font-style:italic;margin-top:8px;line-height:1.55">Watch for: '+safe+'</div>';
+  } else {
+    flags.forEach(function(f){
+      html += '<div class="narc-flag">';
+      html += '<span class="narc-label-red">'+f.label+'</span>';
+      html += f.desc;
+      html += '</div>';
+    });
+    if(flags.length >= 2){
+      html += '<div style="margin-top:10px;padding:10px 12px;background:#fdf0ec;border-radius:10px;font-family:var(--serif);font-size:12px;color:var(--deep);font-style:italic;line-height:1.65;">';
+      html += '\u26a0\ufe0f Two or more patterns suggest a potentially narcissistic dynamic. Your feelings of confusion, walking on eggshells, or feeling not enough are data \u2014 not character flaws.';
+      html += '</div>';
+    }
+  }
+  html += '</div>';
+  return html;
+}
+
+/* Phase 0 narcissism reflection */
+function getNarcP0Reflection(answers){
+  var flags = [];
+  var text = (answers||[]).join(' ').toLowerCase();
+  
+  var p0NarcChecks = [
+    {re:/felt chosen|finally seen|never felt this way|like he really got me|he understood me like nobody/i,
+     label:'Intensity of being "chosen"',
+     note:'Narcissists are skilled at making you feel uniquely seen early on. This is called mirroring — he reflects your values and desires back at you before you know enough about him. Real knowing takes time.'},
+    {re:/changed for him|smaller|edited myself|careful what i say|didn.t want to upset|walking on eggshells/i,
+     label:'Self-editing around him',
+     note:'If you routinely filter yourself to manage his reactions, that is not love — that is management. A safe partner does not require you to be a smaller version of yourself.'},
+    {re:/his fault|blamed me|turned it around|i was always wrong|made me feel crazy/i,
+     label:'Blame and accountability patterns',
+     note:'In a healthy relationship, responsibility is shared. If most conflicts end with you apologising or doubting yourself, the accountability is not balanced.'},
+    {re:/hot and cold|never knew where i stood|sometimes amazing sometimes|inconsistent|unpredictable/i,
+     label:'Intermittent reinforcement',
+     note:'Unpredictable warmth followed by withdrawal is one of the most potent bonding mechanisms. It creates addiction-like attachment. This is not chemistry — it is conditioning.'},
+    {re:/apologise for being|felt too much|too sensitive|too needy|drama/i,
+     label:'Being labelled "too much"',
+     note:'If you were regularly told you were too sensitive, too needy, or too dramatic, examine who was labelling you that way. Women who make themselves smaller to stop being called too much are often in dynamics designed to silence them.'},
+  ];
+  
+  p0NarcChecks.forEach(function(check){
+    if(check.re.test(text)) flags.push(check);
+  });
+  return flags;
+}
+
+
+/* ══ END RELATIONSHIP ══ */
+function endThingsAndGoSingle(){
+  openEndItModal();
+}
+
+function breakUp(){
+  openEndItModal();
+}
+
+document.addEventListener("DOMContentLoaded",lpRender);}
 
 function lpRender(){
   var f = LP_FEATURES[lpIdx];
@@ -5720,7 +6263,7 @@ document.addEventListener("DOMContentLoaded",function(){
   el("restoreFileInput").addEventListener("change",restoreFile);
   el("resetBtn").addEventListener("click",resetData);
   // load saved data into fields
-  loadHim();loadSelfCare();loadPhase0();loadMode();
+  loadHim();loadSelfCare();loadPhase0();loadMode();renderSelfFlagFeed();
   lpRender();
   spawnLandingHearts();
   // Migration: if phase0 marked complete but readiness < 90, clear it
@@ -5756,7 +6299,11 @@ document.addEventListener("DOMContentLoaded",function(){
 <!-- END IT MODAL -->
 <div class="endit-backdrop" id="enditBackdrop" onclick="closeEndItModal()">
   <div class="endit-modal" onclick="event.stopPropagation()">
-    <div class="endit-modal-header">
+    <div class="endit-modal-header" style="position:relative;">
+    <div style="position:absolute;top:12px;right:14px;display:flex;gap:4px;opacity:.18;">
+      <svg width="11" height="10" viewBox="0 0 20 18" fill="var(--rose)"><path d="M10 17C10 17 1 10.5 1 5.5 1 2.9 3 1 5.5 1 7.5 1 9 2.5 10 4 11 2.5 12.5 1 14.5 1 17 1 19 2.9 19 5.5 19 10.5 10 17Z"/></svg>
+      <svg width="7" height="6" viewBox="0 0 20 18" fill="var(--petal)"><path d="M10 17C10 17 1 10.5 1 5.5 1 2.9 3 1 5.5 1 7.5 1 9 2.5 10 4 11 2.5 12.5 1 14.5 1 17 1 19 2.9 19 5.5 19 10.5 10 17Z"/></svg>
+    </div>
       <div class="endit-modal-title">Closing this chapter &#9825;</div>
       <div class="endit-modal-sub">This goes directly into your relationship log. You only need to do this once.</div>
     </div>
