@@ -3126,7 +3126,7 @@ function renderLog(){
       var body=card.querySelector('.log-add-block');
       var list=el('logList');
       if(body) body.style.display='none';
-      if(list){ list.innerHTML='<div style="text-align:center;padding:28px 20px;font-family:var(--serif);font-size:15px;font-style:italic;color:var(--mist);line-height:1.7">&#128274; The observation log opens once Phase 0 is complete.<br><span style="font-size:13px">Complete your relationship self-report at the top of the page first.<br>Your readiness must reach 90% before you begin recording him.</span></div>';
+      if(list){ list.innerHTML='<div style="text-align:center;padding:28px 20px;font-family:var(--serif);font-size:15px;font-style:italic;color:var(--mist);line-height:1.7">&#128274; The observation log opens once Phase 0 is complete.<br><span style="font-size:13px">Complete your relationship self-report at the top of the page first.<br>Your readiness must reach 50% before you begin recording him.</span></div>';
       }
     }
     return;
@@ -4756,7 +4756,7 @@ function savePhase0(){
 function loadPhase0(){
   if(!S.phase0) return;
   // Revoke stale completions — if stored readiness is below 90, unlock is not valid
-  if(S.phase0.complete && S.phase0.analysis && S.phase0.analysis.readiness < 90){
+  if(S.phase0.complete && S.phase0.analysis && S.phase0.analysis.readiness < 50){
     S.phase0.complete = false;
     delete S.phase0.completedDate;
     save();
@@ -5175,7 +5175,7 @@ function analysePhase0(){
   };
 
   var blocked=flags.indexOf('wound-unnamed')>-1||flags.indexOf('blame')>-1||flags.indexOf('no-plan')>-1;
-  var unlockable=readiness>=90&&!blocked;
+  var unlockable=readiness>=50&&!blocked;
   // Detect wound type from answers for personalised recommendations
   var woundTags=[];
   var allText=(ans.join(' ')).toLowerCase();
@@ -5250,8 +5250,8 @@ function renderPhase0Analysis(result){
   var wrap=document.getElementById('p0AnalysisWrap');
   if(!wrap)return;
   var pct=result.readiness;
-  var scoreCol=pct>=90?'var(--green)':pct>=65?'var(--mauve)':'#b5614a';
-  var scoreLabel=pct>=90?'Ready to begin':pct>=65?'Getting closer':'More depth needed';
+  var scoreCol=pct>=50?'var(--green)':pct>=35?'var(--mauve)':'#b5614a';
+  var scoreLabel=pct>=50?'Ready to begin':pct>=35?'Getting closer':'More depth needed';
   var html='<div style="margin-top:22px;padding-top:20px;border-top:1px solid var(--pink-100)">';
   html+='<div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mauve);margin-bottom:14px">What your self-report reveals</div>';
 
@@ -5259,7 +5259,7 @@ function renderPhase0Analysis(result){
   html+='<div style="display:flex;align-items:center;gap:16px;background:var(--blush);border-radius:14px;padding:16px 18px;margin-bottom:14px">';
   html+='<div style="text-align:center;min-width:64px"><div style="font-family:var(--serif);font-size:40px;font-weight:400;color:'+scoreCol+';line-height:1">'+pct+'</div><div style="font-size:10px;color:var(--mist)">/100</div></div>';
   html+='<div style="flex:1"><div style="font-family:var(--serif);font-size:18px;color:'+scoreCol+';margin-bottom:6px">'+scoreLabel+'</div>';
-  html+='<div style="font-size:11px;color:var(--mist);margin-bottom:8px">Pass mark: 90. All five dimensions must be present.</div>';
+  html+='<div style="font-size:11px;color:var(--mist);margin-bottom:8px">Pass mark: 50. All five dimensions must be present.</div>';
   html+='<div style="width:100%;height:6px;background:var(--pink-100);border-radius:99px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:'+scoreCol+';border-radius:99px;transition:width .6s ease"></div></div></div></div>';
 
   // Dimension bars
@@ -5310,7 +5310,7 @@ function renderPhase0Analysis(result){
     if(result.flags.indexOf('performance-A1')>-1)blockReasons.push('Replace therapy language with specific examples (Section A, step 1)');
     if(result.flags.indexOf('contradiction-A1')>-1)blockReasons.push('Remove the contradiction in step A1 — own it or do not');
     html+='<div style="background:var(--blush);border:1px solid var(--petal);border-radius:14px;padding:18px 20px;margin-top:6px">';
-    html+='<div style="font-family:var(--serif);font-size:18px;color:var(--deep);margin-bottom:8px">Phase 1 is not yet unlocked ('+result.readiness+'/100. You need 90 to unlock.)</div>';
+    html+='<div style="font-family:var(--serif);font-size:18px;color:var(--deep);margin-bottom:8px">Phase 1 is not yet unlocked ('+result.readiness+'/100. You need 50 to unlock.)</div>';
     if(blockReasons.length){
       html+='<div style="font-size:12px;color:var(--mist);margin-bottom:10px">Hard requirements not met:</div>';
       blockReasons.forEach(function(r){html+='<div style="font-size:12px;color:var(--deep);padding:5px 0 5px 14px;border-left:3px solid var(--rose);margin-bottom:6px;font-weight:500">'+r+'</div>';});
@@ -5647,8 +5647,8 @@ function downloadPhase0PDF(){
   var dimPct=analysis&&analysis.dimPct||{};
   var weakest=analysis&&analysis.weakest||'';
   var readiness=analysis?analysis.readiness:0;
-  var scoreLabel=readiness>=90?'Ready to begin':readiness>=65?'Getting closer':'More depth needed';
-  var scoreCol=readiness>=90?'#639922':readiness>=65?'#7a2444':'#c4406b';
+  var scoreLabel=readiness>=50?'Ready to begin':readiness>=35?'Getting closer':'More depth needed';
+  var scoreCol=readiness>=50?'#639922':readiness>=35?'#7a2444':'#c4406b';
 
   // Build full HTML string
   var h='';
@@ -5717,7 +5717,7 @@ function downloadPhase0PDF(){
     h+='<div class="score-num" style="color:'+scoreCol+'">'+readiness+'</div>';
     h+='<div class="score-detail">';
     h+='<div class="score-label" style="color:'+scoreCol+'">'+scoreLabel+'</div>';
-    h+='<div class="score-note">Pass mark: 90 &nbsp;|&nbsp; Five dimensions scored</div>';
+    h+='<div class="score-note">Pass mark: 50 &nbsp;|&nbsp; Five dimensions scored</div>';
     h+='<div class="bar-outer"><div class="bar-inner" style="width:'+readiness+'%;background:'+scoreCol+'"></div></div>';
     h+='</div></div>';
 
@@ -6267,7 +6267,7 @@ document.addEventListener("DOMContentLoaded",function(){
   lpRender();
   spawnLandingHearts();
   // Migration: if phase0 marked complete but readiness < 90, clear it
-  if(S.phase0&&S.phase0.complete&&(!S.phase0.analysis||S.phase0.analysis.readiness<90)){
+  if(S.phase0&&S.phase0.complete&&(!S.phase0.analysis||S.phase0.analysis.readiness<50)){
     S.phase0.complete=false;
     delete S.phase0.completedDate;
     save();
