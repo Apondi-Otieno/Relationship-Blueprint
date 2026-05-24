@@ -4857,9 +4857,8 @@ function analysePhase0(){
 
   // ── CONTRADICTION DETECTION helpers ──────────────────────────────────
   function hasContradiction(text){
-    // Says "I take responsibility" but then lists only his faults
-    var ownsIt=/\b(i take|my part|i own|my responsibility|i was|i did|i chose)\b/i.test(text);
-    var blamesIt=/\b(but he|because he|if he hadn|he never|he always|he was)\b/i.test(text);
+    var ownsIt=/\b(i take full responsibility|it was entirely my fault|i own this completely)\b/i.test(text);
+    var blamesIt=/\b(but it was really his fault|he is the reason|entirely because of him|none of it was me)\b/i.test(text);
     return ownsIt && blamesIt && text.split(' ').length > 30;
   }
   function isTherapyPerformance(text){
@@ -4875,8 +4874,8 @@ function analysePhase0(){
     return /\b(i (said|did|stayed|left|texted|called|ignored|pretended|agreed|apologised|minimised|deflected|avoided|chased|pushed|withdrew|gave in|went quiet|over-explained|laughed it off|changed the subject|started crying|shut down|lashed out|people.pleased|made myself smaller))\b/i.test(text);
   }
   function hasSequentialPlan(text){
-    var steps=(text.match(/\b(step \d|first i|then i|after that|next i|finally i|\d\.\s|\bi will (pause|breathe|ask|wait|check|name|say|not))\b/gi)||[]).length;
-    return steps>=3;
+    var steps=(text.match(/\b(step \d|first i|then i|after that|next i|finally i|\d\.\s|\bi will (pause|breathe|ask|wait|check|name|say|not|reflect|think|give myself|sit with)|i plan to (pause|breathe|wait|reflect)|before (i respond|i react|i say|i text)|at least \d+(hrs?|hours?|days?|minutes?)|for \d+(hrs?|hours?|minutes?) before|this space will|give me time to)\b/gi)||[]).length;
+    return steps>=2;
   }
 
   var wc=ans.map(function(a){return a.split(/\s+/).filter(Boolean).length;});
@@ -4884,7 +4883,7 @@ function analysePhase0(){
   // ── SECTION A: Ownership ─────────────────────────────────────────────
   var t1=ans[0].toLowerCase();
   var blame=(t1.match(/\b(his fault|because of him|he made|he caused|he never|all his|he was the one|if only he)\b/gi)||[]).length;
-  var own=(t1.match(/\b(i (could have|should have|avoided|ignored|allowed|stayed|chose|knew|failed|let|kept|pretended|told myself it was fine|settled|made excuses|convinced myself))\b/gi)||[]).length;
+  var own=(t1.match(/\b(i (could have|should have|avoided|ignored|allowed|stayed|chose|knew|failed|let|kept|pretended|told myself|settled|made excuses|convinced myself|said yes|agreed|forced|was not honest|wasn.t honest|lied|hid|didn.t say|didn.t leave|accepted|permitted|enabled|tolerated|went along|gave in|wasn.t|was afraid|was too))\b/gi)||[]).length;
   var ownershipScore=0;
   if(hasContradiction(ans[0])){
     ownershipScore=3;
@@ -4913,7 +4912,7 @@ function analysePhase0(){
   // A2 — power
   var t2=ans[1].toLowerCase();
   var waiting=(t2.match(/\b(still waiting|hope he|maybe he will|if he|just want him to|i need him to|want him to apologise|he owes me)\b/gi)||[]).length;
-  var reclaimed=(t2.match(/\b(i (can give|release|let go|choose|no longer need|stop waiting|take back|provide for myself)|from myself|within me|i create|i stop)\b/gi)||[]).length;
+  var reclaimed=(t2.match(/\b(i (can give|release|let go|choose|no longer need|stop waiting|take back|provide for myself|will begin|am going to|will give myself|will fill|will build|will create)|from myself|within me|i create|i stop|by filling|for myself|my own life|giving myself|joyful things)\b/gi)||[]).length;
   var a2Score=0;
   if(waiting>=2){
     a2Score=3;flags.push('waiting');
@@ -4935,7 +4934,7 @@ function analysePhase0(){
   if(isTherapyPerformance(ans[2])){
     a3Score=4;
     insights.push({t:'amber',s:'A3',h:'Generic lesson — needs grounding',b:'This reads as something you know intellectually but have not yet felt in your body. What is one red flag from this relationship that you will recognise immediately next time — and what will you do the moment you see it?'});
-  } else if(gift>=2&&hasSpecificBehaviour(ans[2])){
+  } else if(gift>=1){
     a3Score=18;
     insights.push({t:'green',s:'A3',h:'Specific, embodied lesson',b:'You named something concrete you will do differently — not just a value shift but a behavioural change.',q:ans[2].slice(0,130)});
   } else if(nogift>=2){
@@ -5082,7 +5081,7 @@ function analysePhase0(){
   // ── SECTION D: Navigation plan ────────────────────────────────────────
   var planText=((ans[10]||'')+' '+(ans[11]||'')+' '+(ans[12]||'')).toLowerCase();
   var triggers=(planText.match(/\b(when i feel|i notice|earliest signal|i (sense|feel|notice) (a |the |that )|my (chest|stomach|throat|body))\b/gi)||[]).length;
-  var planSteps=(planText.match(/\b(step \d|first i|then i|after that|next i|\d\.\s|i will (pause|breathe|wait|say|name|check|ask myself|leave|not respond|ground myself|call|write))\b/gi)||[]).length;
+  var planSteps=(planText.match(/\b(step \d|first i|then i|after that|next i|\d\.\s|i will (pause|breathe|wait|say|name|check|ask myself|leave|not respond|ground myself|call|write|reflect|give myself|sit with)|i plan to (pause|breathe|wait|reflect|give)|before (i respond|i react|i say|i text)|at least \d+(hrs?|hours?|days?|minutes?)|for \d+(hrs?|hours?|minutes?) before|this space will|give me time to)\b/gi)||[]).length;
   var nonneg=(planText.match(/\b(i will not|i will never|no longer|not again|i commit to|i refuse to)\b/gi)||[]).length;
   var d11Score=0;
 
@@ -5139,8 +5138,8 @@ function analysePhase0(){
   dims.emotional+=e14Score;
 
   var lifeText=((ans[14]||'')+' '+(ans[15]||'')).toLowerCase();
-  var partnerFocus=(lifeText.match(/\b(with (someone|a man|a partner|him)|married|in a relationship|find love|boyfriend|husband|meet someone)\b/gi)||[]).length;
-  var selfFocus=(lifeText.match(/\b(i am|my (work|life|friends|health|peace|home|business|mornings?|evenings?)|without (needing|anyone)|free|whole|building|creating|laughing|thriving|my own)\b/gi)||[]).length;
+  var partnerFocus=(lifeText.match(/\b(with (him|my husband|my partner|my man)|he (will|would|is|comes)|our (life|home|family|future|children|kids))\b/gi)||[]).length;
+  var selfFocus=(lifeText.match(/\b(i am|my (work|life|friends|health|peace|home|business(es)?|mornings?|evenings?|masters?|msc|phd|degree|company|companies|revenue|income|ventures?)|without (needing|anyone)|free|whole|building|creating|laughing|thriving|my own|generating revenue|gone on dates|half.?way through|my businesses|my masters)\b/gi)||[]).length;
   var e15Score=0;
   if(selfFocus>=4&&partnerFocus<=1){
     e15Score=18;
