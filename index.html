@@ -6250,16 +6250,16 @@ var lpIdx = 0;
 if(document.readyState!=="loading"){setTimeout(lpRender,0);}else{
 /* ══ SELF-REFLECTION CLASSIFIER ══ */
 var SELF_FLAG_PATTERNS = [
-  {tag:'shrink',    label:'Self-shrinking',    re:/\b(shrink|smaller|people.pleas|fawn|fawning|made myself|held back)\b/i},
-  {tag:'chase',     label:'Chasing',           re:/\b(chase|chasing|checking|obsess|why hasn.t|follow.{0,6}up|waiting for him)\b/i},
-  {tag:'overexplain',label:'Over-explaining',  re:/\b(over.?explain|justify|defend myself|prove myself|seek.{0,8}approval|apologis)\b/i},
-  {tag:'anxiety',   label:'Anxious thoughts',  re:/\b(anxi|spiral|overthink|replay|can.t stop thinking|rumina)\b/i},
-  {tag:'tooneedy',  label:'Too much/needy',    re:/\b(too (much|needy|intense)|desperate|came on (strong|too)|clingy)\b/i},
-  {tag:'selfabandon',label:'Self-abandonment', re:/\b(self.abandon|put him first|lost myself|forgot who i am|ignored my needs)\b/i},
-  {tag:'jealous',   label:'Insecurity',        re:/\b(jealous|possessive|insecure|compared myself|not good enough)\b/i},
-  {tag:'testing',   label:'Testing/sabotage',  re:/\b(test(ing|ed) him|push(ed|ing).{0,6}away|pick(ed|ing).{0,6}fight|created drama|sabotage)\b/i},
-  {tag:'dishonest', label:'Inauthenticity',    re:/\b(lied|hid|pretended|performed|wasn.t honest|fake|not authentic)\b/i},
-  {tag:'ignore',    label:'Ignoring gut',      re:/\b(ignor.{0,8}(gut|instinct|red flag)|told myself it was fine|convinced myself|made excuses)\b/i},
+  {tag:'anxiety',    label:'Anxious thoughts',   re:/\b(anxi|spiral|overthink|replay|can.t stop thinking|rumina|worried|scared|fear(ed)?|nervous|panick|what if he|what if i|keep thinking|in my head|my mind keeps|lose interest|lose him|forget (about )?me|move on without)\b/i},
+  {tag:'chase',      label:'Chasing',            re:/\b(chase|chasing|checking|obsess|why hasn.t|follow.{0,6}up|waiting for him|keep check|check(ing)? my phone|waiting for (him to |his )?text|waiting to hear|reach(ed)? out again|texted (first|him|again)|messaged (him|first|again)|why (hasn.t|didn.t|won.t) he|he hasn.t (texted|called|replied|responded)|making (myself|me) available|always available|drop everything)\b/i},
+  {tag:'shrink',     label:'Self-shrinking',     re:/\b(shrink|smaller|people.pleas|fawn|fawning|made myself|held back|didn.t say|couldn.t say|bit my tongue|stayed quiet|agreed (when i didn.t|even though)|went along with|pretended (to be okay|it was fine)|didn.t want to (upset|push|scare|lose)|afraid to (say|tell|speak|push|be honest)|adjusted (myself|who i am)|changed (myself|my plans) for|moulded myself)\b/i},
+  {tag:'tooneedy',   label:'Too much/needy',     re:/\b(too (much|needy|intense|available)|desperate|came on (strong|too)|clingy|need(ed)? his (attention|validation|reassurance)|craving (his attention|validation|his approval)|wanted him to (notice|see|acknowledge|appreciate|text|call me)|seeking (his approval|validation|reassurance))\b/i},
+  {tag:'selfabandon',label:'Self-abandonment',   re:/\b(self.abandon|put him first|lost myself|forgot who i am|ignored my needs|cancelled.{0,30}(for him|because of him)|gave up.{0,20}for him|skipped.{0,20}for him|my (life|work|friends|plans|goals).{0,20}(can wait|don.t matter|took a back seat)|prioriti(s|z)(ed|ing) him|making him (my priority|the priority|everything))\b/i},
+  {tag:'overexplain',label:'Over-explaining',    re:/\b(over.?explain|justify|defend myself|prove myself|seek.{0,8}approval|apologis|explained (myself|why i|that i)|kept (explaining|saying)|wanted him to understand|needed him to (know|see|understand|believe)|over.?shared|told him (everything|too much|more than i should))\b/i},
+  {tag:'jealous',    label:'Insecurity',         re:/\b(jealous|possessive|insecure|compared myself|not good enough|wondered if (she|another|other women?)|who (is she|was she|he was with)|not (pretty|smart|interesting|fun|enough) enough|she.s (prettier|better|more)|checking (her|his female|his ig|his likes)|looked (her|them) up)\b/i},
+  {tag:'ignore',     label:'Ignoring gut',       re:/\b(ignor.{0,8}(gut|instinct|red flag)|told myself it was fine|convinced myself|made excuses (for|why)|excused (his|the)|rationalised|explained away|red flag|gut (feeling|said|told me|was telling)|something (felt|feels) off|saw (it|the signs) and (ignored|stayed|went back))\b/i},
+  {tag:'testing',    label:'Testing/sabotage',   re:/\b(test(ing|ed) him|push(ed|ing).{0,6}away|pick(ed|ing).{0,6}fight|created drama|sabotage|picked a fight|started (an argument|drama|a fight)|caused (drama|conflict)|pushed him (away|to see)|testing (if he|whether he|how he)|wanted to (see if|know if|test whether) he (would|could|cared|stayed))\b/i},
+  {tag:'dishonest',  label:'Inauthenticity',     re:/\b(lied|hid|pretended|performed|wasn.t honest|fake|not authentic|acting (like i|as if i|like everything)|pretend(ed|ing) (i was|to be|that i)|not (being honest|telling the truth|saying what i really)|held back the truth|showed him a version|curated (myself|what he sees)|performed (for him|happiness|okayness))\b/i},
 ];
 
 function classifySelfFlag(text){
