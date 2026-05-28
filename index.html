@@ -6708,33 +6708,104 @@ function htSubmit(){
 function htRenderAnswerSummary(grade){
   var wrap = document.getElementById('htAnswerSummary');
   if(!wrap) return;
-  var at = window._htAnswerTexts || {};
-  var sectionLabels = {
-    1:'A — Accountability & Honesty',
-    5:'B — Emotional Maturity',
-    8:'C — Consistency & Follow-through',
-    11:'D — Vision & Values',
-    14:'E — How He Treats People',
-    17:'F — Readiness & Presence'
-  };
-  var scoreColors = {4:'var(--green)',3:'#7a6020',2:'var(--rose)',1:'#c4406b'};
-  var html = '';
-  for(var q=1; q<=20; q++){
-    if(sectionLabels[q]){
-      html += '<div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mauve);margin:'+(q===1?'0':'16px')+' 0 8px;">'+sectionLabels[q]+'</div>';
-    }
-    var entry = at[q];
-    if(entry){
-      var col = scoreColors[entry.score] || 'var(--mist)';
-      html += '<div style="background:white;border:1px solid var(--pink-100);border-radius:10px;padding:10px 13px;margin-bottom:6px;">';
-      html += '<div style="font-size:11px;color:var(--mist);margin-bottom:4px;">'+entry.q+'</div>';
-      html += '<div style="font-size:12px;font-family:var(--serif);color:var(--deep);display:flex;align-items:flex-start;gap:6px;">';
-      html += '<span style="color:'+col+';font-weight:700;flex-shrink:0;">'+(entry.score===4?'A':entry.score===3?'B':entry.score===2?'C':'D')+'</span>';
-      html += '<span>'+entry.a+'</span></div>';
-      html += '</div>';
-    }
+
+  var scores = (S.hisTest && S.hisTest.answers) || _htAnswers || {};
+  var savedAt = (S.hisTest && S.hisTest.answerTexts) || window._htAnswerTexts || {};
+
+  // Build at from static lookup + saved scores
+  var at = {};
+  for(var q=1;q<=20;q++){
+    var sc=scores[q]||0;
+    var ai=sc>0?(4-sc):0;
+    at[q]=savedAt[q]||{
+      q:typeof HT_Q_TEXT!=='undefined'?HT_Q_TEXT[q-1]:'Q'+q,
+      a:(sc>0&&typeof HT_A_TEXT!=='undefined')?HT_A_TEXT[q-1][ai]:'',
+      score:sc
+    };
   }
-  wrap.innerHTML = html;
+
+  var gData = HT_GRADES[grade];
+  var pct  = (S.hisTest&&S.hisTest.pct)||0;
+  var total= (S.hisTest&&S.hisTest.total)||0;
+  var date = (S.hisTest&&S.hisTest.date)||'';
+  var gradeCol ={A:'#2d7a2d',B:'#4a7a2a',C:'#7a6020',D:'#b5614a',E:'#c4406b'}[grade]||'#c4406b';
+  var barCol   ={A:'#4CAF50',B:'#8BC34A',C:'#FF9800',D:'#FF5722',E:'#c4406b'}[grade]||'#c4406b';
+  var aCol={4:'#2d7a2d',3:'#7a6020',2:'#b5614a',1:'#c4406b'};
+  var aBg ={4:'#e8f5e8',3:'#fdf3d0',2:'#fde8e0',1:'#fde0e8'};
+  var aLtr={4:'A',3:'B',2:'C',1:'D'};
+
+  var sections=[
+    {label:'A \u2014 Accountability & Honesty',    start:1, end:4, max:16},
+    {label:'B \u2014 Emotional Maturity',          start:5, end:7, max:12},
+    {label:'C \u2014 Consistency & Follow-through',start:8, end:10,max:12},
+    {label:'D \u2014 Vision & Values',             start:11,end:13,max:12},
+    {label:'E \u2014 How He Treats People',        start:14,end:16,max:12},
+    {label:'F \u2014 Readiness & Presence',        start:17,end:20,max:16}
+  ];
+
+  var h='';
+
+  // ── HEADER ──────────────────────────────────────────────────────────────
+  h+='<div style="text-align:center;padding:32px 20px 24px;border-bottom:1px solid var(--pink-100);margin-bottom:24px;">';
+  h+='<div style="font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--mauve);margin-bottom:10px;">Compatibility Checker \u2014 My Relationship Blueprint</div>';
+  h+='<div style="font-family:var(--serif);font-size:88px;font-weight:300;line-height:1;color:'+gradeCol+';margin-bottom:6px;">'+grade+'</div>';
+  h+='<div style="font-family:var(--serif);font-size:20px;font-weight:400;color:'+gradeCol+';margin-bottom:10px;">'+gData.label+'</div>';
+  h+='<div style="font-family:var(--serif);font-size:13px;font-style:italic;color:var(--mist);line-height:1.7;max-width:480px;margin:0 auto 16px;">'+gData.desc+'</div>';
+  h+='<div style="max-width:280px;margin:0 auto 6px;height:8px;background:var(--pink-100);border-radius:99px;overflow:hidden;">';
+  h+='<div style="width:'+pct+'%;height:100%;background:'+barCol+';border-radius:99px;"></div></div>';
+  h+='<div style="font-size:12px;color:var(--mist);margin-bottom:14px;">'+pct+'% \u2014 '+total+'/80 points \u2014 '+date+'</div>';
+  h+='<div style="background:white;border:1px solid var(--pink-100);border-radius:14px;padding:14px 18px;max-width:520px;margin:0 auto;font-family:var(--serif);font-size:13px;font-style:italic;color:var(--deep);line-height:1.7;text-align:left;">'+gData.advice+'</div>';
+  h+='</div>';
+
+  // ── SECTION BREAKDOWN SUMMARY ────────────────────────────────────────────
+  h+='<div style="margin-bottom:24px;">';
+  h+='<div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--mauve);margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid var(--pink-100);">Section Breakdown</div>';
+  sections.forEach(function(sec){
+    var st=0;for(var q=sec.start;q<=sec.end;q++){if(scores[q])st+=scores[q];}
+    var sp=Math.round(st/sec.max*100);
+    var sc=sp>=75?'#4CAF50':sp>=50?'#FF9800':sp>=25?'#FF5722':'#c4406b';
+    h+='<div style="margin-bottom:9px;">';
+    h+='<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;">';
+    h+='<span style="color:var(--deep);font-weight:500;">'+sec.label+'</span>';
+    h+='<span style="color:'+sc+';font-weight:600;">'+sp+'%</span></div>';
+    h+='<div style="height:7px;background:var(--pink-100);border-radius:99px;overflow:hidden;">';
+    h+='<div style="width:'+sp+'%;height:100%;background:'+sc+';border-radius:99px;"></div></div>';
+    h+='</div>';
+  });
+  h+='</div>';
+
+  // ── FULL ANSWERS BY SECTION ───────────────────────────────────────────────
+  sections.forEach(function(sec){
+    var st=0;for(var q=sec.start;q<=sec.end;q++){if(scores[q])st+=scores[q];}
+    var sp=Math.round(st/sec.max*100);
+    var sc=sp>=75?'#4CAF50':sp>=50?'#FF9800':sp>=25?'#FF5722':'#c4406b';
+    h+='<div style="margin-bottom:24px;">';
+    // Section header + bar
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">';
+    h+='<span style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--mauve);">'+sec.label+'</span>';
+    h+='<span style="font-size:11px;font-weight:600;color:'+sc+';">'+sp+'%</span></div>';
+    h+='<div style="height:5px;background:var(--pink-100);border-radius:99px;overflow:hidden;margin-bottom:10px;">';
+    h+='<div style="width:'+sp+'%;height:100%;background:'+sc+';border-radius:99px;"></div></div>';
+    // Questions
+    for(var q=sec.start;q<=sec.end;q++){
+      var e=at[q];
+      if(e&&e.score>0){
+        var s3=e.score;
+        h+='<div style="background:white;border:1px solid var(--pink-100);border-radius:12px;padding:11px 14px;margin-bottom:7px;display:flex;gap:10px;align-items:flex-start;">';
+        h+='<span style="font-size:12px;font-weight:700;border-radius:6px;padding:2px 7px;flex-shrink:0;margin-top:1px;color:'+(aCol[s3]||'#888')+';background:'+(aBg[s3]||'#eee')+';font-family:var(--sans);">'+(aLtr[s3]||'-')+'</span>';
+        h+='<div>';
+        h+='<div style="font-size:11px;color:var(--mist);margin-bottom:3px;line-height:1.4;">'+e.q+'</div>';
+        h+='<div style="font-family:var(--serif);font-size:13px;color:var(--deep);line-height:1.5;">'+e.a+'</div>';
+        h+='</div></div>';
+      }
+    }
+    h+='</div>';
+  });
+
+  // ── FOOTER ───────────────────────────────────────────────────────────────
+  h+='<div style="text-align:center;padding-top:20px;border-top:1px solid var(--pink-100);font-family:var(--serif);font-size:12px;font-style:italic;color:var(--mist);">&ldquo;Her worth is far above rubies.&rdquo; &mdash; Proverbs 31:10</div>';
+
+  wrap.innerHTML = h;
 }
 
 
