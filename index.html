@@ -1474,6 +1474,146 @@ textarea::placeholder{color:var(--mist);font-style:italic}
   }
   .end-things-btn:hover{border-color:var(--rose);color:var(--rose);}
 
+
+  /* ══ HIS COMPATIBILITY TEST ══ */
+  #hisTestOverlay{
+    display:none;position:fixed;inset:0;z-index:8500;
+    background:var(--cream);overflow-y:auto;
+  }
+  #hisTestOverlay.active{display:block;}
+  .ht-wrap{max-width:680px;margin:0 auto;padding:48px 28px 80px;}
+  .ht-back{
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:12px;color:var(--mist);cursor:pointer;
+    margin-bottom:28px;background:none;border:none;font-family:var(--sans);
+    transition:color .15s;
+  }
+  .ht-back:hover{color:var(--rose);}
+  .ht-eyebrow{
+    font-size:10px;font-weight:700;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--rose);margin-bottom:10px;
+  }
+  .ht-h1{
+    font-family:var(--serif);font-size:clamp(28px,4vw,42px);
+    font-weight:300;color:var(--deep);margin-bottom:10px;line-height:1.1;
+  }
+  .ht-h1 em{font-style:italic;color:var(--rose);}
+  .ht-sub{
+    font-family:var(--serif);font-size:14px;font-style:italic;
+    color:var(--mist);line-height:1.7;margin-bottom:32px;
+  }
+  .ht-section{margin-bottom:28px;}
+  .ht-section-hd{
+    font-size:10px;font-weight:700;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--mauve);
+    margin-bottom:14px;padding-bottom:6px;
+    border-bottom:1px solid var(--pink-100);
+  }
+  .ht-q{
+    background:white;border:1px solid var(--pink-100);
+    border-radius:14px;padding:16px 18px;margin-bottom:10px;
+  }
+  .ht-q-text{
+    font-family:var(--serif);font-size:14px;color:var(--deep);
+    margin-bottom:12px;line-height:1.6;
+  }
+  .ht-q-num{
+    font-size:10px;font-weight:700;color:var(--rose);
+    letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;
+  }
+  .ht-options{display:flex;flex-direction:column;gap:6px;}
+  .ht-opt{
+    display:flex;align-items:center;gap:10px;
+    padding:9px 13px;border:1.5px solid var(--pink-100);
+    border-radius:10px;cursor:pointer;transition:all .15s;
+    background:white;font-size:13px;color:var(--stone);
+    font-family:var(--sans);text-align:left;
+  }
+  .ht-opt:hover{border-color:var(--petal);background:var(--blush);}
+  .ht-opt.selected{border-color:var(--rose);background:#fef0f4;color:var(--deep);}
+  .ht-opt-dot{
+    width:14px;height:14px;border-radius:50%;
+    border:1.5px solid var(--pink-100);flex-shrink:0;
+    transition:all .15s;
+  }
+  .ht-opt.selected .ht-opt-dot{
+    background:var(--rose);border-color:var(--rose);
+  }
+  .ht-submit-row{text-align:center;margin-top:32px;}
+  .ht-submit{
+    padding:14px 40px;background:var(--rose);color:white;
+    border:none;border-radius:99px;font-size:14px;font-weight:500;
+    font-family:var(--sans);cursor:pointer;transition:all .2s;
+    box-shadow:0 4px 16px rgba(196,64,107,.22);
+  }
+  .ht-submit:hover{background:var(--deep);}
+
+  /* Result card */
+  .ht-result{
+    display:none;text-align:center;
+    padding:40px 28px;
+  }
+  .ht-result.show{display:block;}
+  .ht-grade{
+    font-family:var(--serif);font-size:96px;font-weight:300;
+    line-height:1;margin-bottom:8px;
+  }
+  .grade-A{color:#2d7a2d;}
+  .grade-B{color:#4a7a2a;}
+  .grade-C{color:#7a6020;}
+  .grade-D{color:#b5614a;}
+  .grade-E{color:#c4406b;}
+  .ht-grade-label{
+    font-family:var(--serif);font-size:22px;font-weight:400;
+    color:var(--deep);margin-bottom:10px;
+  }
+  .ht-grade-desc{
+    font-family:var(--serif);font-size:14px;font-style:italic;
+    color:var(--mist);line-height:1.7;max-width:440px;margin:0 auto 28px;
+  }
+  .ht-score-bar-wrap{max-width:320px;margin:0 auto 28px;}
+  .ht-score-bar-bg{height:8px;background:var(--pink-100);border-radius:99px;overflow:hidden;}
+  .ht-score-bar-fill{height:100%;border-radius:99px;transition:width 1s ease;}
+  .ht-score-num{font-size:12px;color:var(--mist);margin-top:6px;}
+  .ht-share-text{
+    font-family:var(--serif);font-size:13px;color:var(--stone);
+    background:var(--blush);border-radius:10px;padding:12px;
+    line-height:1.65;margin-bottom:10px;user-select:all;cursor:text;
+  }
+  .ht-add-btn{
+    padding:10px 24px;background:var(--rose);color:white;
+    border:none;border-radius:99px;font-size:13px;font-weight:500;
+    font-family:var(--sans);cursor:pointer;transition:all .2s;
+    margin-top:8px;
+  }
+  .ht-add-btn:hover{background:var(--deep);}
+  .ht-his-score-badge{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:4px 12px;border-radius:99px;font-size:11px;
+    font-weight:700;font-family:var(--sans);
+    margin-left:8px;vertical-align:middle;
+  }
+  .badge-A{background:#e8f5e8;color:#2d7a2d;}
+  .badge-B{background:#edf5e0;color:#4a7a2a;}
+  .badge-C{background:#fdf3d0;color:#7a6020;}
+  .badge-D{background:#fde8e0;color:#b5614a;}
+  .badge-E{background:#fde0e8;color:#c4406b;}
+
+  /* Nav button — matches nav-link style */
+  .btn-his-test{
+    padding:5px 9px;border-radius:8px;
+    font-size:12px;font-weight:500;font-family:var(--sans);
+    color:var(--mist);cursor:pointer;white-space:nowrap;
+    background:none;border:none;transition:all .15s;
+    display:flex;align-items:center;gap:4px;
+  }
+  .btn-his-test:hover{background:var(--blush);color:var(--rose);}
+
+  @media(max-width:600px){
+    .ht-wrap{padding:32px 16px 60px;}
+    .ht-grade{font-size:72px;}
+  }
+
 </style>
 </head>
 <body>
@@ -1540,6 +1680,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
       <button class="nav-link" onclick="navTo('phase0Card')">Self-report</button>
       <button class="nav-link single-section" onclick="switchToRelationship()" style="color:var(--rose)">I started dating &#8594;</button>
       <button class="nav-link" onclick="navTo('phaseCard')">Phases</button>
+      <button class="btn-his-test rel-section" onclick="openHisTest()">Compatibility checker</button>
       <button onclick="navTo('sec-log')" class="nav-link rel-section">Observations</button>
       <button onclick="navTo('sec-flags')" class="nav-link rel-section">Flags</button>
       <button onclick="navTo('sec-checkin')" class="nav-link rel-section">Check-in</button>
@@ -1554,6 +1695,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
   <div class="nav-mobile" id="navMobile">
     <button class="nav-mobile-link" onclick="navTo('phase0Card');closeMobileNav()">Self-report</button>
     <button class="nav-mobile-link" onclick="navTo('phaseCard');closeMobileNav()">Phases</button>
+    <button class="nav-mobile-link rel-section" onclick="openHisTest();closeMobileNav()">&#9825; Compatibility checker</button>
     <button class="nav-mobile-link" onclick="navTo('sec-log');closeMobileNav()">Observations</button>
     <button class="nav-mobile-link" onclick="navTo('sec-flags');closeMobileNav()">Flags</button>
     <button class="nav-mobile-link" onclick="navTo('sec-checkin');closeMobileNav()">Check-in</button>
@@ -2120,6 +2262,17 @@ textarea::placeholder{color:var(--mist);font-style:italic}
       <button class="btn-reset" id="resetBtn">&#8635; Start fresh</button>
     </div>
     <div id="saveMsg" class="save-msg"></div>
+  
+    <div id="hisReportUpload" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--pink-100);">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--rose);margin-bottom:6px;">&#9829; His compatibility report</div>
+      <p style="font-size:12px;color:var(--mist);margin-bottom:10px;line-height:1.6;">He downloaded a report from the compatibility checker. Upload the <code style="font-size:11px;background:var(--blush);padding:1px 5px;border-radius:4px;">.html</code> file here to add his score to your blueprint.</p>
+      <div id="hisReportStatus" style="font-size:12px;font-style:italic;min-height:16px;margin-bottom:8px;"></div>
+      <label style="display:inline-flex;align-items:center;gap:8px;padding:9px 18px;background:white;border:1.5px solid var(--pink-100);border-radius:99px;font-size:12px;font-weight:500;font-family:var(--sans);color:var(--deep);cursor:pointer;transition:all .18s;" onmouseover="this.style.borderColor='var(--petal)'" onmouseout="this.style.borderColor='var(--pink-100)'">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Upload his report
+        <input type="file" accept=".html" style="display:none" onchange="loadHisReport(this)">
+      </label>
+    </div>
   </div>
 
   <div class="mantra rel-section">
@@ -2765,17 +2918,8 @@ function avoidItemFailed(a){
 }
 function getAvoidantCount(){ return AVOIDANT_ITEMS.filter(avoidItemFailed).length; }
 function getAvoidantFails(){ return AVOIDANT_ITEMS.filter(avoidItemFailed); }
-function phase0Passed(){
-  return !!(
-    S.phase0 &&
-    S.phase0.complete &&
-    S.phase0.analysis &&
-    S.phase0.analysis.readiness >= 50
-  );
-}
-
 function isUnlocked(n){
-  if(!phase0Passed()) return false;
+  if(!S.phase0||!S.phase0.complete) return false;
   if(n===1) return true;
   // If terminate order is active, lock everything AFTER the current active phase
   if(terminateActive()&&n>S.activePhase) return false;
@@ -4764,7 +4908,7 @@ function savePhase0(){
 
 function loadPhase0(){
   if(!S.phase0) return;
-  // Revoke stale completions — if stored readiness is below 50, unlock is not valid
+  // Revoke stale completions — if stored readiness is below 90, unlock is not valid
   if(S.phase0.complete && S.phase0.analysis && S.phase0.analysis.readiness < 50){
     S.phase0.complete = false;
     delete S.phase0.completedDate;
@@ -5233,9 +5377,6 @@ function completePhase0(){
   if(result.unlockable){
     S.phase0.complete=true;
     S.phase0.completedDate=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-  } else {
-    S.phase0.complete=false;
-    delete S.phase0.completedDate;
   }
   save();
   renderPhase0Analysis(result);
@@ -6182,6 +6323,433 @@ function breakUp(){
   openEndItModal();
 }
 
+
+/* ══ HIS COMPATIBILITY TEST ══ */
+var _htAnswers = {};
+
+var HT_GRADES = {
+  A: {
+    min: 70, label: 'Grade A \u2014 High compatibility',
+    color: '#2d7a2d', barColor: '#4CAF50',
+    desc: 'Your answers reflect strong emotional availability, accountability, and direction. You show up consistently and with intention. The woman reviewing this is looking for exactly what you are describing \u2014 keep proving it with your actions.',
+    advice: 'A Grade A is a strong start. Words are the proposal \u2014 your actions over time are the evidence. She will be watching, and so will you.'
+  },
+  B: {
+    min: 57, label: 'Grade B \u2014 Promising with gaps',
+    color: '#4a7a2a', barColor: '#8BC34A',
+    desc: 'You have real strengths \u2014 and a few honest gaps. You are likely well-intentioned, and this is a fair self-reflection. The areas where you scored lower are worth looking at.',
+    advice: 'A Grade B means there is something real here. Look at your lower-scoring sections \u2014 those are the areas worth working on, not hiding.'
+  },
+  C: {
+    min: 44, label: 'Grade C \u2014 Proceed with caution',
+    color: '#7a6020', barColor: '#FF9800',
+    desc: 'You are showing up partially. There are meaningful gaps worth being honest about \u2014 in accountability, availability, or emotional readiness. This is not a verdict. It is a mirror.',
+    advice: 'A Grade C means there is work to do. The woman reviewing this deserves someone who is fully present. The question is: are you willing to close the gap?'
+  },
+  D: {
+    min: 30, label: 'Grade D \u2014 Significant concerns',
+    color: '#b5614a', barColor: '#FF5722',
+    desc: 'Several of your answers point to emotional unavailability, inconsistency, or difficulty with accountability. You may have a lot to offer \u2014 but the foundation needs attention before a serious relationship can be built on it.',
+    advice: 'A Grade D is not a verdict on your worth. But it is honest feedback. The woman you are pursuing deserves a man who is ready. The question is whether you are willing to do the work to get there.'
+  },
+  E: {
+    min: 0, label: 'Grade E \u2014 Not ready for what you are building',
+    color: '#c4406b', barColor: '#c4406b',
+    desc: 'Your answers consistently point to unavailability, deflection of accountability, or patterns that would make a slow, intentional relationship very difficult.',
+    advice: 'A Grade E is not a verdict on who you are as a person. It is honest feedback about where you are right now. The blueprint cannot be built on a shaky foundation \u2014 for either of you.'
+  }
+};
+
+function openHisTest(){
+  document.getElementById('hisTestOverlay').classList.add('active');
+  document.getElementById('htForm').style.display = 'block';
+  document.getElementById('htResult').classList.remove('show');
+  window.scrollTo({top:0,behavior:'instant'});
+  // Pre-populate if we have saved answers
+  if(S.hisTest && S.hisTest.answers){
+    _htAnswers = S.hisTest.answers;
+    htRestoreSelections();
+  }
+}
+
+function closeHisTest(){
+  document.getElementById('hisTestOverlay').classList.remove('active');
+}
+
+function htSelect(btn, qNum, score){
+  var container = btn.closest('.ht-options');
+  container.querySelectorAll('.ht-opt').forEach(function(o){ o.classList.remove('selected'); });
+  btn.classList.add('selected');
+  _htAnswers[qNum] = score;
+  // Store answer text (strip the dot span)
+  if(!window._htAnswerTexts) window._htAnswerTexts = {};
+  // Get question text from parent .ht-q
+  var qEl = btn.closest('.ht-q');
+  var qText = qEl ? qEl.querySelector('.ht-q-text').textContent.trim() : 'Q'+qNum;
+  // Get answer text (text content of button minus the dot element)
+  var ansText = btn.textContent.trim();
+  window._htAnswerTexts[qNum] = {q: qText, a: ansText, score: score};
+}
+
+function htRestoreSelections(){
+  Object.keys(_htAnswers).forEach(function(qNum){
+    var score = _htAnswers[qNum];
+    var opts = document.querySelectorAll('.ht-q:nth-child('+qNum+') .ht-opt');
+    // Find by score value stored in onclick
+    document.querySelectorAll('.ht-opt').forEach(function(btn){
+      var onclick = btn.getAttribute('onclick');
+      if(onclick && onclick.indexOf(','+qNum+',') > -1 && onclick.indexOf(','+score+')') > -1){
+        btn.classList.add('selected');
+      }
+    });
+  });
+}
+
+function htSubmit(){
+  var answered = Object.keys(_htAnswers).length;
+  var errEl = document.getElementById('htError');
+  if(answered < 20){
+    errEl.textContent = 'Please answer all 20 questions. You have answered ' + answered + '/20.';
+    errEl.style.display = 'block';
+    errEl.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  errEl.style.display = 'none';
+
+  var total = 0;
+  Object.keys(_htAnswers).forEach(function(q){ total += _htAnswers[q]; });
+  var maxScore = 80; // 20 questions x 4 pts
+  var pct = Math.round(total / maxScore * 100);
+
+  var grade = 'E';
+  var gradeKeys = ['A','B','C','D','E'];
+  for(var g=0;g<gradeKeys.length;g++){
+    if(pct >= HT_GRADES[gradeKeys[g]].min){ grade = gradeKeys[g]; break; }
+  }
+
+  var gData = HT_GRADES[grade];
+
+  // Show result
+  document.getElementById('htForm').style.display = 'none';
+  var resultEl = document.getElementById('htResult');
+  resultEl.classList.add('show');
+
+  document.getElementById('htGradeDisplay').textContent = grade;
+  document.getElementById('htGradeDisplay').className = 'ht-grade grade-'+grade;
+  document.getElementById('htGradeLabel').textContent = gData.label;
+  document.getElementById('htGradeDesc').textContent = gData.desc;
+  document.getElementById('htScoreNum').textContent = pct+'% \u2014 '+total+'/'+maxScore+' points';
+
+  var bar = document.getElementById('htScoreBar');
+  bar.style.background = gData.barColor;
+  setTimeout(function(){ bar.style.width = pct+'%'; }, 100);
+
+  // Share text removed — use Download & share with her button
+
+  // Save to state
+  if(!S.hisTest) S.hisTest = {};
+  S.hisTest.answers = _htAnswers;
+  S.hisTest.answerTexts = window._htAnswerTexts || {};
+  S.hisTest.grade = grade;
+  S.hisTest.pct = pct;
+  S.hisTest.total = total;
+  S.hisTest.date = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  save();
+
+  // Render answer summary
+  htRenderAnswerSummary(grade);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function htRenderAnswerSummary(grade){
+  var wrap = document.getElementById('htAnswerSummary');
+  if(!wrap) return;
+  var at = window._htAnswerTexts || {};
+  var sectionLabels = {
+    1:'A — Accountability & Honesty',
+    5:'B — Emotional Maturity',
+    8:'C — Consistency & Follow-through',
+    11:'D — Vision & Values',
+    14:'E — How He Treats People',
+    17:'F — Readiness & Presence'
+  };
+  var scoreColors = {4:'var(--green)',3:'#7a6020',2:'var(--rose)',1:'#c4406b'};
+  var html = '';
+  for(var q=1; q<=20; q++){
+    if(sectionLabels[q]){
+      html += '<div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mauve);margin:'+(q===1?'0':'16px')+' 0 8px;">'+sectionLabels[q]+'</div>';
+    }
+    var entry = at[q];
+    if(entry){
+      var col = scoreColors[entry.score] || 'var(--mist)';
+      html += '<div style="background:white;border:1px solid var(--pink-100);border-radius:10px;padding:10px 13px;margin-bottom:6px;">';
+      html += '<div style="font-size:11px;color:var(--mist);margin-bottom:4px;">'+entry.q+'</div>';
+      html += '<div style="font-size:12px;font-family:var(--serif);color:var(--deep);display:flex;align-items:flex-start;gap:6px;">';
+      html += '<span style="color:'+col+';font-weight:700;flex-shrink:0;">'+(entry.score===4?'A':entry.score===3?'B':entry.score===2?'C':'D')+'</span>';
+      html += '<span>'+entry.a+'</span></div>';
+      html += '</div>';
+    }
+  }
+  wrap.innerHTML = html;
+}
+
+
+
+function htSaveToBlueprint(){
+  htDownloadPDF();
+}
+
+function htDownloadPDF(){
+  var grade = S.hisTest && S.hisTest.grade;
+  var pct   = S.hisTest && S.hisTest.pct;
+  var total = S.hisTest && S.hisTest.total;
+  var date  = S.hisTest && S.hisTest.date;
+  if(!grade){ alert('Please complete the test first.'); return; }
+
+  var gData = HT_GRADES[grade];
+  var scores = (S.hisTest && S.hisTest.answers) || _htAnswers || {};
+
+  // Static question + answer text lookup — always available regardless of session
+  var HT_Q_TEXT = [
+    'When you make a mistake, what do you typically do?',
+    'When someone you care about raises a concern about your behaviour, your first instinct is to:',
+    'How honest are you about what you want in a relationship — with the person you are seeing?',
+    'Have you ever told a woman what she wanted to hear rather than the truth?',
+    'How comfortable are you sitting with someone else\u2019s emotional pain without trying to fix it?',
+    'When you are angry or hurt, you typically:',
+    'Have you done any intentional work on your own emotional patterns — therapy, coaching, serious self-reflection?',
+    'How consistent is your behaviour toward a woman you are pursuing — across good weeks and bad weeks?',
+    'If you tell someone you will do something, what is your track record?',
+    'When you are interested in someone, how do you show it?',
+    'Are you currently building something meaningful in your life — financially, professionally, or personally?',
+    'What does marriage mean to you?',
+    'How do you feel about a woman who has strong ambitions and a full life of her own?',
+    'How do you treat service staff, strangers, and people who can do nothing for you?',
+    'How do you speak about your past partners?',
+    'When a woman you are seeing sets a boundary, how do you respond?',
+    'Are you genuinely available for a serious relationship right now — emotionally, logistically, and mentally?',
+    'How do you feel about the pace of getting to know someone — taking months before physical intimacy?',
+    'When you are genuinely interested in a woman, what does your pursuit look like?',
+    'What are you ultimately looking for right now?'
+  ];
+  var HT_A_TEXT = [
+    ['Acknowledge it directly and apologise without excuses','Apologise but explain why it happened','Wait for things to calm down before addressing it','Move on and hope it resolves itself'],
+    ['Listen fully before responding','Listen but also explain your side','Feel defensive, even if you don\u2019t show it','Question why they are making it a big deal'],
+    ['Very — I say what I want clearly and early','Mostly — I share when asked directly','Somewhat — I wait to see how things develop first','I keep my cards close and let things unfold'],
+    ['No — I\u2019d rather have a hard conversation than a comfortable lie','Occasionally, to avoid unnecessary conflict','Sometimes — it felt kinder at the time','Yes — honesty isn\u2019t always the priority'],
+    ['Very \u2014 I can hold space without needing to solve anything','Reasonably \u2014 I try to listen but sometimes offer solutions','Uncomfortable \u2014 I prefer to fix things quickly','Very uncomfortable \u2014 emotional heaviness makes me withdraw'],
+    ['Name what I am feeling and where it came from','Need some time alone, then talk about it','Go quiet and wait for it to pass','Shut down or push the other person away'],
+    ['Yes — ongoing and seriously','Some — I am aware of my patterns even if not in therapy','A little — I think about these things occasionally','Not really — I deal with things as they come'],
+    ['Very consistent — my effort does not depend on my mood','Mostly consistent — occasional dips but I communicate','Variable — my life circumstances affect how much I show up','Inconsistent — intensity comes in waves'],
+    ['I follow through — my word is important to me','Usually — I communicate when I cannot','Mixed — I try but sometimes drop the ball','I struggle with follow-through'],
+    ['Consistent action over time — plans, presence, investment','Verbally and through occasional gestures','Through attention when we are together, but not much outside','I let them wonder — the mystery is part of the attraction'],
+    ['Yes — I have clear direction and active momentum','Yes — direction is clear, progress is slower than I\u2019d like','Somewhat — figuring it out as I go','Not really — I am in a holding pattern right now'],
+    ['A serious, sacred lifelong commitment I want and am prepared for','Something I want — when the right person and timing align','Unsure — I am open but not actively seeking it','Not a priority or something I am avoiding'],
+    ['I find it attractive — I want a partner, not a project','I respect it — though I\u2019d want her to prioritise us too','It can create friction depending on how she balances it','I prefer a woman whose focus is primarily on the relationship'],
+    ['With the same warmth and respect I give anyone','Politely — not warm but not dismissive','I am often distracted or short with them','I treat people according to what they contribute'],
+    ['With respect — I can see my part in what didn\u2019t work','Neutrally — I don\u2019t speak about them much','With some frustration — there are unresolved things','They were largely the problem in those relationships'],
+    ['I respect it immediately — no negotiation','I respect it but want to understand the reason','I respect it but feel frustrated if it limits intimacy','I see it as a challenge to work through'],
+    ['Yes — fully','Mostly — there are some things I am working through','Partially — I want connection but am not ready to fully commit','Not really — I am still figuring out what I want'],
+    ['Completely fine — the pace builds something real','Fine — I can adjust to what she is comfortable with','Challenging — I would need regular reassurance it is going somewhere','Difficult — physical connection is how I feel close'],
+    ['Clear, consistent, unhurried — I make my interest known and keep showing up','Active but I hold back until I am sure she is interested','Intense at first, then I pull back to let her chase a little','I signal interest and wait to see what she does with it'],
+    ['A serious relationship with a woman I could build a life with','Something real that could develop into that','Connection — but I am not ready to define where it goes','Companionship and enjoyment without heavy expectations']
+  ];
+
+  // Build 'at' from scores + static text
+  var at = {};
+  for(var q=1; q<=20; q++){
+    var sc = scores[q] || 0;
+    var ansIdx = sc > 0 ? (4 - sc) : 0; // score 4=idx0, 3=idx1, 2=idx2, 1=idx3
+    at[q] = {
+      q: HT_Q_TEXT[q-1],
+      a: sc > 0 ? HT_A_TEXT[q-1][ansIdx] : '',
+      score: sc
+    };
+  }
+
+  var gradeColors = {A:'#2d7a2d',B:'#4a7a2a',C:'#7a6020',D:'#b5614a',E:'#c4406b'};
+  var gradeBarColors = {A:'#4CAF50',B:'#8BC34A',C:'#FF9800',D:'#FF5722',E:'#c4406b'};
+  var ansScoreColors = {4:'#2d7a2d',3:'#7a6020',2:'#b5614a',1:'#c4406b'};
+  var ansScoreBg    = {4:'#e8f5e8',3:'#fdf3d0',2:'#fde8e0',1:'#fde0e8'};
+  var ansGradeLetter= {4:'A',3:'B',2:'C',1:'D'};
+
+  var sectionLabels = {
+    1:'A \u2014 Accountability & Honesty',
+    5:'B \u2014 Emotional Maturity',
+    8:'C \u2014 Consistency & Follow-through',
+    11:'D \u2014 Vision & Values',
+    14:'E \u2014 How He Treats People',
+    17:'F \u2014 Readiness & Presence'
+  };
+
+  var gradeCol = gradeColors[grade] || '#c4406b';
+  var barCol   = gradeBarColors[grade] || '#c4406b';
+
+  var lines = [];
+  lines.push('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">');
+  lines.push('<title>Compatibility Checker \u2014 My Relationship Blueprint</title>');
+  lines.push('<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">');
+  lines.push('<style>');
+  lines.push('*{box-sizing:border-box;margin:0;padding:0;}');
+  lines.push('body{font-family:"DM Sans",sans-serif;background:#fdf8f5;color:#1a1a1a;font-size:13px;line-height:1.6;}');
+  lines.push('.page{max-width:720px;margin:0 auto;padding:48px 40px 60px;}');
+  lines.push('.print-btn{position:fixed;top:20px;right:20px;padding:10px 22px;background:#c4406b;color:white;border:none;border-radius:99px;font-size:13px;font-weight:500;cursor:pointer;font-family:"DM Sans",sans-serif;box-shadow:0 3px 12px rgba(196,64,107,.3);}');
+  lines.push('.print-btn:hover{background:#5a1a30;}');
+  lines.push('.header{text-align:center;margin-bottom:40px;padding-bottom:28px;border-bottom:1px solid #ffd6e7;}');
+  lines.push('.eyebrow{font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#7a2444;margin-bottom:10px;}');
+  lines.push('.grade-big{font-family:"Cormorant Garamond",serif;font-size:100px;font-weight:300;line-height:1;margin-bottom:6px;}');
+  lines.push('.grade-label{font-family:"Cormorant Garamond",serif;font-size:22px;font-weight:400;margin-bottom:10px;}');
+  lines.push('.grade-desc{font-family:"Cormorant Garamond",serif;font-size:14px;font-style:italic;color:#666;line-height:1.7;max-width:500px;margin:0 auto 20px;}');
+  lines.push('.bar-wrap{max-width:300px;margin:0 auto 8px;height:8px;background:#ffd6e7;border-radius:99px;overflow:hidden;}');
+  lines.push('.bar-fill{height:100%;border-radius:99px;}');
+  lines.push('.score-num{font-size:12px;color:#999;text-align:center;margin-bottom:8px;}');
+  lines.push('.advice-box{background:white;border:1px solid #ffd6e7;border-radius:14px;padding:16px 20px;max-width:540px;margin:16px auto 0;font-family:"Cormorant Garamond",serif;font-size:13px;font-style:italic;color:#2a1a20;line-height:1.7;text-align:left;}');
+  lines.push('.section-hd{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7a2444;margin:28px 0 12px;padding-bottom:6px;border-bottom:1px solid #ffd6e7;}');
+  lines.push('.q-row{background:white;border:1px solid #ffd6e7;border-radius:12px;padding:12px 15px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start;}');
+  lines.push('.q-grade{font-size:13px;font-weight:700;border-radius:6px;padding:2px 8px;flex-shrink:0;margin-top:1px;font-family:"DM Sans",sans-serif;}');
+  lines.push('.q-content{}');
+  lines.push('.q-question{font-size:11px;color:#888;margin-bottom:3px;}');
+  lines.push('.q-answer{font-family:"Cormorant Garamond",serif;font-size:13px;color:#2a1a20;line-height:1.55;}');
+  lines.push('.footer-note{text-align:center;margin-top:36px;padding-top:20px;border-top:1px solid #ffd6e7;font-family:"Cormorant Garamond",serif;font-size:12px;font-style:italic;color:#bbb;}');
+  lines.push('@media print{.print-btn{display:none;}body{background:white;}.page{padding:20px;}}');
+  lines.push('</style></head><body>');
+  lines.push('<button class="print-btn" onclick="window.print()">\u2193 Save as PDF</button>');
+  lines.push('<div class="page">');
+
+  // Header
+  lines.push('<div class="header">');
+  lines.push('<div class="eyebrow">Compatibility Checker \u2014 My Relationship Blueprint</div>');
+  lines.push('<div class="grade-big" style="color:'+gradeCol+'">'+grade+'</div>');
+  lines.push('<div class="grade-label" style="color:'+gradeCol+'">'+gData.label+'</div>');
+  lines.push('<div class="grade-desc">'+gData.desc+'</div>');
+  lines.push('<div class="bar-wrap"><div class="bar-fill" style="width:'+pct+'%;background:'+barCol+'"></div></div>');
+  lines.push('<div class="score-num">'+pct+'% \u2014 '+total+'/80 points \u2014 '+date+'</div>');
+  lines.push('<div class="advice-box">'+gData.advice+'</div>');
+  lines.push('</div>');
+
+  // Section definitions
+  var sections = [
+    {label:'A \u2014 Accountability & Honesty',    start:1,  end:4,  max:16},
+    {label:'B \u2014 Emotional Maturity',           start:5,  end:7,  max:12},
+    {label:'C \u2014 Consistency & Follow-through', start:8,  end:10, max:12},
+    {label:'D \u2014 Vision & Values',              start:11, end:13, max:12},
+    {label:'E \u2014 How He Treats People',         start:14, end:16, max:12},
+    {label:'F \u2014 Readiness & Presence',         start:17, end:20, max:16}
+  ];
+
+  // Summary bars first
+  lines.push('<div style="margin-bottom:28px;">');
+  lines.push('<div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7a2444;margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid #ffd6e7;">Section Breakdown</div>');
+  sections.forEach(function(sec){
+    var secTotal=0; for(var q=sec.start;q<=sec.end;q++){if(scores[q])secTotal+=scores[q];}
+    var secPct=Math.round(secTotal/sec.max*100);
+    var secCol=secPct>=75?'#4CAF50':secPct>=50?'#FF9800':secPct>=25?'#FF5722':'#c4406b';
+    lines.push('<div style="margin-bottom:10px;">');
+    lines.push('<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:#2a1a20;font-weight:500;">'+sec.label+'</span><span style="color:'+secCol+';font-weight:600;">'+secPct+'%</span></div>');
+    lines.push('<div style="height:7px;background:#ffd6e7;border-radius:99px;overflow:hidden;"><div style="width:'+secPct+'%;height:100%;background:'+secCol+';border-radius:99px;"></div></div>');
+    lines.push('</div>');
+  });
+  lines.push('</div>');
+
+  // Full answers by section with bar header
+  sections.forEach(function(sec){
+    var secTotal=0; for(var q=sec.start;q<=sec.end;q++){if(scores[q])secTotal+=scores[q];}
+    var secPct=Math.round(secTotal/sec.max*100);
+    var secCol=secPct>=75?'#4CAF50':secPct>=50?'#FF9800':secPct>=25?'#FF5722':'#c4406b';
+    lines.push('<div style="margin-bottom:24px;">');
+    lines.push('<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">');
+    lines.push('<span style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7a2444;">'+sec.label+'</span>');
+    lines.push('<span style="font-size:11px;font-weight:600;color:'+secCol+'">'+secPct+'%</span></div>');
+    lines.push('<div style="height:5px;background:#ffd6e7;border-radius:99px;overflow:hidden;margin-bottom:10px;"><div style="width:'+secPct+'%;height:100%;background:'+secCol+';border-radius:99px;"></div></div>');
+    for(var q=sec.start;q<=sec.end;q++){
+      var entry=at[q];
+      if(entry && entry.score > 0){
+        var sc=entry.score;
+        var aCol=ansScoreColors[sc]||'#888';
+        var aBg=ansScoreBg[sc]||'#f5f5f5';
+        var aLtr=ansGradeLetter[sc]||'-';
+        lines.push('<div class="q-row"><span class="q-grade" style="color:'+aCol+';background:'+aBg+'">'+aLtr+'</span><div class="q-content"><div class="q-question">'+entry.q+'</div><div class="q-answer">'+entry.a+'</div></div></div>');
+      }
+    }
+    lines.push('</div>');
+  });
+
+  lines.push('<div class="footer-note">&ldquo;Her worth is far above rubies.&rdquo; &mdash; Proverbs 31:10</div>');
+  lines.push('</div></body></html>');
+
+  var blob = new Blob([lines.join('\n')],{type:'text/html;charset=utf-8'});
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a');
+  a.href   = url;
+  a.download = 'his-compatibility-report.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 60000);
+}
+
+function htRetake(){
+  _htAnswers = {};
+  document.getElementById('htResult').classList.remove('show');
+  document.getElementById('htForm').style.display = 'block';
+  // Clear all selections
+  document.querySelectorAll('.ht-opt').forEach(function(o){ o.classList.remove('selected'); });
+  window.scrollTo({top:0,behavior:'instant'});
+}
+
+function getHisScoreBadge(){
+  if(!S.hisTest || !S.hisTest.grade) return '';
+  var g = S.hisTest.grade;
+  return ' <span class="ht-his-score-badge badge-'+g+'">His score: '+g+' ('+S.hisTest.pct+'%)</span>';
+}
+
+
+/* ══ LOAD HIS REPORT ══ */
+function loadHisReport(input){
+  var file = input.files[0];
+  if(!file) return;
+  var status = document.getElementById('hisReportStatus');
+  status.style.color = 'var(--mist)';
+  status.textContent = 'Reading\u2026';
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    var html = ev.target.result;
+    var gradeMatch = html.match(/class="grade-big"[^>]*>([A-E])<\/div>/);
+    if(!gradeMatch){
+      status.style.color = 'var(--rose)';
+      status.textContent = 'Could not read the file. Make sure it is the correct .html report.';
+      input.value = ''; return;
+    }
+    var grade = gradeMatch[1];
+    var pctMatch = html.match(/(\d+)% \u2014 (\d+)\/80 points \u2014 ([^<]+)</);
+    var pct   = pctMatch ? parseInt(pctMatch[1]) : 0;
+    var total = pctMatch ? parseInt(pctMatch[2]) : 0;
+    var date  = pctMatch ? pctMatch[3].trim() : new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+
+    var gradeLetters = html.match(/class="q-grade"[^>]*>([ABCD])<\/span>/g)||[];
+    var questions    = html.match(/<div class="q-question">([^<]+)<\/div>/g)||[];
+    var ansArr       = html.match(/<div class="q-answer">([^<]+)<\/div>/g)||[];
+    var answers = {};
+    for(var i=0;i<Math.min(questions.length,20);i++){
+      var gLtr = gradeLetters[i] ? gradeLetters[i].replace(/<[^>]+>/g,'').trim() : 'C';
+      var score = {A:4,B:3,C:2,D:1}[gLtr] || 2;
+      answers[i+1] = score;
+    }
+
+    if(!S.hisTest) S.hisTest = {};
+    S.hisTest.grade = grade; S.hisTest.pct = pct;
+    S.hisTest.total = total; S.hisTest.date = date;
+    S.hisTest.answers = answers;
+    save();
+    renderPhase && renderPhase();
+    renderAll && renderAll();
+    status.style.color = 'var(--green)';
+    status.textContent = '\u2713 Grade '+grade+' ('+pct+'%) loaded \u2014 his score is now in your blueprint.';
+    input.value = '';
+  };
+  reader.readAsText(file);
+}
+
 document.addEventListener("DOMContentLoaded",lpRender);}
 
 function lpRender(){
@@ -6277,7 +6845,7 @@ document.addEventListener("DOMContentLoaded",function(){
   loadHim();loadSelfCare();loadPhase0();loadMode();renderSelfFlagFeed();
   lpRender();
   spawnLandingHearts();
-  // Migration: if phase0 marked complete but readiness < 50, clear it
+  // Migration: if phase0 marked complete but readiness < 90, clear it
   if(S.phase0&&S.phase0.complete&&(!S.phase0.analysis||S.phase0.analysis.readiness<50)){
     S.phase0.complete=false;
     delete S.phase0.completedDate;
@@ -6376,5 +6944,283 @@ document.addEventListener("DOMContentLoaded",function(){
     <div class="footer-copy">My Relationship Blueprint &mdash; Private by design</div>
   </div>
 </footer>
+
+<!-- HIS COMPATIBILITY TEST -->
+<div id="hisTestOverlay">
+  <div class="ht-wrap">
+    <button class="ht-back" onclick="closeHisTest()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </button>
+
+    <div id="htForm">
+      <p class="ht-eyebrow">Compatibility check</p>
+      <h1 class="ht-h1">The Compatibility <em>Checker</em></h1>
+      <p class="ht-sub">20 questions. No right answers he can fake. Forward this page to him — or fill it in based on what you have observed.</p>
+
+      <div class="ht-section">
+        <div class="ht-section-hd">A — Accountability &amp; honesty</div>
+        <div class="ht-q">
+          <div class="ht-q-num">Q1</div>
+          <div class="ht-q-text">When you make a mistake, what do you typically do?</div>
+          <div class="ht-options">
+            <button class="ht-opt" onclick="htSelect(this,1,4)"><span class="ht-opt-dot"></span>Acknowledge it directly and apologise without excuses</button>
+            <button class="ht-opt" onclick="htSelect(this,1,3)"><span class="ht-opt-dot"></span>Apologise but explain why it happened</button>
+            <button class="ht-opt" onclick="htSelect(this,1,2)"><span class="ht-opt-dot"></span>Wait for things to calm down before addressing it</button>
+            <button class="ht-opt" onclick="htSelect(this,1,1)"><span class="ht-opt-dot"></span>Move on and hope it resolves itself</button>
+          </div>
+        </div>
+        <div class="ht-q">
+          <div class="ht-q-num">Q2</div>
+          <div class="ht-q-text">When someone you care about raises a concern about your behaviour, your first instinct is to:</div>
+          <div class="ht-options">
+            <button class="ht-opt" onclick="htSelect(this,2,4)"><span class="ht-opt-dot"></span>Listen fully before responding</button>
+            <button class="ht-opt" onclick="htSelect(this,2,3)"><span class="ht-opt-dot"></span>Listen but also explain your side</button>
+            <button class="ht-opt" onclick="htSelect(this,2,2)"><span class="ht-opt-dot"></span>Feel defensive, even if you don't show it</button>
+            <button class="ht-opt" onclick="htSelect(this,2,1)"><span class="ht-opt-dot"></span>Question why they are making it a big deal</button>
+          </div>
+        </div>
+        <div class="ht-q">
+          <div class="ht-q-num">Q3</div>
+          <div class="ht-q-text">How honest are you about what you want in a relationship — with the person you are seeing?</div>
+          <div class="ht-options">
+            <button class="ht-opt" onclick="htSelect(this,3,4)"><span class="ht-opt-dot"></span>Very — I say what I want clearly and early</button>
+            <button class="ht-opt" onclick="htSelect(this,3,3)"><span class="ht-opt-dot"></span>Mostly — I share when asked directly</button>
+            <button class="ht-opt" onclick="htSelect(this,3,2)"><span class="ht-opt-dot"></span>Somewhat — I wait to see how things develop first</button>
+            <button class="ht-opt" onclick="htSelect(this,3,1)"><span class="ht-opt-dot"></span>I keep my cards close and let things unfold</button>
+          </div>
+        </div>
+        <div class="ht-q">
+          <div class="ht-q-num">Q4</div>
+          <div class="ht-q-text">Have you ever told a woman what she wanted to hear rather than the truth?</div>
+          <div class="ht-options">
+            <button class="ht-opt" onclick="htSelect(this,4,4)"><span class="ht-opt-dot"></span>No — I'd rather have a hard conversation than a comfortable lie</button>
+            <button class="ht-opt" onclick="htSelect(this,4,3)"><span class="ht-opt-dot"></span>Occasionally, to avoid unnecessary conflict</button>
+            <button class="ht-opt" onclick="htSelect(this,4,2)"><span class="ht-opt-dot"></span>Sometimes — it felt kinder at the time</button>
+            <button class="ht-opt" onclick="htSelect(this,4,1)"><span class="ht-opt-dot"></span>Yes — honesty isn't always the priority</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ht-section">
+        <div class="ht-section-hd">B — Emotional maturity</div>
+        <div class="ht-q">
+          <div class="ht-q-num">Q5</div>
+          <div class="ht-q-text">How comfortable are you sitting with someone else's emotional pain without trying to fix it?</div>
+          <div class="ht-options">
+            <button class="ht-opt" onclick="htSelect(this,5,4)"><span class="ht-opt-dot"></span>Very — I can hold space without needing to solve anything</button>
+            <button class="ht-opt" onclick="htSelect(this,5,3)"><span class="ht-opt-dot"></span>Reasonably — I try to listen but sometimes offer solutions</button>
+            <button class="ht-opt" onclick="htSelect(this,5,2)"><span class="ht-opt-dot"></span>Uncomfortable — I prefer to fix things quickly</button>
+            <button class="ht-opt" onclick="htSelect(this,5,1)"><span class="ht-opt-dot"></span>Very uncomfortable — emotional heaviness makes me withdraw</button>
+          </div>
+        </div>
+        <div class="ht-q">
+          <div class="ht-q-num">Q6</div>
+          <div class="ht-q-text">When you are angry or hurt, you typically:</div>
+          <div class="ht-options">
+            <button class="ht-opt" onclick="htSelect(this,6,4)"><span class="ht-opt-dot"></span>Name what I am feeling and where it came from</button>
+            <button class="ht-opt" onclick="htSelect(this,6,3)"><span class="ht-opt-dot"></span>Need some time alone, then talk about it</button>
+            <button class="ht-opt" onclick="htSelect(this,6,2)"><span class="ht-opt-dot"></span>Go quiet and wait for it to pass</button>
+            <button class="ht-opt" onclick="htSelect(this,6,1)"><span class="ht-opt-dot"></span>Shut down or push the other person away</button>
+          </div>
+        </div>
+        <div class="ht-q">
+          <div class="ht-q-num">Q7</div>
+          <div class="ht-q-text">Have you done any intentional work on your own emotional patterns — therapy, coaching, serious self-reflection?</div>
+          <div class="ht-options">
+            <button class="ht-opt" onclick="htSelect(this,7,4)"><span class="ht-opt-dot"></span>Yes — ongoing and seriously</button>
+            <button class="ht-opt" onclick="htSelect(this,7,3)"><span class="ht-opt-dot"></span>Some — I am aware of my patterns even if not in therapy</button>
+            <button class="ht-opt" onclick="htSelect(this,7,2)"><span class="ht-opt-dot"></span>A little — I think about these things occasionally</button>
+            <button class="ht-opt" onclick="htSelect(this,7,1)"><span class="ht-opt-dot"></span>Not really — I deal with things as they come</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ht-section">
+        <div class="ht-section-hd">C — Consistency &amp; follow-through</div>
+        <div class="ht-q">
+          <div class="ht-q-num">Q8</div>
+          <div class="ht-q-text">How consistent is your behaviour toward a woman you are pursuing — across good weeks and bad weeks?</div>
+          <div class="ht-options">
+            <button class="ht-opt" onclick="htSelect(this,8,4)"><span class="ht-opt-dot"></span>Very consistent — my effort does not depend on my mood</button>
+            <button class="ht-opt" onclick="htSelect(this,8,3)"><span class="ht-opt-dot"></span>Mostly consistent — occasional dips but I communicate</button>
+            <button class="ht-opt" onclick="htSelect(this,8,2)"><span class="ht-opt-dot"></span>Variable — my life circumstances affect how much I show up</button>
+            <button class="ht-opt" onclick="htSelect(this,8,1)"><span class="ht-opt-dot"></span>Inconsistent — intensity comes in waves</button>
+          </div>
+        </div>
+        <div class="ht-q">
+          <div class="ht-q-num">Q9</div>
+          <div class="ht-q-text">If you tell someone you will do something, what is your track record?</div>
+          <div class="ht-options">
+            <button class="ht-opt" onclick="htSelect(this,9,4)"><span class="ht-opt-dot"></span>I follow through — my word is important to me</button>
+            <button class="ht-opt" onclick="htSelect(this,9,3)"><span class="ht-opt-dot"></span>Usually — I communicate when I cannot</button>
+            <button class="ht-opt" onclick="htSelect(this,9,2)"><span class="ht-opt-dot"></span>Mixed — I try but sometimes drop the ball</button>
+            <button class="ht-opt" onclick="htSelect(this,9,1)"><span class="ht-opt-dot"></span>I struggle with follow-through</button>
+          </div>
+        </div>
+        <div class="ht-q">
+          <div class="ht-q-num">Q10</div>
+          <div class="ht-q-text">When you are interested in someone, how do you show it?</div>
+          <div class="ht-options">
+            <button class="ht-opt" onclick="htSelect(this,10,4)"><span class="ht-opt-dot"></span>Consistent action over time — plans, presence, investment</button>
+            <button class="ht-opt" onclick="htSelect(this,10,3)"><span class="ht-opt-dot"></span>Verbally and through occasional gestures</button>
+            <button class="ht-opt" onclick="htSelect(this,10,2)"><span class="ht-opt-dot"></span>Through attention when we are together, but not much outside</button>
+            <button class="ht-opt" onclick="htSelect(this,10,1)"><span class="ht-opt-dot"></span>I let them wonder — the mystery is part of the attraction</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ht-section">
+        <div class="ht-section-hd">D — Vision &amp; values</div>
+        <div class="ht-q">
+          <div class="ht-q-num">Q11</div>
+          <div class="ht-q-text">Are you currently building something meaningful in your life — financially, professionally, or personally?</div>
+          <div class="ht-options">
+            <button class="ht-opt" onclick="htSelect(this,11,4)"><span class="ht-opt-dot"></span>Yes — I have clear direction and active momentum</button>
+            <button class="ht-opt" onclick="htSelect(this,11,3)"><span class="ht-opt-dot"></span>Yes — direction is clear, progress is slower than I'd like</button>
+            <button class="ht-opt" onclick="htSelect(this,11,2)"><span class="ht-opt-dot"></span>Somewhat — figuring it out as I go</button>
+            <button class="ht-opt" onclick="htSelect(this,11,1)"><span class="ht-opt-dot"></span>Not really — I am in a holding pattern right now</button>
+          </div>
+        </div>
+        <div class="ht-q">
+          <div class="ht-q-num">Q12</div>
+          <div class="ht-q-text">What does marriage mean to you?</div>
+          <div class="ht-options">
+            <button class="ht-opt" onclick="htSelect(this,12,4)"><span class="ht-opt-dot"></span>A serious, sacred lifelong commitment I want and am prepared for</button>
+            <button class="ht-opt" onclick="htSelect(this,12,3)"><span class="ht-opt-dot"></span>Something I want — when the right person and timing align</button>
+            <button class="ht-opt" onclick="htSelect(this,12,2)"><span class="ht-opt-dot"></span>Unsure — I am open but not actively seeking it</button>
+            <button class="ht-opt" onclick="htSelect(this,12,1)"><span class="ht-opt-dot"></span>Not a priority or something I am avoiding</button>
+          </div>
+        </div>
+        <div class="ht-q">
+          <div class="ht-q-num">Q13</div>
+          <div class="ht-q-text">How do you feel about a woman who has strong ambitions and a full life of her own?</div>
+          <div class="ht-options">
+            <button class="ht-opt" onclick="htSelect(this,13,4)"><span class="ht-opt-dot"></span>I find it attractive — I want a partner, not a project</button>
+            <button class="ht-opt" onclick="htSelect(this,13,3)"><span class="ht-opt-dot"></span>I respect it — though I'd want her to prioritise us too</button>
+            <button class="ht-opt" onclick="htSelect(this,13,2)"><span class="ht-opt-dot"></span>It can create friction depending on how she balances it</button>
+            <button class="ht-opt" onclick="htSelect(this,13,1)"><span class="ht-opt-dot"></span>I prefer a woman whose focus is primarily on the relationship</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ht-section">
+        <div class="ht-section-hd">E — How he treats people</div>
+        <div class="ht-q">
+          <div class="ht-q-num">Q14</div>
+          <div class="ht-q-text">How do you treat service staff, strangers, and people who can do nothing for you?</div>
+          <div class="ht-options">
+            <button class="ht-opt" onclick="htSelect(this,14,4)"><span class="ht-opt-dot"></span>With the same warmth and respect I give anyone</button>
+            <button class="ht-opt" onclick="htSelect(this,14,3)"><span class="ht-opt-dot"></span>Politely — not warm but not dismissive</button>
+            <button class="ht-opt" onclick="htSelect(this,14,2)"><span class="ht-opt-dot"></span>I am often distracted or short with them</button>
+            <button class="ht-opt" onclick="htSelect(this,14,1)"><span class="ht-opt-dot"></span>I treat people according to what they contribute</button>
+          </div>
+        </div>
+        <div class="ht-q">
+          <div class="ht-q-num">Q15</div>
+          <div class="ht-q-text">How do you speak about your past partners?</div>
+          <div class="ht-options">
+            <button class="ht-opt" onclick="htSelect(this,15,4)"><span class="ht-opt-dot"></span>With respect — I can see my part in what didn't work</button>
+            <button class="ht-opt" onclick="htSelect(this,15,3)"><span class="ht-opt-dot"></span>Neutrally — I don't speak about them much</button>
+            <button class="ht-opt" onclick="htSelect(this,15,2)"><span class="ht-opt-dot"></span>With some frustration — there are unresolved things</button>
+            <button class="ht-opt" onclick="htSelect(this,15,1)"><span class="ht-opt-dot"></span>They were largely the problem in those relationships</button>
+          </div>
+        </div>
+        <div class="ht-q">
+          <div class="ht-q-num">Q16</div>
+          <div class="ht-q-text">When a woman you are seeing sets a boundary, how do you respond?</div>
+          <div class="ht-options">
+            <button class="ht-opt" onclick="htSelect(this,16,4)"><span class="ht-opt-dot"></span>I respect it immediately — no negotiation</button>
+            <button class="ht-opt" onclick="htSelect(this,16,3)"><span class="ht-opt-dot"></span>I respect it but want to understand the reason</button>
+            <button class="ht-opt" onclick="htSelect(this,16,2)"><span class="ht-opt-dot"></span>I respect it but feel frustrated if it limits intimacy</button>
+            <button class="ht-opt" onclick="htSelect(this,16,1)"><span class="ht-opt-dot"></span>I see it as a challenge to work through</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ht-section">
+        <div class="ht-section-hd">F — Readiness &amp; presence</div>
+        <div class="ht-q">
+          <div class="ht-q-num">Q17</div>
+          <div class="ht-q-text">Are you genuinely available for a serious relationship right now — emotionally, logistically, and mentally?</div>
+          <div class="ht-options">
+            <button class="ht-opt" onclick="htSelect(this,17,4)"><span class="ht-opt-dot"></span>Yes — fully</button>
+            <button class="ht-opt" onclick="htSelect(this,17,3)"><span class="ht-opt-dot"></span>Mostly — there are some things I am working through</button>
+            <button class="ht-opt" onclick="htSelect(this,17,2)"><span class="ht-opt-dot"></span>Partially — I want connection but am not ready to fully commit</button>
+            <button class="ht-opt" onclick="htSelect(this,17,1)"><span class="ht-opt-dot"></span>Not really — I am still figuring out what I want</button>
+          </div>
+        </div>
+        <div class="ht-q">
+          <div class="ht-q-num">Q18</div>
+          <div class="ht-q-text">How do you feel about the pace of getting to know someone — taking months before physical intimacy?</div>
+          <div class="ht-options">
+            <button class="ht-opt" onclick="htSelect(this,18,4)"><span class="ht-opt-dot"></span>Completely fine — the pace builds something real</button>
+            <button class="ht-opt" onclick="htSelect(this,18,3)"><span class="ht-opt-dot"></span>Fine — I can adjust to what she is comfortable with</button>
+            <button class="ht-opt" onclick="htSelect(this,18,2)"><span class="ht-opt-dot"></span>Challenging — I would need regular reassurance it is going somewhere</button>
+            <button class="ht-opt" onclick="htSelect(this,18,1)"><span class="ht-opt-dot"></span>Difficult — physical connection is how I feel close</button>
+          </div>
+        </div>
+        <div class="ht-q">
+          <div class="ht-q-num">Q19</div>
+          <div class="ht-q-text">When you are genuinely interested in a woman, what does your pursuit look like?</div>
+          <div class="ht-options">
+            <button class="ht-opt" onclick="htSelect(this,19,4)"><span class="ht-opt-dot"></span>Clear, consistent, unhurried — I make my interest known and keep showing up</button>
+            <button class="ht-opt" onclick="htSelect(this,19,3)"><span class="ht-opt-dot"></span>Active but I hold back until I am sure she is interested</button>
+            <button class="ht-opt" onclick="htSelect(this,19,2)"><span class="ht-opt-dot"></span>Intense at first, then I pull back to let her chase a little</button>
+            <button class="ht-opt" onclick="htSelect(this,19,1)"><span class="ht-opt-dot"></span>I signal interest and wait to see what she does with it</button>
+          </div>
+        </div>
+        <div class="ht-q">
+          <div class="ht-q-num">Q20</div>
+          <div class="ht-q-text">What are you ultimately looking for right now?</div>
+          <div class="ht-options">
+            <button class="ht-opt" onclick="htSelect(this,20,4)"><span class="ht-opt-dot"></span>A serious relationship with a woman I could build a life with</button>
+            <button class="ht-opt" onclick="htSelect(this,20,3)"><span class="ht-opt-dot"></span>Something real that could develop into that</button>
+            <button class="ht-opt" onclick="htSelect(this,20,2)"><span class="ht-opt-dot"></span>Connection — but I am not ready to define where it goes</button>
+            <button class="ht-opt" onclick="htSelect(this,20,1)"><span class="ht-opt-dot"></span>Companionship and enjoyment without heavy expectations</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="htError" style="color:var(--rose);font-size:13px;text-align:center;margin-top:12px;display:none;">
+        Please answer all 20 questions before submitting.
+      </div>
+      <div class="ht-submit-row">
+        <button class="ht-submit" onclick="htSubmit()">See my score &#8594;</button>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div class="ht-result" id="htResult">
+      <div class="ht-grade" id="htGradeDisplay"></div>
+      <div class="ht-grade-label" id="htGradeLabel"></div>
+      <div class="ht-grade-desc" id="htGradeDesc"></div>
+      <div class="ht-score-bar-wrap">
+        <div class="ht-score-bar-bg">
+          <div class="ht-score-bar-fill" id="htScoreBar" style="width:0%"></div>
+        </div>
+        <div class="ht-score-num" id="htScoreNum"></div>
+      </div>
+
+      <!-- Answer summary -->
+      <div id="htAnswerSummary" style="max-width:480px;margin:0 auto 20px;text-align:left;"></div>
+
+
+
+      <div style="margin-top:16px;">
+        <div style="font-size:12px;color:var(--mist);font-family:var(--serif);font-style:italic;margin-bottom:10px;">
+          Download a full PDF of your score and answers to share with her. She can upload it directly into her blueprint.
+        </div>
+        <button class="ht-add-btn" onclick="htDownloadPDF()">&#8595; Download &amp; share with her</button>
+      </div>
+
+      <button class="ht-back" style="margin-top:24px;" onclick="htRetake()">
+        &#8592; Retake test
+      </button>
+    </div>
+
+  </div>
+</div>
+
 </body>
 </html>
