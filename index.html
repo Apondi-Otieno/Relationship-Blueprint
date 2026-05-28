@@ -6323,17 +6323,62 @@ function saveSelfFlagEntry(){
 function renderSelfFlagFeed(){
   var wrap = document.getElementById('selfFlagFeed');
   if(!wrap) return;
-  var entries = (S.selfFlagLog || []).slice().reverse().slice(0,5);
+  var allEntries = (S.selfFlagLog || []).slice().reverse();
+  var entries = allEntries.slice(0,5);
+  var hasMore = allEntries.length > 5;
   if(!entries.length){ wrap.innerHTML=''; return; }
-  var html = '<div class="self-flag-feed">';
+
+  var GUIDANCE = {
+    shrink:'You are making yourself smaller. Before your next interaction, name one thing you will say that is fully true.',
+    chase:'Chasing is anxiety wearing the costume of interest. Pause 24 hours before any reach-out.',
+    overexplain:'You are defending yourself to someone who should not require a defence. Let a statement stand on its own.',
+    anxiety:'Your nervous system is working harder than the data justifies. Write down facts only \u2014 not interpretations.',
+    tooneedy:'You are giving at a pace that is not sustainable. What would you be doing today if he did not exist?',
+    selfabandon:'You keep putting him first. What did you need this week that you did not give yourself?',
+    jealous:'The insecurity is about your wound, not about him. Where did this fear first live?',
+    testing:'You are manufacturing evidence. Stop the test. Return to watching what is already there.',
+    dishonest:'You are performing. He cannot choose the real you if she is not present.',
+    ignore:'Your gut is speaking. Write down exactly what it is saying without softening it.'
+  };
+  var TAG_NAMES = {
+    shrink:'Self-shrinking',chase:'Chasing',overexplain:'Over-explaining',
+    anxiety:'Anxiety spiral',tooneedy:'Too much/needy',selfabandon:'Self-abandonment',
+    jealous:'Insecurity',testing:'Testing/sabotage',dishonest:'Inauthenticity',ignore:'Ignoring gut'
+  };
+
+  var html = '<div style="margin-top:12px;">';
+  html += '<div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mauve);margin-bottom:10px;">This week\u2019s entries</div>';
   entries.forEach(function(e){
     var clsKey = e.cls==='red'?'red':e.cls==='amber'?'amber':'neutral';
-    var metaCls = 'sf-meta-'+clsKey;
+    var clsLabel = e.cls==='red'?'\u26a0\ufe0f Wound active':e.cls==='amber'?'\u25b2 Pattern noticed':'\u2713 Neutral';
     html += '<div class="sf-entry sf-entry-'+clsKey+'">';
-    html += '<span class="sf-entry-meta '+metaCls+'">Phase '+e.phase+' \u2014 '+e.date+'</span>';
-    html += (e.text||'').slice(0,120) + (e.text&&e.text.length>120?'\u2026':'');
+    // Meta row
+    html += '<div class="sf-entry-meta sf-meta-'+clsKey+'">';
+    html += '<span>Phase '+e.phase+' \u2014 '+e.date+'</span>';
+    html += '<span style="margin-left:auto">'+clsLabel+'</span>';
+    html += '</div>';
+    // Full text
+    html += '<div class="sf-entry-text">'+e.text+'</div>';
+    // Tags
+    if(e.tags && e.tags.length){
+      html += '<div class="sf-entry-tags">';
+      e.tags.forEach(function(tag){
+        var tagCls = e.cls==='red'?'sf-tag-red':e.cls==='amber'?'sf-tag-amber':'sf-tag-neutral';
+        html += '<span class="sf-tag '+tagCls+'">'+(TAG_NAMES[tag]||tag)+'</span>';
+      });
+      html += '</div>';
+      // Analysis for top tag
+      if(GUIDANCE[e.tags[0]]){
+        html += '<div class="sf-analysis-box"><span class="sf-analysis-label">Guidance</span>'+GUIDANCE[e.tags[0]]+'</div>';
+      }
+    }
     html += '</div>';
   });
+  if(hasMore){
+    html += '<div style="text-align:center;margin-top:8px;">';
+    html += '<button onclick="renderSelfFlagFeedAll()" style="font-size:11px;color:var(--mist);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:var(--sans);">See all '+allEntries.length+' entries</button>';
+    html += '</div>';
+  }
   html += '</div>';
   wrap.innerHTML = html;
 }
@@ -6988,6 +7033,53 @@ function checkURLParams(){
       if(typeof openHisTest === 'function') openHisTest();
     }, 300);
   }
+}
+
+
+function renderSelfFlagFeedAll(){
+  var wrap = document.getElementById('selfFlagFeed');
+  if(!wrap) return;
+  var allEntries = (S.selfFlagLog || []).slice().reverse();
+  // Temporarily override slice to show all
+  var orig = S.selfFlagLog;
+  // Swap limit
+  wrap.querySelector && wrap.querySelector('button') && (function(){
+    // Just re-render but pass full list
+    var GUIDANCE = {
+      shrink:'You are making yourself smaller. Before your next interaction, name one thing you will say that is fully true.',
+      chase:'Chasing is anxiety wearing the costume of interest. Pause 24 hours before any reach-out.',
+      overexplain:'You are defending yourself to someone who should not require a defence.',
+      anxiety:'Your nervous system is working harder than the data justifies. Write facts only.',
+      tooneedy:'What would you be doing today if he did not exist?',
+      selfabandon:'What did you need this week that you did not give yourself?',
+      jealous:'The insecurity is about your wound, not about him.',
+      testing:'Stop the test. Return to watching what is already there.',
+      dishonest:'He cannot choose the real you if she is not present.',
+      ignore:'Write down exactly what your gut is saying without softening it.'
+    };
+    var TAG_NAMES={shrink:'Self-shrinking',chase:'Chasing',overexplain:'Over-explaining',
+      anxiety:'Anxiety spiral',tooneedy:'Too much/needy',selfabandon:'Self-abandonment',
+      jealous:'Insecurity',testing:'Testing/sabotage',dishonest:'Inauthenticity',ignore:'Ignoring gut'};
+    var html='<div style="margin-top:12px;">';
+    html+='<div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mauve);margin-bottom:10px;">All entries ('+allEntries.length+')</div>';
+    allEntries.forEach(function(e){
+      var ck=e.cls==='red'?'red':e.cls==='amber'?'amber':'neutral';
+      var cl=e.cls==='red'?'\u26a0\ufe0f Wound active':e.cls==='amber'?'\u25b2 Pattern noticed':'\u2713 Neutral';
+      html+='<div class="sf-entry sf-entry-'+ck+'">';
+      html+='<div class="sf-entry-meta sf-meta-'+ck+'"><span>Phase '+e.phase+' \u2014 '+e.date+'</span><span style="margin-left:auto">'+cl+'</span></div>';
+      html+='<div class="sf-entry-text">'+e.text+'</div>';
+      if(e.tags&&e.tags.length){
+        html+='<div class="sf-entry-tags">';
+        e.tags.forEach(function(t){html+='<span class="sf-tag sf-tag-'+ck+'">'+(TAG_NAMES[t]||t)+'</span>';});
+        html+='</div>';
+        if(GUIDANCE[e.tags[0]]) html+='<div class="sf-analysis-box"><span class="sf-analysis-label">Guidance</span>'+GUIDANCE[e.tags[0]]+'</div>';
+      }
+      html+='</div>';
+    });
+    html+='<div style="text-align:center;margin-top:8px;"><button onclick="renderSelfFlagFeed()" style="font-size:11px;color:var(--mist);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:var(--sans);">Show less</button></div>';
+    html+='</div>';
+    wrap.innerHTML=html;
+  })();
 }
 
 document.addEventListener("DOMContentLoaded",lpRender);}
