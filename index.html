@@ -1614,6 +1614,83 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     .ht-grade{font-size:72px;}
   }
 
+
+  /* ══ HIS RESULT — matches PDF layout exactly ══ */
+  .ht-pdf-view{
+    max-width:680px;margin:0 auto;
+    font-family:'DM Sans',var(--sans);
+  }
+  .ht-pdf-header{
+    text-align:center;margin-bottom:36px;
+    padding-bottom:24px;border-bottom:1px solid #ffd6e7;
+  }
+  .ht-pdf-eyebrow{
+    font-size:10px;font-weight:600;letter-spacing:.2em;
+    text-transform:uppercase;color:#7a2444;margin-bottom:10px;
+  }
+  .ht-pdf-grade{
+    font-family:var(--serif);font-size:96px;font-weight:300;
+    line-height:1;margin-bottom:6px;
+  }
+  .ht-pdf-grade-label{
+    font-family:var(--serif);font-size:22px;font-weight:400;margin-bottom:10px;
+  }
+  .ht-pdf-desc{
+    font-family:var(--serif);font-size:14px;font-style:italic;
+    color:#666;line-height:1.7;max-width:500px;margin:0 auto 18px;
+  }
+  .ht-pdf-bar-wrap{
+    max-width:300px;margin:0 auto 8px;
+    height:8px;background:#ffd6e7;border-radius:99px;overflow:hidden;
+  }
+  .ht-pdf-bar-fill{height:100%;border-radius:99px;transition:width 1s ease;}
+  .ht-pdf-score-num{font-size:12px;color:#999;text-align:center;margin-bottom:8px;}
+  .ht-pdf-advice{
+    background:white;border:1px solid #ffd6e7;border-radius:14px;
+    padding:16px 20px;max-width:540px;margin:16px auto 0;
+    font-family:var(--serif);font-size:13px;font-style:italic;
+    color:#2a1a20;line-height:1.7;text-align:left;
+  }
+  .ht-pdf-sec-hd{
+    display:flex;justify-content:space-between;align-items:center;
+    margin:24px 0 5px;
+  }
+  .ht-pdf-sec-label{
+    font-size:10px;font-weight:700;letter-spacing:.16em;
+    text-transform:uppercase;color:#7a2444;
+  }
+  .ht-pdf-sec-pct{font-size:11px;font-weight:600;}
+  .ht-pdf-sec-bar{
+    height:5px;background:#ffd6e7;border-radius:99px;
+    overflow:hidden;margin-bottom:10px;
+  }
+  .ht-pdf-sec-bar-fill{height:100%;border-radius:99px;}
+  .ht-pdf-q-row{
+    background:white;border:1px solid #ffd6e7;border-radius:12px;
+    padding:12px 15px;margin-bottom:8px;
+    display:flex;gap:10px;align-items:flex-start;
+  }
+  .ht-pdf-q-grade{
+    font-size:13px;font-weight:700;border-radius:6px;
+    padding:2px 8px;flex-shrink:0;margin-top:1px;
+  }
+  .ht-pdf-q-question{font-size:11px;color:#888;margin-bottom:3px;}
+  .ht-pdf-q-answer{
+    font-family:var(--serif);font-size:13px;
+    color:#2a1a20;line-height:1.55;
+  }
+  .ht-pdf-footer{
+    text-align:center;margin-top:32px;padding-top:18px;
+    border-top:1px solid #ffd6e7;
+    font-family:var(--serif);font-size:12px;
+    font-style:italic;color:#bbb;
+  }
+  .ht-pdf-actions{
+    display:flex;gap:10px;justify-content:center;
+    flex-wrap:wrap;margin-top:28px;padding-top:20px;
+    border-top:1px solid #ffd6e7;
+  }
+
 </style>
 </head>
 <body>
@@ -6361,14 +6438,40 @@ var HT_GRADES = {
 };
 
 function openHisTest(){
-  document.getElementById('hisTestOverlay').classList.add('active');
-  document.getElementById('htForm').style.display = 'block';
-  document.getElementById('htResult').classList.remove('show');
-  window.scrollTo({top:0,behavior:'instant'});
-  // Pre-populate if we have saved answers
-  if(S.hisTest && S.hisTest.answers){
-    _htAnswers = S.hisTest.answers;
-    htRestoreSelections();
+  var overlay = document.getElementById('hisTestOverlay');
+  overlay.classList.add('active');
+  overlay.scrollTo({top:0,behavior:'instant'});
+  // If we already have a saved result, show it
+  if(S.hisTest && S.hisTest.grade){
+    _htAnswers = S.hisTest.answers || {};
+    if(S.hisTest.answerTexts) window._htAnswerTexts = S.hisTest.answerTexts;
+    document.getElementById('htForm').style.display = 'none';
+    var resultEl = document.getElementById('htResult');
+    resultEl.classList.add('show');
+    var grade = S.hisTest.grade;
+    var pct   = S.hisTest.pct;
+    var total = S.hisTest.total;
+    var gData = HT_GRADES[grade];
+    document.getElementById('htGradeDisplay').textContent = grade;
+    document.getElementById('htGradeDisplay').className = 'ht-grade grade-'+grade;
+    document.getElementById('htGradeLabel').textContent = gData.label;
+    document.getElementById('htGradeDesc').textContent = gData.desc;
+    var advEl2 = document.getElementById('htAdviceBox');
+    if(advEl2) advEl2.textContent = gData.advice;
+  var advEl = document.getElementById('htAdviceBox');
+  if(advEl) advEl.textContent = gData.advice;
+    document.getElementById('htScoreNum').textContent = pct+'% — '+total+'/80 points — '+S.hisTest.date;
+    var bar = document.getElementById('htScoreBar');
+    bar.style.background = {A:'#4CAF50',B:'#8BC34A',C:'#FF9800',D:'#FF5722',E:'#c4406b'}[grade]||'#c4406b';
+    setTimeout(function(){ bar.style.width = pct+'%'; }, 100);
+    htRenderAnswerSummary(grade);
+  } else {
+    document.getElementById('htForm').style.display = 'block';
+    document.getElementById('htResult').classList.remove('show');
+    if(S.hisTest && S.hisTest.answers){
+      _htAnswers = S.hisTest.answers;
+      htRestoreSelections();
+    }
   }
 }
 
@@ -6458,7 +6561,8 @@ function htSubmit(){
 
   // Render answer summary
   htRenderAnswerSummary(grade);
-  window.scrollTo({top:0,behavior:'smooth'});
+  var overlay=document.getElementById('hisTestOverlay');
+  if(overlay) overlay.scrollTo({top:0,behavior:'smooth'});
 }
 
 function htRenderAnswerSummary(grade){
@@ -6726,25 +6830,36 @@ function loadHisReport(input){
     var total = pctMatch ? parseInt(pctMatch[2]) : 0;
     var date  = pctMatch ? pctMatch[3].trim() : new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
 
-    var gradeLetters = html.match(/class="q-grade"[^>]*>([ABCD])<\/span>/g)||[];
-    var questions    = html.match(/<div class="q-question">([^<]+)<\/div>/g)||[];
-    var ansArr       = html.match(/<div class="q-answer">([^<]+)<\/div>/g)||[];
+    // Parse q-rows to get question+answer+grade together
+    var qRowMatches = html.match(/<div class="q-row">[\s\S]*?<\/div><\/div><\/div>/g)||[];
+    // Each q-row has: grade letter, question text, answer text
     var answers = {};
-    for(var i=0;i<Math.min(questions.length,20);i++){
-      var gLtr = gradeLetters[i] ? gradeLetters[i].replace(/<[^>]+>/g,'').trim() : 'C';
-      var score = {A:4,B:3,C:2,D:1}[gLtr] || 2;
-      answers[i+1] = score;
+    var answerTexts = {};
+    for(var i=0;i<Math.min(qRowMatches.length,20);i++){
+      var row = qRowMatches[i];
+      var gLtrM = row.match(/class="q-grade"[^>]*>([ABCD])<\/span>/);
+      var qTextM = row.match(/<div class="q-question">([^<]+)<\/div>/);
+      var aTextM = row.match(/<div class="q-answer">([^<]+)<\/div>/);
+      var gLtr = gLtrM ? gLtrM[1] : 'C';
+      var sc = {A:4,B:3,C:2,D:1}[gLtr] || 2;
+      answers[i+1] = sc;
+      answerTexts[i+1] = {
+        q: qTextM ? qTextM[1] : '',
+        a: aTextM ? aTextM[1] : '',
+        score: sc
+      };
     }
 
     if(!S.hisTest) S.hisTest = {};
     S.hisTest.grade = grade; S.hisTest.pct = pct;
     S.hisTest.total = total; S.hisTest.date = date;
     S.hisTest.answers = answers;
+    S.hisTest.answerTexts = answerTexts;
     save();
     renderPhase && renderPhase();
     renderAll && renderAll();
     status.style.color = 'var(--green)';
-    status.textContent = '\u2713 Grade '+grade+' ('+pct+'%) loaded \u2014 his score is now in your blueprint.';
+    status.textContent = '\u2713 Grade '+grade+' ('+pct+'%) saved. His score badge now appears on every phase card. Open the Compatibility Checker to see the full breakdown.';
     input.value = '';
   };
   reader.readAsText(file);
@@ -6956,7 +7071,7 @@ document.addEventListener("DOMContentLoaded",function(){
     <div id="htForm">
       <p class="ht-eyebrow">Compatibility check</p>
       <h1 class="ht-h1">The Compatibility <em>Checker</em></h1>
-      <p class="ht-sub">20 questions. No right answers he can fake. Forward this page to him — or fill it in based on what you have observed.</p>
+      <p class="ht-sub">Send him this link. 20 questions, 5 minutes. His answers are scored and he downloads a report — you upload it into your blueprint under Data.</p>
 
       <div class="ht-section">
         <div class="ht-section-hd">A — Accountability &amp; honesty</div>
@@ -7214,8 +7329,7 @@ document.addEventListener("DOMContentLoaded",function(){
         <button class="ht-add-btn" onclick="htDownloadPDF()">&#8595; Download &amp; share with her</button>
       </div>
 
-      <button class="ht-back" style="margin-top:24px;" onclick="htRetake()">
-        &#8592; Retake test
+      <button class="ht-back" style="margin-top:24px;" onclick="htRetake()">&#8592; Retake test
       </button>
     </div>
 
