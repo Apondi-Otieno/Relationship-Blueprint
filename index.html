@@ -1691,6 +1691,32 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     border-top:1px solid #ffd6e7;
   }
 
+
+  /* ══ HIS RESULT VIEW — PDF-FAITHFUL ══ */
+  .ht-pdf-wrap{max-width:680px;margin:0 auto;}
+  .ht-pdf-header{text-align:center;margin-bottom:36px;padding-bottom:24px;border-bottom:1px solid #ffd6e7;}
+  .ht-pdf-eyebrow{font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#7a2444;margin-bottom:10px;}
+  .ht-pdf-grade{font-family:var(--serif);font-size:88px;font-weight:300;line-height:1;margin-bottom:6px;}
+  .ht-pdf-grade-label{font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:10px;}
+  .ht-pdf-grade-desc{font-family:var(--serif);font-size:13px;font-style:italic;color:#666;line-height:1.7;max-width:480px;margin:0 auto 18px;}
+  .ht-pdf-bar-wrap{max-width:280px;margin:0 auto 6px;height:8px;background:#ffd6e7;border-radius:99px;overflow:hidden;}
+  .ht-pdf-bar-fill{height:100%;border-radius:99px;transition:width 1s ease;}
+  .ht-pdf-score-num{font-size:12px;color:#999;text-align:center;margin-bottom:8px;}
+  .ht-pdf-advice{background:white;border:1px solid #ffd6e7;border-radius:14px;padding:14px 18px;max-width:520px;margin:14px auto 0;font-family:var(--serif);font-size:13px;font-style:italic;color:#2a1a20;line-height:1.7;text-align:left;}
+  .ht-pdf-section-hd-wrap{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+  .ht-pdf-section-label{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7a2444;}
+  .ht-pdf-section-pct{font-size:11px;font-weight:600;}
+  .ht-pdf-section-bar{height:5px;background:#ffd6e7;border-radius:99px;overflow:hidden;margin-bottom:10px;}
+  .ht-pdf-section-bar-fill{height:100%;border-radius:99px;}
+  .ht-pdf-q-row{background:white;border:1px solid #ffd6e7;border-radius:12px;padding:11px 14px;margin-bottom:7px;display:flex;gap:10px;align-items:flex-start;}
+  .ht-pdf-q-grade{font-size:12px;font-weight:700;border-radius:6px;padding:2px 7px;flex-shrink:0;margin-top:1px;font-family:var(--sans);}
+  .ht-pdf-q-question{font-size:11px;color:#888;margin-bottom:3px;line-height:1.45;}
+  .ht-pdf-q-answer{font-family:var(--serif);font-size:13px;color:#2a1a20;line-height:1.5;}
+  .ht-pdf-breakdown-hd{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7a2444;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #ffd6e7;}
+  .ht-pdf-section-block{margin-bottom:22px;}
+  .ht-pdf-summary-row{margin-bottom:9px;}
+  .ht-pdf-footer{text-align:center;margin-top:32px;padding-top:18px;border-top:1px solid #ffd6e7;font-family:var(--serif);font-size:12px;font-style:italic;color:#bbb;}
+
 </style>
 </head>
 <body>
@@ -2156,8 +2182,16 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     <p style="font-size:13px;color:var(--mist);font-family:var(--serif);font-style:italic;margin-bottom:14px;line-height:1.6">These are not interrogations. They are observations of how he moves through a real conversation.</p>
     <div id="relTopicsList" style="font-size:13px;color:var(--stone);line-height:1.8;"></div>
     <div style="margin-top:14px;">
-      <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--rose);margin-bottom:8px;">Red flags I am noticing in myself</div>
-      <textarea id="relSelfFlags" placeholder="What my wound is doing right now... Where I am shrinking, performing, or chasing..." oninput="saveRelFocus()" style="width:100%;min-height:70px;border:1px solid var(--pink-100);border-radius:10px;padding:10px 12px;font-family:var(--serif);font-size:13px;color:var(--stone);background:var(--blush);resize:vertical;outline:none;box-sizing:border-box;"></textarea>
+      <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--rose);margin-bottom:4px;">Red flags I am noticing in myself</div>
+      <p style="font-size:11px;color:var(--mist);font-family:var(--serif);font-style:italic;margin-bottom:8px;line-height:1.6;">Where is my wound active right now?</p>
+      <textarea id="relSelfFlags" placeholder="I am shrinking when... I noticed I am chasing by... My wound is..." oninput="saveRelFocus()" style="width:100%;min-height:72px;border:1px solid var(--pink-100);border-radius:10px;padding:10px 12px;font-family:var(--serif);font-size:13px;color:var(--stone);background:var(--blush);resize:vertical;outline:none;box-sizing:border-box;"></textarea>
+      <div id="selfFlagMsg" style="font-size:11px;font-style:italic;min-height:14px;opacity:0;transition:opacity .3s;margin-top:4px;"></div>
+      <div id="selfFlagGuidance" style="display:none;margin-top:10px;padding:12px 14px;background:var(--blush);border:1px solid var(--pink-100);border-radius:12px;font-family:var(--serif);font-size:13px;color:var(--stone);line-height:1.7;"></div>
+      <div id="selfFlagFeed"></div>
+      <div style="margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <button onclick="saveSelfFlagEntry()" style="padding:8px 18px;background:var(--deep);color:white;border:none;border-radius:99px;font-size:12px;font-weight:500;font-family:var(--sans);cursor:pointer;">Save for this week</button>
+        <button class="end-things-btn" style="width:auto;padding:8px 18px;margin-top:0;" onclick="endThingsAndGoSingle()">We ended things &rarr;</button>
+      </div>
     </div>
   </div>
 
@@ -2344,6 +2378,10 @@ textarea::placeholder{color:var(--mist);font-style:italic}
       <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--rose);margin-bottom:6px;">&#9829; His compatibility report</div>
       <p style="font-size:12px;color:var(--mist);margin-bottom:10px;line-height:1.6;">He downloaded a report from the compatibility checker. Upload the <code style="font-size:11px;background:var(--blush);padding:1px 5px;border-radius:4px;">.html</code> file here to add his score to your blueprint.</p>
       <div id="hisReportStatus" style="font-size:12px;font-style:italic;min-height:16px;margin-bottom:8px;"></div>
+      <div id="hisReportLoaded" style="display:none;margin-bottom:8px;">
+        <span style="font-size:12px;color:var(--green);font-style:italic;" id="hisReportBadgeDisplay"></span>
+        <button onclick="clearHisReport()" style="margin-left:10px;font-size:11px;color:var(--mist);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:var(--sans);">Clear report</button>
+      </div>
       <label style="display:inline-flex;align-items:center;gap:8px;padding:9px 18px;background:white;border:1.5px solid var(--pink-100);border-radius:99px;font-size:12px;font-weight:500;font-family:var(--sans);color:var(--deep);cursor:pointer;transition:all .18s;" onmouseover="this.style.borderColor='var(--petal)'" onmouseout="this.style.borderColor='var(--pink-100)'">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         Upload his report
@@ -4664,6 +4702,42 @@ function openReport(){
     html += '</div>';
   }
 
+  // His compatibility score section
+  if(S.hisTest && S.hisTest.grade){
+    var hg = S.hisTest.grade;
+    var hp = S.hisTest.pct;
+    var hGData = HT_GRADES[hg];
+    var hBarCol = {A:'#4CAF50',B:'#8BC34A',C:'#FF9800',D:'#FF5722',E:'#c4406b'}[hg]||'#c4406b';
+    var hGradeCol = {A:'#2d7a2d',B:'#4a7a2a',C:'#7a6020',D:'#b5614a',E:'#c4406b'}[hg]||'#c4406b';
+    var sections_r = [
+      {label:'A — Accountability',start:1,end:4,max:16},
+      {label:'B — Emotional Maturity',start:5,end:7,max:12},
+      {label:'C — Consistency',start:8,end:10,max:12},
+      {label:'D — Vision & Values',start:11,end:13,max:12},
+      {label:'E — How He Treats People',start:14,end:16,max:12},
+      {label:'F — Readiness',start:17,end:20,max:16}
+    ];
+    var hScores = S.hisTest.answers || {};
+    html += '<div class="report-section"><div class="report-section-title">&#9825; His compatibility score</div>';
+    html += '<div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">';
+    html += '<span style="font-family:var(--serif);font-size:52px;font-weight:300;color:'+hGradeCol+';line-height:1">'+hg+'</span>';
+    html += '<div><div style="font-size:13px;font-weight:500;color:var(--deep)">'+hGData.label+'</div>';
+    html += '<div style="font-size:12px;color:var(--mist);margin-top:2px;">'+hp+'% — '+S.hisTest.total+'/80 points — '+(S.hisTest.date||'')+'</div></div></div>';
+    html += '<div style="height:7px;background:var(--pink-100);border-radius:99px;overflow:hidden;margin-bottom:14px;">';
+    html += '<div style="width:'+hp+'%;height:100%;background:'+hBarCol+';border-radius:99px;"></div></div>';
+    sections_r.forEach(function(sec){
+      var st=0; for(var q=sec.start;q<=sec.end;q++){if(hScores[q])st+=hScores[q];}
+      var sp=Math.round(st/sec.max*100);
+      var sc=sp>=75?'#4CAF50':sp>=50?'#FF9800':sp>=25?'#FF5722':'#c4406b';
+      html += '<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;">';
+      html += '<span style="color:var(--stone)">'+sec.label+'</span><span style="color:'+sc+';font-weight:600;">'+sp+'%</span></div>';
+      html += '<div style="height:5px;background:var(--pink-100);border-radius:99px;overflow:hidden;">';
+      html += '<div style="width:'+sp+'%;height:100%;background:'+sc+';border-radius:99px;"></div></div></div>';
+    });
+    html += '<div style="margin-top:10px;padding:10px 14px;background:var(--blush);border-radius:10px;font-family:var(--serif);font-size:12px;font-style:italic;color:var(--stone);line-height:1.65;">'+hGData.advice+'</div>';
+    html += '</div>';
+  }
+
   body.innerHTML=html;
   document.getElementById('reportBackdrop').classList.add('open');
 }
@@ -6216,12 +6290,33 @@ function saveSelfFlagEntry(){
   S.relFocus.selfFlags = text;
   save();
   renderSelfFlagFeed();
+  checkURLParams();
   var msg = document.getElementById('selfFlagMsg');
   if(msg){
-    var lbl = cls==='red' ? '\u26a0 Wound active \u2014 logged' : cls==='amber' ? '\u25b2 Pattern noticed \u2014 logged' : '\u2713 Logged';
+    var lbl = cls==='red' ? '\u26a0 Wound active \u2014 saved' : cls==='amber' ? '\u25b2 Pattern noticed \u2014 saved' : '\u2713 Saved for this week';
     var col = cls==='red' ? 'var(--rose)' : cls==='amber' ? '#7a4a00' : 'var(--green)';
     msg.textContent = lbl; msg.style.color = col; msg.style.opacity = 1;
     setTimeout(function(){ msg.style.opacity = 0; }, 3000);
+  }
+  // Show guidance based on top tag
+  var GUIDANCE = {
+    shrink:      'You are making yourself smaller. This is not peace \u2014 it is pre-emptive self-erasure. Before your next interaction, name one thing you will say that is fully true.',
+    chase:       'Chasing is anxiety wearing the costume of interest. Pause 24 hours before any reach-out. Fill that time with one thing that belongs entirely to your own life.',
+    overexplain: 'You are defending yourself to someone who should not require a defence. Explanation without request is anxiety in disguise. Let a statement stand on its own.',
+    anxiety:     'Your nervous system is working harder than the available data justifies. Write down exactly what you have observed \u2014 facts, not interpretations. Stay there.',
+    tooneedy:    'You are giving at a pace that is not sustainable. Pull back to your own life deliberately today. What would you be doing if he did not exist?',
+    selfabandon: 'You keep putting him first. What did you need this week that you did not give yourself? Do that thing before you give anything else outward.',
+    jealous:     'The insecurity is information about your wound, not about him. Where did this fear first live? Go back to that age, not this one.',
+    testing:     'You are creating problems to see how he handles them. That is not observation \u2014 it is manufacturing evidence. Stop the test. Return to watching what is already there.',
+    dishonest:   'You are performing for him. He cannot choose the real you if she is not present. What is one thing you have hidden that is true?',
+    ignore:      'Your gut is speaking. Write down exactly what it is saying without softening it. That raw sentence is the data.'
+  };
+  var guidanceEl = document.getElementById('selfFlagGuidance');
+  if(guidanceEl && tags.length > 0 && GUIDANCE[tags[0]]){
+    guidanceEl.innerHTML = '<span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--rose);display:block;margin-bottom:6px;">Guidance \u2014 '+cls.charAt(0).toUpperCase()+cls.slice(1)+' pattern</span>' + GUIDANCE[tags[0]];
+    guidanceEl.style.display = 'block';
+  } else if(guidanceEl) {
+    guidanceEl.style.display = 'none';
   }
 }
 
@@ -6859,10 +6954,40 @@ function loadHisReport(input){
     renderPhase && renderPhase();
     renderAll && renderAll();
     status.style.color = 'var(--green)';
-    status.textContent = '\u2713 Grade '+grade+' ('+pct+'%) saved. His score badge now appears on every phase card. Open the Compatibility Checker to see the full breakdown.';
+    status.textContent = '\u2713 Grade '+grade+' ('+pct+'%) saved.';
+    var loaded = document.getElementById('hisReportLoaded');
+    var badge = document.getElementById('hisReportBadgeDisplay');
+    if(loaded) loaded.style.display='block';
+    if(badge) badge.textContent = 'Grade '+grade+' ('+pct+'%) loaded \u2014 '+date;
     input.value = '';
   };
   reader.readAsText(file);
+}
+
+
+function clearHisReport(){
+  if(!confirm('Remove his compatibility report from your blueprint?')) return;
+  S.hisTest = null;
+  save();
+  renderPhase && renderPhase();
+  renderAll && renderAll();
+  var status = document.getElementById('hisReportStatus');
+  var loaded = document.getElementById('hisReportLoaded');
+  if(status){ status.style.color='var(--mist)'; status.textContent='Report cleared.'; }
+  if(loaded) loaded.style.display='none';
+}
+
+
+/* ══ URL HASH / QUERY ROUTING ══ */
+function checkURLParams(){
+  var search = window.location.search || '';
+  var hash   = window.location.hash   || '';
+  if(search.indexOf('test') > -1 || hash.indexOf('test') > -1){
+    // Open compatibility checker directly
+    setTimeout(function(){
+      if(typeof openHisTest === 'function') openHisTest();
+    }, 300);
+  }
 }
 
 document.addEventListener("DOMContentLoaded",lpRender);}
@@ -7307,18 +7432,18 @@ document.addEventListener("DOMContentLoaded",function(){
 
     <!-- Result -->
     <div class="ht-result" id="htResult">
-      <div class="ht-grade" id="htGradeDisplay"></div>
-      <div class="ht-grade-label" id="htGradeLabel"></div>
-      <div class="ht-grade-desc" id="htGradeDesc"></div>
-      <div class="ht-score-bar-wrap">
+      <div class="ht-grade" id="htGradeDisplay" style="display:none"></div>
+      <div class="ht-grade-label" id="htGradeLabel" style="display:none"></div>
+      <div class="ht-grade-desc" id="htGradeDesc" style="display:none"></div>
+      <div class="ht-score-bar-wrap" style="display:none">
         <div class="ht-score-bar-bg">
           <div class="ht-score-bar-fill" id="htScoreBar" style="width:0%"></div>
         </div>
         <div class="ht-score-num" id="htScoreNum"></div>
       </div>
 
-      <!-- Answer summary -->
-      <div id="htAnswerSummary" style="max-width:480px;margin:0 auto 20px;text-align:left;"></div>
+      <!-- Answer summary — full PDF-faithful view -->
+      <div id="htAnswerSummary" style="margin:0 0 20px;text-align:left;"></div>
 
 
 
