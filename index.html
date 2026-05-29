@@ -1694,6 +1694,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
       <button class="nav-link" onclick="navTo('phase0Card')">Self-report</button>
       <button class="nav-link single-section" onclick="switchToRelationship()" style="color:var(--rose)">I started dating &#8594;</button>
       <button class="nav-link" onclick="navTo('phaseCard')">Phases</button>
+      <button class="nav-link rel-section" onclick="openHisTest()">Compatibility checker</button>
       <button onclick="navTo('sec-log')" class="nav-link rel-section">Observations</button>
       <button onclick="navTo('sec-flags')" class="nav-link rel-section">Flags</button>
       <button onclick="navTo('sec-checkin')" class="nav-link rel-section">Check-in</button>
@@ -1708,6 +1709,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
   <div class="nav-mobile" id="navMobile">
     <button class="nav-mobile-link" onclick="navTo('phase0Card');closeMobileNav()">Self-report</button>
     <button class="nav-mobile-link" onclick="navTo('phaseCard');closeMobileNav()">Phases</button>
+    <button class="nav-mobile-link rel-section" onclick="openHisTest();closeMobileNav()">Compatibility checker</button>
     <button class="nav-mobile-link" onclick="navTo('sec-log');closeMobileNav()">Observations</button>
     <button class="nav-mobile-link" onclick="navTo('sec-flags');closeMobileNav()">Flags</button>
     <button class="nav-mobile-link" onclick="navTo('sec-checkin');closeMobileNav()">Check-in</button>
@@ -2093,8 +2095,16 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     <p style="font-size:13px;color:var(--mist);font-family:var(--serif);font-style:italic;margin-bottom:14px;line-height:1.6">These are not interrogations. They are observations of how he moves through a real conversation.</p>
     <div id="relTopicsList" style="font-size:13px;color:var(--stone);line-height:1.8;"></div>
     <div style="margin-top:14px;">
-      <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--rose);margin-bottom:8px;">Red flags I am noticing in myself</div>
-      <textarea id="relSelfFlags" placeholder="What my wound is doing right now... Where I am shrinking, performing, or chasing..." oninput="saveRelFocus()" style="width:100%;min-height:70px;border:1px solid var(--pink-100);border-radius:10px;padding:10px 12px;font-family:var(--serif);font-size:13px;color:var(--stone);background:var(--blush);resize:vertical;outline:none;box-sizing:border-box;"></textarea>
+      <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--rose);margin-bottom:4px;">Red flags I am noticing in myself</div>
+      <p style="font-size:11px;color:var(--mist);font-family:var(--serif);font-style:italic;margin-bottom:8px;line-height:1.6;">Where is my wound active right now?</p>
+      <textarea id="relSelfFlags" placeholder="I am shrinking when... I noticed I am chasing by... My wound is..." oninput="saveRelFocus()" style="width:100%;min-height:72px;border:1px solid var(--pink-100);border-radius:10px;padding:10px 12px;font-family:var(--serif);font-size:13px;color:var(--stone);background:var(--blush);resize:vertical;outline:none;box-sizing:border-box;"></textarea>
+      <div id="selfFlagMsg" style="font-size:11px;font-style:italic;min-height:14px;opacity:0;transition:opacity .3s;margin-top:4px;"></div>
+      <div id="selfFlagGuidance" style="display:none;margin-top:10px;padding:12px 14px;background:var(--blush);border:1px solid var(--pink-100);border-radius:12px;font-family:var(--serif);font-size:13px;color:var(--stone);line-height:1.7;"></div>
+      <div id="selfFlagFeed"></div>
+      <div style="margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <button onclick="saveSelfFlagEntry()" style="padding:8px 18px;background:var(--deep);color:white;border:none;border-radius:99px;font-size:12px;font-weight:500;font-family:var(--sans);cursor:pointer;">Save for this week</button>
+        <button onclick="endThingsAndGoSingle()" style="padding:8px 18px;background:white;color:var(--mist);border:1.5px solid var(--pink-100);border-radius:99px;font-size:12px;font-weight:500;font-family:var(--sans);cursor:pointer;transition:all .2s;" onmouseover="this.style.borderColor='var(--rose)';this.style.color='var(--rose)'" onmouseout="this.style.borderColor='var(--pink-100)';this.style.color='var(--mist)'">We ended things &rarr;</button>
+      </div>
     </div>
   </div>
 
