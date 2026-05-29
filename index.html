@@ -1705,7 +1705,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
       <button class="nav-link" onclick="navTo('phase0Card')">Self-report</button>
       <button class="nav-link single-section" onclick="switchToRelationship()" style="color:var(--rose)">I started dating &#8594;</button>
       <button class="nav-link" onclick="navTo('phaseCard')">Phases</button>
-      <button class="nav-link rel-section" onclick="openHisTest()">Compatibility checker</button>
+      <button class="nav-link" onclick="openHisTest()">Compatibility checker</button>
       <button onclick="navTo('sec-log')" class="nav-link rel-section">Observations</button>
       <button onclick="navTo('sec-flags')" class="nav-link rel-section">Flags</button>
       <button onclick="navTo('sec-checkin')" class="nav-link rel-section">Check-in</button>
@@ -1720,7 +1720,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
   <div class="nav-mobile" id="navMobile">
     <button class="nav-mobile-link" onclick="navTo('phase0Card');closeMobileNav()">Self-report</button>
     <button class="nav-mobile-link" onclick="navTo('phaseCard');closeMobileNav()">Phases</button>
-    <button class="nav-mobile-link rel-section" onclick="openHisTest();closeMobileNav()">Compatibility checker</button>
+    <button class="nav-mobile-link" onclick="openHisTest();closeMobileNav()">Compatibility checker</button>
     <button class="nav-mobile-link" onclick="navTo('sec-log');closeMobileNav()">Observations</button>
     <button class="nav-mobile-link" onclick="navTo('sec-flags');closeMobileNav()">Flags</button>
     <button class="nav-mobile-link" onclick="navTo('sec-checkin');closeMobileNav()">Check-in</button>
@@ -4943,8 +4943,8 @@ function savePhase0(){
 
 function loadPhase0(){
   if(!S.phase0) return;
-  // Revoke stale completions — if stored readiness is below 90, unlock is not valid
-  if(S.phase0.complete && S.phase0.analysis && S.phase0.analysis.readiness < 90){
+  // Revoke stale completions — if stored readiness is below pass mark (50), unlock is not valid
+  if(S.phase0.complete && S.phase0.analysis && S.phase0.analysis.readiness < 50){
     S.phase0.complete = false;
     delete S.phase0.completedDate;
     save();
@@ -5363,7 +5363,7 @@ function analysePhase0(){
   };
 
   var blocked=flags.indexOf('wound-unnamed')>-1||flags.indexOf('blame')>-1||flags.indexOf('no-plan')>-1;
-  var unlockable=readiness>=90&&!blocked;
+  var unlockable=readiness>=50&&!blocked;
   // Detect wound type from answers for personalised recommendations
   var woundTags=[];
   var allText=(ans.join(' ')).toLowerCase();
@@ -5835,8 +5835,8 @@ function downloadPhase0PDF(){
   var dimPct=analysis&&analysis.dimPct||{};
   var weakest=analysis&&analysis.weakest||'';
   var readiness=analysis?analysis.readiness:0;
-  var scoreLabel=readiness>=90?'Ready to begin':readiness>=65?'Getting closer':'More depth needed';
-  var scoreCol=readiness>=90?'#639922':readiness>=65?'#7a2444':'#c4406b';
+  var scoreLabel=readiness>=50?'Ready to begin':readiness>=65?'Getting closer':'More depth needed';
+  var scoreCol=readiness>=50?'#639922':readiness>=65?'#7a2444':'#c4406b';
 
   // Build full HTML string
   var h='';
@@ -6397,19 +6397,55 @@ var HT_GRADES = {
 };
 
 function openHisTest(){
-  document.getElementById('hisTestOverlay').classList.add('active');
-  document.getElementById('htForm').style.display = 'block';
-  document.getElementById('htResult').classList.remove('show');
-  window.scrollTo({top:0,behavior:'instant'});
-  // Pre-populate if we have saved answers
-  if(S.hisTest && S.hisTest.answers){
-    _htAnswers = S.hisTest.answers;
-    htRestoreSelections();
+  var ov=document.getElementById('hisTestOverlay');
+  if(!ov) return;
+  ov.style.display='block';
+  document.body.style.overflow='hidden';
+  var form=document.getElementById('htForm');
+  var res=document.getElementById('htResult');
+  if(S.hisTest && S.hisTest.grade){
+    if(form) form.style.display='none';
+    if(res)  res.style.display='block';
+    _htAnswers=S.hisTest.answers||{};
+    if(S.hisTest.answerTexts) window._htAnswerTexts=S.hisTest.answerTexts;
+    htRenderAnswerSummary(S.hisTest.grade);
+  } else {
+    if(form) form.style.display='block';
+    if(res)  res.style.display='none';
   }
+  ov.scrollTop=0;
+}
+
+function htBuildForm(container){
+  var scenarios=[
+    {sec:'A &mdash; Accountability &amp; Honesty', q:'You say something that clearly upsets the woman you are seeing. She goes quiet and says <em>&ldquo;it&rsquo;s fine&rdquo;</em> &mdash; but it obviously isn&rsquo;t. What do you do next? Be specific about what you actually say or do.'},
+    {sec:'B &mdash; Emotional Maturity', q:'She shares something painful with you &mdash; a fear, a grief, something she has never told anyone. She is not asking you to fix it. She just needs you to be there. What do you do, and what do you say?'},
+    {sec:'C &mdash; Consistency &amp; Follow-through', q:'You made plans with her for Saturday. On Friday evening something comes up with your friends &mdash; a night out you genuinely want to go to. What do you do? Walk through exactly what happens.'},
+    {sec:'D &mdash; Vision &amp; Values', q:'After three months of seeing each other consistently, she asks you directly: <em>&ldquo;Where do you see this going? I want something real and I need to know if you&rsquo;re building toward that too.&rdquo;</em> What do you say &mdash; exactly?'},
+    {sec:'E &mdash; How He Treats People', q:'You are out together and a waiter makes a mistake with your order. She is watching how you handle it. What happens?'},
+    {sec:'F &mdash; Readiness &amp; Presence', q:'Early on, she tells you she won&rsquo;t be physically intimate until she knows someone well &mdash; it could be months. You are genuinely interested in her. Describe honestly what goes through your mind, and what you actually do.'}
+  ];
+  var html='<p style="font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#c4406b;margin-bottom:10px;">Compatibility Checker</p>';
+  html+='<h1 style="font-family:var(--serif);font-size:clamp(24px,3vw,38px);font-weight:300;color:#5a1a30;margin-bottom:10px;line-height:1.1;">Six <em style=\'font-style:italic;color:#c4406b;\'>real situations.</em></h1>';
+  html+='<p style="font-family:var(--serif);font-size:13px;font-style:italic;color:#aaa;margin-bottom:28px;line-height:1.65;">Send him this link. 6 scenarios &mdash; no options to choose from, just his honest words. She will read every answer.</p>';
+  scenarios.forEach(function(s,idx){
+    var q=idx+1;
+    html+='<div style="margin-bottom:22px;">';
+    html+='<div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7a2444;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #ffd6e7;">'+s.sec+'</div>';
+    html+='<div style="background:white;border:1px solid #ffd6e7;border-radius:14px;padding:16px 18px;">';
+    html+='<div style="font-family:var(--serif);font-size:14px;color:#2a1a20;margin-bottom:12px;line-height:1.65;">'+s.q+'</div>';
+    html+='<textarea id="hta'+q+'" placeholder="Write your honest response here..." oninput="htSaveText('+q+', this.value)" rows="4" style="width:100%;border:1px solid #ffd6e7;border-radius:10px;padding:12px 14px;font-family:var(--serif);font-size:14px;color:#444;background:white;resize:vertical;outline:none;line-height:1.7;box-sizing:border-box;min-height:100px;transition:border-color .15s;" onfocus="this.style.borderColor=\'#e8a0b8\'" onblur="this.style.borderColor=\'#ffd6e7\'"></textarea>';
+    html+='</div></div>';
+  });
+  html+='<div id="htError" style="color:#c4406b;font-size:13px;text-align:center;margin-top:12px;display:none;"></div>';
+  html+='<div style="text-align:center;margin-top:24px;"><button onclick="htSubmit()" style="padding:14px 40px;background:#c4406b;color:white;border:none;border-radius:99px;font-size:14px;font-weight:500;font-family:var(--sans);cursor:pointer;box-shadow:0 4px 16px rgba(196,64,107,.22);" onmouseover="this.style.background=\'#5a1a30\'" onmouseout="this.style.background=\'#c4406b\'">Submit my answers &rarr;</button></div>';
+  container.innerHTML=html;
 }
 
 function closeHisTest(){
-  document.getElementById('hisTestOverlay').classList.remove('active');
+  var ov=document.getElementById('hisTestOverlay');
+  if(ov) ov.style.display='none';
+  document.body.style.overflow='';
 }
 
 function htSelect(btn, qNum, score){
@@ -6435,14 +6471,14 @@ function htRestoreSelections(){
 }
 
 function htSubmit(){
-  var errEl = document.getElementById('htError');
-  var missing = [];
-  for(var q=1;q<=5;q++){
+  var errEl=document.getElementById('htError');
+  var missing=[];
+  for(var q=1;q<=6;q++){
     var ta=document.getElementById('hta'+q);
     if(!ta||ta.value.trim().length<15) missing.push(q);
   }
   if(missing.length>0){
-    errEl.textContent='Please answer all 5 scenarios (scenario '+missing.join(', ')+' needs more).';
+    errEl.textContent='Please answer all 6 scenarios (scenario '+missing.join(', ')+' needs more).';
     errEl.style.display='block';
     errEl.scrollIntoView({behavior:'smooth',block:'center'});
     return;
@@ -6450,31 +6486,30 @@ function htSubmit(){
   errEl.style.display='none';
 
   var qTexts=[
-    'You say something that upsets her. She says it\u2019s fine but it obviously isn\u2019t. What do you do?',
-    'She calls with big news while you\u2019re stressed at work. What actually happens?',
-    'She won\u2019t be physically intimate for months. What is your honest internal response, and what do you actually do?',
-    'She calmly tells you she felt deprioritised when you cancelled last minute. What do you say and do?',
-    'After 3 months she asks where this is going. What do you say \u2014 exactly?'
+    'A \u2014 Accountability & Honesty: She says it\u2019s fine but it obviously isn\u2019t. What do you actually do?',
+    'B \u2014 Emotional Maturity: She shares something painful and just needs you to be there. What do you do?',
+    'C \u2014 Consistency & Follow-through: You made plans with her but something comes up Friday night. What happens?',
+    'D \u2014 Vision & Values: After 3 months she asks directly where this is going. What do you say?',
+    'E \u2014 How He Treats People: A waiter makes a mistake while you\u2019re out together. What happens?',
+    'F \u2014 Readiness & Presence: She won\u2019t be physically intimate for months. What goes through your mind?'
   ];
 
-  // Analyse each answer for grade
-  var scores = {};
-  for(var q=1;q<=5;q++){
+  var scores={};
+  if(!window._htAnswerTexts) window._htAnswerTexts={};
+  for(var q=1;q<=6;q++){
     var ta=document.getElementById('hta'+q);
-    var txt=(ta?ta.value.trim():'').toLowerCase();
-    scores[q] = htScoreAnswer(q, txt);
-    if(!window._htAnswerTexts) window._htAnswerTexts={};
-    window._htAnswerTexts[q]={q:qTexts[q-1],a:ta?ta.value.trim():'',score:scores[q]};
+    var txt=ta?ta.value.trim():'';
+    scores[q]=htScoreAnswer(q,txt.toLowerCase());
+    window._htAnswerTexts[q]={q:qTexts[q-1],a:txt,score:scores[q]};
   }
 
   var total=0;
-  for(var q=1;q<=5;q++) total+=scores[q];
-  var maxScore=20;
-  var pct=Math.round(total/maxScore*100);
+  for(var q=1;q<=6;q++) total+=scores[q];
+  var pct=Math.round(total/24*100);
   var grade='E';
-  var gradeKeys=['A','B','C','D','E'];
-  for(var g=0;g<gradeKeys.length;g++){
-    if(pct>=HT_GRADES[gradeKeys[g]].min){grade=gradeKeys[g];break;}
+  var keys=['A','B','C','D','E'];
+  for(var g=0;g<keys.length;g++){
+    if(pct>=HT_GRADES[keys[g]].min){grade=keys[g];break;}
   }
 
   if(!S.hisTest) S.hisTest={};
@@ -6487,56 +6522,66 @@ function htSubmit(){
   S.hisTest.textMode=true;
   save();
 
-  document.getElementById('htForm').style.display='none';
-  var resultEl=document.getElementById('htResult');
-  resultEl.style.display='block';
+  var form=document.getElementById('htForm');
+  var res=document.getElementById('htResult');
+  if(form) form.style.display='none';
+  if(res){ res.classList.add('show'); res.style.display='block'; }
   htRenderAnswerSummary(grade);
-  var overlay=document.getElementById('hisTestOverlay');
-  if(overlay) overlay.scrollTo({top:0,behavior:'smooth'});
+  var ov=document.getElementById('hisTestOverlay');
+  if(ov) try{ ov.scrollTop=0; }catch(e){}
 }
 
 function htScoreAnswer(qNum, txt){
-  // Returns 1-4 based on what the text contains
-  // Each scenario has green/red signal words
   var green=0, red=0;
-  if(qNum===1){ // disagreement — did he press/stay or deflect/move on?
-    if(/\b(press|stay|ask her|tell me|check in|not fine|sit with|make sure|i noticed|address it|bring it up|talk about it|asked what|wanted to know)\b/.test(txt)) green+=2;
-    if(/\b(listen|present|stayed|didn.t move on|came back to it|held space|her feelings)\b/.test(txt)) green+=1;
-    if(/\b(took her word|moved on|let it go|not my fault|she.?ll say|if she wanted|didn.t push|left it)\b/.test(txt)) red+=2;
-    if(/\b(defensive|annoyed|not fair|overreact|fine means fine)\b/.test(txt)) red+=2;
+
+  if(qNum===1){ // A — Accountability: did he press/stay or deflect?
+    if(/\b(press|stay|ask her|check in|not fine|address it|bring it up|come back to|sit with|make sure|asked what|wanted to know|lean in|i notice)\b/.test(txt)) green+=2;
+    if(/\b(listen|present|her feelings|held space|didn.t move on|followed up)\b/.test(txt)) green+=1;
+    if(/\b(took her word|moved on|let it go|if she wanted|didn.t push|left it|fine means fine)\b/.test(txt)) red+=2;
+    if(/\b(defensive|annoyed|not fair|overreact|not my problem)\b/.test(txt)) red+=2;
   }
-  if(qNum===2){ // big news — did he stop and celebrate?
-    if(/\b(stop|put (it|everything|work) (down|aside|away)|celebrated?|fully present|her moment|all about her|dropped what|focused on her|congratulat)\b/.test(txt)) green+=2;
-    if(/\b(proud|happy for|made time|paused|excited for her|her win)\b/.test(txt)) green+=1;
-    if(/\b(mentioned (my|what i|the stress)|redirect|my thing|i was deal|told her (about|what i)|she.?ll understand|later)\b/.test(txt)) red+=2;
-    if(/\b(more urgent|my problem|couldn.t focus|distracted)\b/.test(txt)) red+=1;
+
+  if(qNum===2){ // B — Emotional maturity: hold space or fix?
+    if(/\b(listen(ed)?|held? space|present|just (be|being|sat|stayed)|didn.t (try to fix|offer solutions?|jump to advice)|let her (talk|feel|express)|sat (with|beside)|stayed quiet|acknowledged?|validated?)\b/.test(txt)) green+=2;
+    if(/\b(comfort(ed)?|held? her|thank(ed)? her for sharing|grateful she told|honour(ed)?|safe)\b/.test(txt)) green+=1;
+    if(/\b(tried? to fix|gave (advice|solutions?)|told her (to|that she should)|said she (should|needs to)|silver lining|look on the bright|it.ll be (fine|okay)|at least)\b/.test(txt)) red+=2;
+    if(/\b(uncomfortable|didn.t know what to say so|changed subject|awkward|too much|overwhelming)\b/.test(txt)) red+=1;
   }
-  if(qNum===3){ // boundary — did he respect it genuinely?
-    if(/\b(respect(ed)?|completely fine|fine with (it|that)|no issue|takes? it seriously|appreciat|worth (waiting|it)|pace is (hers|her call|up to her)|honoured? it)\b/.test(txt)) green+=2;
-    if(/\b(patient|trust|build(s?) something|excited (to get to know|about her)|connection first)\b/.test(txt)) green+=1;
-    if(/\b(test (the )?limit|push|gradually|see how far|negotiate|work around|difficult|challenge|hard for me|physical (connection|intimacy) (is|matters))\b/.test(txt)) red+=2;
-    if(/\b(pull back|keep (my )?options|move on|not (for me|my thing)|too long)\b/.test(txt)) red+=2;
+
+  if(qNum===3){ // C — Consistency: keep plans or cancel?
+    if(/\b(kept? (the |my )?plans?|honour(ed)? (the |my )?commitment|didn.t cancel|told (my friends?|them) no|chose her|prioritis(ed)?|plans? (matter|are sacred|mean something)|kept my word)\b/.test(txt)) green+=3;
+    if(/\b(called? her (first|to let her know)|communicated?|transparent|honest with her|rescheduled? (with her|the friends?))\b/.test(txt)) green+=1;
+    if(/\b(cancelled?|bailed?|rearranged?|told her (something came up|i.d have to|i can.t)|went (out|with (my friends?|them))|she.?ll (understand|be fine)|make it up)\b/.test(txt)) red+=2;
+    if(/\b(she should understand|plans? aren.t set in stone|not a big deal|just (friends?|one night))\b/.test(txt)) red+=1;
   }
-  if(qNum===4){ // hard conversation — did he own it or deflect?
-    if(/\b(you.?re right|i.?m sorry|my fault|i (was wrong|messed up|let you down|should have|didn.t|failed)|no excuse|i own|i take responsibility|accountab|apologis)\b/.test(txt)) green+=2;
-    if(/\b(listened?|heard (her|you)|sat with|didn.t (defend|deflect|justify)|thank(ed)? her for telling me)\b/.test(txt)) green+=1;
-    if(/\b(but (i had|there was|the reason|it was)|explain(ed)? (the context|why|that)|not intentional|she.?s overreact|just once|not fair|had a reason)\b/.test(txt)) red+=2;
-    if(/\b(defensive|felt attacked|put on the spot|turned it|not a character|making it bigger)\b/.test(txt)) red+=2;
+
+  if(qNum===4){ // D — Vision: direct or vague?
+    if(/\b(direct(ly)?|honest(ly)?|clear(ly)?|told her (where|what|that)|yes (i want|i.m building|i see (this|a future|us))|i want (this|a future|something real|to build|her)|she.?s (part of|in) (that|my|the) (picture|plan|vision)|committed?|serious(ly)?|ready)\b/.test(txt)) green+=2;
+    if(/\b(this is (real|what i want)|building toward|i see (a future|us together)|she matters|she.s who i want)\b/.test(txt)) green+=1;
+    if(/\b(need more time|not sure (yet|if)|maybe|see how|let.s (just|keep)|non.committal|vague|deflect(ed)?|turned it back|asked her instead|don.t want to (lose|rush|label)|keep (my options|things casual))\b/.test(txt)) red+=2;
+    if(/\b(pressured?|too (early|soon)|pulled? back|commitment (makes?|is)|why (does she|is she))\b/.test(txt)) red+=2;
   }
-  if(qNum===5){ // relationship question — did he answer directly?
-    if(/\b(direct(ly)?|honest(ly)?|clear(ly)?|told her (where|what|that)|yes (i want|i.?m building|i see)|i want (this|a future|something real|to build|her)|she.?s (part of|in) (that|my|the) (picture|plan|vision))\b/.test(txt)) green+=2;
-    if(/\b(committed?|serious(ly)?|this is (real|what i want)|ready|building toward)\b/.test(txt)) green+=1;
-    if(/\b(need more time|not sure (yet|if)|maybe|see how|let.s (just|keep)|don.t want to (lose|rush|label)|non.committal|vague|deflect|turned it back|asked her instead)\b/.test(txt)) red+=2;
-    if(/\b(pressured?|too (early|soon)|pulled? back|commitment (talk|word|conversation) (makes?|is))\b/.test(txt)) red+=2;
+
+  if(qNum===5){ // E — How he treats people: grace or irritation?
+    if(/\b(polite(ly)?|calm(ly)?|kind(ly)?|patient(ly)?|understood?|mistakes? happen|no (big deal|problem|worries?|issue)|thanked?|gracious(ly)?|smiled?|it.s fine|no hard feelings|gave (them|the waiter) grace)\b/.test(txt)) green+=2;
+    if(/\b(didn.t make (a scene|it awkward|them feel bad)|let it go gracefully|quietly (fixed|sorted)|moved on)\b/.test(txt)) green+=1;
+    if(/\b(annoyed|frustrated|showed (my|the) (frustration|annoyance|irritation)|snapped?|sharp(ly)?|rude(ly)?|called (the manager|them out)|made a (scene|fuss|point)|complained? (loudly|to|about)|eye.?roll(ed)?)\b/.test(txt)) red+=2;
+    if(/\b(they should (know|do better)|unacceptable|shouldn.t have|incompetent|not professional)\b/.test(txt)) red+=1;
   }
-  // Score: 4=clear green, 3=lean green, 2=lean red, 1=clear red
+
+  if(qNum===6){ // F — Readiness: genuine respect or tolerance/withdrawal?
+    if(/\b(respect(ed)?( it| her| the boundary| her pace)?|completely (fine|okay)|fine with (it|that|her pace)|no (issue|problem)|her (choice|decision|call|pace)|worth (waiting|it)|takes? it seriously|appreciate(d)? (it|her|that)|value(d)? (it|her)|honoured? it|excited (to|about) getting to know)\b/.test(txt)) green+=2;
+    if(/\b(patient|trust|build(s?) something (real|deeper)|connection (first|before)|look forward to knowing her)\b/.test(txt)) green+=1;
+    if(/\b(test (the )?limit|push (the boundary|her|it)|gradually|see how far|negotiate|work around|challenge|difficult|hard for me|physical(ly)? (connection|intimacy|closeness) (is|matters|important|how i))\b/.test(txt)) red+=2;
+    if(/\b(pull(ed)? back|keep (my )?options( open)?|move on|not (for me|my thing|sustainable)|too long (to wait|a timeline)|reconsider)\b/.test(txt)) red+=2;
+  }
+
   if(green>=3 && red===0) return 4;
   if(green>=2 && red<=1) return 3;
   if(red>=2 && green<=1) return 2;
   if(red>=3 || (red>=2 && green===0)) return 1;
-  // Short / neutral answer — grade 2 (can't confirm either way)
   if(txt.length<50) return 2;
-  return 3; // substantive but ambiguous = benefit of doubt
+  return 3;
 }
 
 function htCopyResult(){
@@ -6720,7 +6765,7 @@ function htDownloadPDF(){
   var scores=(S.hisTest&&S.hisTest.answers)||_htAnswers||{};
   var savedAt=(S.hisTest&&S.hisTest.answerTexts)||window._htAnswerTexts||{};
   var at={};
-  for(var q=1;q<=20;q++){
+  for(var q=1;q<=6;q++){
     var sc=scores[q]||0;var ai=sc>0?(4-sc):0;
     at[q]=savedAt[q]||{q:HT_Q_TEXT[q-1],a:sc>0?HT_A_TEXT[q-1][ai]:'',score:sc};
   }
@@ -6730,11 +6775,12 @@ function htDownloadPDF(){
   var aBg={4:'#e8f5e8',3:'#fdf3d0',2:'#fde8e0',1:'#fde0e8'};
   var aLtr={4:'A',3:'B',2:'C',1:'D'};
   var sections=[
-    {label:'1 \u2014 The disagreement',start:1,end:1,max:4},
-    {label:'2 \u2014 The big news',start:2,end:2,max:4},
-    {label:'3 \u2014 The boundary',start:3,end:3,max:4},
-    {label:'4 \u2014 The hard conversation',start:4,end:4,max:4},
-    {label:'5 \u2014 The relationship question',start:5,end:5,max:4}
+    {label:'A \u2014 Accountability & Honesty',start:1,end:1,max:4},
+    {label:'B \u2014 Emotional Maturity',start:2,end:2,max:4},
+    {label:'C \u2014 Consistency & Follow-through',start:3,end:3,max:4},
+    {label:'D \u2014 Vision & Values',start:4,end:4,max:4},
+    {label:'E \u2014 How He Treats People',start:5,end:5,max:4},
+    {label:'F \u2014 Readiness & Presence',start:6,end:6,max:4}
   ];
   var L=[];
   L.push('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">');
@@ -6748,7 +6794,7 @@ function htDownloadPDF(){
   L.push('<div class="grade-label" style="color:'+gradeCol+'">'+gData.label+'</div>');
   L.push('<div class="grade-desc">'+gData.desc+'</div>');
   L.push('<div class="bar-wrap"><div class="bar-fill" style="width:'+pct+'%;background:'+barCol+'"></div></div>');
-  L.push('<div class="score-num">'+pct+'% \u2014 '+total+'/80 points \u2014 '+date+'</div>');
+  L.push('<div class="score-num">'+pct+'% \u2014 '+total+'/24 points \u2014 '+date+'</div>');
   L.push('<div class="advice-box">'+gData.advice+'</div>');
   // Section breakdown summary
   L.push('<div style="margin-bottom:28px;"><div class="breakdown-hd">Section Breakdown</div>');
@@ -6782,26 +6828,69 @@ function htRenderAnswerSummary(grade){
   var wrap=document.getElementById('htAnswerSummary');if(!wrap)return;
   var scores=(S.hisTest&&S.hisTest.answers)||_htAnswers||{};
   var savedAt=(S.hisTest&&S.hisTest.answerTexts)||window._htAnswerTexts||{};
+
+  // Build answer objects from saved data
   var at={};
-  for(var q=1;q<=20;q++){var sc=scores[q]||0;var ai=sc>0?(4-sc):0;at[q]=savedAt[q]||{q:HT_Q_TEXT[q-1],a:sc>0?HT_A_TEXT[q-1][ai]:'',score:sc};}
-  var gData=HT_GRADES[grade];
-  var pct=(S.hisTest&&S.hisTest.pct)||0;var total=(S.hisTest&&S.hisTest.total)||0;var date=(S.hisTest&&S.hisTest.date)||'';
+  var qLabels=[
+    'A \u2014 Accountability & Honesty',
+    'B \u2014 Emotional Maturity',
+    'C \u2014 Consistency & Follow-through',
+    'D \u2014 Vision & Values',
+    'E \u2014 How He Treats People',
+    'F \u2014 Readiness & Presence'
+  ];
+  for(var q=1;q<=6;q++){
+    var sc=scores[q]||0;
+    at[q]=savedAt[q]||{q:typeof HT_Q_TEXT!=='undefined'?HT_Q_TEXT[q-1]:'Scenario '+q,a:'',score:sc};
+    at[q].score=sc; // ensure score is fresh from saved answers
+  }
+
+  var gData=HT_GRADES[grade]||HT_GRADES['C'];
+  var pct=(S.hisTest&&S.hisTest.pct)||0;
+  var total=(S.hisTest&&S.hisTest.total)||0;
+  var date=(S.hisTest&&S.hisTest.date)||'';
   var gradeCol={A:'#2d7a2d',B:'#4a7a2a',C:'#7a6020',D:'#b5614a',E:'#c4406b'}[grade]||'#c4406b';
   var barCol={A:'#4CAF50',B:'#8BC34A',C:'#FF9800',D:'#FF5722',E:'#c4406b'}[grade]||'#c4406b';
-  var aCol={4:'#2d7a2d',3:'#7a6020',2:'#b5614a',1:'#c4406b'};var aBg={4:'#e8f5e8',3:'#fdf3d0',2:'#fde8e0',1:'#fde0e8'};var aLtr={4:'A',3:'B',2:'C',1:'D'};
-  var sections=[{label:'A \u2014 Accountability & Honesty',start:1,end:4,max:16},{label:'B \u2014 Emotional Maturity',start:5,end:7,max:12},{label:'C \u2014 Consistency & Follow-through',start:8,end:10,max:12},{label:'D \u2014 Vision & Values',start:11,end:13,max:12},{label:'E \u2014 How He Treats People',start:14,end:16,max:12},{label:'F \u2014 Readiness & Presence',start:17,end:20,max:16}];
+  var aCol={4:'#2d7a2d',3:'#7a6020',2:'#b5614a',1:'#c4406b'};
+  var aBg={4:'#e8f5e8',3:'#fdf3d0',2:'#fde8e0',1:'#fde0e8'};
+  var aLtr={4:'A',3:'B',2:'C',1:'D'};
+
   var h='<div style="text-align:center;padding:32px 20px 24px;border-bottom:1px solid var(--pink-100);margin-bottom:24px;">';
   h+='<div style="font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--mauve);margin-bottom:10px;">Compatibility Checker \u2014 My Relationship Blueprint</div>';
   h+='<div style="font-family:var(--serif);font-size:88px;font-weight:300;line-height:1;color:'+gradeCol+';margin-bottom:6px;">'+grade+'</div>';
   h+='<div style="font-family:var(--serif);font-size:20px;font-weight:400;color:'+gradeCol+';margin-bottom:10px;">'+gData.label+'</div>';
   h+='<div style="font-family:var(--serif);font-size:13px;font-style:italic;color:var(--mist);line-height:1.7;max-width:480px;margin:0 auto 16px;">'+gData.desc+'</div>';
   h+='<div style="max-width:280px;margin:0 auto 6px;height:8px;background:var(--pink-100);border-radius:99px;overflow:hidden;"><div style="width:'+pct+'%;height:100%;background:'+barCol+';border-radius:99px;"></div></div>';
-  h+='<div style="font-size:12px;color:var(--mist);margin-bottom:14px;">'+pct+'% \u2014 '+total+'/80 points \u2014 '+date+'</div>';
+  h+='<div style="font-size:12px;color:var(--mist);margin-bottom:14px;">'+pct+'% \u2014 '+total+'/24 points \u2014 '+date+'</div>';
   h+='<div style="background:white;border:1px solid var(--pink-100);border-radius:14px;padding:14px 18px;max-width:520px;margin:0 auto;font-family:var(--serif);font-size:13px;font-style:italic;color:var(--deep);line-height:1.7;text-align:left;">'+gData.advice+'</div></div>';
+
+  // Section breakdown summary (one bar per scenario)
   h+='<div style="margin-bottom:24px;"><div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--mauve);margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid var(--pink-100);">Section Breakdown</div>';
-  sections.forEach(function(sec){var st=0;for(var q=sec.start;q<=sec.end;q++){if(scores[q])st+=scores[q];}var sp=Math.round(st/sec.max*100);var sc=sp>=75?'#4CAF50':sp>=50?'#FF9800':sp>=25?'#FF5722':'#c4406b';h+='<div style="margin-bottom:9px;"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--deep);font-weight:500;">'+sec.label+'</span><span style="color:'+sc+';font-weight:600;">'+sp+'%</span></div><div style="height:7px;background:var(--pink-100);border-radius:99px;overflow:hidden;"><div style="width:'+sp+'%;height:100%;background:'+sc+';border-radius:99px;"></div></div></div>';});
+  for(var q=1;q<=6;q++){
+    var sc2=scores[q]||0;
+    var sp=Math.round(sc2/4*100);
+    var col=sp>=75?'#4CAF50':sp>=50?'#FF9800':sp>=25?'#FF5722':'#c4406b';
+    h+='<div style="margin-bottom:9px;"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--deep);font-weight:500;">'+qLabels[q-1]+'</span><span style="color:'+col+';font-weight:600;">'+sp+'%</span></div>';
+    h+='<div style="height:7px;background:var(--pink-100);border-radius:99px;overflow:hidden;"><div style="width:'+sp+'%;height:100%;background:'+col+';border-radius:99px;"></div></div></div>';
+  }
   h+='</div>';
-  sections.forEach(function(sec){var st=0;for(var q=sec.start;q<=sec.end;q++){if(scores[q])st+=scores[q];}var sp=Math.round(st/sec.max*100);var sc=sp>=75?'#4CAF50':sp>=50?'#FF9800':sp>=25?'#FF5722':'#c4406b';h+='<div style="margin-bottom:24px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--mauve);">'+sec.label+'</span><span style="font-size:11px;font-weight:600;color:'+sc+';">'+sp+'%</span></div><div style="height:5px;background:var(--pink-100);border-radius:99px;overflow:hidden;margin-bottom:10px;"><div style="width:'+sp+'%;height:100%;background:'+sc+';border-radius:99px;"></div></div>';for(var q=sec.start;q<=sec.end;q++){var e=at[q];if(e&&e.score>0){var s3=e.score;h+='<div style="background:white;border:1px solid var(--pink-100);border-radius:12px;padding:11px 14px;margin-bottom:7px;display:flex;gap:10px;align-items:flex-start;"><span style="font-size:12px;font-weight:700;border-radius:6px;padding:2px 7px;flex-shrink:0;margin-top:1px;color:'+(aCol[s3]||'#888')+';background:'+(aBg[s3]||'#eee')+';font-family:var(--sans);">'+(aLtr[s3]||'-')+'</span><div><div style="font-size:11px;color:var(--mist);margin-bottom:3px;line-height:1.4;">'+e.q+'</div><div style="font-family:var(--serif);font-size:13px;color:var(--deep);line-height:1.5;">'+e.a+'</div></div></div>';}}h+='</div>';});
+
+  // Full answers
+  for(var q=1;q<=6;q++){
+    var e2=at[q];
+    var sc3=e2?e2.score:0;
+    var sp2=Math.round(sc3/4*100);
+    var col2=sp2>=75?'#4CAF50':sp2>=50?'#FF9800':sp2>=25?'#FF5722':'#c4406b';
+    h+='<div style="margin-bottom:22px;">';
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--mauve);">'+qLabels[q-1]+'</span><span style="font-size:11px;font-weight:600;color:'+col2+';">'+sp2+'%</span></div>';
+    h+='<div style="height:5px;background:var(--pink-100);border-radius:99px;overflow:hidden;margin-bottom:10px;"><div style="width:'+sp2+'%;height:100%;background:'+col2+';border-radius:99px;"></div></div>';
+    h+='<div style="background:white;border:1px solid var(--pink-100);border-radius:12px;padding:12px 15px;display:flex;gap:10px;align-items:flex-start;">';
+    h+='<span style="font-size:12px;font-weight:700;border-radius:6px;padding:2px 8px;flex-shrink:0;color:'+(aCol[sc3]||'#888')+';background:'+(aBg[sc3]||'#eee')+';font-family:var(--sans);">'+(aLtr[sc3]||'-')+'</span>';
+    h+='<div><div style="font-size:11px;color:var(--mist);margin-bottom:4px;line-height:1.4;">'+(e2&&e2.q||'')+'</div>';
+    h+='<div style="font-family:var(--serif);font-size:13px;color:var(--deep);line-height:1.65;white-space:pre-wrap;">'+(e2&&e2.a||'<em style="color:var(--mist)">No answer</em>')+'</div></div>';
+    h+='</div></div>';
+  }
+
   h+='<div style="text-align:center;padding-top:20px;border-top:1px solid var(--pink-100);font-family:var(--serif);font-size:12px;font-style:italic;color:var(--mist);">&ldquo;Her worth is far above rubies.&rdquo; &mdash; Proverbs 31:10</div>';
   wrap.innerHTML=h;
 }
@@ -6931,8 +7020,8 @@ document.addEventListener("DOMContentLoaded",function(){
   loadHim();loadSelfCare();loadPhase0();loadMode();renderSelfFlagFeed();
   lpRender();
   spawnLandingHearts();
-  // Migration: if phase0 marked complete but readiness < 90, clear it
-  if(S.phase0&&S.phase0.complete&&(!S.phase0.analysis||S.phase0.analysis.readiness<90)){
+  // Migration: if phase0 marked complete but readiness<50, clear it
+  if(S.phase0&&S.phase0.complete&&(!S.phase0.analysis||S.phase0.analysis.readiness<50)){
     S.phase0.complete=false;
     delete S.phase0.completedDate;
     save();
@@ -7031,100 +7120,39 @@ document.addEventListener("DOMContentLoaded",function(){
   </div>
 </footer>
 
-<!-- HIS COMPATIBILITY TEST -->
-<div id="hisTestOverlay">
-  <div class="ht-wrap">
-    <button class="ht-back" onclick="closeHisTest()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-      Back
-    </button>
 
+<!-- HIS COMPATIBILITY TEST OVERLAY -->
+<div id="hisTestOverlay" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999;background:#fdf8f5;overflow-y:auto;">
+  <div style="max-width:680px;margin:0 auto;padding:48px 28px 80px;">
+    <button onclick="closeHisTest()" style="background:none;border:none;cursor:pointer;color:#888;font-size:13px;font-family:sans-serif;margin-bottom:28px;display:block;">&larr; Back</button>
     <div id="htForm">
-      <p class="ht-eyebrow">Compatibility Checker</p>
-      <h1 class="ht-h1">Five <em>real situations.</em></h1>
-      <p class="ht-sub">Send him this link. 5 real scenarios — no options to choose from, just his own words. Write honestly. She will read every answer.</p>
+      <p style="font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#c4406b;margin-bottom:10px;">Compatibility Checker</p>
+      <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(24px,3vw,38px);font-weight:300;color:#5a1a30;margin-bottom:10px;line-height:1.1;">Six <em style="font-style:italic;color:#c4406b;">real situations.</em></h1>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:#999;margin-bottom:28px;line-height:1.65;">Send him this link. 6 scenarios &mdash; no options to choose from, just his honest words. She will read every answer.</p>
 
-      <div class="ht-section">
-        <div class="ht-section-hd">Scenario 1 &mdash; The disagreement</div>
-        <div class="ht-q">
-          <div class="ht-q-text">You say something that clearly upsets the woman you are seeing. She goes quiet and says <em>&ldquo;it&rsquo;s fine&rdquo;</em> — but it obviously isn&rsquo;t. What do you do? Be specific.</div>
-          <textarea class="ht-textarea" id="hta1" placeholder="Write your honest response here..." oninput="htSaveText(1, this.value)" rows="4"></textarea>
-        </div>
-      </div>
+      <div style="margin-bottom:22px;"><div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7a2444;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #ffd6e7;">A &mdash; Accountability &amp; Honesty</div><div style="background:white;border:1px solid #ffd6e7;border-radius:14px;padding:16px 18px;"><div style="font-family:'Cormorant Garamond',serif;font-size:14px;color:#2a1a20;margin-bottom:12px;line-height:1.65;">You say something that clearly upsets the woman you are seeing. She goes quiet and says <em>&ldquo;it&rsquo;s fine&rdquo;</em> &mdash; but it obviously isn&rsquo;t. What do you do next? Be specific.</div><textarea id="hta1" placeholder="Write your honest response here..." oninput="htSaveText(1,this.value)" rows="4" style="width:100%;border:1px solid #ffd6e7;border-radius:10px;padding:12px 14px;font-family:'Cormorant Garamond',serif;font-size:14px;color:#444;background:white;resize:vertical;outline:none;line-height:1.7;box-sizing:border-box;min-height:100px;"></textarea></div></div>
 
-      <div class="ht-section">
-        <div class="ht-section-hd">Scenario 2 &mdash; The big news</div>
-        <div class="ht-q">
-          <div class="ht-q-text">She calls you, clearly excited, to share something she has been working toward for months — a promotion, a business win, something that matters deeply to her. You are in the middle of something stressful at work. What actually happens?</div>
-          <textarea class="ht-textarea" id="hta2" placeholder="Write your honest response here..." oninput="htSaveText(2, this.value)" rows="4"></textarea>
-        </div>
-      </div>
+      <div style="margin-bottom:22px;"><div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7a2444;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #ffd6e7;">B &mdash; Emotional Maturity</div><div style="background:white;border:1px solid #ffd6e7;border-radius:14px;padding:16px 18px;"><div style="font-family:'Cormorant Garamond',serif;font-size:14px;color:#2a1a20;margin-bottom:12px;line-height:1.65;">She shares something painful with you &mdash; a fear, a grief, something she has never told anyone. She is not asking you to fix it. She just needs you to be there. What do you do, and what do you say?</div><textarea id="hta2" placeholder="Write your honest response here..." oninput="htSaveText(2,this.value)" rows="4" style="width:100%;border:1px solid #ffd6e7;border-radius:10px;padding:12px 14px;font-family:'Cormorant Garamond',serif;font-size:14px;color:#444;background:white;resize:vertical;outline:none;line-height:1.7;box-sizing:border-box;min-height:100px;"></textarea></div></div>
 
-      <div class="ht-section">
-        <div class="ht-section-hd">Scenario 3 &mdash; The boundary</div>
-        <div class="ht-q">
-          <div class="ht-q-text">Early on, she tells you she won&rsquo;t be physically intimate until she knows someone well — it could take months. You are genuinely interested in her. What is your honest internal response, and what do you actually do?</div>
-          <textarea class="ht-textarea" id="hta3" placeholder="Write your honest response here..." oninput="htSaveText(3, this.value)" rows="4"></textarea>
-        </div>
-      </div>
+      <div style="margin-bottom:22px;"><div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7a2444;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #ffd6e7;">C &mdash; Consistency &amp; Follow-through</div><div style="background:white;border:1px solid #ffd6e7;border-radius:14px;padding:16px 18px;"><div style="font-family:'Cormorant Garamond',serif;font-size:14px;color:#2a1a20;margin-bottom:12px;line-height:1.65;">You made plans with her for Saturday. On Friday evening something comes up with your friends &mdash; a night out you genuinely want to go to. What do you do? Walk through exactly what happens.</div><textarea id="hta3" placeholder="Write your honest response here..." oninput="htSaveText(3,this.value)" rows="4" style="width:100%;border:1px solid #ffd6e7;border-radius:10px;padding:12px 14px;font-family:'Cormorant Garamond',serif;font-size:14px;color:#444;background:white;resize:vertical;outline:none;line-height:1.7;box-sizing:border-box;min-height:100px;"></textarea></div></div>
 
-      <div class="ht-section">
-        <div class="ht-section-hd">Scenario 4 &mdash; The hard conversation</div>
-        <div class="ht-q">
-          <div class="ht-q-text">She sits you down and says calmly: <em>&ldquo;When you cancelled on me last minute last week, I felt like I wasn&rsquo;t a priority. I need you to know that.&rdquo;</em> She is not attacking you. What do you say and do next?</div>
-          <textarea class="ht-textarea" id="hta4" placeholder="Write your honest response here..." oninput="htSaveText(4, this.value)" rows="4"></textarea>
-        </div>
-      </div>
+      <div style="margin-bottom:22px;"><div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7a2444;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #ffd6e7;">D &mdash; Vision &amp; Values</div><div style="background:white;border:1px solid #ffd6e7;border-radius:14px;padding:16px 18px;"><div style="font-family:'Cormorant Garamond',serif;font-size:14px;color:#2a1a20;margin-bottom:12px;line-height:1.65;">After three months of seeing each other consistently, she asks you directly: <em>&ldquo;Where do you see this going? I want something real and I need to know if you&rsquo;re building toward that too.&rdquo;</em> What do you say &mdash; exactly?</div><textarea id="hta4" placeholder="Write your honest response here..." oninput="htSaveText(4,this.value)" rows="4" style="width:100%;border:1px solid #ffd6e7;border-radius:10px;padding:12px 14px;font-family:'Cormorant Garamond',serif;font-size:14px;color:#444;background:white;resize:vertical;outline:none;line-height:1.7;box-sizing:border-box;min-height:100px;"></textarea></div></div>
 
-      <div class="ht-section">
-        <div class="ht-section-hd">Scenario 5 &mdash; The relationship question</div>
-        <div class="ht-q">
-          <div class="ht-q-text">After three months of seeing each other consistently, she asks you directly: <em>&ldquo;Where do you see this going? I want something real and I need to know if you&rsquo;re building toward that too.&rdquo;</em> What do you say — exactly?</div>
-          <textarea class="ht-textarea" id="hta5" placeholder="Write your honest response here..." oninput="htSaveText(5, this.value)" rows="4"></textarea>
-        </div>
-      </div>
+      <div style="margin-bottom:22px;"><div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7a2444;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #ffd6e7;">E &mdash; How He Treats People</div><div style="background:white;border:1px solid #ffd6e7;border-radius:14px;padding:16px 18px;"><div style="font-family:'Cormorant Garamond',serif;font-size:14px;color:#2a1a20;margin-bottom:12px;line-height:1.65;">You are out together and a waiter makes a mistake with your order. She is watching how you handle it. What happens?</div><textarea id="hta5" placeholder="Write your honest response here..." oninput="htSaveText(5,this.value)" rows="4" style="width:100%;border:1px solid #ffd6e7;border-radius:10px;padding:12px 14px;font-family:'Cormorant Garamond',serif;font-size:14px;color:#444;background:white;resize:vertical;outline:none;line-height:1.7;box-sizing:border-box;min-height:100px;"></textarea></div></div>
 
-      <div id="htError" style="color:var(--rose);font-size:13px;text-align:center;margin-top:12px;display:none;">Please answer all 5 scenarios before submitting.</div>
-      <div class="ht-submit-row">
-        <button class="ht-submit" onclick="htSubmit()">Submit my answers &#8594;</button>
+      <div style="margin-bottom:22px;"><div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7a2444;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #ffd6e7;">F &mdash; Readiness &amp; Presence</div><div style="background:white;border:1px solid #ffd6e7;border-radius:14px;padding:16px 18px;"><div style="font-family:'Cormorant Garamond',serif;font-size:14px;color:#2a1a20;margin-bottom:12px;line-height:1.65;">Early on, she tells you she won&rsquo;t be physically intimate until she knows someone well &mdash; it could be months. You are genuinely interested in her. Describe honestly what goes through your mind, and what you actually do.</div><textarea id="hta6" placeholder="Write your honest response here..." oninput="htSaveText(6,this.value)" rows="4" style="width:100%;border:1px solid #ffd6e7;border-radius:10px;padding:12px 14px;font-family:'Cormorant Garamond',serif;font-size:14px;color:#444;background:white;resize:vertical;outline:none;line-height:1.7;box-sizing:border-box;min-height:100px;"></textarea></div></div>
+
+      <div id="htError" style="color:#c4406b;font-size:13px;text-align:center;margin-top:12px;display:none;"></div>
+      <div style="text-align:center;margin-top:24px;"><button onclick="htSubmit()" style="padding:14px 40px;background:#c4406b;color:white;border:none;border-radius:99px;font-size:14px;font-weight:500;font-family:sans-serif;cursor:pointer;">Submit my answers &rarr;</button></div>
+    </div>
+    <div id="htResult" style="display:none;">
+      <div id="htAnswerSummary"></div>
+      <div style="text-align:center;margin-top:20px;padding-top:20px;border-top:1px solid #ffd6e7;">
+        <button onclick="htDownloadPDF()" style="padding:12px 28px;background:#c4406b;color:white;border:none;border-radius:99px;font-size:13px;cursor:pointer;font-family:sans-serif;">&#8595; Download &amp; share with her</button>
+        <div style="margin-top:10px;"><button onclick="htRetake()" style="background:none;border:none;cursor:pointer;color:#aaa;font-size:12px;font-family:sans-serif;text-decoration:underline;">&#8592; Retake test</button></div>
       </div>
     </div>
-
-      
-    </div>
-
-    <!-- Result -->
-    <div class="ht-result" id="htResult">
-      <div class="ht-grade" id="htGradeDisplay"></div>
-      <div class="ht-grade-label" id="htGradeLabel"></div>
-      <div class="ht-grade-desc" id="htGradeDesc"></div>
-      <div class="ht-score-bar-wrap">
-        <div class="ht-score-bar-bg">
-          <div class="ht-score-bar-fill" id="htScoreBar" style="width:0%"></div>
-        </div>
-        <div class="ht-score-num" id="htScoreNum"></div>
-      </div>
-
-      <div class="ht-share-box">
-        <div class="ht-share-hd">&#9825; Share your result</div>
-        <div class="ht-share-text" id="htShareText"></div>
-        <button class="ht-copy-btn" onclick="htCopyResult()">&#10003; Copy result</button>
-      </div>
-
-      <div style="margin-top:16px;">
-        <div style="font-size:12px;color:var(--mist);font-family:var(--serif);font-style:italic;margin-bottom:10px;">
-          Want to add this score to your blueprint?
-        </div>
-        <button class="ht-add-btn" onclick="htSaveToBlueprint()">Add to my blueprint &#8594;</button>
-      </div>
-
-      <button class="ht-back" style="margin-top:24px;" onclick="htRetake()">
-        &#8592; Retake test
-      </button>
-    </div>
-
   </div>
 </div>
-
 </body>
 </html>
