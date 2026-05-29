@@ -1575,11 +1575,25 @@ textarea::placeholder{color:var(--mist);font-style:italic}
   .ht-score-bar-bg{height:8px;background:var(--pink-100);border-radius:99px;overflow:hidden;}
   .ht-score-bar-fill{height:100%;border-radius:99px;transition:width 1s ease;}
   .ht-score-num{font-size:12px;color:var(--mist);margin-top:6px;}
+  .ht-share-box{
+    background:white;border:1px solid var(--pink-100);
+    border-radius:16px;padding:20px;max-width:480px;margin:0 auto 20px;
+  }
+  .ht-share-hd{
+    font-size:10px;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--rose);margin-bottom:10px;
+  }
   .ht-share-text{
     font-family:var(--serif);font-size:13px;color:var(--stone);
     background:var(--blush);border-radius:10px;padding:12px;
     line-height:1.65;margin-bottom:10px;user-select:all;cursor:text;
   }
+  .ht-copy-btn{
+    padding:9px 22px;background:var(--deep);color:white;
+    border:none;border-radius:99px;font-size:12px;font-weight:500;
+    font-family:var(--sans);cursor:pointer;transition:all .18s;
+  }
+  .ht-copy-btn:hover{background:var(--mauve);}
   .ht-add-btn{
     padding:10px 24px;background:var(--rose);color:white;
     border:none;border-radius:99px;font-size:13px;font-weight:500;
@@ -1599,123 +1613,20 @@ textarea::placeholder{color:var(--mist);font-style:italic}
   .badge-D{background:#fde8e0;color:#b5614a;}
   .badge-E{background:#fde0e8;color:#c4406b;}
 
-  /* Nav button — matches nav-link style */
+  /* Nav button */
   .btn-his-test{
-    padding:5px 9px;border-radius:8px;
+    padding:7px 16px;background:white;
+    border:1.5px solid var(--petal);border-radius:99px;
     font-size:12px;font-weight:500;font-family:var(--sans);
-    color:var(--mist);cursor:pointer;white-space:nowrap;
-    background:none;border:none;transition:all .15s;
-    display:flex;align-items:center;gap:4px;
+    color:var(--rose);cursor:pointer;transition:all .18s;
+    display:flex;align-items:center;gap:5px;
   }
-  .btn-his-test:hover{background:var(--blush);color:var(--rose);}
+  .btn-his-test:hover{background:var(--blush);border-color:var(--rose);}
 
   @media(max-width:600px){
     .ht-wrap{padding:32px 16px 60px;}
     .ht-grade{font-size:72px;}
   }
-
-
-  /* ══ HIS RESULT — matches PDF layout exactly ══ */
-  .ht-pdf-view{
-    max-width:680px;margin:0 auto;
-    font-family:'DM Sans',var(--sans);
-  }
-  .ht-pdf-header{
-    text-align:center;margin-bottom:36px;
-    padding-bottom:24px;border-bottom:1px solid #ffd6e7;
-  }
-  .ht-pdf-eyebrow{
-    font-size:10px;font-weight:600;letter-spacing:.2em;
-    text-transform:uppercase;color:#7a2444;margin-bottom:10px;
-  }
-  .ht-pdf-grade{
-    font-family:var(--serif);font-size:96px;font-weight:300;
-    line-height:1;margin-bottom:6px;
-  }
-  .ht-pdf-grade-label{
-    font-family:var(--serif);font-size:22px;font-weight:400;margin-bottom:10px;
-  }
-  .ht-pdf-desc{
-    font-family:var(--serif);font-size:14px;font-style:italic;
-    color:#666;line-height:1.7;max-width:500px;margin:0 auto 18px;
-  }
-  .ht-pdf-bar-wrap{
-    max-width:300px;margin:0 auto 8px;
-    height:8px;background:#ffd6e7;border-radius:99px;overflow:hidden;
-  }
-  .ht-pdf-bar-fill{height:100%;border-radius:99px;transition:width 1s ease;}
-  .ht-pdf-score-num{font-size:12px;color:#999;text-align:center;margin-bottom:8px;}
-  .ht-pdf-advice{
-    background:white;border:1px solid #ffd6e7;border-radius:14px;
-    padding:16px 20px;max-width:540px;margin:16px auto 0;
-    font-family:var(--serif);font-size:13px;font-style:italic;
-    color:#2a1a20;line-height:1.7;text-align:left;
-  }
-  .ht-pdf-sec-hd{
-    display:flex;justify-content:space-between;align-items:center;
-    margin:24px 0 5px;
-  }
-  .ht-pdf-sec-label{
-    font-size:10px;font-weight:700;letter-spacing:.16em;
-    text-transform:uppercase;color:#7a2444;
-  }
-  .ht-pdf-sec-pct{font-size:11px;font-weight:600;}
-  .ht-pdf-sec-bar{
-    height:5px;background:#ffd6e7;border-radius:99px;
-    overflow:hidden;margin-bottom:10px;
-  }
-  .ht-pdf-sec-bar-fill{height:100%;border-radius:99px;}
-  .ht-pdf-q-row{
-    background:white;border:1px solid #ffd6e7;border-radius:12px;
-    padding:12px 15px;margin-bottom:8px;
-    display:flex;gap:10px;align-items:flex-start;
-  }
-  .ht-pdf-q-grade{
-    font-size:13px;font-weight:700;border-radius:6px;
-    padding:2px 8px;flex-shrink:0;margin-top:1px;
-  }
-  .ht-pdf-q-question{font-size:11px;color:#888;margin-bottom:3px;}
-  .ht-pdf-q-answer{
-    font-family:var(--serif);font-size:13px;
-    color:#2a1a20;line-height:1.55;
-  }
-  .ht-pdf-footer{
-    text-align:center;margin-top:32px;padding-top:18px;
-    border-top:1px solid #ffd6e7;
-    font-family:var(--serif);font-size:12px;
-    font-style:italic;color:#bbb;
-  }
-  .ht-pdf-actions{
-    display:flex;gap:10px;justify-content:center;
-    flex-wrap:wrap;margin-top:28px;padding-top:20px;
-    border-top:1px solid #ffd6e7;
-  }
-
-
-  /* ══ HIS RESULT VIEW — PDF-FAITHFUL ══ */
-  .ht-pdf-wrap{max-width:680px;margin:0 auto;}
-  .ht-pdf-header{text-align:center;margin-bottom:36px;padding-bottom:24px;border-bottom:1px solid #ffd6e7;}
-  .ht-pdf-eyebrow{font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#7a2444;margin-bottom:10px;}
-  .ht-pdf-grade{font-family:var(--serif);font-size:88px;font-weight:300;line-height:1;margin-bottom:6px;}
-  .ht-pdf-grade-label{font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:10px;}
-  .ht-pdf-grade-desc{font-family:var(--serif);font-size:13px;font-style:italic;color:#666;line-height:1.7;max-width:480px;margin:0 auto 18px;}
-  .ht-pdf-bar-wrap{max-width:280px;margin:0 auto 6px;height:8px;background:#ffd6e7;border-radius:99px;overflow:hidden;}
-  .ht-pdf-bar-fill{height:100%;border-radius:99px;transition:width 1s ease;}
-  .ht-pdf-score-num{font-size:12px;color:#999;text-align:center;margin-bottom:8px;}
-  .ht-pdf-advice{background:white;border:1px solid #ffd6e7;border-radius:14px;padding:14px 18px;max-width:520px;margin:14px auto 0;font-family:var(--serif);font-size:13px;font-style:italic;color:#2a1a20;line-height:1.7;text-align:left;}
-  .ht-pdf-section-hd-wrap{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
-  .ht-pdf-section-label{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7a2444;}
-  .ht-pdf-section-pct{font-size:11px;font-weight:600;}
-  .ht-pdf-section-bar{height:5px;background:#ffd6e7;border-radius:99px;overflow:hidden;margin-bottom:10px;}
-  .ht-pdf-section-bar-fill{height:100%;border-radius:99px;}
-  .ht-pdf-q-row{background:white;border:1px solid #ffd6e7;border-radius:12px;padding:11px 14px;margin-bottom:7px;display:flex;gap:10px;align-items:flex-start;}
-  .ht-pdf-q-grade{font-size:12px;font-weight:700;border-radius:6px;padding:2px 7px;flex-shrink:0;margin-top:1px;font-family:var(--sans);}
-  .ht-pdf-q-question{font-size:11px;color:#888;margin-bottom:3px;line-height:1.45;}
-  .ht-pdf-q-answer{font-family:var(--serif);font-size:13px;color:#2a1a20;line-height:1.5;}
-  .ht-pdf-breakdown-hd{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7a2444;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #ffd6e7;}
-  .ht-pdf-section-block{margin-bottom:22px;}
-  .ht-pdf-summary-row{margin-bottom:9px;}
-  .ht-pdf-footer{text-align:center;margin-top:32px;padding-top:18px;border-top:1px solid #ffd6e7;font-family:var(--serif);font-size:12px;font-style:italic;color:#bbb;}
 
 </style>
 </head>
@@ -1783,7 +1694,6 @@ textarea::placeholder{color:var(--mist);font-style:italic}
       <button class="nav-link" onclick="navTo('phase0Card')">Self-report</button>
       <button class="nav-link single-section" onclick="switchToRelationship()" style="color:var(--rose)">I started dating &#8594;</button>
       <button class="nav-link" onclick="navTo('phaseCard')">Phases</button>
-      <button class="btn-his-test rel-section" onclick="openHisTest()">Compatibility checker</button>
       <button onclick="navTo('sec-log')" class="nav-link rel-section">Observations</button>
       <button onclick="navTo('sec-flags')" class="nav-link rel-section">Flags</button>
       <button onclick="navTo('sec-checkin')" class="nav-link rel-section">Check-in</button>
@@ -1798,7 +1708,6 @@ textarea::placeholder{color:var(--mist);font-style:italic}
   <div class="nav-mobile" id="navMobile">
     <button class="nav-mobile-link" onclick="navTo('phase0Card');closeMobileNav()">Self-report</button>
     <button class="nav-mobile-link" onclick="navTo('phaseCard');closeMobileNav()">Phases</button>
-    <button class="nav-mobile-link rel-section" onclick="openHisTest();closeMobileNav()">&#9825; Compatibility checker</button>
     <button class="nav-mobile-link" onclick="navTo('sec-log');closeMobileNav()">Observations</button>
     <button class="nav-mobile-link" onclick="navTo('sec-flags');closeMobileNav()">Flags</button>
     <button class="nav-mobile-link" onclick="navTo('sec-checkin');closeMobileNav()">Check-in</button>
@@ -1857,7 +1766,9 @@ textarea::placeholder{color:var(--mist);font-style:italic}
           <span style="font-size:9px;color:var(--mist);text-align:center;letter-spacing:.02em" id="phase0Sub">0/16</span>
         </div>
       </div>
-    </div>
+    
+      <button onclick="collapsePhase0()" title="Collapse" style="margin-left:auto;background:none;border:none;cursor:pointer;color:var(--mist);padding:6px;border-radius:8px;display:flex;align-items:center;flex-shrink:0;transition:all .15s;" onmouseover="this.style.color='var(--rose)'" onmouseout="this.style.color='var(--mist)'"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg></button>
+      </div>
 
     <!-- Collapsed bar -->
     <div class="phase-collapsed-bar" id="phase0CollapsedBar" style="display:none" onclick="expandPhase0()">
@@ -2182,16 +2093,8 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     <p style="font-size:13px;color:var(--mist);font-family:var(--serif);font-style:italic;margin-bottom:14px;line-height:1.6">These are not interrogations. They are observations of how he moves through a real conversation.</p>
     <div id="relTopicsList" style="font-size:13px;color:var(--stone);line-height:1.8;"></div>
     <div style="margin-top:14px;">
-      <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--rose);margin-bottom:4px;">Red flags I am noticing in myself</div>
-      <p style="font-size:11px;color:var(--mist);font-family:var(--serif);font-style:italic;margin-bottom:8px;line-height:1.6;">Where is my wound active right now?</p>
-      <textarea id="relSelfFlags" placeholder="I am shrinking when... I noticed I am chasing by... My wound is..." oninput="saveRelFocus()" style="width:100%;min-height:72px;border:1px solid var(--pink-100);border-radius:10px;padding:10px 12px;font-family:var(--serif);font-size:13px;color:var(--stone);background:var(--blush);resize:vertical;outline:none;box-sizing:border-box;"></textarea>
-      <div id="selfFlagMsg" style="font-size:11px;font-style:italic;min-height:14px;opacity:0;transition:opacity .3s;margin-top:4px;"></div>
-      <div id="selfFlagGuidance" style="display:none;margin-top:10px;padding:12px 14px;background:var(--blush);border:1px solid var(--pink-100);border-radius:12px;font-family:var(--serif);font-size:13px;color:var(--stone);line-height:1.7;"></div>
-      <div id="selfFlagFeed"></div>
-      <div style="margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-        <button onclick="saveSelfFlagEntry()" style="padding:8px 18px;background:var(--deep);color:white;border:none;border-radius:99px;font-size:12px;font-weight:500;font-family:var(--sans);cursor:pointer;">Save for this week</button>
-        <button class="end-things-btn" style="width:auto;padding:8px 18px;margin-top:0;" onclick="endThingsAndGoSingle()">We ended things &rarr;</button>
-      </div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--rose);margin-bottom:8px;">Red flags I am noticing in myself</div>
+      <textarea id="relSelfFlags" placeholder="What my wound is doing right now... Where I am shrinking, performing, or chasing..." oninput="saveRelFocus()" style="width:100%;min-height:70px;border:1px solid var(--pink-100);border-radius:10px;padding:10px 12px;font-family:var(--serif);font-size:13px;color:var(--stone);background:var(--blush);resize:vertical;outline:none;box-sizing:border-box;"></textarea>
     </div>
   </div>
 
@@ -2373,18 +2276,14 @@ textarea::placeholder{color:var(--mist);font-style:italic}
       <button class="btn-reset" id="resetBtn">&#8635; Start fresh</button>
     </div>
     <div id="saveMsg" class="save-msg"></div>
-  
+
     <div id="hisReportUpload" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--pink-100);">
       <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--rose);margin-bottom:6px;">&#9829; His compatibility report</div>
-      <p style="font-size:12px;color:var(--mist);margin-bottom:10px;line-height:1.6;">He downloaded a report from the compatibility checker. Upload the <code style="font-size:11px;background:var(--blush);padding:1px 5px;border-radius:4px;">.html</code> file here to add his score to your blueprint.</p>
+      <p style="font-size:12px;color:var(--mist);margin-bottom:10px;line-height:1.6;">Upload his <code style="font-size:11px;background:var(--blush);padding:1px 5px;border-radius:4px;">.html</code> report to add his score to your blueprint.</p>
       <div id="hisReportStatus" style="font-size:12px;font-style:italic;min-height:16px;margin-bottom:8px;"></div>
-      <div id="hisReportLoaded" style="display:none;margin-bottom:8px;">
-        <span style="font-size:12px;color:var(--green);font-style:italic;" id="hisReportBadgeDisplay"></span>
-        <button onclick="clearHisReport()" style="margin-left:10px;font-size:11px;color:var(--mist);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:var(--sans);">Clear report</button>
-      </div>
-      <label style="display:inline-flex;align-items:center;gap:8px;padding:9px 18px;background:white;border:1.5px solid var(--pink-100);border-radius:99px;font-size:12px;font-weight:500;font-family:var(--sans);color:var(--deep);cursor:pointer;transition:all .18s;" onmouseover="this.style.borderColor='var(--petal)'" onmouseout="this.style.borderColor='var(--pink-100)'">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        Upload his report
+      <div id="hisReportLoaded" style="display:none;margin-bottom:8px;"><span style="font-size:12px;color:var(--green);font-style:italic;" id="hisReportBadgeDisplay"></span><button onclick="clearHisReport()" style="margin-left:10px;font-size:11px;color:var(--mist);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:var(--sans);">Clear report</button></div>
+      <label style="display:inline-flex;align-items:center;gap:8px;padding:9px 18px;background:white;border:1.5px solid var(--pink-100);border-radius:99px;font-size:12px;font-weight:500;font-family:var(--sans);color:var(--deep);cursor:pointer;">
+        &#8593; Upload his report
         <input type="file" accept=".html" style="display:none" onchange="loadHisReport(this)">
       </label>
     </div>
@@ -3394,7 +3293,7 @@ function renderLog(){
       var body=card.querySelector('.log-add-block');
       var list=el('logList');
       if(body) body.style.display='none';
-      if(list){ list.innerHTML='<div style="text-align:center;padding:28px 20px;font-family:var(--serif);font-size:15px;font-style:italic;color:var(--mist);line-height:1.7">&#128274; The observation log opens once Phase 0 is complete.<br><span style="font-size:13px">Complete your relationship self-report at the top of the page first.<br>Your readiness must reach 50% before you begin recording him.</span></div>';
+      if(list){ list.innerHTML='<div style="text-align:center;padding:28px 20px;font-family:var(--serif);font-size:15px;font-style:italic;color:var(--mist);line-height:1.7">&#128274; The observation log opens once Phase 0 is complete.<br><span style="font-size:13px">Complete your relationship self-report at the top of the page first.<br>Your readiness must reach 90% before you begin recording him.</span></div>';
       }
     }
     return;
@@ -4702,42 +4601,6 @@ function openReport(){
     html += '</div>';
   }
 
-  // His compatibility score section
-  if(S.hisTest && S.hisTest.grade){
-    var hg = S.hisTest.grade;
-    var hp = S.hisTest.pct;
-    var hGData = HT_GRADES[hg];
-    var hBarCol = {A:'#4CAF50',B:'#8BC34A',C:'#FF9800',D:'#FF5722',E:'#c4406b'}[hg]||'#c4406b';
-    var hGradeCol = {A:'#2d7a2d',B:'#4a7a2a',C:'#7a6020',D:'#b5614a',E:'#c4406b'}[hg]||'#c4406b';
-    var sections_r = [
-      {label:'A — Accountability',start:1,end:4,max:16},
-      {label:'B — Emotional Maturity',start:5,end:7,max:12},
-      {label:'C — Consistency',start:8,end:10,max:12},
-      {label:'D — Vision & Values',start:11,end:13,max:12},
-      {label:'E — How He Treats People',start:14,end:16,max:12},
-      {label:'F — Readiness',start:17,end:20,max:16}
-    ];
-    var hScores = S.hisTest.answers || {};
-    html += '<div class="report-section"><div class="report-section-title">&#9825; His compatibility score</div>';
-    html += '<div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">';
-    html += '<span style="font-family:var(--serif);font-size:52px;font-weight:300;color:'+hGradeCol+';line-height:1">'+hg+'</span>';
-    html += '<div><div style="font-size:13px;font-weight:500;color:var(--deep)">'+hGData.label+'</div>';
-    html += '<div style="font-size:12px;color:var(--mist);margin-top:2px;">'+hp+'% — '+S.hisTest.total+'/80 points — '+(S.hisTest.date||'')+'</div></div></div>';
-    html += '<div style="height:7px;background:var(--pink-100);border-radius:99px;overflow:hidden;margin-bottom:14px;">';
-    html += '<div style="width:'+hp+'%;height:100%;background:'+hBarCol+';border-radius:99px;"></div></div>';
-    sections_r.forEach(function(sec){
-      var st=0; for(var q=sec.start;q<=sec.end;q++){if(hScores[q])st+=hScores[q];}
-      var sp=Math.round(st/sec.max*100);
-      var sc=sp>=75?'#4CAF50':sp>=50?'#FF9800':sp>=25?'#FF5722':'#c4406b';
-      html += '<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;">';
-      html += '<span style="color:var(--stone)">'+sec.label+'</span><span style="color:'+sc+';font-weight:600;">'+sp+'%</span></div>';
-      html += '<div style="height:5px;background:var(--pink-100);border-radius:99px;overflow:hidden;">';
-      html += '<div style="width:'+sp+'%;height:100%;background:'+sc+';border-radius:99px;"></div></div></div>';
-    });
-    html += '<div style="margin-top:10px;padding:10px 14px;background:var(--blush);border-radius:10px;font-family:var(--serif);font-size:12px;font-style:italic;color:var(--stone);line-height:1.65;">'+hGData.advice+'</div>';
-    html += '</div>';
-  }
-
   body.innerHTML=html;
   document.getElementById('reportBackdrop').classList.add('open');
 }
@@ -5060,7 +4923,7 @@ function savePhase0(){
 function loadPhase0(){
   if(!S.phase0) return;
   // Revoke stale completions — if stored readiness is below 90, unlock is not valid
-  if(S.phase0.complete && S.phase0.analysis && S.phase0.analysis.readiness < 50){
+  if(S.phase0.complete && S.phase0.analysis && S.phase0.analysis.readiness < 90){
     S.phase0.complete = false;
     delete S.phase0.completedDate;
     save();
@@ -5161,8 +5024,9 @@ function analysePhase0(){
 
   // ── CONTRADICTION DETECTION helpers ──────────────────────────────────
   function hasContradiction(text){
-    var ownsIt=/\b(i take full responsibility|it was entirely my fault|i own this completely)\b/i.test(text);
-    var blamesIt=/\b(but it was really his fault|he is the reason|entirely because of him|none of it was me)\b/i.test(text);
+    // Says "I take responsibility" but then lists only his faults
+    var ownsIt=/\b(i take|my part|i own|my responsibility|i was|i did|i chose)\b/i.test(text);
+    var blamesIt=/\b(but he|because he|if he hadn|he never|he always|he was)\b/i.test(text);
     return ownsIt && blamesIt && text.split(' ').length > 30;
   }
   function isTherapyPerformance(text){
@@ -5178,8 +5042,8 @@ function analysePhase0(){
     return /\b(i (said|did|stayed|left|texted|called|ignored|pretended|agreed|apologised|minimised|deflected|avoided|chased|pushed|withdrew|gave in|went quiet|over-explained|laughed it off|changed the subject|started crying|shut down|lashed out|people.pleased|made myself smaller))\b/i.test(text);
   }
   function hasSequentialPlan(text){
-    var steps=(text.match(/\b(step \d|first i|then i|after that|next i|finally i|\d\.\s|\bi will (pause|breathe|ask|wait|check|name|say|not|reflect|think|give myself|sit with)|i plan to (pause|breathe|wait|reflect)|before (i respond|i react|i say|i text)|at least \d+(hrs?|hours?|days?|minutes?)|for \d+(hrs?|hours?|minutes?) before|this space will|give me time to)\b/gi)||[]).length;
-    return steps>=2;
+    var steps=(text.match(/\b(step \d|first i|then i|after that|next i|finally i|\d\.\s|\bi will (pause|breathe|ask|wait|check|name|say|not))\b/gi)||[]).length;
+    return steps>=3;
   }
 
   var wc=ans.map(function(a){return a.split(/\s+/).filter(Boolean).length;});
@@ -5187,7 +5051,7 @@ function analysePhase0(){
   // ── SECTION A: Ownership ─────────────────────────────────────────────
   var t1=ans[0].toLowerCase();
   var blame=(t1.match(/\b(his fault|because of him|he made|he caused|he never|all his|he was the one|if only he)\b/gi)||[]).length;
-  var own=(t1.match(/\b(i (could have|should have|avoided|ignored|allowed|stayed|chose|knew|failed|let|kept|pretended|told myself|settled|made excuses|convinced myself|said yes|agreed|forced|was not honest|wasn.t honest|lied|hid|didn.t say|didn.t leave|accepted|permitted|enabled|tolerated|went along|gave in|wasn.t|was afraid|was too))\b/gi)||[]).length;
+  var own=(t1.match(/\b(i (could have|should have|avoided|ignored|allowed|stayed|chose|knew|failed|let|kept|pretended|told myself it was fine|settled|made excuses|convinced myself))\b/gi)||[]).length;
   var ownershipScore=0;
   if(hasContradiction(ans[0])){
     ownershipScore=3;
@@ -5216,7 +5080,7 @@ function analysePhase0(){
   // A2 — power
   var t2=ans[1].toLowerCase();
   var waiting=(t2.match(/\b(still waiting|hope he|maybe he will|if he|just want him to|i need him to|want him to apologise|he owes me)\b/gi)||[]).length;
-  var reclaimed=(t2.match(/\b(i (can give|release|let go|choose|no longer need|stop waiting|take back|provide for myself|will begin|am going to|will give myself|will fill|will build|will create)|from myself|within me|i create|i stop|by filling|for myself|my own life|giving myself|joyful things)\b/gi)||[]).length;
+  var reclaimed=(t2.match(/\b(i (can give|release|let go|choose|no longer need|stop waiting|take back|provide for myself)|from myself|within me|i create|i stop)\b/gi)||[]).length;
   var a2Score=0;
   if(waiting>=2){
     a2Score=3;flags.push('waiting');
@@ -5238,7 +5102,7 @@ function analysePhase0(){
   if(isTherapyPerformance(ans[2])){
     a3Score=4;
     insights.push({t:'amber',s:'A3',h:'Generic lesson — needs grounding',b:'This reads as something you know intellectually but have not yet felt in your body. What is one red flag from this relationship that you will recognise immediately next time — and what will you do the moment you see it?'});
-  } else if(gift>=1){
+  } else if(gift>=2&&hasSpecificBehaviour(ans[2])){
     a3Score=18;
     insights.push({t:'green',s:'A3',h:'Specific, embodied lesson',b:'You named something concrete you will do differently — not just a value shift but a behavioural change.',q:ans[2].slice(0,130)});
   } else if(nogift>=2){
@@ -5385,7 +5249,7 @@ function analysePhase0(){
   // ── SECTION D: Navigation plan ────────────────────────────────────────
   var planText=((ans[10]||'')+' '+(ans[11]||'')+' '+(ans[12]||'')).toLowerCase();
   var triggers=(planText.match(/\b(when i feel|i notice|earliest signal|i (sense|feel|notice) (a |the |that )|my (chest|stomach|throat|body))\b/gi)||[]).length;
-  var planSteps=(planText.match(/\b(step \d|first i|then i|after that|next i|\d\.\s|i will (pause|breathe|wait|say|name|check|ask myself|leave|not respond|ground myself|call|write|reflect|give myself|sit with)|i plan to (pause|breathe|wait|reflect|give)|before (i respond|i react|i say|i text)|at least \d+(hrs?|hours?|days?|minutes?)|for \d+(hrs?|hours?|minutes?) before|this space will|give me time to)\b/gi)||[]).length;
+  var planSteps=(planText.match(/\b(step \d|first i|then i|after that|next i|\d\.\s|i will (pause|breathe|wait|say|name|check|ask myself|leave|not respond|ground myself|call|write))\b/gi)||[]).length;
   var nonneg=(planText.match(/\b(i will not|i will never|no longer|not again|i commit to|i refuse to)\b/gi)||[]).length;
   var d11Score=0;
 
@@ -5442,8 +5306,8 @@ function analysePhase0(){
   dims.emotional+=e14Score;
 
   var lifeText=((ans[14]||'')+' '+(ans[15]||'')).toLowerCase();
-  var partnerFocus=(lifeText.match(/\b(with (him|my husband|my partner|my man)|he (will|would|is|comes)|our (life|home|family|future|children|kids))\b/gi)||[]).length;
-  var selfFocus=(lifeText.match(/\b(i am|my (work|life|friends|health|peace|home|business(es)?|mornings?|evenings?|masters?|msc|phd|degree|company|companies|revenue|income|ventures?)|without (needing|anyone)|free|whole|building|creating|laughing|thriving|my own|generating revenue|gone on dates|half.?way through|my businesses|my masters)\b/gi)||[]).length;
+  var partnerFocus=(lifeText.match(/\b(with (someone|a man|a partner|him)|married|in a relationship|find love|boyfriend|husband|meet someone)\b/gi)||[]).length;
+  var selfFocus=(lifeText.match(/\b(i am|my (work|life|friends|health|peace|home|business|mornings?|evenings?)|without (needing|anyone)|free|whole|building|creating|laughing|thriving|my own)\b/gi)||[]).length;
   var e15Score=0;
   if(selfFocus>=4&&partnerFocus<=1){
     e15Score=18;
@@ -5478,7 +5342,7 @@ function analysePhase0(){
   };
 
   var blocked=flags.indexOf('wound-unnamed')>-1||flags.indexOf('blame')>-1||flags.indexOf('no-plan')>-1;
-  var unlockable=readiness>=50&&!blocked;
+  var unlockable=readiness>=90&&!blocked;
   // Detect wound type from answers for personalised recommendations
   var woundTags=[];
   var allText=(ans.join(' ')).toLowerCase();
@@ -5553,8 +5417,8 @@ function renderPhase0Analysis(result){
   var wrap=document.getElementById('p0AnalysisWrap');
   if(!wrap)return;
   var pct=result.readiness;
-  var scoreCol=pct>=50?'var(--green)':pct>=35?'var(--mauve)':'#b5614a';
-  var scoreLabel=pct>=50?'Ready to begin':pct>=35?'Getting closer':'More depth needed';
+  var scoreCol=pct>=90?'var(--green)':pct>=65?'var(--mauve)':'#b5614a';
+  var scoreLabel=pct>=90?'Ready to begin':pct>=65?'Getting closer':'More depth needed';
   var html='<div style="margin-top:22px;padding-top:20px;border-top:1px solid var(--pink-100)">';
   html+='<div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mauve);margin-bottom:14px">What your self-report reveals</div>';
 
@@ -5562,7 +5426,7 @@ function renderPhase0Analysis(result){
   html+='<div style="display:flex;align-items:center;gap:16px;background:var(--blush);border-radius:14px;padding:16px 18px;margin-bottom:14px">';
   html+='<div style="text-align:center;min-width:64px"><div style="font-family:var(--serif);font-size:40px;font-weight:400;color:'+scoreCol+';line-height:1">'+pct+'</div><div style="font-size:10px;color:var(--mist)">/100</div></div>';
   html+='<div style="flex:1"><div style="font-family:var(--serif);font-size:18px;color:'+scoreCol+';margin-bottom:6px">'+scoreLabel+'</div>';
-  html+='<div style="font-size:11px;color:var(--mist);margin-bottom:8px">Pass mark: 50. All five dimensions must be present.</div>';
+  html+='<div style="font-size:11px;color:var(--mist);margin-bottom:8px">Pass mark: 90. All five dimensions must be present.</div>';
   html+='<div style="width:100%;height:6px;background:var(--pink-100);border-radius:99px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:'+scoreCol+';border-radius:99px;transition:width .6s ease"></div></div></div></div>';
 
   // Dimension bars
@@ -5613,7 +5477,7 @@ function renderPhase0Analysis(result){
     if(result.flags.indexOf('performance-A1')>-1)blockReasons.push('Replace therapy language with specific examples (Section A, step 1)');
     if(result.flags.indexOf('contradiction-A1')>-1)blockReasons.push('Remove the contradiction in step A1 — own it or do not');
     html+='<div style="background:var(--blush);border:1px solid var(--petal);border-radius:14px;padding:18px 20px;margin-top:6px">';
-    html+='<div style="font-family:var(--serif);font-size:18px;color:var(--deep);margin-bottom:8px">Phase 1 is not yet unlocked ('+result.readiness+'/100. You need 50 to unlock.)</div>';
+    html+='<div style="font-family:var(--serif);font-size:18px;color:var(--deep);margin-bottom:8px">Phase 1 is not yet unlocked ('+result.readiness+'/100. You need 90 to unlock.)</div>';
     if(blockReasons.length){
       html+='<div style="font-size:12px;color:var(--mist);margin-bottom:10px">Hard requirements not met:</div>';
       blockReasons.forEach(function(r){html+='<div style="font-size:12px;color:var(--deep);padding:5px 0 5px 14px;border-left:3px solid var(--rose);margin-bottom:6px;font-weight:500">'+r+'</div>';});
@@ -5950,8 +5814,8 @@ function downloadPhase0PDF(){
   var dimPct=analysis&&analysis.dimPct||{};
   var weakest=analysis&&analysis.weakest||'';
   var readiness=analysis?analysis.readiness:0;
-  var scoreLabel=readiness>=50?'Ready to begin':readiness>=35?'Getting closer':'More depth needed';
-  var scoreCol=readiness>=50?'#639922':readiness>=35?'#7a2444':'#c4406b';
+  var scoreLabel=readiness>=90?'Ready to begin':readiness>=65?'Getting closer':'More depth needed';
+  var scoreCol=readiness>=90?'#639922':readiness>=65?'#7a2444':'#c4406b';
 
   // Build full HTML string
   var h='';
@@ -6020,7 +5884,7 @@ function downloadPhase0PDF(){
     h+='<div class="score-num" style="color:'+scoreCol+'">'+readiness+'</div>';
     h+='<div class="score-detail">';
     h+='<div class="score-label" style="color:'+scoreCol+'">'+scoreLabel+'</div>';
-    h+='<div class="score-note">Pass mark: 50 &nbsp;|&nbsp; Five dimensions scored</div>';
+    h+='<div class="score-note">Pass mark: 90 &nbsp;|&nbsp; Five dimensions scored</div>';
     h+='<div class="bar-outer"><div class="bar-inner" style="width:'+readiness+'%;background:'+scoreCol+'"></div></div>';
     h+='</div></div>';
 
@@ -6250,16 +6114,16 @@ var lpIdx = 0;
 if(document.readyState!=="loading"){setTimeout(lpRender,0);}else{
 /* ══ SELF-REFLECTION CLASSIFIER ══ */
 var SELF_FLAG_PATTERNS = [
-  {tag:'anxiety',    label:'Anxious thoughts',   re:/\b(anxi|spiral|overthink|replay|can.t stop thinking|rumina|worried|scared|fear(ed)?|nervous|panick|what if he|what if i|keep thinking|in my head|my mind keeps|lose interest|lose him|forget (about )?me|move on without)\b/i},
-  {tag:'chase',      label:'Chasing',            re:/\b(chase|chasing|checking|obsess|why hasn.t|follow.{0,6}up|waiting for him|keep check|check(ing)? my phone|waiting for (him to |his )?text|waiting to hear|reach(ed)? out again|texted (first|him|again)|messaged (him|first|again)|why (hasn.t|didn.t|won.t) he|he hasn.t (texted|called|replied|responded)|making (myself|me) available|always available|drop everything)\b/i},
-  {tag:'shrink',     label:'Self-shrinking',     re:/\b(shrink|smaller|people.pleas|fawn|fawning|made myself|held back|didn.t say|couldn.t say|bit my tongue|stayed quiet|agreed (when i didn.t|even though)|went along with|pretended (to be okay|it was fine)|didn.t want to (upset|push|scare|lose)|afraid to (say|tell|speak|push|be honest)|adjusted (myself|who i am)|changed (myself|my plans) for|moulded myself)\b/i},
-  {tag:'tooneedy',   label:'Too much/needy',     re:/\b(too (much|needy|intense|available)|desperate|came on (strong|too)|clingy|need(ed)? his (attention|validation|reassurance)|craving (his attention|validation|his approval)|wanted him to (notice|see|acknowledge|appreciate|text|call me)|seeking (his approval|validation|reassurance))\b/i},
-  {tag:'selfabandon',label:'Self-abandonment',   re:/\b(self.abandon|put him first|lost myself|forgot who i am|ignored my needs|cancelled.{0,30}(for him|because of him)|gave up.{0,20}for him|skipped.{0,20}for him|my (life|work|friends|plans|goals).{0,20}(can wait|don.t matter|took a back seat)|prioriti(s|z)(ed|ing) him|making him (my priority|the priority|everything))\b/i},
-  {tag:'overexplain',label:'Over-explaining',    re:/\b(over.?explain|justify|defend myself|prove myself|seek.{0,8}approval|apologis|explained (myself|why i|that i)|kept (explaining|saying)|wanted him to understand|needed him to (know|see|understand|believe)|over.?shared|told him (everything|too much|more than i should))\b/i},
-  {tag:'jealous',    label:'Insecurity',         re:/\b(jealous|possessive|insecure|compared myself|not good enough|wondered if (she|another|other women?)|who (is she|was she|he was with)|not (pretty|smart|interesting|fun|enough) enough|she.s (prettier|better|more)|checking (her|his female|his ig|his likes)|looked (her|them) up)\b/i},
-  {tag:'ignore',     label:'Ignoring gut',       re:/\b(ignor.{0,8}(gut|instinct|red flag)|told myself it was fine|convinced myself|made excuses (for|why)|excused (his|the)|rationalised|explained away|red flag|gut (feeling|said|told me|was telling)|something (felt|feels) off|saw (it|the signs) and (ignored|stayed|went back))\b/i},
-  {tag:'testing',    label:'Testing/sabotage',   re:/\b(test(ing|ed) him|push(ed|ing).{0,6}away|pick(ed|ing).{0,6}fight|created drama|sabotage|picked a fight|started (an argument|drama|a fight)|caused (drama|conflict)|pushed him (away|to see)|testing (if he|whether he|how he)|wanted to (see if|know if|test whether) he (would|could|cared|stayed))\b/i},
-  {tag:'dishonest',  label:'Inauthenticity',     re:/\b(lied|hid|pretended|performed|wasn.t honest|fake|not authentic|acting (like i|as if i|like everything)|pretend(ed|ing) (i was|to be|that i)|not (being honest|telling the truth|saying what i really)|held back the truth|showed him a version|curated (myself|what he sees)|performed (for him|happiness|okayness))\b/i},
+  {tag:'shrink',    label:'Self-shrinking',    re:/\b(shrink|smaller|people.pleas|fawn|fawning|made myself|held back)\b/i},
+  {tag:'chase',     label:'Chasing',           re:/\b(chase|chasing|checking|obsess|why hasn.t|follow.{0,6}up|waiting for him)\b/i},
+  {tag:'overexplain',label:'Over-explaining',  re:/\b(over.?explain|justify|defend myself|prove myself|seek.{0,8}approval|apologis)\b/i},
+  {tag:'anxiety',   label:'Anxious thoughts',  re:/\b(anxi|spiral|overthink|replay|can.t stop thinking|rumina)\b/i},
+  {tag:'tooneedy',  label:'Too much/needy',    re:/\b(too (much|needy|intense)|desperate|came on (strong|too)|clingy)\b/i},
+  {tag:'selfabandon',label:'Self-abandonment', re:/\b(self.abandon|put him first|lost myself|forgot who i am|ignored my needs)\b/i},
+  {tag:'jealous',   label:'Insecurity',        re:/\b(jealous|possessive|insecure|compared myself|not good enough)\b/i},
+  {tag:'testing',   label:'Testing/sabotage',  re:/\b(test(ing|ed) him|push(ed|ing).{0,6}away|pick(ed|ing).{0,6}fight|created drama|sabotage)\b/i},
+  {tag:'dishonest', label:'Inauthenticity',    re:/\b(lied|hid|pretended|performed|wasn.t honest|fake|not authentic)\b/i},
+  {tag:'ignore',    label:'Ignoring gut',      re:/\b(ignor.{0,8}(gut|instinct|red flag)|told myself it was fine|convinced myself|made excuses)\b/i},
 ];
 
 function classifySelfFlag(text){
@@ -6290,95 +6154,29 @@ function saveSelfFlagEntry(){
   S.relFocus.selfFlags = text;
   save();
   renderSelfFlagFeed();
-  checkURLParams();
   var msg = document.getElementById('selfFlagMsg');
   if(msg){
-    var lbl = cls==='red' ? '\u26a0 Wound active \u2014 saved' : cls==='amber' ? '\u25b2 Pattern noticed \u2014 saved' : '\u2713 Saved for this week';
+    var lbl = cls==='red' ? '\u26a0 Wound active \u2014 logged' : cls==='amber' ? '\u25b2 Pattern noticed \u2014 logged' : '\u2713 Logged';
     var col = cls==='red' ? 'var(--rose)' : cls==='amber' ? '#7a4a00' : 'var(--green)';
     msg.textContent = lbl; msg.style.color = col; msg.style.opacity = 1;
     setTimeout(function(){ msg.style.opacity = 0; }, 3000);
-  }
-  // Show guidance based on top tag
-  var GUIDANCE = {
-    shrink:      'You are making yourself smaller. This is not peace \u2014 it is pre-emptive self-erasure. Before your next interaction, name one thing you will say that is fully true.',
-    chase:       'Chasing is anxiety wearing the costume of interest. Pause 24 hours before any reach-out. Fill that time with one thing that belongs entirely to your own life.',
-    overexplain: 'You are defending yourself to someone who should not require a defence. Explanation without request is anxiety in disguise. Let a statement stand on its own.',
-    anxiety:     'Your nervous system is working harder than the available data justifies. Write down exactly what you have observed \u2014 facts, not interpretations. Stay there.',
-    tooneedy:    'You are giving at a pace that is not sustainable. Pull back to your own life deliberately today. What would you be doing if he did not exist?',
-    selfabandon: 'You keep putting him first. What did you need this week that you did not give yourself? Do that thing before you give anything else outward.',
-    jealous:     'The insecurity is information about your wound, not about him. Where did this fear first live? Go back to that age, not this one.',
-    testing:     'You are creating problems to see how he handles them. That is not observation \u2014 it is manufacturing evidence. Stop the test. Return to watching what is already there.',
-    dishonest:   'You are performing for him. He cannot choose the real you if she is not present. What is one thing you have hidden that is true?',
-    ignore:      'Your gut is speaking. Write down exactly what it is saying without softening it. That raw sentence is the data.'
-  };
-  var guidanceEl = document.getElementById('selfFlagGuidance');
-  if(guidanceEl && tags.length > 0 && GUIDANCE[tags[0]]){
-    guidanceEl.innerHTML = '<span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--rose);display:block;margin-bottom:6px;">Guidance \u2014 '+cls.charAt(0).toUpperCase()+cls.slice(1)+' pattern</span>' + GUIDANCE[tags[0]];
-    guidanceEl.style.display = 'block';
-  } else if(guidanceEl) {
-    guidanceEl.style.display = 'none';
   }
 }
 
 function renderSelfFlagFeed(){
   var wrap = document.getElementById('selfFlagFeed');
   if(!wrap) return;
-  var allEntries = (S.selfFlagLog || []).slice().reverse();
-  var entries = allEntries.slice(0,5);
-  var hasMore = allEntries.length > 5;
+  var entries = (S.selfFlagLog || []).slice().reverse().slice(0,5);
   if(!entries.length){ wrap.innerHTML=''; return; }
-
-  var GUIDANCE = {
-    shrink:'You are making yourself smaller. Before your next interaction, name one thing you will say that is fully true.',
-    chase:'Chasing is anxiety wearing the costume of interest. Pause 24 hours before any reach-out.',
-    overexplain:'You are defending yourself to someone who should not require a defence. Let a statement stand on its own.',
-    anxiety:'Your nervous system is working harder than the data justifies. Write down facts only \u2014 not interpretations.',
-    tooneedy:'You are giving at a pace that is not sustainable. What would you be doing today if he did not exist?',
-    selfabandon:'You keep putting him first. What did you need this week that you did not give yourself?',
-    jealous:'The insecurity is about your wound, not about him. Where did this fear first live?',
-    testing:'You are manufacturing evidence. Stop the test. Return to watching what is already there.',
-    dishonest:'You are performing. He cannot choose the real you if she is not present.',
-    ignore:'Your gut is speaking. Write down exactly what it is saying without softening it.'
-  };
-  var TAG_NAMES = {
-    shrink:'Self-shrinking',chase:'Chasing',overexplain:'Over-explaining',
-    anxiety:'Anxiety spiral',tooneedy:'Too much/needy',selfabandon:'Self-abandonment',
-    jealous:'Insecurity',testing:'Testing/sabotage',dishonest:'Inauthenticity',ignore:'Ignoring gut'
-  };
-
-  var html = '<div style="margin-top:12px;">';
-  html += '<div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mauve);margin-bottom:10px;">This week\u2019s entries</div>';
+  var html = '<div class="self-flag-feed">';
   entries.forEach(function(e){
     var clsKey = e.cls==='red'?'red':e.cls==='amber'?'amber':'neutral';
-    var clsLabel = e.cls==='red'?'\u26a0\ufe0f Wound active':e.cls==='amber'?'\u25b2 Pattern noticed':'\u2713 Neutral';
+    var metaCls = 'sf-meta-'+clsKey;
     html += '<div class="sf-entry sf-entry-'+clsKey+'">';
-    // Meta row
-    html += '<div class="sf-entry-meta sf-meta-'+clsKey+'">';
-    html += '<span>Phase '+e.phase+' \u2014 '+e.date+'</span>';
-    html += '<span style="margin-left:auto">'+clsLabel+'</span>';
-    html += '</div>';
-    // Full text
-    html += '<div class="sf-entry-text">'+e.text+'</div>';
-    // Tags
-    if(e.tags && e.tags.length){
-      html += '<div class="sf-entry-tags">';
-      e.tags.forEach(function(tag){
-        var tagCls = e.cls==='red'?'sf-tag-red':e.cls==='amber'?'sf-tag-amber':'sf-tag-neutral';
-        html += '<span class="sf-tag '+tagCls+'">'+(TAG_NAMES[tag]||tag)+'</span>';
-      });
-      html += '</div>';
-      // Analysis for top tag
-      if(GUIDANCE[e.tags[0]]){
-        html += '<div class="sf-analysis-box"><span class="sf-analysis-label">Guidance</span>'+GUIDANCE[e.tags[0]]+'</div>';
-      }
-    }
+    html += '<span class="sf-entry-meta '+metaCls+'">Phase '+e.phase+' \u2014 '+e.date+'</span>';
+    html += (e.text||'').slice(0,120) + (e.text&&e.text.length>120?'\u2026':'');
     html += '</div>';
   });
-  if(hasMore){
-    html += '<div style="text-align:center;margin-top:8px;">';
-    html += '<button onclick="renderSelfFlagFeedAll()" style="font-size:11px;color:var(--mist);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:var(--sans);">See all '+allEntries.length+' entries</button>';
-    html += '</div>';
-  }
   html += '</div>';
   wrap.innerHTML = html;
 }
@@ -6548,70 +6346,44 @@ var HT_GRADES = {
   A: {
     min: 70, label: 'Grade A \u2014 High compatibility',
     color: '#2d7a2d', barColor: '#4CAF50',
-    desc: 'Your answers reflect strong emotional availability, accountability, and direction. You show up consistently and with intention. The woman reviewing this is looking for exactly what you are describing \u2014 keep proving it with your actions.',
-    advice: 'A Grade A is a strong start. Words are the proposal \u2014 your actions over time are the evidence. She will be watching, and so will you.'
+    desc: 'His answers reflect a man who is emotionally available, accountable, consistent, and building something. He is not a project. Proceed to Phase 1 with your eyes open \u2014 observation, not assumption.',
+    advice: 'A Grade A means his self-report is strong. Watch whether his actions confirm it over time. Words are the proposal. Behaviour is the evidence.'
   },
   B: {
     min: 57, label: 'Grade B \u2014 Promising with gaps',
     color: '#4a7a2a', barColor: '#8BC34A',
-    desc: 'You have real strengths \u2014 and a few honest gaps. You are likely well-intentioned, and this is a fair self-reflection. The areas where you scored lower are worth looking at.',
-    advice: 'A Grade B means there is something real here. Look at your lower-scoring sections \u2014 those are the areas worth working on, not hiding.'
+    desc: 'He has real strengths but some areas need watching. He is likely well-intentioned but may not yet be fully self-aware or available. Proceed with awareness.',
+    advice: 'A Grade B is workable. Pay close attention to the specific areas where he scored lower \u2014 those are the questions to weave into real conversation.'
   },
   C: {
     min: 44, label: 'Grade C \u2014 Proceed with caution',
     color: '#7a6020', barColor: '#FF9800',
-    desc: 'You are showing up partially. There are meaningful gaps worth being honest about \u2014 in accountability, availability, or emotional readiness. This is not a verdict. It is a mirror.',
-    advice: 'A Grade C means there is work to do. The woman reviewing this deserves someone who is fully present. The question is: are you willing to close the gap?'
+    desc: 'He is showing up partially. There are meaningful gaps in accountability, availability, or emotional maturity. This does not mean no \u2014 it means slow down and observe more carefully.',
+    advice: 'A Grade C requires patience. Do not invest emotionally ahead of what the data shows. Let his behaviour close the gap, not your hope.'
   },
   D: {
     min: 30, label: 'Grade D \u2014 Significant concerns',
     color: '#b5614a', barColor: '#FF5722',
-    desc: 'Several of your answers point to emotional unavailability, inconsistency, or difficulty with accountability. You may have a lot to offer \u2014 but the foundation needs attention before a serious relationship can be built on it.',
-    advice: 'A Grade D is not a verdict on your worth. But it is honest feedback. The woman you are pursuing deserves a man who is ready. The question is whether you are willing to do the work to get there.'
+    desc: 'Several answers point to emotional unavailability, inconsistency, or avoidance of accountability. He may be appealing in other ways \u2014 but the foundation is shaky.',
+    advice: 'A Grade D is not a ban. But it is a signal that this man will require more from you than he is currently offering. You deserve someone who is ready.'
   },
   E: {
     min: 0, label: 'Grade E \u2014 Not ready for what you are building',
     color: '#c4406b', barColor: '#c4406b',
-    desc: 'Your answers consistently point to unavailability, deflection of accountability, or patterns that would make a slow, intentional relationship very difficult.',
-    advice: 'A Grade E is not a verdict on who you are as a person. It is honest feedback about where you are right now. The blueprint cannot be built on a shaky foundation \u2014 for either of you.'
+    desc: 'His answers consistently point to unavailability, deflection of accountability, or patterns that are incompatible with a slow, intentional relationship.',
+    advice: 'A Grade E is data, not a verdict on him as a person. But right now, his self-report does not align with what you are building. Trust the blueprint.'
   }
 };
 
 function openHisTest(){
-  var overlay = document.getElementById('hisTestOverlay');
-  overlay.classList.add('active');
-  overlay.scrollTo({top:0,behavior:'instant'});
-  // If we already have a saved result, show it
-  if(S.hisTest && S.hisTest.grade){
-    _htAnswers = S.hisTest.answers || {};
-    if(S.hisTest.answerTexts) window._htAnswerTexts = S.hisTest.answerTexts;
-    document.getElementById('htForm').style.display = 'none';
-    var resultEl = document.getElementById('htResult');
-    resultEl.classList.add('show');
-    var grade = S.hisTest.grade;
-    var pct   = S.hisTest.pct;
-    var total = S.hisTest.total;
-    var gData = HT_GRADES[grade];
-    document.getElementById('htGradeDisplay').textContent = grade;
-    document.getElementById('htGradeDisplay').className = 'ht-grade grade-'+grade;
-    document.getElementById('htGradeLabel').textContent = gData.label;
-    document.getElementById('htGradeDesc').textContent = gData.desc;
-    var advEl2 = document.getElementById('htAdviceBox');
-    if(advEl2) advEl2.textContent = gData.advice;
-  var advEl = document.getElementById('htAdviceBox');
-  if(advEl) advEl.textContent = gData.advice;
-    document.getElementById('htScoreNum').textContent = pct+'% — '+total+'/80 points — '+S.hisTest.date;
-    var bar = document.getElementById('htScoreBar');
-    bar.style.background = {A:'#4CAF50',B:'#8BC34A',C:'#FF9800',D:'#FF5722',E:'#c4406b'}[grade]||'#c4406b';
-    setTimeout(function(){ bar.style.width = pct+'%'; }, 100);
-    htRenderAnswerSummary(grade);
-  } else {
-    document.getElementById('htForm').style.display = 'block';
-    document.getElementById('htResult').classList.remove('show');
-    if(S.hisTest && S.hisTest.answers){
-      _htAnswers = S.hisTest.answers;
-      htRestoreSelections();
-    }
+  document.getElementById('hisTestOverlay').classList.add('active');
+  document.getElementById('htForm').style.display = 'block';
+  document.getElementById('htResult').classList.remove('show');
+  window.scrollTo({top:0,behavior:'instant'});
+  // Pre-populate if we have saved answers
+  if(S.hisTest && S.hisTest.answers){
+    _htAnswers = S.hisTest.answers;
+    htRestoreSelections();
   }
 }
 
@@ -6620,18 +6392,11 @@ function closeHisTest(){
 }
 
 function htSelect(btn, qNum, score){
+  // Deselect all options for this question
   var container = btn.closest('.ht-options');
   container.querySelectorAll('.ht-opt').forEach(function(o){ o.classList.remove('selected'); });
   btn.classList.add('selected');
   _htAnswers[qNum] = score;
-  // Store answer text (strip the dot span)
-  if(!window._htAnswerTexts) window._htAnswerTexts = {};
-  // Get question text from parent .ht-q
-  var qEl = btn.closest('.ht-q');
-  var qText = qEl ? qEl.querySelector('.ht-q-text').textContent.trim() : 'Q'+qNum;
-  // Get answer text (text content of button minus the dot element)
-  var ansText = btn.textContent.trim();
-  window._htAnswerTexts[qNum] = {q: qText, a: ansText, score: score};
 }
 
 function htRestoreSelections(){
@@ -6651,8 +6416,8 @@ function htRestoreSelections(){
 function htSubmit(){
   var answered = Object.keys(_htAnswers).length;
   var errEl = document.getElementById('htError');
-  if(answered < 20){
-    errEl.textContent = 'Please answer all 20 questions. You have answered ' + answered + '/20.';
+  if(answered < 5){
+    errEl.textContent = 'Please answer all 5 scenarios. You have answered ' + answered + '/5.';
     errEl.style.display = 'block';
     errEl.scrollIntoView({behavior:'smooth', block:'center'});
     return;
@@ -6661,7 +6426,7 @@ function htSubmit(){
 
   var total = 0;
   Object.keys(_htAnswers).forEach(function(q){ total += _htAnswers[q]; });
-  var maxScore = 80; // 20 questions x 4 pts
+  var maxScore = 20; // 5 scenarios x 4 pts
   var pct = Math.round(total / maxScore * 100);
 
   var grade = 'E';
@@ -6687,320 +6452,50 @@ function htSubmit(){
   bar.style.background = gData.barColor;
   setTimeout(function(){ bar.style.width = pct+'%'; }, 100);
 
-  // Share text removed — use Download & share with her button
+  // Share text
+  var shareText = 'My compatibility score: Grade '+grade+' ('+pct+'%)\n\n'+gData.label+'\n\n'+gData.advice+'\n\n\u2014 Scored on My Relationship Blueprint';
+  document.getElementById('htShareText').textContent = shareText;
 
   // Save to state
   if(!S.hisTest) S.hisTest = {};
   S.hisTest.answers = _htAnswers;
-  S.hisTest.answerTexts = window._htAnswerTexts || {};
   S.hisTest.grade = grade;
   S.hisTest.pct = pct;
   S.hisTest.total = total;
   S.hisTest.date = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
   save();
 
-  // Render answer summary
-  htRenderAnswerSummary(grade);
-  var overlay=document.getElementById('hisTestOverlay');
-  if(overlay) overlay.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function htRenderAnswerSummary(grade){
-  var wrap = document.getElementById('htAnswerSummary');
-  if(!wrap) return;
-
-  var scores = (S.hisTest && S.hisTest.answers) || _htAnswers || {};
-  var savedAt = (S.hisTest && S.hisTest.answerTexts) || window._htAnswerTexts || {};
-
-  // Build at from static lookup + saved scores
-  var at = {};
-  for(var q=1;q<=20;q++){
-    var sc=scores[q]||0;
-    var ai=sc>0?(4-sc):0;
-    at[q]=savedAt[q]||{
-      q:typeof HT_Q_TEXT!=='undefined'?HT_Q_TEXT[q-1]:'Q'+q,
-      a:(sc>0&&typeof HT_A_TEXT!=='undefined')?HT_A_TEXT[q-1][ai]:'',
-      score:sc
-    };
+function htCopyResult(){
+  var text = document.getElementById('htShareText').textContent;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(function(){
+      var btn = document.querySelector('.ht-copy-btn');
+      btn.textContent = '\u2713 Copied!';
+      setTimeout(function(){ btn.textContent = '\u2713 Copy result'; }, 2000);
+    });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
   }
-
-  var gData = HT_GRADES[grade];
-  var pct  = (S.hisTest&&S.hisTest.pct)||0;
-  var total= (S.hisTest&&S.hisTest.total)||0;
-  var date = (S.hisTest&&S.hisTest.date)||'';
-  var gradeCol ={A:'#2d7a2d',B:'#4a7a2a',C:'#7a6020',D:'#b5614a',E:'#c4406b'}[grade]||'#c4406b';
-  var barCol   ={A:'#4CAF50',B:'#8BC34A',C:'#FF9800',D:'#FF5722',E:'#c4406b'}[grade]||'#c4406b';
-  var aCol={4:'#2d7a2d',3:'#7a6020',2:'#b5614a',1:'#c4406b'};
-  var aBg ={4:'#e8f5e8',3:'#fdf3d0',2:'#fde8e0',1:'#fde0e8'};
-  var aLtr={4:'A',3:'B',2:'C',1:'D'};
-
-  var sections=[
-    {label:'A \u2014 Accountability & Honesty',    start:1, end:4, max:16},
-    {label:'B \u2014 Emotional Maturity',          start:5, end:7, max:12},
-    {label:'C \u2014 Consistency & Follow-through',start:8, end:10,max:12},
-    {label:'D \u2014 Vision & Values',             start:11,end:13,max:12},
-    {label:'E \u2014 How He Treats People',        start:14,end:16,max:12},
-    {label:'F \u2014 Readiness & Presence',        start:17,end:20,max:16}
-  ];
-
-  var h='';
-
-  // ── HEADER ──────────────────────────────────────────────────────────────
-  h+='<div style="text-align:center;padding:32px 20px 24px;border-bottom:1px solid var(--pink-100);margin-bottom:24px;">';
-  h+='<div style="font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--mauve);margin-bottom:10px;">Compatibility Checker \u2014 My Relationship Blueprint</div>';
-  h+='<div style="font-family:var(--serif);font-size:88px;font-weight:300;line-height:1;color:'+gradeCol+';margin-bottom:6px;">'+grade+'</div>';
-  h+='<div style="font-family:var(--serif);font-size:20px;font-weight:400;color:'+gradeCol+';margin-bottom:10px;">'+gData.label+'</div>';
-  h+='<div style="font-family:var(--serif);font-size:13px;font-style:italic;color:var(--mist);line-height:1.7;max-width:480px;margin:0 auto 16px;">'+gData.desc+'</div>';
-  h+='<div style="max-width:280px;margin:0 auto 6px;height:8px;background:var(--pink-100);border-radius:99px;overflow:hidden;">';
-  h+='<div style="width:'+pct+'%;height:100%;background:'+barCol+';border-radius:99px;"></div></div>';
-  h+='<div style="font-size:12px;color:var(--mist);margin-bottom:14px;">'+pct+'% \u2014 '+total+'/80 points \u2014 '+date+'</div>';
-  h+='<div style="background:white;border:1px solid var(--pink-100);border-radius:14px;padding:14px 18px;max-width:520px;margin:0 auto;font-family:var(--serif);font-size:13px;font-style:italic;color:var(--deep);line-height:1.7;text-align:left;">'+gData.advice+'</div>';
-  h+='</div>';
-
-  // ── SECTION BREAKDOWN SUMMARY ────────────────────────────────────────────
-  h+='<div style="margin-bottom:24px;">';
-  h+='<div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--mauve);margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid var(--pink-100);">Section Breakdown</div>';
-  sections.forEach(function(sec){
-    var st=0;for(var q=sec.start;q<=sec.end;q++){if(scores[q])st+=scores[q];}
-    var sp=Math.round(st/sec.max*100);
-    var sc=sp>=75?'#4CAF50':sp>=50?'#FF9800':sp>=25?'#FF5722':'#c4406b';
-    h+='<div style="margin-bottom:9px;">';
-    h+='<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;">';
-    h+='<span style="color:var(--deep);font-weight:500;">'+sec.label+'</span>';
-    h+='<span style="color:'+sc+';font-weight:600;">'+sp+'%</span></div>';
-    h+='<div style="height:7px;background:var(--pink-100);border-radius:99px;overflow:hidden;">';
-    h+='<div style="width:'+sp+'%;height:100%;background:'+sc+';border-radius:99px;"></div></div>';
-    h+='</div>';
-  });
-  h+='</div>';
-
-  // ── FULL ANSWERS BY SECTION ───────────────────────────────────────────────
-  sections.forEach(function(sec){
-    var st=0;for(var q=sec.start;q<=sec.end;q++){if(scores[q])st+=scores[q];}
-    var sp=Math.round(st/sec.max*100);
-    var sc=sp>=75?'#4CAF50':sp>=50?'#FF9800':sp>=25?'#FF5722':'#c4406b';
-    h+='<div style="margin-bottom:24px;">';
-    // Section header + bar
-    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">';
-    h+='<span style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--mauve);">'+sec.label+'</span>';
-    h+='<span style="font-size:11px;font-weight:600;color:'+sc+';">'+sp+'%</span></div>';
-    h+='<div style="height:5px;background:var(--pink-100);border-radius:99px;overflow:hidden;margin-bottom:10px;">';
-    h+='<div style="width:'+sp+'%;height:100%;background:'+sc+';border-radius:99px;"></div></div>';
-    // Questions
-    for(var q=sec.start;q<=sec.end;q++){
-      var e=at[q];
-      if(e&&e.score>0){
-        var s3=e.score;
-        h+='<div style="background:white;border:1px solid var(--pink-100);border-radius:12px;padding:11px 14px;margin-bottom:7px;display:flex;gap:10px;align-items:flex-start;">';
-        h+='<span style="font-size:12px;font-weight:700;border-radius:6px;padding:2px 7px;flex-shrink:0;margin-top:1px;color:'+(aCol[s3]||'#888')+';background:'+(aBg[s3]||'#eee')+';font-family:var(--sans);">'+(aLtr[s3]||'-')+'</span>';
-        h+='<div>';
-        h+='<div style="font-size:11px;color:var(--mist);margin-bottom:3px;line-height:1.4;">'+e.q+'</div>';
-        h+='<div style="font-family:var(--serif);font-size:13px;color:var(--deep);line-height:1.5;">'+e.a+'</div>';
-        h+='</div></div>';
-      }
-    }
-    h+='</div>';
-  });
-
-  // ── FOOTER ───────────────────────────────────────────────────────────────
-  h+='<div style="text-align:center;padding-top:20px;border-top:1px solid var(--pink-100);font-family:var(--serif);font-size:12px;font-style:italic;color:var(--mist);">&ldquo;Her worth is far above rubies.&rdquo; &mdash; Proverbs 31:10</div>';
-
-  wrap.innerHTML = h;
 }
-
-
 
 function htSaveToBlueprint(){
-  htDownloadPDF();
-}
-
-function htDownloadPDF(){
-  var grade = S.hisTest && S.hisTest.grade;
-  var pct   = S.hisTest && S.hisTest.pct;
-  var total = S.hisTest && S.hisTest.total;
-  var date  = S.hisTest && S.hisTest.date;
-  if(!grade){ alert('Please complete the test first.'); return; }
-
-  var gData = HT_GRADES[grade];
-  var scores = (S.hisTest && S.hisTest.answers) || _htAnswers || {};
-
-  // Static question + answer text lookup — always available regardless of session
-  var HT_Q_TEXT = [
-    'When you make a mistake, what do you typically do?',
-    'When someone you care about raises a concern about your behaviour, your first instinct is to:',
-    'How honest are you about what you want in a relationship — with the person you are seeing?',
-    'Have you ever told a woman what she wanted to hear rather than the truth?',
-    'How comfortable are you sitting with someone else\u2019s emotional pain without trying to fix it?',
-    'When you are angry or hurt, you typically:',
-    'Have you done any intentional work on your own emotional patterns — therapy, coaching, serious self-reflection?',
-    'How consistent is your behaviour toward a woman you are pursuing — across good weeks and bad weeks?',
-    'If you tell someone you will do something, what is your track record?',
-    'When you are interested in someone, how do you show it?',
-    'Are you currently building something meaningful in your life — financially, professionally, or personally?',
-    'What does marriage mean to you?',
-    'How do you feel about a woman who has strong ambitions and a full life of her own?',
-    'How do you treat service staff, strangers, and people who can do nothing for you?',
-    'How do you speak about your past partners?',
-    'When a woman you are seeing sets a boundary, how do you respond?',
-    'Are you genuinely available for a serious relationship right now — emotionally, logistically, and mentally?',
-    'How do you feel about the pace of getting to know someone — taking months before physical intimacy?',
-    'When you are genuinely interested in a woman, what does your pursuit look like?',
-    'What are you ultimately looking for right now?'
-  ];
-  var HT_A_TEXT = [
-    ['Acknowledge it directly and apologise without excuses','Apologise but explain why it happened','Wait for things to calm down before addressing it','Move on and hope it resolves itself'],
-    ['Listen fully before responding','Listen but also explain your side','Feel defensive, even if you don\u2019t show it','Question why they are making it a big deal'],
-    ['Very — I say what I want clearly and early','Mostly — I share when asked directly','Somewhat — I wait to see how things develop first','I keep my cards close and let things unfold'],
-    ['No — I\u2019d rather have a hard conversation than a comfortable lie','Occasionally, to avoid unnecessary conflict','Sometimes — it felt kinder at the time','Yes — honesty isn\u2019t always the priority'],
-    ['Very \u2014 I can hold space without needing to solve anything','Reasonably \u2014 I try to listen but sometimes offer solutions','Uncomfortable \u2014 I prefer to fix things quickly','Very uncomfortable \u2014 emotional heaviness makes me withdraw'],
-    ['Name what I am feeling and where it came from','Need some time alone, then talk about it','Go quiet and wait for it to pass','Shut down or push the other person away'],
-    ['Yes — ongoing and seriously','Some — I am aware of my patterns even if not in therapy','A little — I think about these things occasionally','Not really — I deal with things as they come'],
-    ['Very consistent — my effort does not depend on my mood','Mostly consistent — occasional dips but I communicate','Variable — my life circumstances affect how much I show up','Inconsistent — intensity comes in waves'],
-    ['I follow through — my word is important to me','Usually — I communicate when I cannot','Mixed — I try but sometimes drop the ball','I struggle with follow-through'],
-    ['Consistent action over time — plans, presence, investment','Verbally and through occasional gestures','Through attention when we are together, but not much outside','I let them wonder — the mystery is part of the attraction'],
-    ['Yes — I have clear direction and active momentum','Yes — direction is clear, progress is slower than I\u2019d like','Somewhat — figuring it out as I go','Not really — I am in a holding pattern right now'],
-    ['A serious, sacred lifelong commitment I want and am prepared for','Something I want — when the right person and timing align','Unsure — I am open but not actively seeking it','Not a priority or something I am avoiding'],
-    ['I find it attractive — I want a partner, not a project','I respect it — though I\u2019d want her to prioritise us too','It can create friction depending on how she balances it','I prefer a woman whose focus is primarily on the relationship'],
-    ['With the same warmth and respect I give anyone','Politely — not warm but not dismissive','I am often distracted or short with them','I treat people according to what they contribute'],
-    ['With respect — I can see my part in what didn\u2019t work','Neutrally — I don\u2019t speak about them much','With some frustration — there are unresolved things','They were largely the problem in those relationships'],
-    ['I respect it immediately — no negotiation','I respect it but want to understand the reason','I respect it but feel frustrated if it limits intimacy','I see it as a challenge to work through'],
-    ['Yes — fully','Mostly — there are some things I am working through','Partially — I want connection but am not ready to fully commit','Not really — I am still figuring out what I want'],
-    ['Completely fine — the pace builds something real','Fine — I can adjust to what she is comfortable with','Challenging — I would need regular reassurance it is going somewhere','Difficult — physical connection is how I feel close'],
-    ['Clear, consistent, unhurried — I make my interest known and keep showing up','Active but I hold back until I am sure she is interested','Intense at first, then I pull back to let her chase a little','I signal interest and wait to see what she does with it'],
-    ['A serious relationship with a woman I could build a life with','Something real that could develop into that','Connection — but I am not ready to define where it goes','Companionship and enjoyment without heavy expectations']
-  ];
-
-  // Build 'at' from scores + static text
-  var at = {};
-  for(var q=1; q<=20; q++){
-    var sc = scores[q] || 0;
-    var ansIdx = sc > 0 ? (4 - sc) : 0; // score 4=idx0, 3=idx1, 2=idx2, 1=idx3
-    at[q] = {
-      q: HT_Q_TEXT[q-1],
-      a: sc > 0 ? HT_A_TEXT[q-1][ansIdx] : '',
-      score: sc
-    };
-  }
-
-  var gradeColors = {A:'#2d7a2d',B:'#4a7a2a',C:'#7a6020',D:'#b5614a',E:'#c4406b'};
-  var gradeBarColors = {A:'#4CAF50',B:'#8BC34A',C:'#FF9800',D:'#FF5722',E:'#c4406b'};
-  var ansScoreColors = {4:'#2d7a2d',3:'#7a6020',2:'#b5614a',1:'#c4406b'};
-  var ansScoreBg    = {4:'#e8f5e8',3:'#fdf3d0',2:'#fde8e0',1:'#fde0e8'};
-  var ansGradeLetter= {4:'A',3:'B',2:'C',1:'D'};
-
-  var sectionLabels = {
-    1:'A \u2014 Accountability & Honesty',
-    5:'B \u2014 Emotional Maturity',
-    8:'C \u2014 Consistency & Follow-through',
-    11:'D \u2014 Vision & Values',
-    14:'E \u2014 How He Treats People',
-    17:'F \u2014 Readiness & Presence'
-  };
-
-  var gradeCol = gradeColors[grade] || '#c4406b';
-  var barCol   = gradeBarColors[grade] || '#c4406b';
-
-  var lines = [];
-  lines.push('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">');
-  lines.push('<title>Compatibility Checker \u2014 My Relationship Blueprint</title>');
-  lines.push('<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">');
-  lines.push('<style>');
-  lines.push('*{box-sizing:border-box;margin:0;padding:0;}');
-  lines.push('body{font-family:"DM Sans",sans-serif;background:#fdf8f5;color:#1a1a1a;font-size:13px;line-height:1.6;}');
-  lines.push('.page{max-width:720px;margin:0 auto;padding:48px 40px 60px;}');
-  lines.push('.print-btn{position:fixed;top:20px;right:20px;padding:10px 22px;background:#c4406b;color:white;border:none;border-radius:99px;font-size:13px;font-weight:500;cursor:pointer;font-family:"DM Sans",sans-serif;box-shadow:0 3px 12px rgba(196,64,107,.3);}');
-  lines.push('.print-btn:hover{background:#5a1a30;}');
-  lines.push('.header{text-align:center;margin-bottom:40px;padding-bottom:28px;border-bottom:1px solid #ffd6e7;}');
-  lines.push('.eyebrow{font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#7a2444;margin-bottom:10px;}');
-  lines.push('.grade-big{font-family:"Cormorant Garamond",serif;font-size:100px;font-weight:300;line-height:1;margin-bottom:6px;}');
-  lines.push('.grade-label{font-family:"Cormorant Garamond",serif;font-size:22px;font-weight:400;margin-bottom:10px;}');
-  lines.push('.grade-desc{font-family:"Cormorant Garamond",serif;font-size:14px;font-style:italic;color:#666;line-height:1.7;max-width:500px;margin:0 auto 20px;}');
-  lines.push('.bar-wrap{max-width:300px;margin:0 auto 8px;height:8px;background:#ffd6e7;border-radius:99px;overflow:hidden;}');
-  lines.push('.bar-fill{height:100%;border-radius:99px;}');
-  lines.push('.score-num{font-size:12px;color:#999;text-align:center;margin-bottom:8px;}');
-  lines.push('.advice-box{background:white;border:1px solid #ffd6e7;border-radius:14px;padding:16px 20px;max-width:540px;margin:16px auto 0;font-family:"Cormorant Garamond",serif;font-size:13px;font-style:italic;color:#2a1a20;line-height:1.7;text-align:left;}');
-  lines.push('.section-hd{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7a2444;margin:28px 0 12px;padding-bottom:6px;border-bottom:1px solid #ffd6e7;}');
-  lines.push('.q-row{background:white;border:1px solid #ffd6e7;border-radius:12px;padding:12px 15px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start;}');
-  lines.push('.q-grade{font-size:13px;font-weight:700;border-radius:6px;padding:2px 8px;flex-shrink:0;margin-top:1px;font-family:"DM Sans",sans-serif;}');
-  lines.push('.q-content{}');
-  lines.push('.q-question{font-size:11px;color:#888;margin-bottom:3px;}');
-  lines.push('.q-answer{font-family:"Cormorant Garamond",serif;font-size:13px;color:#2a1a20;line-height:1.55;}');
-  lines.push('.footer-note{text-align:center;margin-top:36px;padding-top:20px;border-top:1px solid #ffd6e7;font-family:"Cormorant Garamond",serif;font-size:12px;font-style:italic;color:#bbb;}');
-  lines.push('@media print{.print-btn{display:none;}body{background:white;}.page{padding:20px;}}');
-  lines.push('</style></head><body>');
-  lines.push('<button class="print-btn" onclick="window.print()">\u2193 Save as PDF</button>');
-  lines.push('<div class="page">');
-
-  // Header
-  lines.push('<div class="header">');
-  lines.push('<div class="eyebrow">Compatibility Checker \u2014 My Relationship Blueprint</div>');
-  lines.push('<div class="grade-big" style="color:'+gradeCol+'">'+grade+'</div>');
-  lines.push('<div class="grade-label" style="color:'+gradeCol+'">'+gData.label+'</div>');
-  lines.push('<div class="grade-desc">'+gData.desc+'</div>');
-  lines.push('<div class="bar-wrap"><div class="bar-fill" style="width:'+pct+'%;background:'+barCol+'"></div></div>');
-  lines.push('<div class="score-num">'+pct+'% \u2014 '+total+'/80 points \u2014 '+date+'</div>');
-  lines.push('<div class="advice-box">'+gData.advice+'</div>');
-  lines.push('</div>');
-
-  // Section definitions
-  var sections = [
-    {label:'A \u2014 Accountability & Honesty',    start:1,  end:4,  max:16},
-    {label:'B \u2014 Emotional Maturity',           start:5,  end:7,  max:12},
-    {label:'C \u2014 Consistency & Follow-through', start:8,  end:10, max:12},
-    {label:'D \u2014 Vision & Values',              start:11, end:13, max:12},
-    {label:'E \u2014 How He Treats People',         start:14, end:16, max:12},
-    {label:'F \u2014 Readiness & Presence',         start:17, end:20, max:16}
-  ];
-
-  // Summary bars first
-  lines.push('<div style="margin-bottom:28px;">');
-  lines.push('<div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7a2444;margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid #ffd6e7;">Section Breakdown</div>');
-  sections.forEach(function(sec){
-    var secTotal=0; for(var q=sec.start;q<=sec.end;q++){if(scores[q])secTotal+=scores[q];}
-    var secPct=Math.round(secTotal/sec.max*100);
-    var secCol=secPct>=75?'#4CAF50':secPct>=50?'#FF9800':secPct>=25?'#FF5722':'#c4406b';
-    lines.push('<div style="margin-bottom:10px;">');
-    lines.push('<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:#2a1a20;font-weight:500;">'+sec.label+'</span><span style="color:'+secCol+';font-weight:600;">'+secPct+'%</span></div>');
-    lines.push('<div style="height:7px;background:#ffd6e7;border-radius:99px;overflow:hidden;"><div style="width:'+secPct+'%;height:100%;background:'+secCol+';border-radius:99px;"></div></div>');
-    lines.push('</div>');
-  });
-  lines.push('</div>');
-
-  // Full answers by section with bar header
-  sections.forEach(function(sec){
-    var secTotal=0; for(var q=sec.start;q<=sec.end;q++){if(scores[q])secTotal+=scores[q];}
-    var secPct=Math.round(secTotal/sec.max*100);
-    var secCol=secPct>=75?'#4CAF50':secPct>=50?'#FF9800':secPct>=25?'#FF5722':'#c4406b';
-    lines.push('<div style="margin-bottom:24px;">');
-    lines.push('<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">');
-    lines.push('<span style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7a2444;">'+sec.label+'</span>');
-    lines.push('<span style="font-size:11px;font-weight:600;color:'+secCol+'">'+secPct+'%</span></div>');
-    lines.push('<div style="height:5px;background:#ffd6e7;border-radius:99px;overflow:hidden;margin-bottom:10px;"><div style="width:'+secPct+'%;height:100%;background:'+secCol+';border-radius:99px;"></div></div>');
-    for(var q=sec.start;q<=sec.end;q++){
-      var entry=at[q];
-      if(entry && entry.score > 0){
-        var sc=entry.score;
-        var aCol=ansScoreColors[sc]||'#888';
-        var aBg=ansScoreBg[sc]||'#f5f5f5';
-        var aLtr=ansGradeLetter[sc]||'-';
-        lines.push('<div class="q-row"><span class="q-grade" style="color:'+aCol+';background:'+aBg+'">'+aLtr+'</span><div class="q-content"><div class="q-question">'+entry.q+'</div><div class="q-answer">'+entry.a+'</div></div></div>');
-      }
-    }
-    lines.push('</div>');
-  });
-
-  lines.push('<div class="footer-note">&ldquo;Her worth is far above rubies.&rdquo; &mdash; Proverbs 31:10</div>');
-  lines.push('</div></body></html>');
-
-  var blob = new Blob([lines.join('\n')],{type:'text/html;charset=utf-8'});
-  var url  = URL.createObjectURL(blob);
-  var a    = document.createElement('a');
-  a.href   = url;
-  a.download = 'his-compatibility-report.html';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(function(){ URL.revokeObjectURL(url); }, 60000);
+  if(!S.hisTest || !S.hisTest.grade) return;
+  save();
+  closeHisTest();
+  // Show the phase card which now includes his score badge
+  renderPhase && renderPhase();
+  renderAll && renderAll();
+  // Show confirmation
+  var msg = 'Grade '+S.hisTest.grade+' added to your blueprint. You can see it reflected in the phases.';
+  alert(msg);
 }
 
 function htRetake(){
@@ -7019,140 +6514,189 @@ function getHisScoreBadge(){
 }
 
 
-/* ══ LOAD HIS REPORT ══ */
+function checkURLParams(){
+  var search=window.location.search||'';
+  var hash=window.location.hash||'';
+  if(search.indexOf('test')>-1||hash.indexOf('test')>-1){
+    setTimeout(function(){ if(typeof openHisTest==='function') openHisTest(); },300);
+  }
+}
+
 function loadHisReport(input){
-  var file = input.files[0];
-  if(!file) return;
-  var status = document.getElementById('hisReportStatus');
-  status.style.color = 'var(--mist)';
-  status.textContent = 'Reading\u2026';
-  var reader = new FileReader();
-  reader.onload = function(ev){
-    var html = ev.target.result;
-    var gradeMatch = html.match(/class="grade-big"[^>]*>([A-E])<\/div>/);
-    if(!gradeMatch){
-      status.style.color = 'var(--rose)';
-      status.textContent = 'Could not read the file. Make sure it is the correct .html report.';
-      input.value = ''; return;
+  var file=input.files[0]; if(!file) return;
+  var status=document.getElementById('hisReportStatus');
+  status.style.color='var(--mist)'; status.textContent='Reading\u2026';
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    var html=ev.target.result;
+    var gradeMatch=html.match(/class="grade-big"[^>]*>([A-E])<\/div>/);
+    if(!gradeMatch){status.style.color='var(--rose)';status.textContent='Could not read the file.';input.value='';return;}
+    var grade=gradeMatch[1];
+    var pctMatch=html.match(/(\d+)% \u2014 (\d+)\/80 points \u2014 ([^<]+)</);
+    var pct=pctMatch?parseInt(pctMatch[1]):0;
+    var total=pctMatch?parseInt(pctMatch[2]):0;
+    var date=pctMatch?pctMatch[3].trim():new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+    var gradeLetters=html.match(/class="q-grade"[^>]*>([ABCD])<\/span>/g)||[];
+    var questions=html.match(/<div class="q-question">([^<]+)<\/div>/g)||[];
+    var ansArr=html.match(/<div class="q-answer">([^<]+)<\/div>/g)||[];
+    var answers={};var answerTexts={};
+    for(var i=0;i<Math.min(questions.length,20);i++){
+      var gLtr=gradeLetters[i]?gradeLetters[i].replace(/<[^>]+>/g,'').trim():'C';
+      var sc={A:4,B:3,C:2,D:1}[gLtr]||2;
+      answers[i+1]=sc;
+      answerTexts[i+1]={q:questions[i]?questions[i].replace(/<[^>]+>/g,'').trim():'',a:ansArr[i]?ansArr[i].replace(/<[^>]+>/g,'').trim():'',score:sc};
     }
-    var grade = gradeMatch[1];
-    var pctMatch = html.match(/(\d+)% \u2014 (\d+)\/80 points \u2014 ([^<]+)</);
-    var pct   = pctMatch ? parseInt(pctMatch[1]) : 0;
-    var total = pctMatch ? parseInt(pctMatch[2]) : 0;
-    var date  = pctMatch ? pctMatch[3].trim() : new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-
-    // Parse q-rows to get question+answer+grade together
-    var qRowMatches = html.match(/<div class="q-row">[\s\S]*?<\/div><\/div><\/div>/g)||[];
-    // Each q-row has: grade letter, question text, answer text
-    var answers = {};
-    var answerTexts = {};
-    for(var i=0;i<Math.min(qRowMatches.length,20);i++){
-      var row = qRowMatches[i];
-      var gLtrM = row.match(/class="q-grade"[^>]*>([ABCD])<\/span>/);
-      var qTextM = row.match(/<div class="q-question">([^<]+)<\/div>/);
-      var aTextM = row.match(/<div class="q-answer">([^<]+)<\/div>/);
-      var gLtr = gLtrM ? gLtrM[1] : 'C';
-      var sc = {A:4,B:3,C:2,D:1}[gLtr] || 2;
-      answers[i+1] = sc;
-      answerTexts[i+1] = {
-        q: qTextM ? qTextM[1] : '',
-        a: aTextM ? aTextM[1] : '',
-        score: sc
-      };
-    }
-
-    if(!S.hisTest) S.hisTest = {};
-    S.hisTest.grade = grade; S.hisTest.pct = pct;
-    S.hisTest.total = total; S.hisTest.date = date;
-    S.hisTest.answers = answers;
-    S.hisTest.answerTexts = answerTexts;
-    save();
-    renderPhase && renderPhase();
-    renderAll && renderAll();
-    status.style.color = 'var(--green)';
-    status.textContent = '\u2713 Grade '+grade+' ('+pct+'%) saved.';
-    var loaded = document.getElementById('hisReportLoaded');
-    var badge = document.getElementById('hisReportBadgeDisplay');
-    if(loaded) loaded.style.display='block';
-    if(badge) badge.textContent = 'Grade '+grade+' ('+pct+'%) loaded \u2014 '+date;
-    input.value = '';
+    if(!S.hisTest)S.hisTest={};
+    S.hisTest.grade=grade;S.hisTest.pct=pct;S.hisTest.total=total;S.hisTest.date=date;
+    S.hisTest.answers=answers;S.hisTest.answerTexts=answerTexts;
+    save();renderPhase&&renderPhase();renderAll&&renderAll();
+    status.style.color='var(--green)';
+    status.textContent='\u2713 Grade '+grade+' ('+pct+'%) saved. His score badge now appears on every phase card.';
+    var loaded=document.getElementById('hisReportLoaded');
+    var badge=document.getElementById('hisReportBadgeDisplay');
+    if(loaded)loaded.style.display='block';
+    if(badge)badge.textContent='Grade '+grade+' ('+pct+'%) \u2014 '+date;
+    input.value='';
   };
   reader.readAsText(file);
 }
 
-
 function clearHisReport(){
-  if(!confirm('Remove his compatibility report from your blueprint?')) return;
-  S.hisTest = null;
-  save();
-  renderPhase && renderPhase();
-  renderAll && renderAll();
-  var status = document.getElementById('hisReportStatus');
-  var loaded = document.getElementById('hisReportLoaded');
-  if(status){ status.style.color='var(--mist)'; status.textContent='Report cleared.'; }
-  if(loaded) loaded.style.display='none';
+  if(!confirm('Remove his compatibility report from your blueprint?'))return;
+  S.hisTest=null;save();renderPhase&&renderPhase();renderAll&&renderAll();
+  var status=document.getElementById('hisReportStatus');
+  var loaded=document.getElementById('hisReportLoaded');
+  if(status){status.style.color='var(--mist)';status.textContent='Report cleared.';}
+  if(loaded)loaded.style.display='none';
 }
 
 
-/* ══ URL HASH / QUERY ROUTING ══ */
-function checkURLParams(){
-  var search = window.location.search || '';
-  var hash   = window.location.hash   || '';
-  if(search.indexOf('test') > -1 || hash.indexOf('test') > -1){
-    // Open compatibility checker directly
-    setTimeout(function(){
-      if(typeof openHisTest === 'function') openHisTest();
-    }, 300);
+var HT_GRADES={
+  A:{min:85,label:'Grade A \u2014 High compatibility',color:'#2d7a2d',barColor:'#4CAF50',
+     desc:'Your instincts across all five scenarios reflect a man who is emotionally present, accountable, and genuinely available. That is rare \u2014 and it shows.',
+     advice:'A Grade A means your instincts in hard moments are sound. The woman reviewing this is not looking for perfection \u2014 she is looking for someone who shows up honestly. You did.'},
+  B:{min:65,label:'Grade B \u2014 Promising with real gaps',color:'#4a7a2a',barColor:'#8BC34A',
+     desc:'You have genuine strengths \u2014 and at least one scenario where your honest answer revealed something worth looking at. That honesty is itself a green flag.',
+     advice:'A Grade B is workable. Look at which scenario you scored lowest on \u2014 that is the area that will show up in a real relationship. Better to see it now.'},
+  C:{min:45,label:'Grade C \u2014 Proceed with caution',color:'#7a6020',barColor:'#FF9800',
+     desc:'Your responses suggest you are showing up partially. In at least two of these scenarios, your honest instinct was to protect yourself rather than to be present for her.',
+     advice:'A Grade C is not a judgment \u2014 it is a mirror. The woman reviewing this needs someone who can hold hard moments without deflecting. The question is whether you are willing to grow into that.'},
+  D:{min:30,label:'Grade D \u2014 Significant concerns',color:'#b5614a',barColor:'#FF5722',
+     desc:'Across most of these scenarios, your honest responses show patterns of avoidance, deflection, or self-protection that would make an intentional relationship very difficult to build.',
+     advice:'A Grade D means the foundation is shaky right now. That is not a permanent verdict \u2014 but it is honest feedback. She deserves someone who is ready. Are you?'},
+  E:{min:0,label:'Grade E \u2014 Not ready',color:'#c4406b',barColor:'#c4406b',
+     desc:'Your honest answers across these scenarios consistently point to unavailability \u2014 emotional, relational, or in terms of commitment. This is not about character. It is about readiness.',
+     advice:'A Grade E is the most honest answer you could have given. She will respect that more than a performance. Come back when you are ready to show up differently.'}
+};
+var HT_Q_TEXT=[
+  'You say something that upsets her. She says it’s fine but it obviously isn’t. What do you do?',
+  'She calls with big news while you’re stressed at work. What happens?',
+  'She tells you she won’t be physically intimate for months. What is your honest internal response?',
+  'She calmly tells you she felt deprioritised when you cancelled last minute. What do you do?',
+  'After 3 months she asks directly: where is this going? What do you say?'
+];
+var HT_A_TEXT=[
+  ['I press gently and wait for her to tell me what I did.','I give her space, then check in later.','I take her at her word and move on.','I get defensive — I didn’t do anything wrong.'],
+  ['I stop what I’m doing and celebrate it fully.','I congratulate her but I’m distracted and she can tell.','I say well done and mention what I’m dealing with.','I redirect to what I’m going through.'],
+  ['Completely fine — the pace builds something real.','I can work with it if I’m interested enough.','It’s a challenge — I’d probably test the limits gradually.','I’d pull back or keep my options open.'],
+  ['I listen fully then say: you’re right, that wasn’t good enough.','I apologise but explain the context.','I apologise but inside I think she’s overreacting.','I get defensive — I had a real reason.'],
+  ['I answer directly with where I am and whether she’s part of that.','I say I like where things are but I need more time.','I say something warm but non-committal.','I deflect or turn the question back on her.']
+];
+function htDownloadPDF(){
+  var grade=S.hisTest&&S.hisTest.grade;
+  var pct=S.hisTest&&S.hisTest.pct;
+  var total=S.hisTest&&S.hisTest.total;
+  var date=S.hisTest&&S.hisTest.date;
+  if(!grade){alert('Please complete the test first.');return;}
+  var gData=HT_GRADES[grade];
+  var scores=(S.hisTest&&S.hisTest.answers)||_htAnswers||{};
+  var savedAt=(S.hisTest&&S.hisTest.answerTexts)||window._htAnswerTexts||{};
+  var at={};
+  for(var q=1;q<=20;q++){
+    var sc=scores[q]||0;var ai=sc>0?(4-sc):0;
+    at[q]=savedAt[q]||{q:HT_Q_TEXT[q-1],a:sc>0?HT_A_TEXT[q-1][ai]:'',score:sc};
   }
-}
-
-
-function renderSelfFlagFeedAll(){
-  var wrap = document.getElementById('selfFlagFeed');
-  if(!wrap) return;
-  var allEntries = (S.selfFlagLog || []).slice().reverse();
-  // Temporarily override slice to show all
-  var orig = S.selfFlagLog;
-  // Swap limit
-  wrap.querySelector && wrap.querySelector('button') && (function(){
-    // Just re-render but pass full list
-    var GUIDANCE = {
-      shrink:'You are making yourself smaller. Before your next interaction, name one thing you will say that is fully true.',
-      chase:'Chasing is anxiety wearing the costume of interest. Pause 24 hours before any reach-out.',
-      overexplain:'You are defending yourself to someone who should not require a defence.',
-      anxiety:'Your nervous system is working harder than the data justifies. Write facts only.',
-      tooneedy:'What would you be doing today if he did not exist?',
-      selfabandon:'What did you need this week that you did not give yourself?',
-      jealous:'The insecurity is about your wound, not about him.',
-      testing:'Stop the test. Return to watching what is already there.',
-      dishonest:'He cannot choose the real you if she is not present.',
-      ignore:'Write down exactly what your gut is saying without softening it.'
-    };
-    var TAG_NAMES={shrink:'Self-shrinking',chase:'Chasing',overexplain:'Over-explaining',
-      anxiety:'Anxiety spiral',tooneedy:'Too much/needy',selfabandon:'Self-abandonment',
-      jealous:'Insecurity',testing:'Testing/sabotage',dishonest:'Inauthenticity',ignore:'Ignoring gut'};
-    var html='<div style="margin-top:12px;">';
-    html+='<div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mauve);margin-bottom:10px;">All entries ('+allEntries.length+')</div>';
-    allEntries.forEach(function(e){
-      var ck=e.cls==='red'?'red':e.cls==='amber'?'amber':'neutral';
-      var cl=e.cls==='red'?'\u26a0\ufe0f Wound active':e.cls==='amber'?'\u25b2 Pattern noticed':'\u2713 Neutral';
-      html+='<div class="sf-entry sf-entry-'+ck+'">';
-      html+='<div class="sf-entry-meta sf-meta-'+ck+'"><span>Phase '+e.phase+' \u2014 '+e.date+'</span><span style="margin-left:auto">'+cl+'</span></div>';
-      html+='<div class="sf-entry-text">'+e.text+'</div>';
-      if(e.tags&&e.tags.length){
-        html+='<div class="sf-entry-tags">';
-        e.tags.forEach(function(t){html+='<span class="sf-tag sf-tag-'+ck+'">'+(TAG_NAMES[t]||t)+'</span>';});
-        html+='</div>';
-        if(GUIDANCE[e.tags[0]]) html+='<div class="sf-analysis-box"><span class="sf-analysis-label">Guidance</span>'+GUIDANCE[e.tags[0]]+'</div>';
+  var gradeCol={A:'#2d7a2d',B:'#4a7a2a',C:'#7a6020',D:'#b5614a',E:'#c4406b'}[grade]||'#c4406b';
+  var barCol={A:'#4CAF50',B:'#8BC34A',C:'#FF9800',D:'#FF5722',E:'#c4406b'}[grade]||'#c4406b';
+  var aCol={4:'#2d7a2d',3:'#7a6020',2:'#b5614a',1:'#c4406b'};
+  var aBg={4:'#e8f5e8',3:'#fdf3d0',2:'#fde8e0',1:'#fde0e8'};
+  var aLtr={4:'A',3:'B',2:'C',1:'D'};
+  var sections=[
+    {label:'1 \u2014 The disagreement',start:1,end:1,max:4},
+    {label:'2 \u2014 The big news',start:2,end:2,max:4},
+    {label:'3 \u2014 The boundary',start:3,end:3,max:4},
+    {label:'4 \u2014 The hard conversation',start:4,end:4,max:4},
+    {label:'5 \u2014 The relationship question',start:5,end:5,max:4}
+  ];
+  var L=[];
+  L.push('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">');
+  L.push('<title>Compatibility Checker \u2014 My Relationship Blueprint</title>');
+  L.push('<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">');
+  L.push('<style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:"DM Sans",sans-serif;background:#fdf8f5;color:#1a1a1a;font-size:13px;line-height:1.6;}.page{max-width:720px;margin:0 auto;padding:48px 40px 60px;}.print-btn{position:fixed;top:20px;right:20px;padding:10px 22px;background:#c4406b;color:white;border:none;border-radius:99px;font-size:13px;font-weight:500;cursor:pointer;font-family:"DM Sans",sans-serif;}.eyebrow{font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#7a2444;margin-bottom:10px;text-align:center;}.grade-big{font-family:"Cormorant Garamond",serif;font-size:100px;font-weight:300;line-height:1;text-align:center;margin-bottom:6px;}.grade-label{font-family:"Cormorant Garamond",serif;font-size:22px;font-weight:400;text-align:center;margin-bottom:10px;}.grade-desc{font-family:"Cormorant Garamond",serif;font-size:14px;font-style:italic;color:#666;line-height:1.7;text-align:center;max-width:500px;margin:0 auto 16px;}.bar-wrap{max-width:300px;margin:0 auto 6px;height:8px;background:#ffd6e7;border-radius:99px;overflow:hidden;}.bar-fill{height:100%;border-radius:99px;}.score-num{font-size:12px;color:#999;text-align:center;margin-bottom:16px;}.advice-box{background:white;border:1px solid #ffd6e7;border-radius:14px;padding:16px 20px;max-width:540px;margin:0 auto 28px;font-family:"Cormorant Garamond",serif;font-size:13px;font-style:italic;color:#2a1a20;line-height:1.7;}.sec-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}.sec-label{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7a2444;}.sec-pct{font-size:11px;font-weight:600;}.sec-bar{height:5px;background:#ffd6e7;border-radius:99px;overflow:hidden;margin-bottom:10px;}.sec-bar-fill{height:100%;border-radius:99px;}.q-row{background:white;border:1px solid #ffd6e7;border-radius:12px;padding:11px 14px;margin-bottom:7px;display:flex;gap:10px;align-items:flex-start;}.q-grade{font-size:12px;font-weight:700;border-radius:6px;padding:2px 7px;flex-shrink:0;margin-top:1px;font-family:"DM Sans",sans-serif;}.q-question{font-size:11px;color:#888;margin-bottom:3px;}.q-answer{font-family:"Cormorant Garamond",serif;font-size:13px;color:#2a1a20;line-height:1.5;}.footer-note{text-align:center;margin-top:36px;padding-top:20px;border-top:1px solid #ffd6e7;font-family:"Cormorant Garamond",serif;font-size:12px;font-style:italic;color:#bbb;}.breakdown-hd{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7a2444;margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid #ffd6e7;}@media print{.print-btn{display:none;}body{background:white;}}</style></head><body>');
+  L.push('<button class="print-btn" onclick="window.print()">\u2193 Save as PDF</button>');
+  L.push('<div class="page">');
+  L.push('<div class="eyebrow">Compatibility Checker \u2014 My Relationship Blueprint</div>');
+  L.push('<div class="grade-big" style="color:'+gradeCol+'">'+grade+'</div>');
+  L.push('<div class="grade-label" style="color:'+gradeCol+'">'+gData.label+'</div>');
+  L.push('<div class="grade-desc">'+gData.desc+'</div>');
+  L.push('<div class="bar-wrap"><div class="bar-fill" style="width:'+pct+'%;background:'+barCol+'"></div></div>');
+  L.push('<div class="score-num">'+pct+'% \u2014 '+total+'/80 points \u2014 '+date+'</div>');
+  L.push('<div class="advice-box">'+gData.advice+'</div>');
+  // Section breakdown summary
+  L.push('<div style="margin-bottom:28px;"><div class="breakdown-hd">Section Breakdown</div>');
+  sections.forEach(function(sec){
+    var st=0;for(var q=sec.start;q<=sec.end;q++){if(scores[q])st+=scores[q];}
+    var sp=Math.round(st/sec.max*100);var sc=sp>=75?'#4CAF50':sp>=50?'#FF9800':sp>=25?'#FF5722':'#c4406b';
+    L.push('<div style="margin-bottom:9px;"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="font-weight:500;">'+sec.label+'</span><span style="color:'+sc+';font-weight:600;">'+sp+'%</span></div><div style="height:7px;background:#ffd6e7;border-radius:99px;overflow:hidden;"><div style="width:'+sp+'%;height:100%;background:'+sc+';border-radius:99px;"></div></div></div>');
+  });
+  L.push('</div>');
+  // Full answers
+  sections.forEach(function(sec){
+    var st=0;for(var q=sec.start;q<=sec.end;q++){if(scores[q])st+=scores[q];}
+    var sp=Math.round(st/sec.max*100);var sc=sp>=75?'#4CAF50':sp>=50?'#FF9800':sp>=25?'#FF5722':'#c4406b';
+    L.push('<div style="margin-bottom:24px;"><div class="sec-hd"><span class="sec-label">'+sec.label+'</span><span class="sec-pct" style="color:'+sc+'">'+sp+'%</span></div><div class="sec-bar"><div class="sec-bar-fill" style="width:'+sp+'%;background:'+sc+'"></div></div>');
+    for(var q=sec.start;q<=sec.end;q++){
+      var e=at[q];if(e&&e.score>0){var s3=e.score;
+        L.push('<div class="q-row"><span class="q-grade" style="color:'+(aCol[s3]||'#888')+';background:'+(aBg[s3]||'#eee')+'">'+(aLtr[s3]||'-')+'</span><div><div class="q-question">'+e.q+'</div><div class="q-answer">'+e.a+'</div></div></div>');
       }
-      html+='</div>';
-    });
-    html+='<div style="text-align:center;margin-top:8px;"><button onclick="renderSelfFlagFeed()" style="font-size:11px;color:var(--mist);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:var(--sans);">Show less</button></div>';
-    html+='</div>';
-    wrap.innerHTML=html;
-  })();
+    }
+    L.push('</div>');
+  });
+  L.push('<div class="footer-note">&ldquo;Her worth is far above rubies.&rdquo; &mdash; Proverbs 31:10</div>');
+  L.push('</div></body></html>');
+  var blob=new Blob([L.join('\n')],{type:'text/html;charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='his-compatibility-report.html';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(url);},60000);
 }
-
+function htRenderAnswerSummary(grade){
+  var wrap=document.getElementById('htAnswerSummary');if(!wrap)return;
+  var scores=(S.hisTest&&S.hisTest.answers)||_htAnswers||{};
+  var savedAt=(S.hisTest&&S.hisTest.answerTexts)||window._htAnswerTexts||{};
+  var at={};
+  for(var q=1;q<=20;q++){var sc=scores[q]||0;var ai=sc>0?(4-sc):0;at[q]=savedAt[q]||{q:HT_Q_TEXT[q-1],a:sc>0?HT_A_TEXT[q-1][ai]:'',score:sc};}
+  var gData=HT_GRADES[grade];
+  var pct=(S.hisTest&&S.hisTest.pct)||0;var total=(S.hisTest&&S.hisTest.total)||0;var date=(S.hisTest&&S.hisTest.date)||'';
+  var gradeCol={A:'#2d7a2d',B:'#4a7a2a',C:'#7a6020',D:'#b5614a',E:'#c4406b'}[grade]||'#c4406b';
+  var barCol={A:'#4CAF50',B:'#8BC34A',C:'#FF9800',D:'#FF5722',E:'#c4406b'}[grade]||'#c4406b';
+  var aCol={4:'#2d7a2d',3:'#7a6020',2:'#b5614a',1:'#c4406b'};var aBg={4:'#e8f5e8',3:'#fdf3d0',2:'#fde8e0',1:'#fde0e8'};var aLtr={4:'A',3:'B',2:'C',1:'D'};
+  var sections=[{label:'A \u2014 Accountability & Honesty',start:1,end:4,max:16},{label:'B \u2014 Emotional Maturity',start:5,end:7,max:12},{label:'C \u2014 Consistency & Follow-through',start:8,end:10,max:12},{label:'D \u2014 Vision & Values',start:11,end:13,max:12},{label:'E \u2014 How He Treats People',start:14,end:16,max:12},{label:'F \u2014 Readiness & Presence',start:17,end:20,max:16}];
+  var h='<div style="text-align:center;padding:32px 20px 24px;border-bottom:1px solid var(--pink-100);margin-bottom:24px;">';
+  h+='<div style="font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--mauve);margin-bottom:10px;">Compatibility Checker \u2014 My Relationship Blueprint</div>';
+  h+='<div style="font-family:var(--serif);font-size:88px;font-weight:300;line-height:1;color:'+gradeCol+';margin-bottom:6px;">'+grade+'</div>';
+  h+='<div style="font-family:var(--serif);font-size:20px;font-weight:400;color:'+gradeCol+';margin-bottom:10px;">'+gData.label+'</div>';
+  h+='<div style="font-family:var(--serif);font-size:13px;font-style:italic;color:var(--mist);line-height:1.7;max-width:480px;margin:0 auto 16px;">'+gData.desc+'</div>';
+  h+='<div style="max-width:280px;margin:0 auto 6px;height:8px;background:var(--pink-100);border-radius:99px;overflow:hidden;"><div style="width:'+pct+'%;height:100%;background:'+barCol+';border-radius:99px;"></div></div>';
+  h+='<div style="font-size:12px;color:var(--mist);margin-bottom:14px;">'+pct+'% \u2014 '+total+'/80 points \u2014 '+date+'</div>';
+  h+='<div style="background:white;border:1px solid var(--pink-100);border-radius:14px;padding:14px 18px;max-width:520px;margin:0 auto;font-family:var(--serif);font-size:13px;font-style:italic;color:var(--deep);line-height:1.7;text-align:left;">'+gData.advice+'</div></div>';
+  h+='<div style="margin-bottom:24px;"><div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--mauve);margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid var(--pink-100);">Section Breakdown</div>';
+  sections.forEach(function(sec){var st=0;for(var q=sec.start;q<=sec.end;q++){if(scores[q])st+=scores[q];}var sp=Math.round(st/sec.max*100);var sc=sp>=75?'#4CAF50':sp>=50?'#FF9800':sp>=25?'#FF5722':'#c4406b';h+='<div style="margin-bottom:9px;"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--deep);font-weight:500;">'+sec.label+'</span><span style="color:'+sc+';font-weight:600;">'+sp+'%</span></div><div style="height:7px;background:var(--pink-100);border-radius:99px;overflow:hidden;"><div style="width:'+sp+'%;height:100%;background:'+sc+';border-radius:99px;"></div></div></div>';});
+  h+='</div>';
+  sections.forEach(function(sec){var st=0;for(var q=sec.start;q<=sec.end;q++){if(scores[q])st+=scores[q];}var sp=Math.round(st/sec.max*100);var sc=sp>=75?'#4CAF50':sp>=50?'#FF9800':sp>=25?'#FF5722':'#c4406b';h+='<div style="margin-bottom:24px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--mauve);">'+sec.label+'</span><span style="font-size:11px;font-weight:600;color:'+sc+';">'+sp+'%</span></div><div style="height:5px;background:var(--pink-100);border-radius:99px;overflow:hidden;margin-bottom:10px;"><div style="width:'+sp+'%;height:100%;background:'+sc+';border-radius:99px;"></div></div>';for(var q=sec.start;q<=sec.end;q++){var e=at[q];if(e&&e.score>0){var s3=e.score;h+='<div style="background:white;border:1px solid var(--pink-100);border-radius:12px;padding:11px 14px;margin-bottom:7px;display:flex;gap:10px;align-items:flex-start;"><span style="font-size:12px;font-weight:700;border-radius:6px;padding:2px 7px;flex-shrink:0;margin-top:1px;color:'+(aCol[s3]||'#888')+';background:'+(aBg[s3]||'#eee')+';font-family:var(--sans);">'+(aLtr[s3]||'-')+'</span><div><div style="font-size:11px;color:var(--mist);margin-bottom:3px;line-height:1.4;">'+e.q+'</div><div style="font-family:var(--serif);font-size:13px;color:var(--deep);line-height:1.5;">'+e.a+'</div></div></div>';}}h+='</div>';});
+  h+='<div style="text-align:center;padding-top:20px;border-top:1px solid var(--pink-100);font-family:var(--serif);font-size:12px;font-style:italic;color:var(--mist);">&ldquo;Her worth is far above rubies.&rdquo; &mdash; Proverbs 31:10</div>';
+  wrap.innerHTML=h;
+}
 document.addEventListener("DOMContentLoaded",lpRender);}
 
 function lpRender(){
@@ -7249,7 +6793,7 @@ document.addEventListener("DOMContentLoaded",function(){
   lpRender();
   spawnLandingHearts();
   // Migration: if phase0 marked complete but readiness < 90, clear it
-  if(S.phase0&&S.phase0.complete&&(!S.phase0.analysis||S.phase0.analysis.readiness<50)){
+  if(S.phase0&&S.phase0.complete&&(!S.phase0.analysis||S.phase0.analysis.readiness<90)){
     S.phase0.complete=false;
     delete S.phase0.completedDate;
     save();
@@ -7357,53 +6901,80 @@ document.addEventListener("DOMContentLoaded",function(){
     </button>
 
     <div id="htForm">
-      <p class="ht-eyebrow">Compatibility check</p>
-      <h1 class="ht-h1">The Compatibility <em>Checker</em></h1>
-      <p class="ht-sub">Send him this link. 20 questions, 5 minutes. His answers are scored and he downloads a report — you upload it into your blueprint under Data.</p>
+      <p class="ht-eyebrow">Compatibility Checker</p>
+      <h1 class="ht-h1">Five <em>real situations.</em></h1>
+      <p class="ht-sub">No right answers to memorise. Each question describes a real moment — choose the response that feels most honest about what you would actually do. She will see every answer.</p>
 
       <div class="ht-section">
-        <div class="ht-section-hd">A — Accountability &amp; honesty</div>
+        <div class="ht-section-hd">Scenario 1 of 5 &mdash; The disagreement</div>
         <div class="ht-q">
-          <div class="ht-q-num">Q1</div>
-          <div class="ht-q-text">When you make a mistake, what do you typically do?</div>
+          <div class="ht-q-text">You say something that clearly upsets the woman you are seeing. She goes quiet and says <em>&ldquo;it&rsquo;s fine&rdquo;</em> — but it obviously isn&rsquo;t. What do you do?</div>
           <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,1,4)"><span class="ht-opt-dot"></span>Acknowledge it directly and apologise without excuses</button>
-            <button class="ht-opt" onclick="htSelect(this,1,3)"><span class="ht-opt-dot"></span>Apologise but explain why it happened</button>
-            <button class="ht-opt" onclick="htSelect(this,1,2)"><span class="ht-opt-dot"></span>Wait for things to calm down before addressing it</button>
-            <button class="ht-opt" onclick="htSelect(this,1,1)"><span class="ht-opt-dot"></span>Move on and hope it resolves itself</button>
-          </div>
-        </div>
-        <div class="ht-q">
-          <div class="ht-q-num">Q2</div>
-          <div class="ht-q-text">When someone you care about raises a concern about your behaviour, your first instinct is to:</div>
-          <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,2,4)"><span class="ht-opt-dot"></span>Listen fully before responding</button>
-            <button class="ht-opt" onclick="htSelect(this,2,3)"><span class="ht-opt-dot"></span>Listen but also explain your side</button>
-            <button class="ht-opt" onclick="htSelect(this,2,2)"><span class="ht-opt-dot"></span>Feel defensive, even if you don't show it</button>
-            <button class="ht-opt" onclick="htSelect(this,2,1)"><span class="ht-opt-dot"></span>Question why they are making it a big deal</button>
-          </div>
-        </div>
-        <div class="ht-q">
-          <div class="ht-q-num">Q3</div>
-          <div class="ht-q-text">How honest are you about what you want in a relationship — with the person you are seeing?</div>
-          <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,3,4)"><span class="ht-opt-dot"></span>Very — I say what I want clearly and early</button>
-            <button class="ht-opt" onclick="htSelect(this,3,3)"><span class="ht-opt-dot"></span>Mostly — I share when asked directly</button>
-            <button class="ht-opt" onclick="htSelect(this,3,2)"><span class="ht-opt-dot"></span>Somewhat — I wait to see how things develop first</button>
-            <button class="ht-opt" onclick="htSelect(this,3,1)"><span class="ht-opt-dot"></span>I keep my cards close and let things unfold</button>
-          </div>
-        </div>
-        <div class="ht-q">
-          <div class="ht-q-num">Q4</div>
-          <div class="ht-q-text">Have you ever told a woman what she wanted to hear rather than the truth?</div>
-          <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,4,4)"><span class="ht-opt-dot"></span>No — I'd rather have a hard conversation than a comfortable lie</button>
-            <button class="ht-opt" onclick="htSelect(this,4,3)"><span class="ht-opt-dot"></span>Occasionally, to avoid unnecessary conflict</button>
-            <button class="ht-opt" onclick="htSelect(this,4,2)"><span class="ht-opt-dot"></span>Sometimes — it felt kinder at the time</button>
-            <button class="ht-opt" onclick="htSelect(this,4,1)"><span class="ht-opt-dot"></span>Yes — honesty isn't always the priority</button>
+            <button class="ht-opt" onclick="htSelect(this,1,4)"><span class="ht-opt-dot"></span>I press gently — &ldquo;I don&rsquo;t think it is fine. Tell me what I did.&rdquo; And I wait.</button>
+            <button class="ht-opt" onclick="htSelect(this,1,3)"><span class="ht-opt-dot"></span>I give her space for a bit, then check in later to see if she wants to talk.</button>
+            <button class="ht-opt" onclick="htSelect(this,1,2)"><span class="ht-opt-dot"></span>I take her at her word — she said fine, so I move on. If it was serious she&rsquo;d say so.</button>
+            <button class="ht-opt" onclick="htSelect(this,1,1)"><span class="ht-opt-dot"></span>I feel defensive. I didn&rsquo;t do anything wrong — I&rsquo;m not going to chase her for a reaction.</button>
           </div>
         </div>
       </div>
+
+      <div class="ht-section">
+        <div class="ht-section-hd">Scenario 2 of 5 &mdash; The big news</div>
+        <div class="ht-q">
+          <div class="ht-q-text">She calls you, clearly excited, to share something she has been working toward for months — a promotion, a business win, something that matters to her deeply. You are in the middle of something stressful at work. What happens?</div>
+          <div class="ht-options">
+            <button class="ht-opt" onclick="htSelect(this,2,4)"><span class="ht-opt-dot"></span>I stop what I&rsquo;m doing. Her moment matters more than my stress right now. I celebrate it fully.</button>
+            <button class="ht-opt" onclick="htSelect(this,2,3)"><span class="ht-opt-dot"></span>I congratulate her and tell her I&rsquo;m proud — but I&rsquo;m a bit distracted and she can probably tell.</button>
+            <button class="ht-opt" onclick="htSelect(this,2,2)"><span class="ht-opt-dot"></span>I say well done and quickly mention what I&rsquo;m dealing with — she&rsquo;ll understand, we can celebrate later.</button>
+            <button class="ht-opt" onclick="htSelect(this,2,1)"><span class="ht-opt-dot"></span>I redirect the conversation to what I&rsquo;m going through — my thing feels more urgent right now.</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ht-section">
+        <div class="ht-section-hd">Scenario 3 of 5 &mdash; The boundary</div>
+        <div class="ht-q">
+          <div class="ht-q-text">Early on, she tells you she won&rsquo;t be physically intimate until she knows someone well — it could take months. You are genuinely interested in her. What is your honest internal response?</div>
+          <div class="ht-options">
+            <button class="ht-opt" onclick="htSelect(this,3,4)"><span class="ht-opt-dot"></span>Completely fine. The pace builds something real — and it tells me she takes this seriously, which I respect.</button>
+            <button class="ht-opt" onclick="htSelect(this,3,3)"><span class="ht-opt-dot"></span>I can work with it. It&rsquo;s not what I&rsquo;m used to but I&rsquo;m willing to respect her pace if I&rsquo;m interested enough.</button>
+            <button class="ht-opt" onclick="htSelect(this,3,2)"><span class="ht-opt-dot"></span>Honestly, it&rsquo;s a challenge. I&rsquo;d try to respect it but I&rsquo;d probably test the boundaries gradually.</button>
+            <button class="ht-opt" onclick="htSelect(this,3,1)"><span class="ht-opt-dot"></span>I&rsquo;d likely pull back or keep my options open — that kind of timeline doesn&rsquo;t work for me.</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ht-section">
+        <div class="ht-section-hd">Scenario 4 of 5 &mdash; The hard conversation</div>
+        <div class="ht-q">
+          <div class="ht-q-text">She sits you down and says calmly: <em>&ldquo;When you cancelled on me last minute last week, I felt like I wasn&rsquo;t a priority. I need you to know that.&rdquo;</em> She is not attacking you — she is telling you something. What do you do?</div>
+          <div class="ht-options">
+            <button class="ht-opt" onclick="htSelect(this,4,4)"><span class="ht-opt-dot"></span>I listen without interrupting. Then I say: &ldquo;You&rsquo;re right. That wasn&rsquo;t good enough. I&rsquo;m sorry.&rdquo; No qualifications.</button>
+            <button class="ht-opt" onclick="htSelect(this,4,3)"><span class="ht-opt-dot"></span>I apologise, but I also explain the context — I want her to understand it wasn&rsquo;t intentional.</button>
+            <button class="ht-opt" onclick="htSelect(this,4,2)"><span class="ht-opt-dot"></span>I feel put on the spot. I apologise, but inside I think she&rsquo;s overreacting — it was just once.</button>
+            <button class="ht-opt" onclick="htSelect(this,4,1)"><span class="ht-opt-dot"></span>I get defensive. I had a real reason — I don&rsquo;t think it&rsquo;s fair to make it a character issue.</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ht-section">
+        <div class="ht-section-hd">Scenario 5 of 5 &mdash; The relationship question</div>
+        <div class="ht-q">
+          <div class="ht-q-text">After three months of seeing each other consistently, she asks you directly: <em>&ldquo;Where do you see this going? I want something real and I need to know if you&rsquo;re building toward that too.&rdquo;</em> What do you say?</div>
+          <div class="ht-options">
+            <button class="ht-opt" onclick="htSelect(this,5,4)"><span class="ht-opt-dot"></span>I answer directly. I tell her where I am, what I want, and whether she is part of that picture. No vagueness.</button>
+            <button class="ht-opt" onclick="htSelect(this,5,3)"><span class="ht-opt-dot"></span>I tell her I like where things are going but I need a little more time before I can give her a definite answer.</button>
+            <button class="ht-opt" onclick="htSelect(this,5,2)"><span class="ht-opt-dot"></span>I say something warm but non-committal — I don&rsquo;t want to lose her but I&rsquo;m not sure yet and I can&rsquo;t say that.</button>
+            <button class="ht-opt" onclick="htSelect(this,5,1)"><span class="ht-opt-dot"></span>I feel pressured. I deflect or turn the question back on her — commitment talk too early makes me pull back.</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="htError" style="color:var(--rose);font-size:13px;text-align:center;margin-top:12px;display:none;">Please answer all 5 scenarios before submitting.</div>
+      <div class="ht-submit-row">
+        <button class="ht-submit" onclick="htSubmit()">See my score &#8594;</button>
+      </div>
+    </div>
 
       <div class="ht-section">
         <div class="ht-section-hd">B — Emotional maturity</div>
@@ -7595,29 +7166,31 @@ document.addEventListener("DOMContentLoaded",function(){
 
     <!-- Result -->
     <div class="ht-result" id="htResult">
-      <div class="ht-grade" id="htGradeDisplay" style="display:none"></div>
-      <div class="ht-grade-label" id="htGradeLabel" style="display:none"></div>
-      <div class="ht-grade-desc" id="htGradeDesc" style="display:none"></div>
-      <div class="ht-score-bar-wrap" style="display:none">
+      <div class="ht-grade" id="htGradeDisplay"></div>
+      <div class="ht-grade-label" id="htGradeLabel"></div>
+      <div class="ht-grade-desc" id="htGradeDesc"></div>
+      <div class="ht-score-bar-wrap">
         <div class="ht-score-bar-bg">
           <div class="ht-score-bar-fill" id="htScoreBar" style="width:0%"></div>
         </div>
         <div class="ht-score-num" id="htScoreNum"></div>
       </div>
 
-      <!-- Answer summary — full PDF-faithful view -->
-      <div id="htAnswerSummary" style="margin:0 0 20px;text-align:left;"></div>
-
-
+      <div class="ht-share-box">
+        <div class="ht-share-hd">&#9825; Share your result</div>
+        <div class="ht-share-text" id="htShareText"></div>
+        <button class="ht-copy-btn" onclick="htCopyResult()">&#10003; Copy result</button>
+      </div>
 
       <div style="margin-top:16px;">
         <div style="font-size:12px;color:var(--mist);font-family:var(--serif);font-style:italic;margin-bottom:10px;">
-          Download a full PDF of your score and answers to share with her. She can upload it directly into her blueprint.
+          Want to add this score to your blueprint?
         </div>
-        <button class="ht-add-btn" onclick="htDownloadPDF()">&#8595; Download &amp; share with her</button>
+        <button class="ht-add-btn" onclick="htSaveToBlueprint()">Add to my blueprint &#8594;</button>
       </div>
 
-      <button class="ht-back" style="margin-top:24px;" onclick="htRetake()">&#8592; Retake test
+      <button class="ht-back" style="margin-top:24px;" onclick="htRetake()">
+        &#8592; Retake test
       </button>
     </div>
 
