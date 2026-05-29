@@ -1628,6 +1628,17 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     .ht-grade{font-size:72px;}
   }
 
+
+  .ht-textarea{
+    width:100%;border:1px solid var(--pink-100);border-radius:12px;
+    padding:12px 14px;font-family:var(--serif);font-size:14px;
+    color:var(--stone);background:white;resize:vertical;
+    outline:none;line-height:1.7;margin-top:10px;
+    transition:border-color .15s;box-sizing:border-box;
+  }
+  .ht-textarea:focus{border-color:var(--petal);}
+  .ht-textarea::placeholder{color:var(--mist);font-style:italic;}
+
 </style>
 </head>
 <body>
@@ -6424,58 +6435,108 @@ function htRestoreSelections(){
 }
 
 function htSubmit(){
-  var answered = Object.keys(_htAnswers).length;
   var errEl = document.getElementById('htError');
-  if(answered < 5){
-    errEl.textContent = 'Please answer all 5 scenarios. You have answered ' + answered + '/5.';
-    errEl.style.display = 'block';
-    errEl.scrollIntoView({behavior:'smooth', block:'center'});
+  var missing = [];
+  for(var q=1;q<=5;q++){
+    var ta=document.getElementById('hta'+q);
+    if(!ta||ta.value.trim().length<15) missing.push(q);
+  }
+  if(missing.length>0){
+    errEl.textContent='Please answer all 5 scenarios (scenario '+missing.join(', ')+' needs more).';
+    errEl.style.display='block';
+    errEl.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
-  errEl.style.display = 'none';
+  errEl.style.display='none';
 
-  var total = 0;
-  Object.keys(_htAnswers).forEach(function(q){ total += _htAnswers[q]; });
-  var maxScore = 20; // 5 scenarios x 4 pts
-  var pct = Math.round(total / maxScore * 100);
+  var qTexts=[
+    'You say something that upsets her. She says it\u2019s fine but it obviously isn\u2019t. What do you do?',
+    'She calls with big news while you\u2019re stressed at work. What actually happens?',
+    'She won\u2019t be physically intimate for months. What is your honest internal response, and what do you actually do?',
+    'She calmly tells you she felt deprioritised when you cancelled last minute. What do you say and do?',
+    'After 3 months she asks where this is going. What do you say \u2014 exactly?'
+  ];
 
-  var grade = 'E';
-  var gradeKeys = ['A','B','C','D','E'];
-  for(var g=0;g<gradeKeys.length;g++){
-    if(pct >= HT_GRADES[gradeKeys[g]].min){ grade = gradeKeys[g]; break; }
+  // Analyse each answer for grade
+  var scores = {};
+  for(var q=1;q<=5;q++){
+    var ta=document.getElementById('hta'+q);
+    var txt=(ta?ta.value.trim():'').toLowerCase();
+    scores[q] = htScoreAnswer(q, txt);
+    if(!window._htAnswerTexts) window._htAnswerTexts={};
+    window._htAnswerTexts[q]={q:qTexts[q-1],a:ta?ta.value.trim():'',score:scores[q]};
   }
 
-  var gData = HT_GRADES[grade];
+  var total=0;
+  for(var q=1;q<=5;q++) total+=scores[q];
+  var maxScore=20;
+  var pct=Math.round(total/maxScore*100);
+  var grade='E';
+  var gradeKeys=['A','B','C','D','E'];
+  for(var g=0;g<gradeKeys.length;g++){
+    if(pct>=HT_GRADES[gradeKeys[g]].min){grade=gradeKeys[g];break;}
+  }
 
-  // Show result
-  document.getElementById('htForm').style.display = 'none';
-  var resultEl = document.getElementById('htResult');
-  resultEl.classList.add('show');
-
-  document.getElementById('htGradeDisplay').textContent = grade;
-  document.getElementById('htGradeDisplay').className = 'ht-grade grade-'+grade;
-  document.getElementById('htGradeLabel').textContent = gData.label;
-  document.getElementById('htGradeDesc').textContent = gData.desc;
-  document.getElementById('htScoreNum').textContent = pct+'% \u2014 '+total+'/'+maxScore+' points';
-
-  var bar = document.getElementById('htScoreBar');
-  bar.style.background = gData.barColor;
-  setTimeout(function(){ bar.style.width = pct+'%'; }, 100);
-
-  // Share text
-  var shareText = 'My compatibility score: Grade '+grade+' ('+pct+'%)\n\n'+gData.label+'\n\n'+gData.advice+'\n\n\u2014 Scored on My Relationship Blueprint';
-  document.getElementById('htShareText').textContent = shareText;
-
-  // Save to state
-  if(!S.hisTest) S.hisTest = {};
-  S.hisTest.answers = _htAnswers;
-  S.hisTest.grade = grade;
-  S.hisTest.pct = pct;
-  S.hisTest.total = total;
-  S.hisTest.date = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  if(!S.hisTest) S.hisTest={};
+  S.hisTest.answerTexts=window._htAnswerTexts;
+  S.hisTest.answers=scores;
+  S.hisTest.grade=grade;
+  S.hisTest.pct=pct;
+  S.hisTest.total=total;
+  S.hisTest.date=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  S.hisTest.textMode=true;
   save();
 
-  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('htForm').style.display='none';
+  var resultEl=document.getElementById('htResult');
+  resultEl.style.display='block';
+  htRenderAnswerSummary(grade);
+  var overlay=document.getElementById('hisTestOverlay');
+  if(overlay) overlay.scrollTo({top:0,behavior:'smooth'});
+}
+
+function htScoreAnswer(qNum, txt){
+  // Returns 1-4 based on what the text contains
+  // Each scenario has green/red signal words
+  var green=0, red=0;
+  if(qNum===1){ // disagreement — did he press/stay or deflect/move on?
+    if(/\b(press|stay|ask her|tell me|check in|not fine|sit with|make sure|i noticed|address it|bring it up|talk about it|asked what|wanted to know)\b/.test(txt)) green+=2;
+    if(/\b(listen|present|stayed|didn.t move on|came back to it|held space|her feelings)\b/.test(txt)) green+=1;
+    if(/\b(took her word|moved on|let it go|not my fault|she.?ll say|if she wanted|didn.t push|left it)\b/.test(txt)) red+=2;
+    if(/\b(defensive|annoyed|not fair|overreact|fine means fine)\b/.test(txt)) red+=2;
+  }
+  if(qNum===2){ // big news — did he stop and celebrate?
+    if(/\b(stop|put (it|everything|work) (down|aside|away)|celebrated?|fully present|her moment|all about her|dropped what|focused on her|congratulat)\b/.test(txt)) green+=2;
+    if(/\b(proud|happy for|made time|paused|excited for her|her win)\b/.test(txt)) green+=1;
+    if(/\b(mentioned (my|what i|the stress)|redirect|my thing|i was deal|told her (about|what i)|she.?ll understand|later)\b/.test(txt)) red+=2;
+    if(/\b(more urgent|my problem|couldn.t focus|distracted)\b/.test(txt)) red+=1;
+  }
+  if(qNum===3){ // boundary — did he respect it genuinely?
+    if(/\b(respect(ed)?|completely fine|fine with (it|that)|no issue|takes? it seriously|appreciat|worth (waiting|it)|pace is (hers|her call|up to her)|honoured? it)\b/.test(txt)) green+=2;
+    if(/\b(patient|trust|build(s?) something|excited (to get to know|about her)|connection first)\b/.test(txt)) green+=1;
+    if(/\b(test (the )?limit|push|gradually|see how far|negotiate|work around|difficult|challenge|hard for me|physical (connection|intimacy) (is|matters))\b/.test(txt)) red+=2;
+    if(/\b(pull back|keep (my )?options|move on|not (for me|my thing)|too long)\b/.test(txt)) red+=2;
+  }
+  if(qNum===4){ // hard conversation — did he own it or deflect?
+    if(/\b(you.?re right|i.?m sorry|my fault|i (was wrong|messed up|let you down|should have|didn.t|failed)|no excuse|i own|i take responsibility|accountab|apologis)\b/.test(txt)) green+=2;
+    if(/\b(listened?|heard (her|you)|sat with|didn.t (defend|deflect|justify)|thank(ed)? her for telling me)\b/.test(txt)) green+=1;
+    if(/\b(but (i had|there was|the reason|it was)|explain(ed)? (the context|why|that)|not intentional|she.?s overreact|just once|not fair|had a reason)\b/.test(txt)) red+=2;
+    if(/\b(defensive|felt attacked|put on the spot|turned it|not a character|making it bigger)\b/.test(txt)) red+=2;
+  }
+  if(qNum===5){ // relationship question — did he answer directly?
+    if(/\b(direct(ly)?|honest(ly)?|clear(ly)?|told her (where|what|that)|yes (i want|i.?m building|i see)|i want (this|a future|something real|to build|her)|she.?s (part of|in) (that|my|the) (picture|plan|vision))\b/.test(txt)) green+=2;
+    if(/\b(committed?|serious(ly)?|this is (real|what i want)|ready|building toward)\b/.test(txt)) green+=1;
+    if(/\b(need more time|not sure (yet|if)|maybe|see how|let.s (just|keep)|don.t want to (lose|rush|label)|non.committal|vague|deflect|turned it back|asked her instead)\b/.test(txt)) red+=2;
+    if(/\b(pressured?|too (early|soon)|pulled? back|commitment (talk|word|conversation) (makes?|is))\b/.test(txt)) red+=2;
+  }
+  // Score: 4=clear green, 3=lean green, 2=lean red, 1=clear red
+  if(green>=3 && red===0) return 4;
+  if(green>=2 && red<=1) return 3;
+  if(red>=2 && green<=1) return 2;
+  if(red>=3 || (red>=2 && green===0)) return 1;
+  // Short / neutral answer — grade 2 (can't confirm either way)
+  if(txt.length<50) return 2;
+  return 3; // substantive but ambiguous = benefit of doubt
 }
 
 function htCopyResult(){
@@ -6510,11 +6571,17 @@ function htSaveToBlueprint(){
 
 function htRetake(){
   _htAnswers = {};
-  document.getElementById('htResult').classList.remove('show');
+  _htTextAnswers = {};
+  window._htAnswerTexts = {};
+  var resultEl = document.getElementById('htResult');
+  if(resultEl) resultEl.style.display = 'none';
   document.getElementById('htForm').style.display = 'block';
-  // Clear all selections
-  document.querySelectorAll('.ht-opt').forEach(function(o){ o.classList.remove('selected'); });
-  window.scrollTo({top:0,behavior:'instant'});
+  for(var q=1;q<=5;q++){
+    var ta = document.getElementById('hta'+q);
+    if(ta) ta.value = '';
+  }
+  var overlay = document.getElementById('hisTestOverlay');
+  if(overlay) overlay.scrollTo({top:0,behavior:'instant'});
 }
 
 function getHisScoreBadge(){
@@ -6613,10 +6680,41 @@ var HT_A_TEXT=[
   ['I answer directly with where I am and whether she’s part of that.','I say I like where things are but I need more time.','I say something warm but non-committal.','I deflect or turn the question back on her.']
 ];
 function htDownloadPDF(){
+  var date=(S.hisTest&&S.hisTest.date)||new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  var textMode = S.hisTest && S.hisTest.textMode;
+  // Text mode PDF
+  if(textMode){
+    var at2=(S.hisTest&&S.hisTest.answerTexts)||window._htAnswerTexts||{};
+    var titles2=['1 — The disagreement','2 — The big news','3 — The boundary','4 — The hard conversation','5 — The relationship question'];
+    var L2=[];
+    L2.push('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>His Answers — My Relationship Blueprint</title>');
+    L2.push('<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">');
+    L2.push('<style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:"DM Sans",sans-serif;background:#fdf8f5;padding:48px 40px;max-width:720px;margin:0 auto;}.print-btn{position:fixed;top:20px;right:20px;padding:10px 22px;background:#c4406b;color:white;border:none;border-radius:99px;font-size:13px;cursor:pointer;font-family:"DM Sans",sans-serif;}@media print{.print-btn{display:none;}}</style></head><body>');
+    L2.push('<button class="print-btn" onclick="window.print()">↓ Save as PDF</button>');
+    L2.push('<div style="text-align:center;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid #ffd6e7;">');
+    L2.push('<div style="font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#7a2444;margin-bottom:10px;">Compatibility Checker — My Relationship Blueprint</div>');
+    L2.push('<div style="font-family:"Cormorant Garamond",serif;font-size:36px;font-weight:300;color:#2a1a20;margin-bottom:6px;">His answers</div>');
+    L2.push('<div style="font-size:12px;color:#999;">'+date+'</div></div>');
+    for(var q2=1;q2<=5;q2++){
+      var e2=at2[q2]||{};
+      L2.push('<div style="margin-bottom:24px;background:white;border:1px solid #ffd6e7;border-radius:14px;padding:18px 20px;">');
+      L2.push('<div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7a2444;margin-bottom:8px;">Scenario '+titles2[q2-1]+'</div>');
+      L2.push('<div style="font-family:"Cormorant Garamond",serif;font-size:12px;font-style:italic;color:#888;margin-bottom:10px;line-height:1.55;">'+(e2.q||'')+'</div>');
+      L2.push('<div style="font-family:"Cormorant Garamond",serif;font-size:14px;color:#2a1a20;line-height:1.8;white-space:pre-wrap;">'+(e2.a||'')+'</div>');
+      L2.push('</div>');
+    }
+    L2.push('<div style="text-align:center;margin-top:32px;font-family:"Cormorant Garamond",serif;font-size:12px;font-style:italic;color:#bbb;">&ldquo;Her worth is far above rubies.&rdquo; — Proverbs 31:10</div>');
+    L2.push('</body></html>');
+    var blob2=new Blob([L2.join('\n')],{type:'text/html;charset=utf-8'});
+    var url2=URL.createObjectURL(blob2);
+    var a2=document.createElement('a');a2.href=url2;a2.download='his-answers.html';
+    document.body.appendChild(a2);a2.click();document.body.removeChild(a2);
+    setTimeout(function(){URL.revokeObjectURL(url2);},60000);
+    return;
+  }
   var grade=S.hisTest&&S.hisTest.grade;
   var pct=S.hisTest&&S.hisTest.pct;
   var total=S.hisTest&&S.hisTest.total;
-  var date=S.hisTest&&S.hisTest.date;
   if(!grade){alert('Please complete the test first.');return;}
   var gData=HT_GRADES[grade];
   var scores=(S.hisTest&&S.hisTest.answers)||_htAnswers||{};
@@ -6707,6 +6805,37 @@ function htRenderAnswerSummary(grade){
   h+='<div style="text-align:center;padding-top:20px;border-top:1px solid var(--pink-100);font-family:var(--serif);font-size:12px;font-style:italic;color:var(--mist);">&ldquo;Her worth is far above rubies.&rdquo; &mdash; Proverbs 31:10</div>';
   wrap.innerHTML=h;
 }
+
+function htRenderTextResult(){
+  var wrap = document.getElementById('htAnswerSummary');
+  if(!wrap) return;
+  var at = window._htAnswerTexts || {};
+  var titles = [
+    '1 \u2014 The disagreement',
+    '2 \u2014 The big news',
+    '3 \u2014 The boundary',
+    '4 \u2014 The hard conversation',
+    '5 \u2014 The relationship question'
+  ];
+  var h = '<div style="text-align:center;padding:24px 20px 20px;border-bottom:1px solid var(--pink-100);margin-bottom:24px;">';
+  h += '<div style="font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--mauve);margin-bottom:10px;">Compatibility Checker \u2014 My Relationship Blueprint</div>';
+  h += '<div style="font-family:var(--serif);font-size:32px;font-weight:300;color:var(--deep);margin-bottom:8px;">His answers</div>';
+  h += '<div style="font-family:var(--serif);font-size:14px;font-style:italic;color:var(--mist);line-height:1.7;max-width:460px;margin:0 auto;">Read each answer carefully. What he wrote \u2014 and how he wrote it \u2014 is the data.</div>';
+  h += '</div>';
+  for(var q=1;q<=5;q++){
+    var entry = at[q] || {};
+    h += '<div style="margin-bottom:20px;background:white;border:1px solid var(--pink-100);border-radius:14px;padding:18px 20px;">';
+    h += '<div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--mauve);margin-bottom:8px;">Scenario ' + titles[q-1] + '</div>';
+    h += '<div style="font-family:var(--serif);font-size:12px;font-style:italic;color:var(--mist);margin-bottom:10px;line-height:1.55;">' + (entry.q||'') + '</div>';
+    h += '<div style="font-family:var(--serif);font-size:14px;color:var(--deep);line-height:1.75;white-space:pre-wrap;">' + (entry.a||'<em style="color:var(--mist);">No answer</em>') + '</div>';
+    h += '</div>';
+  }
+  h += '<div style="text-align:center;padding-top:20px;border-top:1px solid var(--pink-100);font-family:var(--serif);font-size:12px;font-style:italic;color:var(--mist);">&ldquo;Her worth is far above rubies.&rdquo; &mdash; Proverbs 31:10</div>';
+  wrap.innerHTML = h;
+}
+
+function htSaveText(q, val){ if(!window._htTextAnswers) window._htTextAnswers={}; window._htTextAnswers[q]=val; }
+
 document.addEventListener("DOMContentLoaded",lpRender);}
 
 function lpRender(){
@@ -6913,265 +7042,55 @@ document.addEventListener("DOMContentLoaded",function(){
     <div id="htForm">
       <p class="ht-eyebrow">Compatibility Checker</p>
       <h1 class="ht-h1">Five <em>real situations.</em></h1>
-      <p class="ht-sub">No right answers to memorise. Each question describes a real moment — choose the response that feels most honest about what you would actually do. She will see every answer.</p>
+      <p class="ht-sub">Send him this link. 5 real scenarios — no options to choose from, just his own words. Write honestly. She will read every answer.</p>
 
       <div class="ht-section">
-        <div class="ht-section-hd">Scenario 1 of 5 &mdash; The disagreement</div>
+        <div class="ht-section-hd">Scenario 1 &mdash; The disagreement</div>
         <div class="ht-q">
-          <div class="ht-q-text">You say something that clearly upsets the woman you are seeing. She goes quiet and says <em>&ldquo;it&rsquo;s fine&rdquo;</em> — but it obviously isn&rsquo;t. What do you do?</div>
-          <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,1,4)"><span class="ht-opt-dot"></span>I press gently — &ldquo;I don&rsquo;t think it is fine. Tell me what I did.&rdquo; And I wait.</button>
-            <button class="ht-opt" onclick="htSelect(this,1,3)"><span class="ht-opt-dot"></span>I give her space for a bit, then check in later to see if she wants to talk.</button>
-            <button class="ht-opt" onclick="htSelect(this,1,2)"><span class="ht-opt-dot"></span>I take her at her word — she said fine, so I move on. If it was serious she&rsquo;d say so.</button>
-            <button class="ht-opt" onclick="htSelect(this,1,1)"><span class="ht-opt-dot"></span>I feel defensive. I didn&rsquo;t do anything wrong — I&rsquo;m not going to chase her for a reaction.</button>
-          </div>
+          <div class="ht-q-text">You say something that clearly upsets the woman you are seeing. She goes quiet and says <em>&ldquo;it&rsquo;s fine&rdquo;</em> — but it obviously isn&rsquo;t. What do you do? Be specific.</div>
+          <textarea class="ht-textarea" id="hta1" placeholder="Write your honest response here..." oninput="htSaveText(1, this.value)" rows="4"></textarea>
         </div>
       </div>
 
       <div class="ht-section">
-        <div class="ht-section-hd">Scenario 2 of 5 &mdash; The big news</div>
+        <div class="ht-section-hd">Scenario 2 &mdash; The big news</div>
         <div class="ht-q">
-          <div class="ht-q-text">She calls you, clearly excited, to share something she has been working toward for months — a promotion, a business win, something that matters to her deeply. You are in the middle of something stressful at work. What happens?</div>
-          <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,2,4)"><span class="ht-opt-dot"></span>I stop what I&rsquo;m doing. Her moment matters more than my stress right now. I celebrate it fully.</button>
-            <button class="ht-opt" onclick="htSelect(this,2,3)"><span class="ht-opt-dot"></span>I congratulate her and tell her I&rsquo;m proud — but I&rsquo;m a bit distracted and she can probably tell.</button>
-            <button class="ht-opt" onclick="htSelect(this,2,2)"><span class="ht-opt-dot"></span>I say well done and quickly mention what I&rsquo;m dealing with — she&rsquo;ll understand, we can celebrate later.</button>
-            <button class="ht-opt" onclick="htSelect(this,2,1)"><span class="ht-opt-dot"></span>I redirect the conversation to what I&rsquo;m going through — my thing feels more urgent right now.</button>
-          </div>
+          <div class="ht-q-text">She calls you, clearly excited, to share something she has been working toward for months — a promotion, a business win, something that matters deeply to her. You are in the middle of something stressful at work. What actually happens?</div>
+          <textarea class="ht-textarea" id="hta2" placeholder="Write your honest response here..." oninput="htSaveText(2, this.value)" rows="4"></textarea>
         </div>
       </div>
 
       <div class="ht-section">
-        <div class="ht-section-hd">Scenario 3 of 5 &mdash; The boundary</div>
+        <div class="ht-section-hd">Scenario 3 &mdash; The boundary</div>
         <div class="ht-q">
-          <div class="ht-q-text">Early on, she tells you she won&rsquo;t be physically intimate until she knows someone well — it could take months. You are genuinely interested in her. What is your honest internal response?</div>
-          <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,3,4)"><span class="ht-opt-dot"></span>Completely fine. The pace builds something real — and it tells me she takes this seriously, which I respect.</button>
-            <button class="ht-opt" onclick="htSelect(this,3,3)"><span class="ht-opt-dot"></span>I can work with it. It&rsquo;s not what I&rsquo;m used to but I&rsquo;m willing to respect her pace if I&rsquo;m interested enough.</button>
-            <button class="ht-opt" onclick="htSelect(this,3,2)"><span class="ht-opt-dot"></span>Honestly, it&rsquo;s a challenge. I&rsquo;d try to respect it but I&rsquo;d probably test the boundaries gradually.</button>
-            <button class="ht-opt" onclick="htSelect(this,3,1)"><span class="ht-opt-dot"></span>I&rsquo;d likely pull back or keep my options open — that kind of timeline doesn&rsquo;t work for me.</button>
-          </div>
+          <div class="ht-q-text">Early on, she tells you she won&rsquo;t be physically intimate until she knows someone well — it could take months. You are genuinely interested in her. What is your honest internal response, and what do you actually do?</div>
+          <textarea class="ht-textarea" id="hta3" placeholder="Write your honest response here..." oninput="htSaveText(3, this.value)" rows="4"></textarea>
         </div>
       </div>
 
       <div class="ht-section">
-        <div class="ht-section-hd">Scenario 4 of 5 &mdash; The hard conversation</div>
+        <div class="ht-section-hd">Scenario 4 &mdash; The hard conversation</div>
         <div class="ht-q">
-          <div class="ht-q-text">She sits you down and says calmly: <em>&ldquo;When you cancelled on me last minute last week, I felt like I wasn&rsquo;t a priority. I need you to know that.&rdquo;</em> She is not attacking you — she is telling you something. What do you do?</div>
-          <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,4,4)"><span class="ht-opt-dot"></span>I listen without interrupting. Then I say: &ldquo;You&rsquo;re right. That wasn&rsquo;t good enough. I&rsquo;m sorry.&rdquo; No qualifications.</button>
-            <button class="ht-opt" onclick="htSelect(this,4,3)"><span class="ht-opt-dot"></span>I apologise, but I also explain the context — I want her to understand it wasn&rsquo;t intentional.</button>
-            <button class="ht-opt" onclick="htSelect(this,4,2)"><span class="ht-opt-dot"></span>I feel put on the spot. I apologise, but inside I think she&rsquo;s overreacting — it was just once.</button>
-            <button class="ht-opt" onclick="htSelect(this,4,1)"><span class="ht-opt-dot"></span>I get defensive. I had a real reason — I don&rsquo;t think it&rsquo;s fair to make it a character issue.</button>
-          </div>
+          <div class="ht-q-text">She sits you down and says calmly: <em>&ldquo;When you cancelled on me last minute last week, I felt like I wasn&rsquo;t a priority. I need you to know that.&rdquo;</em> She is not attacking you. What do you say and do next?</div>
+          <textarea class="ht-textarea" id="hta4" placeholder="Write your honest response here..." oninput="htSaveText(4, this.value)" rows="4"></textarea>
         </div>
       </div>
 
       <div class="ht-section">
-        <div class="ht-section-hd">Scenario 5 of 5 &mdash; The relationship question</div>
+        <div class="ht-section-hd">Scenario 5 &mdash; The relationship question</div>
         <div class="ht-q">
-          <div class="ht-q-text">After three months of seeing each other consistently, she asks you directly: <em>&ldquo;Where do you see this going? I want something real and I need to know if you&rsquo;re building toward that too.&rdquo;</em> What do you say?</div>
-          <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,5,4)"><span class="ht-opt-dot"></span>I answer directly. I tell her where I am, what I want, and whether she is part of that picture. No vagueness.</button>
-            <button class="ht-opt" onclick="htSelect(this,5,3)"><span class="ht-opt-dot"></span>I tell her I like where things are going but I need a little more time before I can give her a definite answer.</button>
-            <button class="ht-opt" onclick="htSelect(this,5,2)"><span class="ht-opt-dot"></span>I say something warm but non-committal — I don&rsquo;t want to lose her but I&rsquo;m not sure yet and I can&rsquo;t say that.</button>
-            <button class="ht-opt" onclick="htSelect(this,5,1)"><span class="ht-opt-dot"></span>I feel pressured. I deflect or turn the question back on her — commitment talk too early makes me pull back.</button>
-          </div>
+          <div class="ht-q-text">After three months of seeing each other consistently, she asks you directly: <em>&ldquo;Where do you see this going? I want something real and I need to know if you&rsquo;re building toward that too.&rdquo;</em> What do you say — exactly?</div>
+          <textarea class="ht-textarea" id="hta5" placeholder="Write your honest response here..." oninput="htSaveText(5, this.value)" rows="4"></textarea>
         </div>
       </div>
 
       <div id="htError" style="color:var(--rose);font-size:13px;text-align:center;margin-top:12px;display:none;">Please answer all 5 scenarios before submitting.</div>
       <div class="ht-submit-row">
-        <button class="ht-submit" onclick="htSubmit()">See my score &#8594;</button>
+        <button class="ht-submit" onclick="htSubmit()">Submit my answers &#8594;</button>
       </div>
     </div>
 
-      <div class="ht-section">
-        <div class="ht-section-hd">B — Emotional maturity</div>
-        <div class="ht-q">
-          <div class="ht-q-num">Q5</div>
-          <div class="ht-q-text">How comfortable are you sitting with someone else's emotional pain without trying to fix it?</div>
-          <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,5,4)"><span class="ht-opt-dot"></span>Very — I can hold space without needing to solve anything</button>
-            <button class="ht-opt" onclick="htSelect(this,5,3)"><span class="ht-opt-dot"></span>Reasonably — I try to listen but sometimes offer solutions</button>
-            <button class="ht-opt" onclick="htSelect(this,5,2)"><span class="ht-opt-dot"></span>Uncomfortable — I prefer to fix things quickly</button>
-            <button class="ht-opt" onclick="htSelect(this,5,1)"><span class="ht-opt-dot"></span>Very uncomfortable — emotional heaviness makes me withdraw</button>
-          </div>
-        </div>
-        <div class="ht-q">
-          <div class="ht-q-num">Q6</div>
-          <div class="ht-q-text">When you are angry or hurt, you typically:</div>
-          <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,6,4)"><span class="ht-opt-dot"></span>Name what I am feeling and where it came from</button>
-            <button class="ht-opt" onclick="htSelect(this,6,3)"><span class="ht-opt-dot"></span>Need some time alone, then talk about it</button>
-            <button class="ht-opt" onclick="htSelect(this,6,2)"><span class="ht-opt-dot"></span>Go quiet and wait for it to pass</button>
-            <button class="ht-opt" onclick="htSelect(this,6,1)"><span class="ht-opt-dot"></span>Shut down or push the other person away</button>
-          </div>
-        </div>
-        <div class="ht-q">
-          <div class="ht-q-num">Q7</div>
-          <div class="ht-q-text">Have you done any intentional work on your own emotional patterns — therapy, coaching, serious self-reflection?</div>
-          <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,7,4)"><span class="ht-opt-dot"></span>Yes — ongoing and seriously</button>
-            <button class="ht-opt" onclick="htSelect(this,7,3)"><span class="ht-opt-dot"></span>Some — I am aware of my patterns even if not in therapy</button>
-            <button class="ht-opt" onclick="htSelect(this,7,2)"><span class="ht-opt-dot"></span>A little — I think about these things occasionally</button>
-            <button class="ht-opt" onclick="htSelect(this,7,1)"><span class="ht-opt-dot"></span>Not really — I deal with things as they come</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="ht-section">
-        <div class="ht-section-hd">C — Consistency &amp; follow-through</div>
-        <div class="ht-q">
-          <div class="ht-q-num">Q8</div>
-          <div class="ht-q-text">How consistent is your behaviour toward a woman you are pursuing — across good weeks and bad weeks?</div>
-          <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,8,4)"><span class="ht-opt-dot"></span>Very consistent — my effort does not depend on my mood</button>
-            <button class="ht-opt" onclick="htSelect(this,8,3)"><span class="ht-opt-dot"></span>Mostly consistent — occasional dips but I communicate</button>
-            <button class="ht-opt" onclick="htSelect(this,8,2)"><span class="ht-opt-dot"></span>Variable — my life circumstances affect how much I show up</button>
-            <button class="ht-opt" onclick="htSelect(this,8,1)"><span class="ht-opt-dot"></span>Inconsistent — intensity comes in waves</button>
-          </div>
-        </div>
-        <div class="ht-q">
-          <div class="ht-q-num">Q9</div>
-          <div class="ht-q-text">If you tell someone you will do something, what is your track record?</div>
-          <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,9,4)"><span class="ht-opt-dot"></span>I follow through — my word is important to me</button>
-            <button class="ht-opt" onclick="htSelect(this,9,3)"><span class="ht-opt-dot"></span>Usually — I communicate when I cannot</button>
-            <button class="ht-opt" onclick="htSelect(this,9,2)"><span class="ht-opt-dot"></span>Mixed — I try but sometimes drop the ball</button>
-            <button class="ht-opt" onclick="htSelect(this,9,1)"><span class="ht-opt-dot"></span>I struggle with follow-through</button>
-          </div>
-        </div>
-        <div class="ht-q">
-          <div class="ht-q-num">Q10</div>
-          <div class="ht-q-text">When you are interested in someone, how do you show it?</div>
-          <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,10,4)"><span class="ht-opt-dot"></span>Consistent action over time — plans, presence, investment</button>
-            <button class="ht-opt" onclick="htSelect(this,10,3)"><span class="ht-opt-dot"></span>Verbally and through occasional gestures</button>
-            <button class="ht-opt" onclick="htSelect(this,10,2)"><span class="ht-opt-dot"></span>Through attention when we are together, but not much outside</button>
-            <button class="ht-opt" onclick="htSelect(this,10,1)"><span class="ht-opt-dot"></span>I let them wonder — the mystery is part of the attraction</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="ht-section">
-        <div class="ht-section-hd">D — Vision &amp; values</div>
-        <div class="ht-q">
-          <div class="ht-q-num">Q11</div>
-          <div class="ht-q-text">Are you currently building something meaningful in your life — financially, professionally, or personally?</div>
-          <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,11,4)"><span class="ht-opt-dot"></span>Yes — I have clear direction and active momentum</button>
-            <button class="ht-opt" onclick="htSelect(this,11,3)"><span class="ht-opt-dot"></span>Yes — direction is clear, progress is slower than I'd like</button>
-            <button class="ht-opt" onclick="htSelect(this,11,2)"><span class="ht-opt-dot"></span>Somewhat — figuring it out as I go</button>
-            <button class="ht-opt" onclick="htSelect(this,11,1)"><span class="ht-opt-dot"></span>Not really — I am in a holding pattern right now</button>
-          </div>
-        </div>
-        <div class="ht-q">
-          <div class="ht-q-num">Q12</div>
-          <div class="ht-q-text">What does marriage mean to you?</div>
-          <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,12,4)"><span class="ht-opt-dot"></span>A serious, sacred lifelong commitment I want and am prepared for</button>
-            <button class="ht-opt" onclick="htSelect(this,12,3)"><span class="ht-opt-dot"></span>Something I want — when the right person and timing align</button>
-            <button class="ht-opt" onclick="htSelect(this,12,2)"><span class="ht-opt-dot"></span>Unsure — I am open but not actively seeking it</button>
-            <button class="ht-opt" onclick="htSelect(this,12,1)"><span class="ht-opt-dot"></span>Not a priority or something I am avoiding</button>
-          </div>
-        </div>
-        <div class="ht-q">
-          <div class="ht-q-num">Q13</div>
-          <div class="ht-q-text">How do you feel about a woman who has strong ambitions and a full life of her own?</div>
-          <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,13,4)"><span class="ht-opt-dot"></span>I find it attractive — I want a partner, not a project</button>
-            <button class="ht-opt" onclick="htSelect(this,13,3)"><span class="ht-opt-dot"></span>I respect it — though I'd want her to prioritise us too</button>
-            <button class="ht-opt" onclick="htSelect(this,13,2)"><span class="ht-opt-dot"></span>It can create friction depending on how she balances it</button>
-            <button class="ht-opt" onclick="htSelect(this,13,1)"><span class="ht-opt-dot"></span>I prefer a woman whose focus is primarily on the relationship</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="ht-section">
-        <div class="ht-section-hd">E — How he treats people</div>
-        <div class="ht-q">
-          <div class="ht-q-num">Q14</div>
-          <div class="ht-q-text">How do you treat service staff, strangers, and people who can do nothing for you?</div>
-          <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,14,4)"><span class="ht-opt-dot"></span>With the same warmth and respect I give anyone</button>
-            <button class="ht-opt" onclick="htSelect(this,14,3)"><span class="ht-opt-dot"></span>Politely — not warm but not dismissive</button>
-            <button class="ht-opt" onclick="htSelect(this,14,2)"><span class="ht-opt-dot"></span>I am often distracted or short with them</button>
-            <button class="ht-opt" onclick="htSelect(this,14,1)"><span class="ht-opt-dot"></span>I treat people according to what they contribute</button>
-          </div>
-        </div>
-        <div class="ht-q">
-          <div class="ht-q-num">Q15</div>
-          <div class="ht-q-text">How do you speak about your past partners?</div>
-          <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,15,4)"><span class="ht-opt-dot"></span>With respect — I can see my part in what didn't work</button>
-            <button class="ht-opt" onclick="htSelect(this,15,3)"><span class="ht-opt-dot"></span>Neutrally — I don't speak about them much</button>
-            <button class="ht-opt" onclick="htSelect(this,15,2)"><span class="ht-opt-dot"></span>With some frustration — there are unresolved things</button>
-            <button class="ht-opt" onclick="htSelect(this,15,1)"><span class="ht-opt-dot"></span>They were largely the problem in those relationships</button>
-          </div>
-        </div>
-        <div class="ht-q">
-          <div class="ht-q-num">Q16</div>
-          <div class="ht-q-text">When a woman you are seeing sets a boundary, how do you respond?</div>
-          <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,16,4)"><span class="ht-opt-dot"></span>I respect it immediately — no negotiation</button>
-            <button class="ht-opt" onclick="htSelect(this,16,3)"><span class="ht-opt-dot"></span>I respect it but want to understand the reason</button>
-            <button class="ht-opt" onclick="htSelect(this,16,2)"><span class="ht-opt-dot"></span>I respect it but feel frustrated if it limits intimacy</button>
-            <button class="ht-opt" onclick="htSelect(this,16,1)"><span class="ht-opt-dot"></span>I see it as a challenge to work through</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="ht-section">
-        <div class="ht-section-hd">F — Readiness &amp; presence</div>
-        <div class="ht-q">
-          <div class="ht-q-num">Q17</div>
-          <div class="ht-q-text">Are you genuinely available for a serious relationship right now — emotionally, logistically, and mentally?</div>
-          <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,17,4)"><span class="ht-opt-dot"></span>Yes — fully</button>
-            <button class="ht-opt" onclick="htSelect(this,17,3)"><span class="ht-opt-dot"></span>Mostly — there are some things I am working through</button>
-            <button class="ht-opt" onclick="htSelect(this,17,2)"><span class="ht-opt-dot"></span>Partially — I want connection but am not ready to fully commit</button>
-            <button class="ht-opt" onclick="htSelect(this,17,1)"><span class="ht-opt-dot"></span>Not really — I am still figuring out what I want</button>
-          </div>
-        </div>
-        <div class="ht-q">
-          <div class="ht-q-num">Q18</div>
-          <div class="ht-q-text">How do you feel about the pace of getting to know someone — taking months before physical intimacy?</div>
-          <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,18,4)"><span class="ht-opt-dot"></span>Completely fine — the pace builds something real</button>
-            <button class="ht-opt" onclick="htSelect(this,18,3)"><span class="ht-opt-dot"></span>Fine — I can adjust to what she is comfortable with</button>
-            <button class="ht-opt" onclick="htSelect(this,18,2)"><span class="ht-opt-dot"></span>Challenging — I would need regular reassurance it is going somewhere</button>
-            <button class="ht-opt" onclick="htSelect(this,18,1)"><span class="ht-opt-dot"></span>Difficult — physical connection is how I feel close</button>
-          </div>
-        </div>
-        <div class="ht-q">
-          <div class="ht-q-num">Q19</div>
-          <div class="ht-q-text">When you are genuinely interested in a woman, what does your pursuit look like?</div>
-          <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,19,4)"><span class="ht-opt-dot"></span>Clear, consistent, unhurried — I make my interest known and keep showing up</button>
-            <button class="ht-opt" onclick="htSelect(this,19,3)"><span class="ht-opt-dot"></span>Active but I hold back until I am sure she is interested</button>
-            <button class="ht-opt" onclick="htSelect(this,19,2)"><span class="ht-opt-dot"></span>Intense at first, then I pull back to let her chase a little</button>
-            <button class="ht-opt" onclick="htSelect(this,19,1)"><span class="ht-opt-dot"></span>I signal interest and wait to see what she does with it</button>
-          </div>
-        </div>
-        <div class="ht-q">
-          <div class="ht-q-num">Q20</div>
-          <div class="ht-q-text">What are you ultimately looking for right now?</div>
-          <div class="ht-options">
-            <button class="ht-opt" onclick="htSelect(this,20,4)"><span class="ht-opt-dot"></span>A serious relationship with a woman I could build a life with</button>
-            <button class="ht-opt" onclick="htSelect(this,20,3)"><span class="ht-opt-dot"></span>Something real that could develop into that</button>
-            <button class="ht-opt" onclick="htSelect(this,20,2)"><span class="ht-opt-dot"></span>Connection — but I am not ready to define where it goes</button>
-            <button class="ht-opt" onclick="htSelect(this,20,1)"><span class="ht-opt-dot"></span>Companionship and enjoyment without heavy expectations</button>
-          </div>
-        </div>
-      </div>
-
-      <div id="htError" style="color:var(--rose);font-size:13px;text-align:center;margin-top:12px;display:none;">
-        Please answer all 20 questions before submitting.
-      </div>
-      <div class="ht-submit-row">
-        <button class="ht-submit" onclick="htSubmit()">See my score &#8594;</button>
-      </div>
+      
     </div>
 
     <!-- Result -->
