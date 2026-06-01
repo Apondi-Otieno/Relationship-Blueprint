@@ -1454,7 +1454,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
 
   /* ══ SELF-FLAG FEED ══ */
   .self-flag-feed{display:flex;flex-direction:column;gap:5px;margin-top:10px;}
-  .sf-entry{padding:7px 11px;border-radius:9px;font-size:12px;line-height:1.55;}
+  .sf-entry{padding:14px 16px;border-radius:12px;font-size:13px;line-height:1.7;margin-bottom:10px;}
   .sf-entry-red{background:#fdf0ec;border-left:3px solid var(--rose);}
   .sf-entry-amber{background:#fdf3e0;border-left:3px solid #c08030;}
   .sf-entry-neutral{background:var(--blush);border-left:3px solid var(--pink-100);}
@@ -1638,6 +1638,14 @@ textarea::placeholder{color:var(--mist);font-style:italic}
   }
   .ht-textarea:focus{border-color:var(--petal);}
   .ht-textarea::placeholder{color:var(--mist);font-style:italic;}
+
+
+  .rlog-restore-btn{
+    padding:4px 10px;border-radius:99px;border:1.5px solid var(--rose);
+    background:white;color:var(--rose);font-size:11px;font-weight:600;
+    font-family:var(--sans);cursor:pointer;transition:all .15s;white-space:nowrap;
+  }
+  .rlog-restore-btn:hover{background:var(--rose);color:white;}
 
 </style>
 </head>
@@ -2108,7 +2116,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     <div style="margin-top:14px;">
       <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--rose);margin-bottom:4px;">Red flags I am noticing in myself</div>
       <p style="font-size:11px;color:var(--mist);font-family:var(--serif);font-style:italic;margin-bottom:8px;line-height:1.6;">Where is my wound active right now?</p>
-      <textarea id="relSelfFlags" placeholder="I am shrinking when... I noticed I am chasing by... My wound is..." oninput="saveRelFocus()" style="width:100%;min-height:72px;border:1px solid var(--pink-100);border-radius:10px;padding:10px 12px;font-family:var(--serif);font-size:13px;color:var(--stone);background:var(--blush);resize:vertical;outline:none;box-sizing:border-box;"></textarea>
+      <textarea id="relSelfFlags" placeholder="I am shrinking when... I noticed I am chasing by... My wound is..." oninput="saveRelFocus()" style="width:100%;min-height:140px;border:1px solid var(--pink-100);border-radius:10px;padding:10px 12px;font-family:var(--serif);font-size:13px;color:var(--stone);background:var(--blush);resize:vertical;outline:none;box-sizing:border-box;"></textarea>
       <div id="selfFlagMsg" style="font-size:11px;font-style:italic;min-height:14px;opacity:0;transition:opacity .3s;margin-top:4px;"></div>
       <div id="selfFlagGuidance" style="display:none;margin-top:10px;padding:12px 14px;background:var(--blush);border:1px solid var(--pink-100);border-radius:12px;font-family:var(--serif);font-size:13px;color:var(--stone);line-height:1.7;"></div>
       <div id="selfFlagFeed"></div>
@@ -3805,7 +3813,8 @@ function renderRlog(){
     html+="<div><div class='rlog-entry-name'>"+e.name+"</div>";
     if(e.period) html+="<div class='rlog-entry-dates'>"+e.period+"</div>";
     html+="</div>";
-    html+="<div style='display:flex;gap:4px;align-items:center'>";
+    html+="<div style='display:flex;gap:5px;align-items:center;flex-wrap:wrap'>";
+    if(e.snapshot) html+="<button class='rlog-restore-btn' onclick='restoreFromRlog("+ri+")' title='Restore his data to your blueprint for continued observation'>&#9825; Restore</button>";
     html+="<button class='rlog-entry-edit' onclick='toggleRlogEdit("+ri+")'>edit</button>";
     html+="<button class='rlog-entry-del' onclick='deleteRlogEntry("+ri+")' aria-label='Delete'>&times;</button>";
     html+="</div>";
@@ -3880,7 +3889,22 @@ function confirmEndIt(){
     ended:   (el('enditEnded')||{}).value||'',
     learned: (el('enditLearned')||{}).value||'',
     how:     (el('enditHow')||{}).value||'i-ended',
-    date:    new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})
+    date:    new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}),
+    // Full blueprint snapshot for restore
+    snapshot: {
+      him:         JSON.parse(JSON.stringify(S.him||{})),
+      startDate:   S.startDate||null,
+      log:         JSON.parse(JSON.stringify(S.log||[])),
+      checkins:    JSON.parse(JSON.stringify(S.checkins||[])),
+      tab:         JSON.parse(JSON.stringify(S.tab||{})),
+      checks:      JSON.parse(JSON.stringify(S.checks||{})),
+      notes:       JSON.parse(JSON.stringify(S.notes||{})),
+      activePhase: S.activePhase||1,
+      overrides:   JSON.parse(JSON.stringify(S.overrides||{})),
+      hisTest:     S.hisTest ? JSON.parse(JSON.stringify(S.hisTest)) : null,
+      selfFlagLog: JSON.parse(JSON.stringify(S.selfFlagLog||[])),
+      phase0:      JSON.parse(JSON.stringify(S.phase0||{}))
+    }
   });
   // preserve rlog, journal, selfcareHistory across reset
   var keepRlog=S.rlog||[];
@@ -6135,16 +6159,16 @@ var lpIdx = 0;
 if(document.readyState!=="loading"){setTimeout(lpRender,0);}else{
 /* ══ SELF-REFLECTION CLASSIFIER ══ */
 var SELF_FLAG_PATTERNS = [
-  {tag:'shrink',    label:'Self-shrinking',    re:/\b(shrink|smaller|people.pleas|fawn|fawning|made myself|held back)\b/i},
-  {tag:'chase',     label:'Chasing',           re:/\b(chase|chasing|checking|obsess|why hasn.t|follow.{0,6}up|waiting for him)\b/i},
-  {tag:'overexplain',label:'Over-explaining',  re:/\b(over.?explain|justify|defend myself|prove myself|seek.{0,8}approval|apologis)\b/i},
-  {tag:'anxiety',   label:'Anxious thoughts',  re:/\b(anxi|spiral|overthink|replay|can.t stop thinking|rumina)\b/i},
-  {tag:'tooneedy',  label:'Too much/needy',    re:/\b(too (much|needy|intense)|desperate|came on (strong|too)|clingy)\b/i},
-  {tag:'selfabandon',label:'Self-abandonment', re:/\b(self.abandon|put him first|lost myself|forgot who i am|ignored my needs)\b/i},
-  {tag:'jealous',   label:'Insecurity',        re:/\b(jealous|possessive|insecure|compared myself|not good enough)\b/i},
-  {tag:'testing',   label:'Testing/sabotage',  re:/\b(test(ing|ed) him|push(ed|ing).{0,6}away|pick(ed|ing).{0,6}fight|created drama|sabotage)\b/i},
-  {tag:'dishonest', label:'Inauthenticity',    re:/\b(lied|hid|pretended|performed|wasn.t honest|fake|not authentic)\b/i},
-  {tag:'ignore',    label:'Ignoring gut',      re:/\b(ignor.{0,8}(gut|instinct|red flag)|told myself it was fine|convinced myself|made excuses)\b/i},
+  {tag:'anxiety',    label:'Anxious thoughts',   re:/\b(anxi|spiral|overthink|replay|can.t stop thinking|rumina|worried|scared|fear(ed)?|nervous|panick|what if he|what if i|keep thinking|in my head|my mind keeps|lose interest|lose him|forget (about )?me|move on without)\b/i},
+  {tag:'chase',      label:'Chasing',            re:/\b(chase|chasing|checking|obsess|why hasn.t|follow.{0,6}up|waiting for him|keep check|check(ing)? my phone|waiting for (him to |his )?text|waiting to hear|reach(ed)? out again|texted (first|him|again)|messaged (him|first|again)|why (hasn.t|didn.t|won.t) he|he hasn.t (texted|called|replied|responded)|making (myself|me) available|always available|drop everything)\b/i},
+  {tag:'shrink',     label:'Self-shrinking',     re:/\b(shrink|smaller|people.pleas|fawn|fawning|made myself|held back|didn.t say|couldn.t say|bit my tongue|stayed quiet|agreed (when i didn.t|even though)|went along with|pretended (to be okay|it was fine)|didn.t want to (upset|push|scare|lose)|afraid to (say|tell|speak|push|be honest)|adjusted (myself|who i am)|changed (myself|my plans) for|moulded myself)\b/i},
+  {tag:'tooneedy',   label:'Too much/needy',     re:/\b(too (much|needy|intense|available)|desperate|came on (strong|too)|clingy|need(ed)? his (attention|validation|reassurance)|craving (his attention|validation|his approval)|wanted him to (notice|see|acknowledge|appreciate|text|call me)|seeking (his approval|validation|reassurance))\b/i},
+  {tag:'selfabandon',label:'Self-abandonment',   re:/\b(self.abandon|put him first|lost myself|forgot who i am|ignored my needs|cancelled.{0,30}(for him|because of him)|gave up.{0,20}for him|skipped.{0,20}for him|my (life|work|friends|plans|goals).{0,20}(can wait|don.t matter|took a back seat)|prioriti(s|z)(ed|ing) him|making him (my priority|the priority|everything)|(he said no|he told me no|despite him|even though he).{0,30}(still|anyway|but i|i still)|(bought|got|gave|sent|made).{0,20}(him|for him).{0,20}(anyway|still|despite|even though)|did it anyway|went ahead anyway|said no but|no but i still|still did it|overrode|override)\b/i},
+  {tag:'overexplain',label:'Over-explaining',    re:/\b(over.?explain|justify|defend myself|prove myself|seek.{0,8}approval|apologis|explained (myself|why i|that i)|kept (explaining|saying)|wanted him to understand|needed him to (know|see|understand|believe)|over.?shared|told him (everything|too much|more than i should))\b/i},
+  {tag:'jealous',    label:'Insecurity',         re:/\b(jealous|possessive|insecure|compared myself|not good enough|wondered if (she|another|other women?)|who (is she|was she|he was with)|not (pretty|smart|interesting|fun|enough) enough|she.s (prettier|better|more)|checking (her|his female|his ig|his likes)|looked (her|them) up)\b/i},
+  {tag:'ignore',     label:'Ignoring gut',       re:/\b(ignor.{0,8}(gut|instinct|red flag)|told myself it was fine|convinced myself|made excuses (for|why)|excused (his|the)|rationalised|explained away|red flag|gut (feeling|said|told me|was telling)|something (felt|feels) off|saw (it|the signs) and (ignored|stayed|went back)|he (said|told me) (no|he wasn.t|he doesn.t|he.s not).{0,30}(but i|i still|and i still|anyway)|ignored (what he said|his words|the signs|the warning)|his boundary|he set a boundary|he was clear|he made it clear)\b/i},
+  {tag:'testing',    label:'Testing/sabotage',   re:/\b(test(ing|ed) him|push(ed|ing).{0,6}away|pick(ed|ing).{0,6}fight|created drama|sabotage|picked a fight|started (an argument|drama|a fight)|caused (drama|conflict)|pushed him (away|to see)|testing (if he|whether he|how he)|wanted to (see if|know if|test whether) he (would|could|cared|stayed))\b/i},
+  {tag:'dishonest',  label:'Inauthenticity',     re:/\b(lied|hid|pretended|performed|wasn.t honest|fake|not authentic|acting (like i|as if i|like everything)|pretend(ed|ing) (i was|to be|that i)|not (being honest|telling the truth|saying what i really)|held back the truth|showed him a version|curated (myself|what he sees)|performed (for him|happiness|okayness))\b/i},
 ];
 
 function classifySelfFlag(text){
@@ -6177,10 +6201,30 @@ function saveSelfFlagEntry(){
   renderSelfFlagFeed();
   var msg = document.getElementById('selfFlagMsg');
   if(msg){
-    var lbl = cls==='red' ? '\u26a0 Wound active \u2014 logged' : cls==='amber' ? '\u25b2 Pattern noticed \u2014 logged' : '\u2713 Logged';
+    var lbl = cls==='red' ? '\u26a0 Wound active \u2014 saved' : cls==='amber' ? '\u25b2 Pattern noticed \u2014 saved' : '\u2713 Saved for this week';
     var col = cls==='red' ? 'var(--rose)' : cls==='amber' ? '#7a4a00' : 'var(--green)';
     msg.textContent = lbl; msg.style.color = col; msg.style.opacity = 1;
     setTimeout(function(){ msg.style.opacity = 0; }, 3000);
+  }
+  // Show guidance based on top tag
+  var GUIDANCE = {
+    anxiety:     'Your nervous system is working harder than the data justifies. Write down exactly what you have observed \u2014 facts, not interpretations. Stay there.',
+    chase:       'Chasing is anxiety wearing the costume of interest. Pause 24 hours before any reach-out. Fill that time with one thing that belongs entirely to your own life.',
+    shrink:      'You are making yourself smaller. Before your next interaction, name one thing you will say that is fully true.',
+    tooneedy:    'You are giving at a pace that is not sustainable. What would you be doing today if he did not exist?',
+    selfabandon: 'You keep putting him first. What did you need this week that you did not give yourself? Do that thing before you give anything else outward.',
+    overexplain: 'You are defending yourself to someone who should not require a defence. Let a statement stand on its own.',
+    jealous:     'The insecurity is information about your wound, not about him. Where did this fear first live?',
+    ignore:      'Your gut is speaking. Write down exactly what it is saying without softening it. That raw sentence is the data.',
+    testing:     'You are creating problems to see how he handles them. Stop the test. Return to watching what is already there.',
+    dishonest:   'You are performing. He cannot choose the real you if she is not present.'
+  };
+  var guidanceEl = document.getElementById('selfFlagGuidance');
+  if(guidanceEl && tags.length > 0 && GUIDANCE[tags[0]]){
+    guidanceEl.innerHTML = '<span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--rose);display:block;margin-bottom:6px;">' + (cls==='red'?'\u26a0 Wound active':'Pattern noticed') + ' \u2014 ' + tags[0].replace(/([a-z])([A-Z])/g,'$1 $2') + '</span>' + GUIDANCE[tags[0]];
+    guidanceEl.style.display = 'block';
+  } else if(guidanceEl && cls==='neutral'){
+    guidanceEl.style.display = 'none';
   }
 }
 
@@ -6189,13 +6233,29 @@ function renderSelfFlagFeed(){
   if(!wrap) return;
   var entries = (S.selfFlagLog || []).slice().reverse().slice(0,5);
   if(!entries.length){ wrap.innerHTML=''; return; }
-  var html = '<div class="self-flag-feed">';
+  var TAG_NAMES = {
+    anxiety:'Anxious thoughts', chase:'Chasing', shrink:'Self-shrinking',
+    tooneedy:'Too much/needy', selfabandon:'Self-abandonment',
+    overexplain:'Over-explaining', jealous:'Insecurity',
+    ignore:'Ignoring gut', testing:'Testing/sabotage', dishonest:'Inauthenticity'
+  };
+  var html = '<div style="margin-top:12px;">';
   entries.forEach(function(e){
     var clsKey = e.cls==='red'?'red':e.cls==='amber'?'amber':'neutral';
-    var metaCls = 'sf-meta-'+clsKey;
+    var clsCol = e.cls==='red'?'var(--rose)':e.cls==='amber'?'#7a4a00':'var(--mist)';
+    var clsLabel = e.cls==='red'?'\u26a0\ufe0f Wound active':e.cls==='amber'?'\u25b2 Pattern noticed':'Neutral';
+    var topTag = (e.tags && e.tags[0]) ? (TAG_NAMES[e.tags[0]] || e.tags[0]) : '';
     html += '<div class="sf-entry sf-entry-'+clsKey+'">';
-    html += '<span class="sf-entry-meta '+metaCls+'">Phase '+e.phase+' \u2014 '+e.date+'</span>';
-    html += (e.text||'').slice(0,120) + (e.text&&e.text.length>120?'\u2026':'');
+    // Title row: classification + tag + date
+    html += '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;flex-wrap:wrap;gap:4px;">';
+    html += '<div style="display:flex;align-items:center;gap:6px;">';
+    html += '<span style="font-size:11px;font-weight:700;color:'+clsCol+';">'+clsLabel+'</span>';
+    if(topTag) html += '<span style="font-size:10px;background:white;color:'+clsCol+';border:1px solid '+clsCol+';padding:1px 7px;border-radius:99px;font-weight:600;">'+topTag+'</span>';
+    html += '</div>';
+    html += '<span style="font-size:10px;color:var(--mist);font-family:var(--sans);">Phase '+e.phase+' &mdash; '+e.date+'</span>';
+    html += '</div>';
+    // Full text
+    html += '<div style="font-family:var(--serif);font-size:13px;color:var(--stone);line-height:1.65;">'+e.text+'</div>';
     html += '</div>';
   });
   html += '</div>';
@@ -6924,6 +6984,63 @@ function htRenderTextResult(){
 }
 
 function htSaveText(q, val){ if(!window._htTextAnswers) window._htTextAnswers={}; window._htTextAnswers[q]=val; }
+
+
+function restoreFromRlog(idx){
+  var entry = S.rlog && S.rlog[idx];
+  if(!entry || !entry.snapshot){
+    alert('No saved data for this entry. Restore is only available for entries saved after this update.');
+    return;
+  }
+  if(!confirm('Restore ' + (entry.name||'him') + ' to your active blueprint? This will replace your current active data. Your past men log will be kept.')){
+    return;
+  }
+  var snap = entry.snapshot;
+  var keepRlog    = S.rlog    || [];
+  var keepJournal = S.journal || {};
+  var keepSCHist  = S.selfcareHistory || [];
+
+  // Restore everything from snapshot
+  S.him         = snap.him         || {};
+  S.startDate   = snap.startDate   || null;
+  S.log         = snap.log         || [];
+  S.checkins    = snap.checkins    || [];
+  S.tab         = snap.tab         || {};
+  S.checks      = snap.checks      || {};
+  S.notes       = snap.notes       || {};
+  S.activePhase = snap.activePhase || 1;
+  S.overrides   = snap.overrides   || {};
+  S.hisTest     = snap.hisTest     || null;
+  S.selfFlagLog = snap.selfFlagLog || [];
+  S.phase0      = snap.phase0      || {};
+  S.selfcare    = {};
+  S.rlog        = keepRlog;
+  S.journal     = keepJournal;
+  S.selfcareHistory = keepSCHist;
+  S.moonLog     = S.moonLog || [];
+
+  // Switch to relationship mode
+  save();
+  setMode('relationship');
+  renderAll();
+  loadHim();
+  loadSelfCare();
+  loadPhase0();
+  updatePhase0Score();
+
+  // Show confirmation
+  setTimeout(function(){
+    var msg = el('saveMsg');
+    if(msg){
+      msg.style.color = 'var(--green)';
+      msg.textContent = '\u2665 ' + (entry.name||'His data') + ' has been restored to your blueprint.';
+      setTimeout(function(){ msg.textContent = ''; }, 5000);
+    }
+    // Scroll to phases
+    var phaseCard = document.getElementById('phaseCard');
+    if(phaseCard) phaseCard.scrollIntoView({behavior:'smooth', block:'start'});
+  }, 400);
+}
 
 document.addEventListener("DOMContentLoaded",lpRender);}
 
