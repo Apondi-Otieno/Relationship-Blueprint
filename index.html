@@ -2157,6 +2157,16 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     <div class="stat"><span class="stat-val" id="statPct">0%</span><span class="stat-lbl">items complete</span></div>
     <div class="stat"><span class="stat-val" id="statGreen" style="color:var(--green)">0</span><span class="stat-lbl">green flags</span></div>
     <div class="stat"><span class="stat-val" id="statRed" style="color:var(--red)">0</span><span class="stat-lbl">red flags</span></div>
+    <div class="stat" style="cursor:pointer;" onclick="toggleHealthPanel()">
+      <span class="stat-val" id="statHealth" style="font-size:18px;">&#9825;</span>
+      <span class="stat-lbl">health score</span>
+    </div>
+  </div>
+
+  <!-- Health Score Panel -->
+  <div id="healthPanel" class="phase-card rel-section" style="display:none;margin-bottom:18px;padding:20px 24px;">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--mauve);margin-bottom:14px;">Relationship Health Score</div>
+    <div id="healthContent" style="font-family:var(--serif);font-size:13px;color:var(--stone);"></div>
   </div>
 
   <div class="him-card rel-section">
@@ -3141,6 +3151,16 @@ function renderStats(){
     var d=new Date(S.startDate);
     metEl.textContent="Met "+d.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})+" \u00b7 "+friendlyElapsed(days);
   }
+
+  // Health score
+  var health = calcHealthScore();
+  var hEl = document.getElementById('statHealth');
+  if(hEl && health){
+    hEl.textContent = health.pct + '%';
+    hEl.style.color = health.col;
+    hEl.style.fontSize = '';
+  }
+  renderHealthPanel(health);
 }
 
 function renderBanner(){
@@ -7101,6 +7121,64 @@ function deleteSelfFlagEntry(idx){
   S.selfFlagLog.splice(idx, 1);
   save();
   renderSelfFlagFeed();
+}
+
+
+function toggleHealthPanel(){
+  var panel = document.getElementById('healthPanel');
+  if(panel) panel.style.display = panel.style.display==='none' ? 'block' : 'none';
+}
+
+function renderHealthPanel(health){
+  var el = document.getElementById('healthContent');
+  if(!el) return;
+  if(!health){ el.innerHTML='<p style="color:var(--mist);font-style:italic;">Complete more checklist items to see your health score.</p>'; return; }
+
+  var h = '';
+  // Big score
+  h += '<div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">';
+  h += '<div style="font-size:56px;font-weight:300;font-family:var(--serif);color:'+health.col+';line-height:1;">'+health.pct+'%</div>';
+  h += '<div><div style="font-size:15px;font-family:var(--serif);color:'+health.col+';margin-bottom:4px;">'+health.label+'</div>';
+  h += '<div style="font-size:11px;color:var(--mist);line-height:1.5;">Based on your completed checklist items,<br>observation log, and self-reflection entries.</div></div>';
+  h += '</div>';
+
+  // Score bar
+  h += '<div style="height:8px;background:var(--pink-100);border-radius:99px;overflow:hidden;margin-bottom:18px;">';
+  h += '<div style="width:'+health.pct+'%;height:100%;background:'+health.col+';border-radius:99px;transition:width .8s ease;"></div></div>';
+
+  // Component breakdown
+  var components = [
+    {label:'His behaviour & consistency', val:health.his, desc:'Plans dates, pays, remembers, follows through, takes accountability'},
+    {label:'Your self-respect', val:health.her, desc:'Not chasing, holding boundaries, staying yourself, feeling free'},
+    {label:'No red flags flagged', val:health.flags, desc:'Items like no financial jokes, no avoidance signals, no physical discomfort'},
+    {label:'Observation log ratio', val:health.obs, desc:'Green vs red flags in your observation log'},
+    {label:'Wound activity', val:health.sf, desc:'How often your wound is active (lower wound activity = higher score)'},
+  ];
+
+  h += '<div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mauve);margin-bottom:10px;">Score breakdown</div>';
+  components.forEach(function(comp){
+    if(comp.val<0){ return; } // not enough data
+    var col = comp.val>=75?'#4CAF50':comp.val>=55?'#FF9800':comp.val>=35?'#FF5722':'#c4406b';
+    h += '<div style="margin-bottom:10px;">';
+    h += '<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;">';
+    h += '<span style="color:var(--deep);">'+comp.label+'</span>';
+    h += '<span style="color:'+col+';font-weight:600;">'+comp.val+'%</span></div>';
+    h += '<div style="height:5px;background:var(--pink-100);border-radius:99px;overflow:hidden;">';
+    h += '<div style="width:'+comp.val+'%;height:100%;background:'+col+';border-radius:99px;"></div></div>';
+    h += '<div style="font-size:10px;color:var(--mist);margin-top:2px;font-style:italic;">'+comp.desc+'</div>';
+    h += '</div>';
+  });
+
+  // Advice
+  var advice = '';
+  if(health.pct >= 80) advice = 'The data supports what you may already feel. Keep observing consistently.';
+  else if(health.pct >= 65) advice = 'There is real promise here. The gaps are worth watching, not ignoring.';
+  else if(health.pct >= 50) advice = 'Proceed carefully. The checklist is telling you something. Trust it.';
+  else if(health.pct >= 35) advice = 'Significant patterns are showing up in the data. Pay attention to them before going deeper.';
+  else advice = 'The blueprint is flagging serious concerns. Read the data before your feelings do.';
+
+  h += '<div style="margin-top:14px;padding:12px 16px;background:var(--blush);border-radius:12px;font-family:var(--serif);font-size:13px;font-style:italic;color:var(--deep);line-height:1.7;">'+advice+'</div>';
+  el.innerHTML = h;
 }
 
 document.addEventListener("DOMContentLoaded",lpRender);}
