@@ -6264,8 +6264,13 @@ function saveSelfFlagEntry(){
 function renderSelfFlagFeed(){
   var wrap = document.getElementById('selfFlagFeed');
   if(!wrap) return;
-  var entries = (S.selfFlagLog || []).slice().reverse().slice(0,5);
-  if(!entries.length){ wrap.innerHTML=''; return; }
+  var allEntries = (S.selfFlagLog || []);
+  if(!allEntries.length){ wrap.innerHTML=''; return; }
+  // Show last 5 in reverse order with their real index
+  var entries = [];
+  for(var ii=allEntries.length-1;ii>=Math.max(0,allEntries.length-5);ii--){
+    entries.push({e:allEntries[ii], i:ii});
+  }
   var TAG_NAMES = {
     anxiety:'Anxious thoughts', chase:'Chasing', shrink:'Self-shrinking',
     tooneedy:'Too much/needy', selfabandon:'Self-abandonment',
@@ -6273,21 +6278,22 @@ function renderSelfFlagFeed(){
     ignore:'Ignoring gut', testing:'Testing/sabotage', dishonest:'Inauthenticity'
   };
   var html = '<div style="margin-top:12px;">';
-  entries.forEach(function(e){
+  entries.forEach(function(item){
+    var e=item.e, ri=item.i;
     var clsKey = e.cls==='red'?'red':e.cls==='amber'?'amber':'neutral';
     var clsCol = e.cls==='red'?'var(--rose)':e.cls==='amber'?'#7a4a00':'var(--mist)';
     var clsLabel = e.cls==='red'?'\u26a0\ufe0f Wound active':e.cls==='amber'?'\u25b2 Pattern noticed':'Neutral';
     var topTag = (e.tags && e.tags[0]) ? (TAG_NAMES[e.tags[0]] || e.tags[0]) : '';
     html += '<div class="sf-entry sf-entry-'+clsKey+'">';
-    // Title row: classification + tag + date
-    html += '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;flex-wrap:wrap;gap:4px;">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:4px;">';
     html += '<div style="display:flex;align-items:center;gap:6px;">';
     html += '<span style="font-size:11px;font-weight:700;color:'+clsCol+';">'+clsLabel+'</span>';
     if(topTag) html += '<span style="font-size:10px;background:white;color:'+clsCol+';border:1px solid '+clsCol+';padding:1px 7px;border-radius:99px;font-weight:600;">'+topTag+'</span>';
     html += '</div>';
-    html += '<span style="font-size:10px;color:var(--mist);font-family:var(--sans);">Phase '+e.phase+' &mdash; '+e.date+'</span>';
-    html += '</div>';
-    // Full text
+    html += '<div style="display:flex;align-items:center;gap:8px;">';
+    html += '<span style="font-size:10px;color:var(--mist);font-family:var(--sans);">Phase '+e.phase+' \u2014 '+e.date+'</span>';
+    html += '<button onclick="deleteSelfFlagEntry('+ri+')" style="background:none;border:none;cursor:pointer;color:var(--mist);font-size:16px;line-height:1;padding:0 2px;transition:color .15s;" title="Delete entry" onmouseover="this.style.color=\'var(--rose)\'" onmouseout="this.style.color=\'var(--mist)\'">&times;</button>';
+    html += '</div></div>';
     html += '<div style="font-family:var(--serif);font-size:13px;color:var(--stone);line-height:1.65;">'+e.text+'</div>';
     html += '</div>';
   });
@@ -7086,6 +7092,14 @@ function toggleSelfFlagTag(btn, tag){
   } else {
     _manualSelfFlagTags.push(tag);
   }
+}
+
+
+function deleteSelfFlagEntry(idx){
+  if(!S.selfFlagLog || !S.selfFlagLog[idx]) return;
+  S.selfFlagLog.splice(idx, 1);
+  save();
+  renderSelfFlagFeed();
 }
 
 document.addEventListener("DOMContentLoaded",lpRender);}
