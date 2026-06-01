@@ -2401,6 +2401,96 @@ textarea::placeholder{color:var(--mist);font-style:italic}
 </div>
 
 <script>
+function calcHealthScore(){
+  var HIS = [
+    {k:'dateplans',w:3},{k:'dateconsistent',w:3},{k:'stilldates',w:3},
+    {k:'datepays',w:2},{k:'datepays2',w:2},{k:'stillpays',w:2},
+    {k:'remembers',w:3},{k:'followthrough',w:3},{k:'sameperson',w:3},
+    {k:'effortup',w:3},{k:'hardsame',w:3},{k:'wordsact',w:3},
+    {k:'account',w:4},{k:'repair',w:4},{k:'growth',w:3},{k:'curious',w:2},
+    {k:'presence',w:3},{k:'celebrateme',w:3},{k:'heasked',w:2},
+    {k:'character',w:3},{k:'speakswell',w:2},{k:'introduces',w:2},
+    {k:'direction',w:2},{k:'finindep',w:2},{k:'finindep5',w:2},
+    {k:'hefinances',w:2},{k:'builder',w:2},{k:'exclusive',w:3}
+  ];
+  var HER = [
+    {k:'nochase',w:4},{k:'nocompromise',w:4},{k:'myground',w:3},
+    {k:'freedom',w:3},{k:'mywhole',w:3},{k:'mysafety',w:3},
+    {k:'nogutdoubt',w:3},{k:'needswelcome',w:3},{k:'avoidfree',w:3},
+    {k:'shared',w:2},{k:'boundary',w:3}
+  ];
+  var FLAGS = [
+    {k:'redflags1',w:4},{k:'nofinancejokes',w:2},
+    {k:'noredflagsphys',w:2},{k:'pullback',w:2}
+  ];
+
+  function getVal(key){
+    var checks = S.checks||{};
+    // Try direct key match or suffix match
+    var keys = Object.keys(checks);
+    for(var ii=0;ii<keys.length;ii++){
+      var k=keys[ii];
+      if(k===key||k==='m_'+key||k.slice(k.lastIndexOf('_')+1)===key) return checks[k];
+    }
+    return 'none';
+  }
+
+  function scoreGroup(items){
+    var yes=0,possible=0;
+    items.forEach(function(it){
+      var v=getVal(it.k);
+      if(v==='yes') yes+=it.w;
+      else if(v==='partial') yes+=it.w*0.5;
+      possible+=it.w;
+    });
+    return possible>0?{s:yes/possible,p:possible}:{s:-1,p:0};
+  }
+
+  var his   = scoreGroup(HIS);
+  var her   = scoreGroup(HER);
+  var flags = scoreGroup(FLAGS);
+
+  var greenCount=(S.log||[]).filter(function(l){return l.flag==='green';}).length;
+  var redCount  =(S.log||[]).filter(function(l){return l.flag==='red';}).length;
+  var totalObs  =greenCount+redCount;
+  var obsRatio  =totalObs>0?greenCount/totalObs:-1;
+
+  var sfLog  =S.selfFlagLog||[];
+  var sfRed  =sfLog.filter(function(e){return e.cls==='red';}).length;
+  var sfAmber=sfLog.filter(function(e){return e.cls==='amber';}).length;
+  var sfScore=sfLog.length>0?Math.max(0,1-(sfRed*1.0+sfAmber*0.5)/sfLog.length):-1;
+
+  var components=[];
+  if(his.s>=0)   components.push({s:his.s,  w:35});
+  if(her.s>=0)   components.push({s:her.s,  w:25});
+  if(flags.s>=0) components.push({s:flags.s,w:20});
+  if(obsRatio>=0)components.push({s:obsRatio,w:12});
+  if(sfScore>=0) components.push({s:sfScore, w:8});
+
+  if(!components.length) return null;
+
+  var totalW=components.reduce(function(a,b){return a+b.w;},0);
+  var weighted=components.reduce(function(a,b){return a+b.s*b.w;},0);
+  var pct=Math.round(weighted/totalW*100);
+
+  var label,col;
+  if(pct>=80){label='Strong foundation';col='#2d7a2d';}
+  else if(pct>=65){label='Promising';col='#4a7a2a';}
+  else if(pct>=50){label='Watch closely';col='#7a6020';}
+  else if(pct>=35){label='Proceed with caution';col='#b5614a';}
+  else{label='Significant concerns';col='#c4406b';}
+
+  return {
+    pct:pct,label:label,col:col,
+    his:his.s>=0?Math.round(his.s*100):-1,
+    her:her.s>=0?Math.round(her.s*100):-1,
+    flags:flags.s>=0?Math.round(flags.s*100):-1,
+    obs:obsRatio>=0?Math.round(obsRatio*100):-1,
+    sf:sfScore>=0?Math.round(sfScore*100):-1
+  };
+}
+
+
 
 /* ══ CONV_GUIDES — conversation questions per phase ══ */
 var CONV_GUIDES = {
@@ -3159,6 +3249,18 @@ function renderStats(){
     hEl.textContent = health.pct + '%';
     hEl.style.color = health.col;
     hEl.style.fontSize = '';
+  }
+  // Nav badge
+  var navH = document.getElementById('navHealthScore');
+  if(navH){
+    if(health){
+      navH.textContent = '♥ ' + health.pct + '% health';
+      navH.style.display = 'inline-block';
+      navH.style.color = health.col;
+      navH.style.borderColor = health.col;
+    } else {
+      navH.style.display = 'none';
+    }
   }
   renderHealthPanel(health);
 }
@@ -7180,6 +7282,9 @@ function renderHealthPanel(health){
   h += '<div style="margin-top:14px;padding:12px 16px;background:var(--blush);border-radius:12px;font-family:var(--serif);font-size:13px;font-style:italic;color:var(--deep);line-height:1.7;">'+advice+'</div>';
   el.innerHTML = h;
 }
+
+
+
 
 document.addEventListener("DOMContentLoaded",lpRender);}
 
