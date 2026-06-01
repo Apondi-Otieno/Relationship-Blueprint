@@ -6228,6 +6228,7 @@ function saveSelfFlagEntry(){
   S.relFocus.selfFlags = text;
   save();
   renderSelfFlagFeed();
+  if(ta) ta.value = '';
   // Reset manual tag pills
   _manualSelfFlagTags = [];
   var pills = document.querySelectorAll('.sfp-pill.active');
