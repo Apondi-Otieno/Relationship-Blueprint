@@ -7335,12 +7335,15 @@ var READINESS_SCENARIOS = [
 var _rdAnswers = {};
 
 function openReadinessTest(){
-  var ov=document.getElementById('readinessTestOverlay');
-  if(!ov) return;
-  ov.style.display='block';
-  document.body.style.overflow='hidden';
-  renderReadinessTest();
-  ov.scrollTop=0;
+  var ov = document.getElementById('readinessTestOverlay');
+  if(!ov){ alert('Readiness test overlay not found. Please refresh the page.'); return; }
+  var form = document.getElementById('rdForm');
+  var result = document.getElementById('rdResult');
+  ov.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+  if(form) form.style.display = 'block';
+  if(result) result.style.display = 'none';
+  ov.scrollTop = 0;
 }
 
 function closeReadinessTest(){
@@ -7350,58 +7353,77 @@ function closeReadinessTest(){
 }
 
 function renderReadinessTest(){
-  var el=document.getElementById('readinessTestContent');
-  if(!el) return;
-  var h='';
-  h+='<p style="font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--rose);margin-bottom:10px;">Dating Readiness Check</p>';
-  h+='<h1 style="font-family:var(--serif);font-size:clamp(22px,3vw,34px);font-weight:300;color:var(--deep);margin-bottom:8px;line-height:1.15;">Before you <em style="font-style:italic;color:var(--rose);">step in.</em></h1>';
-  h+='<p style="font-family:var(--serif);font-size:13px;font-style:italic;color:var(--mist);margin-bottom:28px;line-height:1.65;">Five real scenarios. Answer honestly \u2014 not how you wish you would respond, but how you actually would right now.</p>';
-  READINESS_SCENARIOS.forEach(function(sc,idx){
-    var q=idx+1;
-    h+='<div style="margin-bottom:22px;background:white;border:1px solid var(--pink-100);border-radius:14px;padding:16px 18px;">';
-    h+='<div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mauve);margin-bottom:8px;">Scenario '+q+' of 5</div>';
-    h+='<div style="font-family:var(--serif);font-size:14px;color:var(--deep);line-height:1.65;margin-bottom:12px;">'+sc.q+'</div>';
-    h+='<textarea id="rdat'+q+'" placeholder="Be honest with yourself..." rows="3" style="width:100%;border:1px solid var(--pink-100);border-radius:10px;padding:10px 12px;font-family:var(--serif);font-size:13px;color:var(--stone);background:var(--blush);resize:vertical;outline:none;box-sizing:border-box;min-height:80px;"></textarea>';
-    h+='</div>';
-  });
-  h+='<div id="rdError" style="color:var(--rose);font-size:13px;text-align:center;margin:12px 0;display:none;"></div>';
-  h+='<div style="text-align:center;margin-top:8px;"><button onclick="submitReadinessTest()" style="padding:14px 40px;background:var(--rose);color:white;border:none;border-radius:99px;font-size:14px;font-weight:500;font-family:var(--sans);cursor:pointer;">Submit \u2192</button></div>';
-  el.innerHTML=h;
+  // Form is static HTML — nothing to render
+  document.getElementById('rdForm').style.display = 'block';
+  document.getElementById('rdResult').style.display = 'none';
 }
 
 function submitReadinessTest(){
-  // Ensure form is rendered
-  var rdat1=document.getElementById('rdat1');
-  if(!rdat1){
-    renderReadinessTest();
+  var missing = [];
+  for(var q = 1; q <= 5; q++){
+    var ta = document.getElementById('rd' + q);
+    if(!ta || ta.value.trim().length < 15) missing.push(q);
   }
-  var missing=[];
-  for(var q=1;q<=5;q++){
-    var ta=document.getElementById('rdat'+q);
-    if(!ta||!ta.value||ta.value.trim().length<15) missing.push(q);
-  }
-  if(missing.length>0){
-    var err=document.getElementById('rdError');
+  if(missing.length > 0){
+    var err = document.getElementById('rdError');
     if(err){
-      err.textContent='Please answer all 5 scenarios (scenario '+missing.join(', ')+' needs more detail — at least a sentence).';
-      err.style.display='block';
-      err.scrollIntoView({behavior:'smooth',block:'center'});
+      err.textContent = 'Please answer all scenarios with at least a sentence. Scenario ' + missing.join(', ') + ' needs more.';
+      err.style.display = 'block';
     }
     return;
   }
-  var details=[];
-  READINESS_SCENARIOS.forEach(function(sc,idx){
-    var ta=document.getElementById('rdat'+(idx+1));
-    var txt=ta?ta.value.trim():'';
-    var isDisc = sc.discernment.test(txt);
-    var isHyper = sc.hypervigilant.test(txt) && !isDisc;
-    var result = isDisc ? 'discernment' : isHyper ? 'hypervigilant' : 'avoidant';
-    details.push({q:sc.q, a:txt, result:result, coaching:sc.coaching, hypervigilant_note:sc.hypervigilant_note});
-  });
-  var el=document.getElementById('readinessTestContent');
-  if(!el) return;
-  renderReadinessResult(details);
-  el.scrollIntoView({behavior:'smooth',block:'start'});
+  var SCORES = [
+    /\b(mention it|bring it up|say something|address it|let him know|twice is|pattern|that doesn.t work|i need|worth noting|curious whether|check in|i.d want to understand)\b/i,
+    /\b(trust my gut|gut is data|something is off|worth noticing|i.d mention|i.d bring up|observe|note it|curious about|let it inform)\b/i,
+    /\b(data|information|worth paying attention|my gut|my nervous system|anxiety means|not a good sign|something.s off|worth exploring)\b/i,
+    /\b(say something|name it|let him know|that hurt|that felt|i felt|speak up|i need|bring it up|address it)\b/i,
+    /\b(yes|i would|bring it up|mention it|ask him|have a conversation|worth mentioning|curious about|need to know|matters to me)\b/i
+  ];
+  var score = 0;
+  var details = [];
+  for(var q = 1; q <= 5; q++){
+    var txt = document.getElementById('rd' + q).value.trim();
+    var pass = SCORES[q-1].test(txt);
+    if(pass) score += 20;
+    details.push({a: txt, pass: pass, q: q});
+  }
+  var form = document.getElementById('rdForm');
+  var result = document.getElementById('rdResult');
+  form.style.display = 'none';
+  result.style.display = 'block';
+  var pass = score >= 60;
+  var col = pass ? '#2d7a2d' : '#b5614a';
+  var html = '<div style="text-align:center;padding:24px 16px 20px;border-bottom:1px solid #ffd6e7;margin-bottom:20px;">';
+  html += '<div style="font-family:Cormorant Garamond,serif;font-size:72px;font-weight:300;line-height:1;color:' + col + ';margin-bottom:8px;">' + score + '%</div>';
+  if(pass){
+    html += '<div style="font-family:Cormorant Garamond,serif;font-size:20px;color:' + col + ';margin-bottom:10px;">You are ready.</div>';
+    html += '<div style="font-family:Cormorant Garamond,serif;font-size:13px;font-style:italic;color:#999;max-width:440px;margin:0 auto 20px;line-height:1.7;">Your answers show a woman who trusts her gut, speaks up, and holds her standard.</div>';
+    html += '<button onclick="confirmSwitchToRelationship()" style="padding:14px 36px;background:#c4406b;color:white;border:none;border-radius:99px;font-size:14px;font-weight:500;font-family:sans-serif;cursor:pointer;margin-bottom:10px;">&hearts; Open relationship mode</button><br>';
+  } else {
+    html += '<div style="font-family:Cormorant Garamond,serif;font-size:20px;color:' + col + ';margin-bottom:10px;">Not quite yet.</div>';
+    html += '<div style="font-family:Cormorant Garamond,serif;font-size:13px;font-style:italic;color:#999;max-width:440px;margin:0 auto 20px;line-height:1.7;">Some of your answers show the wound is still steering. Read the feedback below and retake when ready.</div>';
+  }
+  html += '</div>';
+  var COACHING = [
+    'Grounded discernment names the pattern out loud and stays curious: “I’ve noticed this has happened twice — is everything okay?” It doesn’t punish, but it doesn’t ignore either.',
+    'Your gut is an instrument, not a verdict. Note the pattern, name it when you’re ready, and watch what happens. Staying curious is discernment.',
+    'Anxiety is information, not a verdict. The question is: what is this feeling pointing to specifically? Dismissing it loses the data.',
+    'The grounded response names what happened clearly: “That felt dismissive. When I share something hard, I need you to be present.” Then she watches what he does with that.',
+    'Two months is not too early. Bringing it up directly and watching his response is the actual data. Not asking because you’re afraid of his reaction is avoidance.'
+  ];
+  for(var q = 1; q <= 5; q++){
+    var d = details[q-1];
+    var dc = d.pass ? '#2d7a2d' : '#b5614a';
+    var dbg = d.pass ? '#f0f7e8' : '#fde8e0';
+    html += '<div style="margin-bottom:12px;padding:13px 15px;background:' + dbg + ';border-radius:12px;border-left:3px solid ' + dc + ';">';
+    html += '<div style="font-size:11px;font-weight:700;color:' + dc + ';margin-bottom:6px;">Scenario ' + q + ' — ' + (d.pass ? '✓ Clear' : '⚠ Needs work') + '</div>';
+    html += '<div style="font-family:Cormorant Garamond,serif;font-size:13px;color:#2a1a20;line-height:1.6;margin-bottom:8px;">' + d.a + '</div>';
+    if(!d.pass) html += '<div style="font-size:12px;color:' + dc + ';line-height:1.6;"><strong>What a grounded answer looks like:</strong> ' + COACHING[q-1] + '</div>';
+    html += '</div>';
+  }
+  html += '<div style="text-align:center;margin-top:20px;"><button onclick="retakeReadinessTest()" style="background:none;border:1px solid #ffd6e7;color:#999;padding:10px 24px;border-radius:99px;font-size:12px;font-family:sans-serif;cursor:pointer;">↺ Retake</button></div>';
+  result.innerHTML = html;
+  document.getElementById('readinessTestOverlay').scrollTop = 0;
 }
 
 
@@ -7489,14 +7511,7 @@ function confirmSwitchToRelationship(){
 }
 
 function switchToRelationship(){
-  // Check if phase 0 is complete first
-  if(S.phase0&&S.phase0.complete){
-    openReadinessTest();
-  } else {
-    if(confirm('You haven\u2019t completed your self-report yet. It is recommended to finish Phase 0 first.\n\nContinue anyway?')){
-      openReadinessTest();
-    }
-  }
+  openReadinessTest();
 }
 
 
@@ -7574,8 +7589,15 @@ function downloadMoodCSV(){
 
 
 function retakeReadinessTest(){
-  _rdAnswers={};
-  renderReadinessTest();
+  for(var q = 1; q <= 5; q++){
+    var ta = document.getElementById('rd' + q);
+    if(ta) ta.value = '';
+  }
+  var err = document.getElementById('rdError');
+  if(err) err.style.display = 'none';
+  document.getElementById('rdForm').style.display = 'block';
+  document.getElementById('rdResult').style.display = 'none';
+  document.getElementById('readinessTestOverlay').scrollTop = 0;
 }
 
 document.addEventListener("DOMContentLoaded",lpRender);}
@@ -7803,7 +7825,52 @@ document.addEventListener("DOMContentLoaded",function(){
 <div id="readinessTestOverlay" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999;background:#fdf8f5;overflow-y:auto;">
   <div style="max-width:680px;margin:0 auto;padding:48px 28px 80px;">
     <button onclick="closeReadinessTest()" style="background:none;border:none;cursor:pointer;color:#888;font-size:13px;font-family:sans-serif;margin-bottom:28px;display:block;">&larr; Back</button>
-    <div id="readinessTestContent"></div>
+
+    <!-- FORM -->
+    <div id="rdForm">
+      <p style="font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#c4406b;margin-bottom:10px;">Dating Readiness Check</p>
+      <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(22px,3vw,34px);font-weight:300;color:#5a1a30;margin-bottom:8px;line-height:1.15;">Before you <em style="font-style:italic;color:#c4406b;">step in.</em></h1>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:#999;margin-bottom:28px;line-height:1.65;">Five real scenarios. Answer honestly &mdash; not how you wish you would respond, but how you actually would right now.</p>
+
+      <div style="margin-bottom:22px;background:white;border:1px solid #ffd6e7;border-radius:14px;padding:16px 18px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#7a2444;margin-bottom:8px;">Scenario 1 of 5</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:14px;color:#2a1a20;line-height:1.65;margin-bottom:12px;">You&rsquo;ve been on 3 dates. He texts to reschedule last minute &mdash; for the second time. What do you do?</div>
+        <textarea id="rd1" rows="3" placeholder="Be honest with yourself..." style="width:100%;border:1px solid #ffd6e7;border-radius:10px;padding:10px 12px;font-family:'Cormorant Garamond',serif;font-size:13px;color:#444;background:#fdf8f5;resize:vertical;outline:none;box-sizing:border-box;min-height:80px;"></textarea>
+      </div>
+
+      <div style="margin-bottom:22px;background:white;border:1px solid #ffd6e7;border-radius:14px;padding:16px 18px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#7a2444;margin-bottom:8px;">Scenario 2 of 5</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:14px;color:#2a1a20;line-height:1.65;margin-bottom:12px;">Three weeks in, he still hasn&rsquo;t made plans more than 48 hours in advance. Your gut says something is off. What do you do?</div>
+        <textarea id="rd2" rows="3" placeholder="Be honest with yourself..." style="width:100%;border:1px solid #ffd6e7;border-radius:10px;padding:10px 12px;font-family:'Cormorant Garamond',serif;font-size:13px;color:#444;background:#fdf8f5;resize:vertical;outline:none;box-sizing:border-box;min-height:80px;"></textarea>
+      </div>
+
+      <div style="margin-bottom:22px;background:white;border:1px solid #ffd6e7;border-radius:14px;padding:16px 18px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#7a2444;margin-bottom:8px;">Scenario 3 of 5</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:14px;color:#2a1a20;line-height:1.65;margin-bottom:12px;">A friend asks how things are going. Honestly, you feel more anxious than excited. What does that mean to you?</div>
+        <textarea id="rd3" rows="3" placeholder="Be honest with yourself..." style="width:100%;border:1px solid #ffd6e7;border-radius:10px;padding:10px 12px;font-family:'Cormorant Garamond',serif;font-size:13px;color:#444;background:#fdf8f5;resize:vertical;outline:none;box-sizing:border-box;min-height:80px;"></textarea>
+      </div>
+
+      <div style="margin-bottom:22px;background:white;border:1px solid #ffd6e7;border-radius:14px;padding:16px 18px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#7a2444;margin-bottom:8px;">Scenario 4 of 5</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:14px;color:#2a1a20;line-height:1.65;margin-bottom:12px;">He says something dismissive when you try to share something vulnerable. What do you do?</div>
+        <textarea id="rd4" rows="3" placeholder="Be honest with yourself..." style="width:100%;border:1px solid #ffd6e7;border-radius:10px;padding:10px 12px;font-family:'Cormorant Garamond',serif;font-size:13px;color:#444;background:#fdf8f5;resize:vertical;outline:none;box-sizing:border-box;min-height:80px;"></textarea>
+      </div>
+
+      <div style="margin-bottom:22px;background:white;border:1px solid #ffd6e7;border-radius:14px;padding:16px 18px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#7a2444;margin-bottom:8px;">Scenario 5 of 5</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:14px;color:#2a1a20;line-height:1.65;margin-bottom:12px;">Two months in, he still hasn&rsquo;t introduced you to anyone in his life. Do you bring it up?</div>
+        <textarea id="rd5" rows="3" placeholder="Be honest with yourself..." style="width:100%;border:1px solid #ffd6e7;border-radius:10px;padding:10px 12px;font-family:'Cormorant Garamond',serif;font-size:13px;color:#444;background:#fdf8f5;resize:vertical;outline:none;box-sizing:border-box;min-height:80px;"></textarea>
+      </div>
+
+      <div id="rdError" style="color:#c4406b;font-size:13px;text-align:center;margin:12px 0;display:none;"></div>
+      <div style="text-align:center;margin-top:16px;">
+        <button onclick="submitReadinessTest()" style="padding:14px 40px;background:#c4406b;color:white;border:none;border-radius:99px;font-size:14px;font-weight:500;font-family:sans-serif;cursor:pointer;">Submit &rarr;</button>
+      </div>
+    </div>
+
+    <!-- RESULT -->
+    <div id="rdResult" style="display:none;"></div>
+
   </div>
 </div>
 </body>
