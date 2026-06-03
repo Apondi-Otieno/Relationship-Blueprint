@@ -756,7 +756,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
 
   /* ── NAVBAR ── */
   .site-header{position:sticky;top:0;overflow:visible;z-index:200;background:rgba(253,248,245,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--pink-100);box-shadow:0 1px 12px rgba(196,64,107,.07);}
-  .site-header-inner{max-width:1340px;margin:0 auto;padding:0 clamp(16px,3vw,40px);height:54px;display:flex;align-items:center;gap:14px;}
+  .site-header-inner{max-width:1340px;margin:0 auto;padding:0 clamp(16px,3vw,40px);height:54px;display:flex;align-items:center;gap:14px;position:relative;}
   .nav-logo{display:flex;align-items:center;gap:7px;font-family:var(--serif);font-size:16px;font-weight:500;color:var(--deep);cursor:pointer;flex-shrink:0;white-space:nowrap;}
   .nav-links{display:flex;align-items:center;gap:1px;flex:1;overflow:hidden;}
   .nav-link{padding:5px 9px;border-radius:8px;font-size:12px;font-weight:500;font-family:var(--sans);color:var(--mist);cursor:pointer;white-space:nowrap;transition:all .15s;background:none;border:none;}
@@ -771,13 +771,13 @@ textarea::placeholder{color:var(--mist);font-style:italic}
   .nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
   .nav-hamburger.open span:nth-child(2){opacity:0;}
   .nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
-  .nav-mobile{display:none;flex-direction:column;background:white;border-top:1px solid var(--pink-100);padding:8px 16px 14px;}
-  .nav-mobile.open{display:flex;z-index:10000;position:absolute;left:0;right:0;top:100%;box-shadow:0 8px 24px rgba(90,26,48,.12);}
+  .nav-mobile{display:none;flex-direction:column;background:white;border-top:1px solid var(--pink-100);padding:8px 16px 14px;width:100%;}
+  .nav-mobile.open{display:flex!important;z-index:10000;position:absolute;left:-clamp(16px,3vw,40px);right:-clamp(16px,3vw,40px);top:54px;box-shadow:0 8px 24px rgba(90,26,48,.12);}
   .nav-mobile-link{padding:11px 8px;font-size:13px;font-weight:500;font-family:var(--sans);color:var(--stone);cursor:pointer;border-bottom:1px solid var(--pink-50);background:none;border-left:none;border-right:none;border-top:none;text-align:left;width:100%;}
   .nav-mobile-link:last-child{border-bottom:none;}
   .nav-mobile-link:hover{color:var(--rose);}
   @media(max-width:860px){.nav-links{display:none;}.nav-report-btn{display:none;}.nav-journal-btn{display:none;}.nav-hamburger{display:flex;}}
-  @media(min-width:861px){.nav-mobile{display:none!important;}}
+  @media(min-width:861px){/* nav-mobile hidden on desktop via hamburger logic */}
   /* score circle */
   .score-circle{width:68px!important;height:68px!important;min-width:68px!important;}
   .score-pct{font-size:15px!important;text-align:center;}
@@ -3479,6 +3479,8 @@ function renderMoonList(){
 
 // ── SAVE / RESTORE ────────────────────────────────────────────────────────
 function saveFile(){
+  // Flush any open phase0 textarea values into S before saving
+  if(typeof savePhase0==='function') try{savePhase0();}catch(e){}
   var blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
   var url=URL.createObjectURL(blob);
   var a=document.createElement("a");a.href=url;
@@ -3496,19 +3498,25 @@ function restoreFile(e){
       var parsed=JSON.parse(raw);
       // Safe defaults for every field the app uses
       S={
-        activePhase: parsed.activePhase||1,
-        tab:         parsed.tab||{},
-        checks:      parsed.checks||{},
-        notes:       parsed.notes||{},
-        log:         parsed.log||[],
-        checkins:    parsed.checkins||[],
-        him:         parsed.him||{},
-        selfcare:    parsed.selfcare||{},
-        selfcareHistory: parsed.selfcareHistory||[],
-        rlog:        parsed.rlog||[],
-        moonLog:     parsed.moonLog||[],
-        overrides:   parsed.overrides||{},
-        startDate:   parsed.startDate||null
+        activePhase:      parsed.activePhase||1,
+        tab:              parsed.tab||{},
+        checks:           parsed.checks||{},
+        notes:            parsed.notes||{},
+        log:              parsed.log||[],
+        checkins:         parsed.checkins||[],
+        him:              parsed.him||{},
+        selfcare:         parsed.selfcare||{},
+        selfcareHistory:  parsed.selfcareHistory||[],
+        rlog:             parsed.rlog||[],
+        moonLog:          parsed.moonLog||[],
+        overrides:        parsed.overrides||{},
+        startDate:        parsed.startDate||null,
+        phase0:           parsed.phase0||{},
+        hisTest:          parsed.hisTest||null,
+        selfFlagLog:      parsed.selfFlagLog||[],
+        relFocus:         parsed.relFocus||{},
+        habits:           parsed.habits||{list:[],checkins:{},intentions:{},mood:{}},
+        ui:               parsed.ui||{}
       };
       // journal — handle both old flat format and new {prompts,entries} format
       if(parsed.journal){
@@ -3524,6 +3532,7 @@ function restoreFile(e){
       // render everything safely
       try{loadHim();}catch(e2){console.warn('loadHim:',e2);}
       try{loadSelfCare();}catch(e2){console.warn('loadSelfCare:',e2);}
+      try{loadPhase0();}catch(e2){console.warn('loadPhase0:',e2);}
       try{renderAll();}catch(e2){console.warn('renderAll:',e2);}
       if(msg){
         msg.style.color="var(--green)";
@@ -4767,12 +4776,23 @@ function navTo(id){
   window.scrollTo({top:t.getBoundingClientRect().top+window.pageYOffset-h-8,behavior:'smooth'});
 }
 function toggleMobileNav(){
-  var n=document.getElementById('navMobile'),b=document.getElementById('navHamburger');
-  if(n)n.classList.toggle('open');if(b)b.classList.toggle('open');
+  var n=document.getElementById('navMobile');
+  var b=document.getElementById('navHamburger');
+  if(!n) return;
+  var isOpen = n.classList.contains('open');
+  if(isOpen){
+    n.classList.remove('open');
+    if(b) b.classList.remove('open');
+  } else {
+    n.classList.add('open');
+    if(b) b.classList.add('open');
+  }
 }
 function closeMobileNav(){
-  var n=document.getElementById('navMobile'),b=document.getElementById('navHamburger');
-  if(n)n.classList.remove('open');if(b)b.classList.remove('open');
+  var n=document.getElementById('navMobile');
+  var b=document.getElementById('navHamburger');
+  if(n) n.classList.remove('open');
+  if(b) b.classList.remove('open');
 }
 function updateActiveNav(){
   var ids=['phase0Card','phaseCard','sec-log','sec-flags','sec-checkin','sec-selfcare','sec-rlog','sec-save'];
@@ -4924,7 +4944,12 @@ function expandPhaseCard(n){
 
 function analysePhase0(){
   var ans=[];
-  for(var n=1;n<=P0_TOTAL;n++){var ta=document.getElementById('p0t'+n);ans.push(ta?ta.value.trim():'');}
+  for(var n=1;n<=P0_TOTAL;n++){
+    var ta=document.getElementById('p0t'+n);
+    // Prefer DOM value if available and non-empty, else fall back to saved S.phase0 data
+    var val = (ta && ta.value.trim()) ? ta.value.trim() : ((S.phase0 && S.phase0['t'+n]) ? S.phase0['t'+n] : '');
+    ans.push(val);
+  }
 
   /* ── SCORING DIMENSIONS (each 0-20) ─────────────────────────────────
      1. Ownership        — do you name YOUR specific behaviours, not his
@@ -5631,15 +5656,16 @@ function analyseSectionE(ans){
 
 function downloadPhase0PDF(){
   var p0 = S.phase0 || {};
-  // Always run fresh analysis from current answers — don't rely on stored result
-  // First load current textarea values into p0 so analysePhase0 reads them
+  // Sync any open textarea values into p0 first
   for(var _n=1;_n<=16;_n++){
     var _ta=document.getElementById('p0t'+_n);
-    if(_ta) p0['t'+_n]=_ta.value;
+    if(_ta && _ta.value.trim()) p0['t'+_n]=_ta.value.trim();
   }
   S.phase0 = p0;
   var analysis = null;
   try{ analysis = analysePhase0(); } catch(e){ analysis = p0.analysis || null; }
+  // Use stored analysis as fallback
+  if(!analysis || analysis.readiness===0) analysis = p0.analysis || analysis;
   var questions = [
     'A1 \u2014 Your honest 50%',
     'A2 \u2014 What you are still waiting for',
@@ -5908,8 +5934,12 @@ function downloadPhase0PDF(){
   // Open as blob URL — no popup blocking, no document.write issues
   var blob=new Blob([h],{type:'text/html;charset=utf-8'});
   var url=URL.createObjectURL(blob);
-  window.open(url,'_blank');
-  // Clean up the URL after a short delay
+  var a=document.createElement('a');
+  a.href=url;
+  a.download='my-relationship-self-report.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
   setTimeout(function(){URL.revokeObjectURL(url);},60000);
 }
 
@@ -7489,7 +7519,9 @@ function setMoodRating(val){
   renderHabitsContent();
 }
 
-function toggleMoodSymptom(sym){
+function toggleMoodSymptom(el){
+  var sym = el.getAttribute ? el.getAttribute('data-sym') : el;
+  if(!sym) return;
   if(!S.habits) S.habits={list:[],checkins:{},intentions:{},mood:{}};
   if(!S.habits.mood) S.habits.mood={};
   var key=new Date().toISOString().slice(0,10);
