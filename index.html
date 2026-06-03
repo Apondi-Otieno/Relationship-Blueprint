@@ -1965,6 +1965,7 @@ textarea::placeholder{color:var(--mist);font-style:italic}
       </div>
     </div>
     <div id="sfSavedMsg" style="font-size:11px;color:var(--green);font-style:italic;min-height:16px;opacity:0;transition:opacity .3s;margin-top:8px;"></div>
+    <div id="sfSavedLog" style="margin-top:14px;"></div>
     <div style="text-align:right;margin-top:14px;">
       <button class="btn-checkin" onclick="saveSingleFocusManual()">&#10003; Save this week</button>
     </div>
@@ -2170,6 +2171,9 @@ textarea::placeholder{color:var(--mist);font-style:italic}
       </div>
     </div>
 
+    <div style="display:flex;justify-content:flex-end;margin-bottom:8px;">
+      <button onclick="toggleAllRlog()" id="rlogCollapseBtn" style="background:none;border:none;cursor:pointer;font-size:11px;color:var(--mist);font-family:var(--sans);font-weight:600;letter-spacing:.06em;padding:4px 0;" onmouseover="this.style.color='var(--rose)'" onmouseout="this.style.color='var(--mist)'">&#9660; Collapse all</button>
+    </div>
     <div id="rlogList" class="rlog-entries"></div>
     <div class="patterns-wrap" id="patternsWrap" style="display:none">
       <div class="patterns-title">What the patterns reveal</div>
@@ -3739,28 +3743,22 @@ function renderRlog(){
     wrap.innerHTML="<div class='rlog-empty'>No entries yet. Add the ones who shaped you.</div>";
     return;
   }
-  // Sort by period start year (newest first), fallback to add date
   var indexed=log.map(function(e,i){return{e:e,i:i};});
   indexed.sort(function(a,b){
     function startYear(entry){
-      if(entry.period){
-        var m=entry.period.match(/\d{4}/);
-        if(m) return parseInt(m[0]);
-      }
-      // fallback: parse added date
-      if(entry.date){
-        var m2=entry.date.match(/\d{4}/);
-        if(m2) return parseInt(m2[0]);
-      }
+      if(entry.period){var m=entry.period.match(/\d{4}/);if(m)return parseInt(m[0]);}
+      if(entry.date){var m2=entry.date.match(/\d{4}/);if(m2)return parseInt(m2[0]);}
       return 0;
     }
     return startYear(b.e)-startYear(a.e);
   });
   var html='';
-  indexed.forEach(function(item){
+  indexed.forEach(function(item, loopIdx){
     var e=item.e, ri=item.i;
     var how=HOW_LABELS[e.how]||HOW_LABELS['mutual'];
+    var isFirst = false; // all start collapsed
     html+="<div class='rlog-entry'>";
+    // Header row: name + buttons
     html+="<div class='rlog-entry-header'>";
     html+="<div><div class='rlog-entry-name'>"+e.name+"</div>";
     if(e.period) html+="<div class='rlog-entry-dates'>"+e.period+"</div>";
@@ -3769,9 +3767,14 @@ function renderRlog(){
     if(e.snapshot) html+="<button class='rlog-restore-btn' onclick='restoreFromRlog("+ri+")' title='Restore to blueprint'>&#9825; Restore</button>";
     html+="<button class='rlog-entry-edit' onclick='toggleRlogEdit("+ri+")'>edit</button>";
     html+="<button class='rlog-entry-del' onclick='deleteRlogEntry("+ri+")' aria-label='Delete'>&times;</button>";
-    html+="</div>";
-    html+="</div>";
+    html+="</div></div>";
+    // Collapsible toggle row
+    html+="<div onclick='toggleRlogEntry("+ri+")' style='cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:4px 0 6px;border-bottom:1px solid var(--pink-100);margin-bottom:8px;'>";
     html+="<span class='rlog-entry-ended "+how.cls+"'>"+how.lbl+"</span>";
+    html+="<span id='rlog_chevron_"+ri+"' style='font-size:11px;color:var(--mist);display:inline-block;transition:transform .2s;transform:"+(isFirst?'rotate(0deg)':'rotate(-90deg)'+"")+";'>\u25bc</span>";
+    html+="</div>";
+    // Body — first entry open, rest collapsed
+    html+="<div id='rlog_body_"+ri+"' style='display:"+(isFirst?'block':'none')+"'>";
     html+="<div class='rlog-entry-grid'>";
     if(e.admired)  html+="<div class='rlog-entry-field'><span class='rlog-entry-field-lbl'>What I admired</span><span class='rlog-entry-field-val'>"+e.admired+"</span></div>";
     if(e.redflag)  html+="<div class='rlog-entry-field'><span class='rlog-entry-field-lbl'>Red flag I ignored</span><span class='rlog-entry-field-val'>"+e.redflag+"</span></div>";
@@ -3800,7 +3803,8 @@ function renderRlog(){
     html+="<button class='btn-edit-cancel' onclick='toggleRlogEdit("+ri+")'>Cancel</button>";
     html+="<button class='btn-edit-save' onclick='saveRlogEdit("+ri+")'>Save changes</button>";
     html+="</div></div>";
-    html+="</div>";
+    html+="</div>"; // close rlog_body
+    html+="</div>"; // close rlog-entry
   });
   wrap.innerHTML=html;
 }
@@ -6222,9 +6226,61 @@ function analyseSelfFlagPatterns(){
 }
 
 function saveSingleFocusManual(){
+  // Collect values
+  var fields = {Work:'MY WORK & VENTURES',Health:'MY HEALTH',Friends:'MY FRIENDSHIPS',Spirit:'MY SPIRITUAL PRACTICE',Heal:'MY HEALING',Nonneg:'MY NON-NEGOTIABLES'};
+  var entry = {date: new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}), data:{}};
+  var hasAny = false;
+  Object.keys(fields).forEach(function(k){
+    var el = document.getElementById('sf'+k);
+    if(el && el.value.trim()){ entry.data[k] = el.value.trim(); hasAny = true; }
+  });
+  if(!hasAny) return;
+  // Save to log
+  if(!S.singleFocusLog) S.singleFocusLog = [];
+  S.singleFocusLog.push(entry);
+  // Also save to singleFocus for backward compat
   saveSingleFocus();
+  // Clear cells
+  Object.keys(fields).forEach(function(k){
+    var el = document.getElementById('sf'+k);
+    if(el) el.value = '';
+  });
+  if(!S.singleFocus) S.singleFocus = {};
+  Object.keys(fields).forEach(function(k){ S.singleFocus[k] = ''; });
+  save();
+  // Show confirmation
   var msg = document.getElementById('sfSavedMsg');
-  if(msg){ msg.textContent='\u2713 Saved'; msg.style.opacity=1; setTimeout(function(){ msg.style.opacity=0; },2000); }
+  if(msg){ msg.textContent='\u2713 Saved for this week'; msg.style.opacity=1; setTimeout(function(){ msg.style.opacity=0; },3000); }
+  // Render log
+  renderSingleFocusLog();
+}
+
+function renderSingleFocusLog(){
+  var wrap = document.getElementById('sfSavedLog');
+  if(!wrap) return;
+  var log = (S.singleFocusLog||[]).slice().reverse().slice(0,4);
+  if(!log.length){ wrap.innerHTML=''; return; }
+  var LABELS = {Work:'My work & ventures',Health:'My health',Friends:'My friendships',Spirit:'My spiritual practice',Heal:'My healing',Nonneg:'My non-negotiables'};
+  var html = '';
+  log.forEach(function(entry, idx){
+    var isFirst = idx === 0;
+    html += '<div style="margin-bottom:12px;border:1px solid var(--pink-100);border-radius:14px;overflow:hidden;">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:'+(isFirst?'var(--blush)':'white')+';cursor:pointer;" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\'">';
+    html += '<span style="font-size:11px;font-weight:700;color:var(--rose);">'+(isFirst?'\u2665 This week':'Week of ')+' '+entry.date+'</span>';
+    html += '<span style="font-size:11px;color:var(--mist);">&#9660;</span>';
+    html += '</div>';
+    html += '<div style="padding:12px 14px;display:'+(isFirst?'block':'none')+';">';
+    Object.keys(entry.data||{}).forEach(function(k){
+      if(entry.data[k]){
+        html += '<div style="margin-bottom:8px;">';
+        html += '<div style="font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mauve);margin-bottom:2px;">'+(LABELS[k]||k)+'</div>';
+        html += '<div style="font-family:var(--serif);font-size:13px;color:var(--stone);line-height:1.6;">'+entry.data[k]+'</div>';
+        html += '</div>';
+      }
+    });
+    html += '</div></div>';
+  });
+  wrap.innerHTML = html;
 }
 
 
@@ -7598,6 +7654,38 @@ function retakeReadinessTest(){
   document.getElementById('rdForm').style.display = 'block';
   document.getElementById('rdResult').style.display = 'none';
   document.getElementById('readinessTestOverlay').scrollTop = 0;
+}
+
+
+function toggleRlogEntry(ri){
+  var body = document.getElementById('rlog_body_' + ri);
+  var chev = document.getElementById('rlog_chevron_' + ri);
+  if(!body) return;
+  var open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'block';
+  if(chev) chev.style.transform = open ? 'rotate(-90deg)' : 'rotate(0deg)';
+}
+
+
+function toggleAllRlog(){
+  var btn = document.getElementById('rlogCollapseBtn');
+  var entries = document.querySelectorAll('[id^="rlog_body_"]');
+  if(!entries.length) return;
+  // Check current state - if any are open, collapse all; if all closed, expand all
+  var anyOpen = false;
+  entries.forEach(function(b){ if(b.style.display !== 'none') anyOpen = true; });
+  entries.forEach(function(b){
+    var ri = b.id.replace('rlog_body_','');
+    var chev = document.getElementById('rlog_chevron_' + ri);
+    if(anyOpen){
+      b.style.display = 'none';
+      if(chev) chev.style.transform = 'rotate(-90deg)';
+    } else {
+      b.style.display = 'block';
+      if(chev) chev.style.transform = 'rotate(0deg)';
+    }
+  });
+  if(btn) btn.innerHTML = anyOpen ? '&#9654; Expand all' : '&#9654; Expand all';
 }
 
 document.addEventListener("DOMContentLoaded",lpRender);}
