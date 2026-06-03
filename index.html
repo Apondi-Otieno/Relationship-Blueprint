@@ -2251,6 +2251,23 @@ textarea::placeholder{color:var(--mist);font-style:italic}
 </div>
 
 <script>
+var HT_GRADES={
+  A:{min:85,label:'Grade A \u2014 High compatibility',color:'#2d7a2d',barColor:'#4CAF50',
+     desc:'Your instincts across all six scenarios reflect a man who is emotionally present, accountable, and genuinely available.',
+     advice:'A Grade A means your instincts in hard moments are sound. Keep proving it with your actions.'},
+  B:{min:65,label:'Grade B \u2014 Promising with real gaps',color:'#4a7a2a',barColor:'#8BC34A',
+     desc:'You have genuine strengths \u2014 and at least one scenario where your honest answer revealed something worth looking at.',
+     advice:'A Grade B is workable. Look at which scenario you scored lowest on \u2014 that is the area that will show up in a real relationship.'},
+  C:{min:45,label:'Grade C \u2014 Proceed with caution',color:'#7a6020',barColor:'#FF9800',
+     desc:'Your responses suggest you are showing up partially. In at least two scenarios, your honest instinct was to protect yourself rather than be present for her.',
+     advice:'A Grade C is not a judgment \u2014 it is a mirror. She needs someone who can hold hard moments without deflecting.'},
+  D:{min:30,label:'Grade D \u2014 Significant concerns',color:'#b5614a',barColor:'#FF5722',
+     desc:'Across most scenarios, your honest responses show patterns of avoidance, deflection, or self-protection.',
+     advice:'A Grade D means the foundation is shaky right now. She deserves someone who is ready.'},
+  E:{min:0,label:'Grade E \u2014 Not ready',color:'#c4406b',barColor:'#c4406b',
+     desc:'Your honest answers across these scenarios consistently point to unavailability \u2014 emotional, relational, or in terms of commitment.',
+     advice:'A Grade E is the most honest answer you could have given. Come back when you are ready to show up differently.'}
+};
 var READINESS_SCENARIOS = [
   {
     q: "You\u2019ve been on 3 dates. He texts to reschedule last minute \u2014 for the second time. What do you do?",
@@ -5697,17 +5714,33 @@ function analyseSectionE(ans){
 
 
 function downloadPhase0PDF(){
-  var p0 = S.phase0 || {};
-  // Sync any open textarea values into p0 first
+  // Step 1: flush any currently-visible textareas into S.phase0
+  if(!S.phase0) S.phase0={};
+  var p0 = S.phase0;
   for(var _n=1;_n<=16;_n++){
     var _ta=document.getElementById('p0t'+_n);
     if(_ta && _ta.value.trim()) p0['t'+_n]=_ta.value.trim();
   }
-  S.phase0 = p0;
+  save(); // persist before generating
+
+  // Step 2: build answers array — try t1..t16 keys, then legacy .answers object
+  var answers=[];
+  var hasAny=false;
+  for(var _n=1;_n<=16;_n++){
+    var val = (p0['t'+_n]||'').trim();
+    if(!val && p0.answers) val = (p0.answers['t'+_n]||p0.answers[_n]||'').trim();
+    if(val) hasAny=true;
+    answers.push(val);
+  }
+  if(!hasAny){
+    alert('No answers found in your self-report. Please write at least a few answers in Phase 0 and try again.');
+    return;
+  }
+
+  // Step 3: analysis
   var analysis = null;
-  try{ analysis = analysePhase0(); } catch(e){ analysis = p0.analysis || null; }
-  // Use stored analysis as fallback
-  if(!analysis || analysis.readiness===0) analysis = p0.analysis || analysis;
+  try{ analysis = analysePhase0(); } catch(e){}
+  if(!analysis || !analysis.readiness) analysis = p0.analysis || {readiness:0};
   var questions = [
     'A1 \u2014 Your honest 50%',
     'A2 \u2014 What you are still waiting for',
@@ -5726,8 +5759,7 @@ function downloadPhase0PDF(){
     'E15 \u2014 Your good life without anyone',
     'E16 \u2014 What you are building while you observe'
   ];
-  var answers = [];
-  for(var n=1;n<=16;n++) answers.push(p0['t'+n]||'');
+  // answers[] already built above
 
   // ── PERSONALISED BOOK + VIDEO SELECTION ────────────────────────────
   var woundTags   = (analysis && analysis.woundTags)   || [];
@@ -6336,33 +6368,7 @@ function breakUp(){
 }
 
 
-function downloadPhase0PDF(){
-  var p0=S.phase0||{};
-  var analysis=p0.analysis||{};
-  var readiness=analysis.readiness||0;
-  var L=[];
-  L.push('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>My Relationship Self-Report</title>');
-  L.push('<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">');
-  L.push('<style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:"DM Sans",sans-serif;background:#fdf8f5;color:#1a1a1a;font-size:14px;line-height:1.6;}.page{max-width:720px;margin:0 auto;padding:48px 40px 60px;}.print-btn{position:fixed;top:20px;right:20px;padding:10px 22px;background:#c4406b;color:white;border:none;border-radius:99px;font-size:13px;font-weight:500;cursor:pointer;}h1{font-family:"Cormorant Garamond",serif;font-size:36px;font-weight:300;color:#5a1a30;margin-bottom:6px;}@media print{.print-btn{display:none;}}</style></head><body>');
-  L.push('<button class="print-btn" onclick="window.print()">\u2193 Save as PDF</button><div class="page">');
-  L.push('<h1>My Relationship Self-Report</h1>');
-  L.push('<p style="font-family:\'Cormorant Garamond\',serif;font-size:14px;font-style:italic;color:#999;margin-bottom:28px;">Readiness score: '+readiness+'%</p>');
-  var answers=p0.answers||{};
-  for(var k in answers){
-    if(answers[k]){
-      L.push('<div style="margin-bottom:16px;padding:14px 16px;background:white;border:1px solid #ffd6e7;border-radius:12px;">');
-      L.push('<div style="font-size:11px;color:#999;margin-bottom:4px;">'+k+'</div>');
-      L.push('<div style="font-family:\'Cormorant Garamond\',serif;font-size:14px;color:#2a1a20;line-height:1.65;">'+answers[k]+'</div>');
-      L.push('</div>');
-    }
-  }
-  L.push('</div></body></html>');
-  var blob=new Blob([L.join('\n')],{type:'text/html;charset=utf-8'});
-  var url=URL.createObjectURL(blob);
-  var a=document.createElement('a');a.href=url;a.download='my-relationship-self-report.html';
-  document.body.appendChild(a);a.click();document.body.removeChild(a);
-  setTimeout(function(){URL.revokeObjectURL(url);},60000);
-}
+
 
 var SELF_FLAG_PATTERNS=[
   {tag:'anxiety',label:'Anxious thoughts',re:/\b(anxi|spiral|overthink|replay|can.t stop thinking|rumina|worried|scared|fear(ed)?|nervous|panick|what if he|what if i|keep thinking|in my head|my mind keeps|lose interest|lose him|forget (about )?me|move on without)\b/i},
@@ -6377,17 +6383,9 @@ var SELF_FLAG_PATTERNS=[
   {tag:'dishonest',label:'Inauthenticity',re:/\b(lied|hid|pretended|performed|wasn.t honest|fake|not authentic|acting (like i|as if i|like everything)|pretend(ed|ing) (i was|to be|that i)|not (being honest|telling the truth|saying what i really)|held back the truth|showed him a version|curated (myself|what he sees)|performed (for him|happiness|okayness))\b/i},
 ];
 
-function classifySelfFlag(text){
-  var t=text.toLowerCase();
-  var hits=SELF_FLAG_PATTERNS.filter(function(p){return p.re.test(t);});
-  if(!hits.length) return 'neutral';
-  return hits.length>=2?'red':'amber';
-}
 
-function tagSelfFlag(text){
-  var t=text.toLowerCase();
-  return SELF_FLAG_PATTERNS.filter(function(p){return p.re.test(t);}).map(function(p){return p.tag;});
-}
+
+
 
 var _manualSelfFlagTags=[];
 
@@ -6398,54 +6396,7 @@ function toggleSelfFlagTag(btn,tag){
   else _manualSelfFlagTags.push(tag);
 }
 
-function saveSelfFlagEntry(){
-  var ta=document.getElementById('relSelfFlags');
-  if(!ta||!ta.value.trim()) return;
-  var text=ta.value.trim();
-  var cls=classifySelfFlag(text);
-  var tags=tagSelfFlag(text);
-  if(_manualSelfFlagTags&&_manualSelfFlagTags.length>0){
-    _manualSelfFlagTags.forEach(function(t){if(tags.indexOf(t)===-1)tags.push(t);});
-    if(cls==='neutral') cls=tags.length>=2?'red':'amber';
-  }
-  if(!S.selfFlagLog) S.selfFlagLog=[];
-  S.selfFlagLog.push({text:text,cls:cls,tags:tags,phase:S.activePhase||1,
-    date:new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})});
-  if(!S.relFocus) S.relFocus={};
-  S.relFocus.selfFlags=text;
-  save();
-  renderSelfFlagFeed();
-  if(ta) ta.value='';
-  _manualSelfFlagTags=[];
-  var pills=document.querySelectorAll('.sfp-pill.active');
-  pills.forEach(function(p){p.classList.remove('active');});
-  var msg=document.getElementById('selfFlagMsg');
-  if(msg){
-    var lbl=cls==='red'?'\u26a0 Wound active \u2014 saved':cls==='amber'?'\u25b2 Pattern noticed \u2014 saved':'Neutral';
-    var col=cls==='red'?'var(--rose)':cls==='amber'?'#7a4a00':'var(--mist)';
-    msg.textContent=lbl;msg.style.color=col;msg.style.opacity=1;
-    setTimeout(function(){msg.style.opacity=0;},3000);
-  }
-  var GUIDANCE={
-    anxiety:'Your nervous system is working harder than the data justifies. Write down exactly what you have observed \u2014 facts, not interpretations. Stay there.',
-    chase:'Chasing is anxiety wearing the costume of interest. Pause 24 hours before any reach-out. Fill that time with one thing that belongs entirely to your own life.',
-    shrink:'You are making yourself smaller. Before your next interaction, name one thing you will say that is fully true.',
-    tooneedy:'You are giving at a pace that is not sustainable. What would you be doing today if he did not exist?',
-    selfabandon:'You keep putting him first. What did you need this week that you did not give yourself? Do that thing before you give anything else outward.',
-    overexplain:'You are defending yourself to someone who should not require a defence. Let a statement stand on its own.',
-    jealous:'The insecurity is information about your wound, not about him. Where did this fear first live?',
-    ignore:'Your gut is speaking. Write down exactly what it is saying without softening it. That raw sentence is the data.',
-    testing:'You are creating problems to see how he handles them. Stop the test. Return to watching what is already there.',
-    dishonest:'You are performing. He cannot choose the real you if she is not present.'
-  };
-  var guidanceEl=document.getElementById('selfFlagGuidance');
-  if(guidanceEl&&tags.length>0&&GUIDANCE[tags[0]]){
-    guidanceEl.innerHTML='<span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--rose);display:block;margin-bottom:6px;">'+(cls==='red'?'\u26a0 Wound active':'Pattern noticed')+' \u2014 '+tags[0]+'</span>'+GUIDANCE[tags[0]];
-    guidanceEl.style.display='block';
-  } else if(guidanceEl&&cls==='neutral'){
-    guidanceEl.style.display='none';
-  }
-}
+
 
 function deleteSelfFlagEntry(idx){
   if(!S.selfFlagLog||!S.selfFlagLog[idx]) return;
@@ -6454,39 +6405,7 @@ function deleteSelfFlagEntry(idx){
   renderSelfFlagFeed();
 }
 
-function renderSelfFlagFeed(){
-  var wrap=document.getElementById('selfFlagFeed');
-  if(!wrap) return;
-  var allEntries=S.selfFlagLog||[];
-  if(!allEntries.length){wrap.innerHTML='';return;}
-  var entries=[];
-  for(var ii=allEntries.length-1;ii>=Math.max(0,allEntries.length-5);ii--){
-    entries.push({e:allEntries[ii],i:ii});
-  }
-  var TAG_NAMES={anxiety:'Anxious thoughts',chase:'Chasing',shrink:'Self-shrinking',tooneedy:'Too much/needy',selfabandon:'Self-abandonment',overexplain:'Over-explaining',jealous:'Insecurity',ignore:'Ignoring gut',testing:'Testing/sabotage',dishonest:'Inauthenticity'};
-  var html='<div style="margin-top:12px;">';
-  entries.forEach(function(item){
-    var e=item.e,ri=item.i;
-    var clsKey=e.cls==='red'?'red':e.cls==='amber'?'amber':'neutral';
-    var clsCol=e.cls==='red'?'var(--rose)':e.cls==='amber'?'#7a4a00':'var(--mist)';
-    var clsLabel=e.cls==='red'?'\u26a0\ufe0f Wound active':e.cls==='amber'?'\u25b2 Pattern noticed':'Neutral';
-    var topTag=(e.tags&&e.tags[0])?(TAG_NAMES[e.tags[0]]||e.tags[0]):'';
-    html+='<div class="sf-entry sf-entry-'+clsKey+'">';
-    html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:4px;">';
-    html+='<div style="display:flex;align-items:center;gap:6px;">';
-    html+='<span style="font-size:11px;font-weight:700;color:'+clsCol+';">'+clsLabel+'</span>';
-    if(topTag) html+='<span style="font-size:10px;background:white;color:'+clsCol+';border:1px solid '+clsCol+';padding:1px 7px;border-radius:99px;font-weight:600;">'+topTag+'</span>';
-    html+='</div>';
-    html+='<div style="display:flex;align-items:center;gap:8px;">';
-    html+='<span style="font-size:10px;color:var(--mist);font-family:var(--sans);">Phase '+e.phase+' \u2014 '+e.date+'</span>';
-    html+='<button onclick="deleteSelfFlagEntry('+ri+')" style="background:none;border:none;cursor:pointer;color:var(--mist);font-size:16px;line-height:1;padding:0 2px;" title="Delete" onmouseover="this.style.color=\'var(--rose)\'" onmouseout="this.style.color=\'var(--mist)\'">&times;</button>';
-    html+='</div></div>';
-    html+='<div style="font-family:var(--serif);font-size:13px;color:var(--stone);line-height:1.65;">'+e.text+'</div>';
-    html+='</div>';
-  });
-  html+='</div>';
-  wrap.innerHTML=html;
-}
+
 
 function renderSelfFlagFeedAll(){
   var wrap=document.getElementById('selfFlagFeed');
@@ -6515,20 +6434,11 @@ function renderSelfFlagFeedAll(){
   wrap.innerHTML=html;
 }
 
-function toggleHealthPanel(){
-  var panel=document.getElementById('healthPanel');
-  if(panel) panel.style.display=panel.style.display==='none'?'block':'none';
-}
 
-function toggleMobileNav(){
-  var nav=document.getElementById('mobileNav');
-  if(nav) nav.classList.toggle('open');
-}
 
-function closeMobileNav(){
-  var n=document.getElementById('navMobile'),b=document.getElementById('navHamburger');
-  if(n)n.classList.remove('open');if(b)b.classList.remove('open');
-}
+
+
+
 
 function checkURLParams(){
   var search=window.location.search||'';
@@ -6849,23 +6759,7 @@ function clearHisReport(){
 
 
 
-var HT_GRADES={
-  A:{min:85,label:'Grade A \u2014 High compatibility',color:'#2d7a2d',barColor:'#4CAF50',
-     desc:'Your instincts across all six scenarios reflect a man who is emotionally present, accountable, and genuinely available.',
-     advice:'A Grade A means your instincts in hard moments are sound. Keep proving it with your actions.'},
-  B:{min:65,label:'Grade B \u2014 Promising with real gaps',color:'#4a7a2a',barColor:'#8BC34A',
-     desc:'You have genuine strengths \u2014 and at least one scenario where your honest answer revealed something worth looking at.',
-     advice:'A Grade B is workable. Look at which scenario you scored lowest on \u2014 that is the area that will show up in a real relationship.'},
-  C:{min:45,label:'Grade C \u2014 Proceed with caution',color:'#7a6020',barColor:'#FF9800',
-     desc:'Your responses suggest you are showing up partially. In at least two scenarios, your honest instinct was to protect yourself rather than be present for her.',
-     advice:'A Grade C is not a judgment \u2014 it is a mirror. She needs someone who can hold hard moments without deflecting.'},
-  D:{min:30,label:'Grade D \u2014 Significant concerns',color:'#b5614a',barColor:'#FF5722',
-     desc:'Across most scenarios, your honest responses show patterns of avoidance, deflection, or self-protection.',
-     advice:'A Grade D means the foundation is shaky right now. She deserves someone who is ready.'},
-  E:{min:0,label:'Grade E \u2014 Not ready',color:'#c4406b',barColor:'#c4406b',
-     desc:'Your honest answers across these scenarios consistently point to unavailability \u2014 emotional, relational, or in terms of commitment.',
-     advice:'A Grade E is the most honest answer you could have given. Come back when you are ready to show up differently.'}
-};
+
 function calcHealthScore(){
   var HIS = [
     {k:'dateplans',w:3},{k:'dateconsistent',w:3},{k:'stilldates',w:3},
@@ -7476,14 +7370,23 @@ function renderReadinessTest(){
 }
 
 function submitReadinessTest(){
+  // Ensure form is rendered
+  var rdat1=document.getElementById('rdat1');
+  if(!rdat1){
+    renderReadinessTest();
+  }
   var missing=[];
   for(var q=1;q<=5;q++){
     var ta=document.getElementById('rdat'+q);
-    if(!ta||ta.value.trim().length<15) missing.push(q);
+    if(!ta||!ta.value||ta.value.trim().length<15) missing.push(q);
   }
   if(missing.length>0){
     var err=document.getElementById('rdError');
-    if(err){err.textContent='Please answer all 5 scenarios (scenario '+missing.join(', ')+' needs more).';err.style.display='block';}
+    if(err){
+      err.textContent='Please answer all 5 scenarios (scenario '+missing.join(', ')+' needs more detail — at least a sentence).';
+      err.style.display='block';
+      err.scrollIntoView({behavior:'smooth',block:'center'});
+    }
     return;
   }
   var details=[];
@@ -7492,11 +7395,13 @@ function submitReadinessTest(){
     var txt=ta?ta.value.trim():'';
     var isDisc = sc.discernment.test(txt);
     var isHyper = sc.hypervigilant.test(txt) && !isDisc;
-    var isAvoid = sc.avoidant.test(txt) && !isDisc;
     var result = isDisc ? 'discernment' : isHyper ? 'hypervigilant' : 'avoidant';
     details.push({q:sc.q, a:txt, result:result, coaching:sc.coaching, hypervigilant_note:sc.hypervigilant_note});
   });
+  var el=document.getElementById('readinessTestContent');
+  if(!el) return;
   renderReadinessResult(details);
+  el.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 
