@@ -2251,6 +2251,48 @@ textarea::placeholder{color:var(--mist);font-style:italic}
 </div>
 
 <script>
+var READINESS_SCENARIOS = [
+  {
+    q: "You\u2019ve been on 3 dates. He texts to reschedule last minute \u2014 for the second time. What do you do?",
+    discernment: /\b(mention it|bring it up|say something|address it|let him know|i\u2019d (say|tell)|twice is|pattern|that doesn.t work for me|i need|worth (noting|mentioning|flagging)|i\u2019d (notice|want to)|curious (whether|if)|check (in|whether)|i\u2019d want to understand)\b/i,
+    hypervigilant: /\b(done|over|finished|walk away|leave|not worth|red flag immediately|instant|cut him off|wouldn.t continue|would end it|dealbreaker straight away|no second chances|automatically)\b/i,
+    avoidant: /\b(it.s fine|no problem|of course|happy to|whatever works|totally fine|i don.t mind|doesn.t matter|i.d just|sure|okay with)\b/i,
+    coaching: "Grounded discernment names the pattern out loud and stays curious: \u201cI\u2019ve noticed this has happened twice \u2014 is everything okay?\u201d It doesn\u2019t punish, but it doesn\u2019t ignore either. Walking away immediately without saying anything is hypervigilance. Saying \u201cit\u2019s fine\u201d is avoidance. The discerning move is to name it and watch how he responds.",
+    hypervigilant_note: "Leaving immediately without naming the pattern skips the conversation. Discernment means staying curious long enough to gather real data \u2014 not reacting."
+  },
+  {
+    q: "Three weeks in, he still hasn\u2019t made plans more than 48 hours in advance. Your gut says something is off. What do you do?",
+    discernment: /\b(trust (my gut|it|the feeling)|gut is data|pay attention|something (is|feels) off|worth (noticing|mentioning|addressing)|i\u2019d (mention|bring up|ask|say)|observe (more|the pattern)|note it|flag it|curious (about|whether)|i want to understand|watch (whether|how|if)|let it inform)\b/i,
+    hypervigilant: /\b(leave now|done|finished|immediately|not worth|he\u2019s clearly|obviously not (serious|interested|ready)|waste of time|wouldn.t see him again|cut my losses|end it)\b/i,
+    avoidant: /\b(probably (just|busy)|he.s just|give him time|maybe he\u2019s|i\u2019m sure|overthinking|being paranoid|too much|don.t say anything|wait and see|he.ll change|maybe that\u2019s just how)\b/i,
+    coaching: "Your gut is an instrument, not a verdict. The discerning response trusts the feeling AND stays curious: note the pattern, name it (or decide when you\u2019ll name it), and watch what happens. Leaving immediately is reactivity. Dismissing the feeling is avoidance. Sitting with it as data \u2014 that\u2019s discernment.",
+    hypervigilant_note: "Ending things after three weeks without naming what you noticed skips the information-gathering stage. Give the data a chance to speak before you decide."
+  },
+  {
+    q: "A friend asks how things are going. Honestly, you feel more anxious than excited. What does that mean to you?",
+    discernment: /\b(worth (paying attention to|noticing|sitting with)|data|information|my (body|gut|nervous system) is (telling|saying|showing)|anxiety (means|is telling|is a signal|is data)|not (a good sign|peace|ease)|something (feels|is) off|worth (exploring|looking at|asking why)|i\u2019d (look at|ask myself|sit with|pay attention)|what is (it|my body) (telling|saying))\b/i,
+    hypervigilant: /\b(always anxious|anxiety always means|red flag|leave (him|it)|done|finished|anxiety = (danger|problem|wrong)|can.t trust (him|it|anything)|men always|this always (happens|means))\b/i,
+    avoidant: /\b(normal|just nervous|butterflies|everyone (feels|gets)|doesn.t mean (anything|much)|probably (fine|nothing|okay)|overthinking|being paranoid|ignore it|push through|it.ll (pass|be fine)|not a big deal)\b/i,
+    coaching: "Anxiety is information, not a verdict. The discerning question is: what is this feeling pointing to specifically? Is it his behaviour, or your wound being activated by something familiar? Both are worth knowing. Dismissing it (\u201cjust nerves\u201d) loses the data. Treating it as proof (\u201cthis is wrong\u201d) skips the inquiry.",
+    hypervigilant_note: "Anxiety doesn\u2019t always mean danger \u2014 it can also mean your wound is activated by something familiar, not something real. The discerning move is to get curious about which one it is."
+  },
+  {
+    q: "He says something dismissive when you share something vulnerable. What do you do?",
+    discernment: /\b(say something|name it|let him know|that (hurt|landed badly|didn.t feel right|wasn.t okay)|i (felt|needed|want)|i\u2019d (tell him|say|let him know|name it)|speak up|i need (you to|him to)|that felt|bring it up|address it|the next time|i would (say|tell|name)|when (i feel|that happens))\b/i,
+    hypervigilant: /\b(leave immediately|done|finished|that.s a dealbreaker|end it|walk out|one strike|never (again|acceptable)|automatically over|cut him off|i would never (forgive|stay)|instant)\b/i,
+    avoidant: /\b(let it go|it.s fine|he didn.t mean|probably (tired|stressed|didn.t realise)|move on|don.t want to (make|cause)|make a big deal|forget it|brush it off|ignore|he.s (probably|just)|i.d (just|probably|likely) (let|move|forget))\b/i,
+    coaching: "The grounded response names what happened \u2014 clearly, without drama: \u201cThat felt dismissive. When I share something hard, I need you to be present.\u201d Then she watches what he does with that. Leaving immediately without naming it means he never had the chance to respond. Letting it go means it happens again.",
+    hypervigilant_note: "One dismissive moment is data, not a verdict. The discerning move is to name it and give him the chance to respond \u2014 his response tells you far more than the original moment."
+  },
+  {
+    q: "Two months in, he still hasn\u2019t introduced you to anyone in his life. Do you bring it up?",
+    discernment: /\b(yes|i would|bring it up|mention it|ask (him|about|directly)|curious (about|why|whether)|have a conversation|worth (mentioning|discussing|raising|exploring)|i\u2019d (ask|want to know|bring up|say something)|matters to me|i need to (know|understand)|name it|i\u2019d (notice and|want to))\b/i,
+    hypervigilant: /\b(leave|done|finished|clearly (hiding|not serious|ashamed)|that\u2019s (obviously|automatically|definitely) a red flag|over immediately|not worth|waste of time|men always|they always)\b/i,
+    avoidant: /\b(too (early|soon)|not my place|don.t want to (pressure|push|scare|rock the boat)|he.ll do it when|give him time|he.s just (private|shy|busy)|maybe (he.s|it.s)|wouldn.t|no|might seem (needy|clingy|pushy))\b/i,
+    coaching: "Two months is not too early. The discerning response brings it up directly and watches his response: \u201cI\u2019d love to meet some of your people \u2014 is that something you\u2019d want?\u201d His answer and how he handles it is the actual data. Leaving without asking loses valuable information. Not asking because you\u2019re afraid of his reaction is avoidance.",
+    hypervigilant_note: "There could be a real reason \u2014 family distance, private personality, timing. Leaving without asking skips the conversation that would actually tell you what\u2019s going on."
+  },
+];
 
 /* ══ CONV_GUIDES — conversation questions per phase ══ */
 var CONV_GUIDES = {
@@ -5540,16 +5582,16 @@ function analyseSectionA(ans){
   var blame=(t1.match(/\b(his fault|because of him|he made|he caused|he never|all his|he was|he did|he wouldn.t|he couldn.t|he didn.t)\b/gi)||[]).length;
   var length=ans[0]?ans[0].length:0;
   if(own>=2&&blame<=2) insights.push({t:'green',h:'Genuine ownership',b:'You named your part clearly. This is the foundation that protects your next chapter.',q:ans[0].slice(0,120)});
-  else if(own>=1||length>80) insights.push({t:'amber',h:'Partial ownership',b:'You touched on your part. The more specific you are about what you did, avoided, or permitted, the more this protects you.'});
-  else if(length>20) insights.push({t:'red',h:'Still mostly focused on his failures',b:'This question asks for your 50% specifically. What did you overlook, excuse, or permit that you already knew?'});
+  else if(own>=1||length>80) insights.push({t:'amber',h:'Partial ownership',b:'You touched on your part. The more specific you are about what you did, avoided, or permitted, the more this protects you.',add:'Try completing: “I specifically chose to stay when I noticed...” or “My part was that I kept excusing...” Name one concrete action you took or avoided.'});
+  else if(length>20) insights.push({t:'red',h:'Still mostly focused on his failures',b:'This question asks for your 50% specifically. What did you overlook, excuse, or permit that you already knew?',add:'Rewrite your answer starting with “I”. Every sentence. What did YOU do, stay with, allow, or hope for? His behaviour is not yours to own — but your choices are.'});
   // A2 power
   var t2=(ans[1]||'').toLowerCase();
   var waiting=(t2.match(/\b(still waiting|hope he|maybe he will|if he|just want him to|wish he would)\b/gi)||[]).length;
   var reclaimed=(t2.match(/\b(i can give|i release|i let go|i choose|i no longer|i am free|my own|i hold|myself|i decide|i moved|i am moving|i have moved|i give myself)\b/gi)||[]).length;
   var length2=ans[1]?ans[1].length:0;
   if(reclaimed>=2&&waiting<=1) insights.push({t:'green',h:'Power reclaimed',b:'You have identified where your power was and are actively taking it back.'});
-  else if(reclaimed>=1||length2>60) insights.push({t:'amber',h:'Reclaiming in progress',b:'You are starting to locate your agency. Keep going — the more specific you get, the more real it becomes.'});
-  else if(length2>20) insights.push({t:'red',h:'Power still feels external',b:'Your power is not in what he does or does not do. Where can you make a choice today, regardless of him?'});
+  else if(reclaimed>=1||length2>60) insights.push({t:'amber',h:'Reclaiming in progress',b:'You are starting to locate your agency. Keep going — the more specific you get, the more real it becomes.',add:'Name one specific thing you can do today that does not depend on him at all. Then name the thing you were waiting for him to give you and ask: can I give that to myself?'});
+  else if(length2>20) insights.push({t:'red',h:'Power still feels external',b:'Your power is not in what he does or does not do. Where can you make a choice today, regardless of him?',add:'List three things you want that you have been waiting for him (or someone) to provide. Now ask: which of these can I begin to give myself? Start there.'});
   // A3 what she learned
   var t3=(ans[2]||'').toLowerCase();
   var specific=(t3.match(/\b(i learned|i now know|i understand|i will no longer|i will not|i won.t|next time|i see|i recognise|i realise|i recognize|the lesson|taught me|showed me|i need|i deserve|i require)\b/gi)||[]).length;
@@ -5621,8 +5663,8 @@ function analyseSectionD(ans){
   var supportWords=(planText.match(/\b(friend|therapist|journal|prayer|god|faith|walk|breathe|space|pause|time|call|write|talk|support|community|coach|mentor|accountable)\b/gi)||[]).length;
   var totalLength=(ans[0]?ans[0].length:0)+(ans[1]?ans[1].length:0)+(ans[2]?ans[2].length:0);
   if(planWords>=3&&triggers>=1) insights.push({t:'green',h:'Strong protection plan',b:'You have a plan with triggers, actions, and grounding. This is real infrastructure \u2014 not just intention.',q:planText.slice(0,120)});
-  else if(planWords>=2||triggers>=1||supportWords>=2||totalLength>150) insights.push({t:'amber',h:'Protection plan developing',b:'There is structure here. Sharpen it: when exactly does the wound fire? What is the first thing you will do?'});
-  else if(totalLength>50) insights.push({t:'red',h:'Plan needs more specificity',b:'Intentions are not plans. What exactly will you do when the anxiety hits at 11pm? Write that down.'});
+  else if(planWords>=2||triggers>=1||supportWords>=2||totalLength>150) insights.push({t:'amber',h:'Protection plan developing',b:'There is structure here. Sharpen it: when exactly does the wound fire? What is the first thing you will do?',add:'Make it an if/then: “When I feel ___, I will ___ before I do anything else.” One specific sentence beats a paragraph of intention.'});
+  else if(totalLength>50) insights.push({t:'red',h:'Plan needs more specificity',b:'Intentions are not plans. What exactly will you do when the anxiety hits at 11pm? Write that down.',add:'Write one sentence in this format: “When I feel [trigger], I will [specific action] before I respond to him.” Then write a second one for the next most common trigger.'});
   else insights.push({t:'red',h:'Protection plan missing',b:'This section matters most. Without a plan, the wound runs on autopilot. Even one sentence: \u201cWhen I feel X, I will do Y.\u201d'});
   return insights;
 }
@@ -7444,51 +7486,95 @@ function submitReadinessTest(){
     if(err){err.textContent='Please answer all 5 scenarios (scenario '+missing.join(', ')+' needs more).';err.style.display='block';}
     return;
   }
-  var score=0;
   var details=[];
   READINESS_SCENARIOS.forEach(function(sc,idx){
     var ta=document.getElementById('rdat'+(idx+1));
     var txt=ta?ta.value.trim():'';
-    var green=sc.green.test(txt);
-    var red=sc.red.test(txt)&&!green;
-    if(green){score+=20;details.push({q:sc.q,a:txt,pass:true});}
-    else{details.push({q:sc.q,a:txt,pass:false});}
+    var isDisc = sc.discernment.test(txt);
+    var isHyper = sc.hypervigilant.test(txt) && !isDisc;
+    var isAvoid = sc.avoidant.test(txt) && !isDisc;
+    var result = isDisc ? 'discernment' : isHyper ? 'hypervigilant' : 'avoidant';
+    details.push({q:sc.q, a:txt, result:result, coaching:sc.coaching, hypervigilant_note:sc.hypervigilant_note});
   });
-  renderReadinessResult(score, details);
+  renderReadinessResult(details);
 }
 
-function renderReadinessResult(score, details){
+
+function renderReadinessResult(details){
   var el=document.getElementById('readinessTestContent');
   if(!el) return;
-  var pass=score>=90;
-  var col=pass?'#2d7a2d':'#b5614a';
+
+  var discCount  = details.filter(function(d){return d.result==='discernment';}).length;
+  var hyperCount = details.filter(function(d){return d.result==='hypervigilant';}).length;
+  var avoidCount = details.filter(function(d){return d.result==='avoidant';}).length;
+  var score = Math.round(discCount/5*100);
+  var pass = score >= 60 && avoidCount === 0; // discernment majority, no pure avoidance
+
   var h='';
-  h+='<div style="text-align:center;padding:28px 16px 20px;">';
-  h+='<div style="font-family:var(--serif);font-size:72px;font-weight:300;color:'+col+';line-height:1;margin-bottom:8px;">'+score+'%</div>';
+  h+='<div style="text-align:center;padding:28px 16px 20px;border-bottom:1px solid var(--pink-100);margin-bottom:20px;">';
+  h+='<div style="font-family:var(--serif);font-size:72px;font-weight:300;line-height:1;margin-bottom:6px;color:'+(pass?'#2d7a2d':'#b5614a')+';">'+score+'%</div>';
+
   if(pass){
-    h+='<div style="font-family:var(--serif);font-size:20px;color:'+col+';margin-bottom:10px;">You are ready.</div>';
-    h+='<div style="font-family:var(--serif);font-size:13px;font-style:italic;color:var(--mist);max-width:440px;margin:0 auto 24px;line-height:1.7;">Your answers show a woman who trusts her gut, speaks up, and holds her standard. That is the foundation. Step forward \u2014 eyes open.</div>';
-    h+='<button onclick="confirmSwitchToRelationship()" style="padding:14px 36px;background:var(--rose);color:white;border:none;border-radius:99px;font-size:14px;font-weight:500;font-family:var(--sans);cursor:pointer;margin-bottom:10px;">\u2665 I am ready \u2014 open relationship mode</button><br>';
+    h+='<div style="font-family:var(--serif);font-size:20px;color:#2d7a2d;margin-bottom:10px;">Grounded discernment. You are ready.</div>';
+    h+='<div style="font-family:var(--serif);font-size:13px;font-style:italic;color:var(--mist);max-width:460px;margin:0 auto 20px;line-height:1.7;">Your answers show someone who trusts her gut, names things, and stays curious rather than reactive. That is the foundation. Step forward \u2014 eyes open.</div>';
+    if(hyperCount>0){
+      h+='<div style="background:#fdf3e0;border:1px solid #e8c070;border-radius:12px;padding:12px 16px;max-width:460px;margin:0 auto 20px;font-family:var(--serif);font-size:13px;color:#7a4a00;line-height:1.65;text-align:left;">';
+      h+='\u26a0\ufe0f One note: '+hyperCount+' of your answer'+(hyperCount>1?'s read':'reads')+' as hypervigilant rather than discerning. You can date \u2014 and it is worth noticing the difference as you go.';
+      h+='</div>';
+    }
+    h+='<button onclick="confirmSwitchToRelationship()" style="padding:14px 36px;background:var(--rose);color:white;border:none;border-radius:99px;font-size:14px;font-weight:500;font-family:var(--sans);cursor:pointer;margin-bottom:10px;">\u2665 Open relationship mode</button><br>';
+  } else if(hyperCount >= 3){
+    h+='<div style="font-family:var(--serif);font-size:20px;color:#7a6020;margin-bottom:10px;">Hypervigilance detected.</div>';
+    h+='<div style="font-family:var(--serif);font-size:13px;font-style:italic;color:var(--mist);max-width:460px;margin:0 auto 20px;line-height:1.7;">Your answers show a protective system running at high alert. This looks like readiness but it is closer to fear. Real discernment is curious and grounded \u2014 not fast and reactive. The distinction matters before you step into something new.</div>';
+    h+='<button onclick="confirmSwitchToRelationship()" style="padding:12px 28px;background:white;color:var(--rose);border:1.5px solid var(--rose);border-radius:99px;font-size:13px;font-weight:500;font-family:var(--sans);cursor:pointer;margin-bottom:8px;">Override and continue anyway</button><br>';
   } else {
-    h+='<div style="font-family:var(--serif);font-size:20px;color:'+col+';margin-bottom:10px;">Not quite yet.</div>';
-    h+='<div style="font-family:var(--serif);font-size:13px;font-style:italic;color:var(--mist);max-width:440px;margin:0 auto 24px;line-height:1.7;">Your answers show some areas where the wound is still in charge. That is not failure \u2014 it is information. Keep working Phase 0 before stepping in.</div>';
+    h+='<div style="font-family:var(--serif);font-size:20px;color:#b5614a;margin-bottom:10px;">Not quite yet.</div>';
+    h+='<div style="font-family:var(--serif);font-size:13px;font-style:italic;color:var(--mist);max-width:460px;margin:0 auto 20px;line-height:1.7;">Some of your answers show the wound is still steering. That is not failure \u2014 it is information. Read the coaching below and retake when you are ready.</div>';
   }
-  h+='<button onclick="closeReadinessTest()" style="background:none;border:none;cursor:pointer;color:var(--mist);font-size:13px;font-family:var(--sans);text-decoration:underline;">\u2190 Back</button>';
-  h+='</div>';
-  // Scenario breakdown
-  h+='<div style="margin-top:4px;">';
-  h+='<div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mauve);margin-bottom:10px;">Your answers</div>';
+
+  // Score breakdown pills
+  h+='<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:4px;">';
+  h+='<span style="padding:4px 14px;border-radius:99px;background:#e8f5e8;color:#2d7a2d;font-size:11px;font-weight:700;">\u2713 '+discCount+' Discernment</span>';
+  if(hyperCount>0) h+='<span style="padding:4px 14px;border-radius:99px;background:#fdf3e0;color:#7a4a00;font-size:11px;font-weight:700;">\u26a0 '+hyperCount+' Hypervigilant</span>';
+  if(avoidCount>0) h+='<span style="padding:4px 14px;border-radius:99px;background:#fde8e0;color:#b5614a;font-size:11px;font-weight:700;">\u25cf '+avoidCount+' Avoidant</span>';
+  h+='</div></div>';
+
+  // Per-scenario breakdown
+  h+='<div>';
+  h+='<div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mauve);margin-bottom:14px;">Scenario by scenario</div>';
   details.forEach(function(d,idx){
-    var dcol=d.pass?'#2d7a2d':'#b5614a';var dbg=d.pass?'#f0f7e8':'#fde8e0';
-    h+='<div style="margin-bottom:10px;padding:12px 15px;background:'+dbg+';border-radius:12px;border-left:3px solid '+dcol+';">';
-    h+='<div style="font-size:12px;font-weight:700;color:'+dcol+';margin-bottom:4px;">'+(d.pass?'\u2713 Clear':'\u26a0 Needs work')+' \u2014 Scenario '+(idx+1)+'</div>';
-    h+='<div style="font-size:11px;color:var(--mist);margin-bottom:4px;font-style:italic;">'+d.q+'</div>';
-    h+='<div style="font-family:var(--serif);font-size:13px;color:var(--stone);line-height:1.6;">'+d.a+'</div>';
+    var isDisc=d.result==='discernment';
+    var isHyper=d.result==='hypervigilant';
+    var col=isDisc?'#2d7a2d':isHyper?'#7a4a00':'#b5614a';
+    var bg=isDisc?'#f0f7e8':isHyper?'#fdf3e0':'#fde8e0';
+    var label=isDisc?'\u2713 Discernment':isHyper?'\u26a0 Hypervigilant':'\u25cf Avoidant';
+    h+='<div style="margin-bottom:14px;background:'+bg+';border-radius:14px;padding:14px 16px;border-left:3px solid '+col+';">';
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">';
+    h+='<div style="font-size:11px;font-weight:700;color:'+col+';">'+label+'</div>';
+    h+='<div style="font-size:10px;color:var(--mist);">Scenario '+(idx+1)+'</div></div>';
+    h+='<div style="font-size:12px;color:var(--mist);font-style:italic;margin-bottom:8px;line-height:1.5;">'+d.q+'</div>';
+    h+='<div style="font-family:var(--serif);font-size:13px;color:var(--deep);line-height:1.65;background:white;padding:10px 12px;border-radius:10px;margin-bottom:10px;">'+d.a+'</div>';
+    // Show coaching when not discernment
+    if(!isDisc){
+      var note = isHyper ? d.hypervigilant_note : d.coaching;
+      h+='<div style="font-size:12px;color:'+col+';line-height:1.65;">';
+      h+='<span style="font-weight:700;">'+(isHyper?'What to notice: ':'What a grounded answer looks like: ')+'</span>';
+      h+=note;
+      h+='</div>';
+    }
     h+='</div>';
   });
   h+='</div>';
+
+  // Retake button
+  h+='<div style="text-align:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--pink-100);">';
+  if(!pass) h+='<div style="font-family:var(--serif);font-size:13px;font-style:italic;color:var(--mist);margin-bottom:12px;">Read the coaching above, sit with it, and come back when you feel different.</div>';
+  h+='<button onclick="retakeReadinessTest()" style="background:none;border:1px solid var(--pink-100);color:var(--mist);padding:10px 24px;border-radius:99px;font-size:12px;font-family:var(--sans);cursor:pointer;">\u21ba Retake the test</button>';
+  h+='</div>';
+
   el.innerHTML=h;
 }
+
 
 function confirmSwitchToRelationship(){
   closeReadinessTest();
@@ -7579,6 +7665,12 @@ function downloadMoodCSV(){
   a.download='my-mood-log-'+new Date().toISOString().slice(0,10)+'.csv';
   document.body.appendChild(a);a.click();document.body.removeChild(a);
   setTimeout(function(){URL.revokeObjectURL(url);},60000);
+}
+
+
+function retakeReadinessTest(){
+  _rdAnswers={};
+  renderReadinessTest();
 }
 
 document.addEventListener("DOMContentLoaded",lpRender);}
