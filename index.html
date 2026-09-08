@@ -3044,6 +3044,11 @@ function renderTimeline(){
   });
 }
 
+function updateHealthScore(){
+  var health=calcHealthScore();
+  renderHealthPanel(health);
+}
+
 function renderStats(){
   var unlocked=PHASES.filter(function(ph){return isUnlocked(ph.num);}).length;
   var done=PHASES.filter(function(ph){return isUnlocked(ph.num)&&score(ph.num).pct>=80;}).length;
@@ -3064,6 +3069,8 @@ function renderStats(){
     var d=new Date(S.startDate);
     metEl.textContent="Met "+d.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})+" \u00b7 "+friendlyElapsed(days);
   }
+  // Update health score
+  updateHealthScore();
 }
 
 function renderBanner(){
