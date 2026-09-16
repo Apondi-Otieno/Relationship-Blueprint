@@ -6525,7 +6525,12 @@ function openHisTest(){
     if(S.hisTest.answerTexts) window._htAnswerTexts=S.hisTest.answerTexts;
     htRenderAnswerSummary(S.hisTest.grade);
   } else {
-    if(form) form.style.display='block';
+    if(form){
+      if(!form.innerHTML||form.innerHTML.trim()===''){
+        htBuildForm(form);
+      }
+      form.style.display='block';
+    }
     if(res) res.style.display='none';
   }
   ov.scrollTop=0;
@@ -6861,11 +6866,25 @@ function calcHealthScore(){
     var yes=0,possible=0;
     items.forEach(function(it){
       var v=getVal(it.k);
-      if(v==='yes') yes+=it.w;
-      else if(v==='partial') yes+=it.w*0.5;
-      possible+=it.w;
+      // Only count items that have been answered (not 'none')
+      // OR count only from unlocked phases
+      if(v!=='none'||hasItemInUnlockedPhase(it.k)){
+        if(v==='yes') yes+=it.w;
+        else if(v==='partial') yes+=it.w*0.5;
+        possible+=it.w;
+      }
     });
     return possible>0?{s:yes/possible,p:possible}:{s:-1,p:0};
+  }
+  
+  function hasItemInUnlockedPhase(key){
+    var checks=S.checks||{};
+    for(var phase=1;phase<=8;phase++){
+      if(!isUnlocked(phase))continue;
+      var phaseKey=phase+'_'+key;
+      if(checks.hasOwnProperty(phaseKey))return true;
+    }
+    return false;
   }
 
   var his   = scoreGroup(HIS);
