@@ -2475,6 +2475,14 @@ const PHASES = [
   {num:1,label:"Observe",timing:"Weeks 1–4",gate:"Does he have direction and revenue?",
    myInput:["Show up as yourself — nothing more, nothing less.","Ask one casual question about what he is working on. Listen. Do not probe.","Observe in silence. You are not required to impress, explain, or perform.","Keep a mental note (or log here) of how he treats people around him.","Zero emotional, financial, or physical investment at this stage.",
    "Watch for avoidant signals: does he seem comfortable with surface connection but redirect when things get personal or warm? Does he pride himself on not needing anyone? These are early tells."],
+   phaseReqs:[
+     {key:"p1_yourself",label:"Showed up as myself",text:"I showed up as myself — nothing more, nothing less. No performing, no shrinking."},
+     {key:"p1_question",label:"Asked without probing",text:"I asked one casual question about what he is working on and listened without probing."},
+     {key:"p1_observe",label:"Observed in silence",text:"I observed in silence. I did not need to impress, explain, or perform."},
+     {key:"p1_mental",label:"Noted his character",text:"I kept a mental note of how he treats people around him — waitstaff, strangers, people who can't benefit him."},
+     {key:"p1_zero",label:"No early investment",text:"I maintained zero emotional, financial, or physical investment at this stage."},
+     {key:"p1_avoidant",label:"Watched for avoidance",text:"I observed and documented any avoidant signals — does he redirect when things get personal?"},
+   ],
    prenup:null,
    monthly:null,
    items:[
@@ -2500,6 +2508,17 @@ const PHASES = [
    ]},
   {num:2,label:"The manual",timing:"Month 2–6",gate:"Does he open doors or need mine?",
    myInput:["Have ONE intentional in-person conversation — you choose the setting, you set the tone.","Share your truth: autism, your healing journey, what you carry. Say it plainly, without apology.","Ask him directly: ‘What are you building right now?’ and then be quiet.","Do not fill silences. Let him show you who he is.","Watch whether he plans dates or waits for you to. Watch who pays and how it feels.","Note any jokes about money, splitting, or you taking care of him. Even once.","By month 4–5: if exclusivity has not been named, you can name it. Once. His response is the data.","Hold the boundary: no sleepovers, no sex. This is non-negotiable — not a suggestion.","Do not adjust your personality, opinions, or standards to keep his interest."],
+   phaseReqs:[
+     {key:"p2_convo",label:"Had one real conversation",text:"I had ONE intentional in-person conversation — I chose the setting, I set the tone."},
+     {key:"p2_truth",label:"Shared my truth",text:"I shared my truth — autism, my healing journey, what I carry — plainly, without apology."},
+     {key:"p2_ask",label:"Asked and stayed quiet",text:"I asked him directly what he is building right now, and then stayed quiet."},
+     {key:"p2_silence",label:"Let silence do its work",text:"I did not fill silences. I let him show me who he is."},
+     {key:"p2_watch",label:"Watched dates & payment",text:"I watched whether he plans dates or waits for me to, and who pays and how it feels."},
+     {key:"p2_jokes",label:"Noted any money jokes",text:"I noted any jokes about money, splitting, or him being taken care of — even once."},
+     {key:"p2_exclusivity",label:"Named exclusivity once",text:"By month 4–5, if exclusivity was not named, I named it once and treated his response as data."},
+     {key:"p2_boundary",label:"Held the boundary",text:"I held the boundary — no sleepovers, no sex — as non-negotiable."},
+     {key:"p2_noadjust",label:"Stayed myself",text:"I did not adjust my personality, opinions, or standards to keep his interest."},
+   ],
    prenup:null,
    monthly:[
      {month:"Month 2 — The reveal",items:[
@@ -2559,6 +2578,14 @@ const PHASES = [
    ]},
   {num:3,label:"Conflict test",timing:"Month 7–12",gate:"How does he handle rupture?",
    myInput:["Do NOT manufacture conflict. Wait for something real and small to arise naturally.","When it arises: state your disagreement clearly, calmly, once.","Do not over-explain, apologise for having the opinion, or back down to keep the peace.","Watch what he does next — his instinct under friction is the data.","After it resolves (or does not): write in your log what you observed. Be honest.","Ask yourself: did I feel safe being disagreeable with him?"],
+   phaseReqs:[
+     {key:"p3_nomanufacture",label:"Did not manufacture conflict",text:"I did not manufacture conflict. I waited for something real and small to arise naturally."},
+     {key:"p3_stateclearly",label:"Stated my position once",text:"When it arose, I stated my disagreement clearly, calmly, once."},
+     {key:"p3_nobackdown",label:"Did not over-explain or fold",text:"I did not over-explain, apologise for having the opinion, or back down to keep the peace."},
+     {key:"p3_watchresponse",label:"Watched his instinct",text:"I watched what he did next — his instinct under friction is the data."},
+     {key:"p3_logobserved",label:"Logged what I observed",text:"After it resolved (or did not), I wrote in my log what I observed, honestly."},
+     {key:"p3_feltsafe",label:"Checked if I felt safe",text:"I asked myself honestly: did I feel safe being disagreeable with him?"},
+   ],
    prenup:null,
    monthly:[
      {month:"Months 7–8 — First friction",items:[
@@ -2599,6 +2626,14 @@ const PHASES = [
    ]},
   {num:4,label:"Values talk",timing:"Month 13",gate:"Are our foundations the same?",
    myInput:["Initiate a real conversation about money. Ask: ‘What does financial legacy mean to you?’","State clearly that you want a trust fund for your children. Watch his reaction.","Ask about spirituality: ‘How does your faith actually show up in your daily life?’","Share your own answers. Be specific. Do not hedge.","Ask about children directly: how many, when, what kind of parent does he intend to be?","If his answers are misaligned, this is information — not a problem to fix."],
+   phaseReqs:[
+     {key:"p4_moneytalk",label:"Started the money conversation",text:"I initiated a real conversation about money — what financial legacy means to him."},
+     {key:"p4_trustfund",label:"Named the trust fund",text:"I stated clearly that I want a trust fund for our children, and watched his reaction."},
+     {key:"p4_spirittalk",label:"Asked about lived faith",text:"I asked how his faith actually shows up in his daily life."},
+     {key:"p4_ownanswers",label:"Shared my own answers",text:"I shared my own answers specifically, without hedging."},
+     {key:"p4_childrentalk",label:"Talked children directly",text:"I asked about children directly — how many, when, what kind of parent he intends to be."},
+     {key:"p4_infonotfix",label:"Treated misalignment as data",text:"Where his answers were misaligned, I treated that as information — not a problem to fix."},
+   ],
    prenup:null,
    monthly:null,
    items:[
@@ -2616,6 +2651,16 @@ const PHASES = [
    ]},
   {num:5,label:"Consistency",timing:"Month 13+",gate:"Is he the same man across time and context?",
    myInput:["Pull up your Phase 1 observations. Compare them honestly to who he is now.","Is he still planning dates — or has that quietly become your job?","Is he still paying — or has money started to feel like a negotiation?","Note whether his effort has increased, plateaued, or declined since you stopped being new.","Has he established full financial independence from his parents?","Watch how he shows up when you are stressed, unwell, or unavailable.","Notice how he responds to your wins. Does he celebrate you or compete with you?","Ask yourself: do I feel more free or more managed in this relationship?"],
+   phaseReqs:[
+     {key:"p5_compare",label:"Compared to Phase 1 notes",text:"I pulled up my Phase 1 observations and compared them honestly to who he is now."},
+     {key:"p5_dates",label:"Checked who plans dates",text:"I checked whether he is still planning dates, or whether that has quietly become my job."},
+     {key:"p5_paying",label:"Checked who pays",text:"I checked whether he is still paying, or whether money has started to feel like a negotiation."},
+     {key:"p5_effort",label:"Tracked his effort trend",text:"I noted whether his effort has increased, plateaued, or declined since I stopped being new."},
+     {key:"p5_finindep",label:"Checked financial independence",text:"I checked whether he has established full financial independence from his parents."},
+     {key:"p5_stresstest",label:"Watched him under stress",text:"I watched how he shows up when I am stressed, unwell, or unavailable."},
+     {key:"p5_wins",label:"Watched his response to my wins",text:"I noticed how he responds to my wins — whether he celebrates me or competes with me."},
+     {key:"p5_freeormanaged",label:"Asked: free or managed?",text:"I asked myself honestly: do I feel more free or more managed in this relationship?"},
+   ],
    prenup:null,
    monthly:[
      {month:"Month 13–15 — The comparison",items:[
@@ -2670,6 +2715,15 @@ const PHASES = [
    ]},
   {num:6,label:"Blueprint",timing:"Month 13+",gate:"Can he build with me — specifically, not hypothetically?",
    myInput:["Request to see his financial records and business documentation.","Bring your own financial picture to the table. Full transparency, both ways.","Discuss location: where will you live, and what does home look like?","Discuss conflict resolution: what is the agreed approach when things get hard?","Raise the prenuptial agreement directly. State it: ‘I want a prenup. It protects both of us.’","If he reacts with resistance, that is information. A secure man will understand.","Do not soften this conversation. This is the blueprint — it must be specific."],
+   phaseReqs:[
+     {key:"p6_records",label:"Requested his financial records",text:"I requested to see his financial records and business documentation."},
+     {key:"p6_ownfinances",label:"Shared my own finances",text:"I brought my own financial picture to the table — full transparency, both ways."},
+     {key:"p6_location",label:"Discussed where we'll live",text:"We discussed location — where we will live and what home looks like."},
+     {key:"p6_conflictplan",label:"Agreed on conflict approach",text:"We discussed conflict resolution — the agreed approach when things get hard."},
+     {key:"p6_prenupraise",label:"Raised the prenup directly",text:"I raised the prenuptial agreement directly: ‘I want a prenup. It protects both of us.’"},
+     {key:"p6_resistance",label:"Noted his reaction",text:"I noted whether he reacted with resistance — and treated that as information."},
+     {key:"p6_nosoften",label:"Kept it specific, not soft",text:"I did not soften this conversation. The blueprint stayed specific."},
+   ],
    prenup:{title:"Prenuptial agreement — what to establish",items:["Individual assets owned before marriage remain separate property.","Trust funds for children are ring-fenced — not marital assets.","Business ownership and intellectual property clearly delineated.","Income earned during marriage — agree on split or community property terms.","Debt liability: each party responsible for debt brought into the marriage.","Spousal support terms if applicable — duration and conditions.","Process for financial decisions above an agreed threshold.","Review clause: prenup reviewed every 5–7 years as life changes.","Both parties must have independent legal counsel. Non-negotiable."]},
    monthly:null,
    items:[
@@ -2690,6 +2744,14 @@ const PHASES = [
    ]},
   {num:7,label:"Engagement",timing:"After 2 years",gate:"Did he ask my parents before he asked me?",
    myInput:["Do not drop hints about a proposal timeline. Do not manufacture urgency.","Trust that a man who is ready will move — without being pushed.","If he asks to meet your parents in the context of a future together, receive it fully.","When he proposes, give yourself permission to feel it — you earned this by being patient.","Before accepting: sit with whether you feel peace, not just excitement.","Review your Phase 1–6 notes before saying yes. Let the data and your gut speak together."],
+   phaseReqs:[
+     {key:"p7_nohints",label:"Did not drop hints",text:"I did not drop hints about a proposal timeline or manufacture urgency."},
+     {key:"p7_trustpace",label:"Trusted his pace",text:"I trusted that a man who is ready will move — without being pushed."},
+     {key:"p7_receiveparents",label:"Received the parents step",text:"When he asked to meet my parents in the context of a future together, I received it fully."},
+     {key:"p7_permissiontofeel",label:"Let myself feel it",text:"When he proposed, I gave myself permission to feel it — I earned this by being patient."},
+     {key:"p7_peacecheck",label:"Checked for peace, not just excitement",text:"Before accepting, I sat with whether I felt peace, not just excitement."},
+     {key:"p7_reviewdata",label:"Reviewed Phase 1–6 notes",text:"I reviewed my Phase 1–6 notes before saying yes, letting the data and my gut speak together."},
+   ],
    prenup:{title:"Prenup — before you say yes",items:["Confirm prenup conversation has happened and both parties are committed.","Agree on timeline: prenup signed minimum 3 months before wedding date.","Both parties have retained separate, independent legal counsel.","No signing under emotional pressure or close to the wedding date.","If he withdraws agreement at this stage — sit with that seriously before proceeding."]},
    monthly:null,
    items:[
@@ -2703,6 +2765,14 @@ const PHASES = [
    ]},
   {num:8,label:"Marriage",timing:"Ongoing",gate:"Is consistency sustained — not just before the wedding?",
    myInput:["Keep choosing yourself inside the marriage. Your identity does not dissolve when you become a wife.","Revisit your values conversation annually — people grow and so should the agreement.","Review and update the prenup every 5–7 years with independent counsel.","Build the trust fund structure before or shortly after having children — not someday.","Name the moments when you feel managed, not seen — and raise them early.","Protect your ventures, your friendships, your spiritual practice."],
+   phaseReqs:[
+     {key:"p8_chooseself",label:"Kept choosing myself",text:"I kept choosing myself inside the marriage. My identity did not dissolve when I became a wife."},
+     {key:"p8_annualvalues",label:"Did the annual values talk",text:"I revisited our values conversation this year — the agreement grew as we did."},
+     {key:"p8_prenupreview",label:"Reviewed the prenup on schedule",text:"I reviewed and updated the prenup on schedule (every 5–7 years) with independent counsel."},
+     {key:"p8_trustfundbuild",label:"Built the trust fund",text:"We built the trust fund structure before or shortly after having children — not someday."},
+     {key:"p8_namemanaged",label:"Named feeling managed early",text:"I named the moments I felt managed, not seen — and raised them early."},
+     {key:"p8_protectself",label:"Protected ventures & friendships",text:"I protected my ventures, my friendships, and my spiritual practice."},
+   ],
    prenup:{title:"Post-marriage legal & financial",items:["Trust fund established and funded — structure and beneficiary designations in place.","Wills and estate plans updated to reflect marriage and children.","Life insurance policies reviewed and updated.","Prenup stored safely with both parties' lawyers. Know where your copy is.","Financial review scheduled annually — together, with full transparency.","Prenup reviewed and updated at agreed intervals (every 5–7 years)."]},
    monthly:null,
    items:[
@@ -2972,6 +3042,12 @@ function score(n){
       keys.push(n+"_"+it.key);
     });
   }
+  // My-inputs checklist (what's required of me this phase) also counts toward the score
+  if(ph.phaseReqs){
+    ph.phaseReqs.forEach(function(it){
+      keys.push("r_"+n+"_"+it.key);
+    });
+  }
 
   var tot=keys.length;
   var yes=keys.filter(function(k){return(S.checks[k]||"none")==="yes";}).length;
@@ -2988,6 +3064,9 @@ function totalPct(){
       });
     } else {
       ph.items.forEach(function(it){ keys.push(ph.num+"_"+it.key); });
+    }
+    if(ph.phaseReqs){
+      ph.phaseReqs.forEach(function(it){ keys.push("r_"+ph.num+"_"+it.key); });
     }
     keys.forEach(function(k){
       t++;
@@ -3207,14 +3286,21 @@ function renderPhase(){
       return "<button class=\"ptab"+(tab===t?" active":"")+"\" onclick=\"setTab("+ph.num+",'"+t+"')\">"+tabLabels_[t]+"</button>";
     }).join("")+"</div>";
   var body="";
+  var ICONS={none:"",yes:"✓",partial:"~",no:"✗"};
+  var LABELS={none:"not yet",yes:"yes",partial:"partially",no:"no"};
+  var SCLS={none:"state-none",yes:"state-yes",partial:"state-partial",no:"state-no"};
   if(tab==="input"){
-    body="<div class='my-input-box'><div class='mi-title'>What is required from me in this phase</div>"+ph.myInput.map(function(t){return "<div class='mi-item'><div class='mi-dot'></div><div class='mi-text'>"+t+"</div></div>";}).join("")+"</div>";
+    var reqs=ph.phaseReqs||[];
+    var doneReq=reqs.filter(function(it){return (S.checks["r_"+ph.num+"_"+it.key]||"none")==="yes";}).length;
+    body="<div class='check-title'>My checklist for this phase — tap to cycle: yes → partial → no → not yet<span style='float:right;color:var(--mist);font-weight:500'>"+doneReq+"/"+reqs.length+"</span></div>";
+    body+=reqs.map(function(it){
+      var k="r_"+ph.num+"_"+it.key,v=S.checks[k]||"none";
+      return "<div class='check-item'><button class=\"check-btn "+(v!=="none"?v:"")+"\" onclick=\"cycleCheck('r_"+ph.num+"','"+it.key+"')\">"
+        +ICONS[v]+"</button><div class='check-content'><span class='check-label'>"+it.text+"</span>"
+        +"<div class='check-meta'><span class='check-tag'>"+it.label+"</span><span class='"+SCLS[v]+"'>"+LABELS[v]+"</span></div></div></div>";
+    }).join("");
   }
   if(tab==="check"){
-    var ICONS={none:"",yes:"✓",partial:"~",no:"✗"};
-    var LABELS={none:"not yet",yes:"yes",partial:"partially",no:"no"};
-    var SCLS={none:"state-none",yes:"state-yes",partial:"state-partial",no:"state-no"};
-
     body="<div class='check-title'>Tap the circle to cycle: yes → partial → no → not yet</div>";
 
     if(ph.monthly&&ph.monthly.length){
