@@ -1978,30 +1978,35 @@ textarea::placeholder{color:var(--mist);font-style:italic}
     <p style="font-size:13px;color:var(--mist);font-family:var(--serif);font-style:italic;margin-bottom:14px;line-height:1.6">These are not interrogations. They are observations of how he moves through a real conversation.</p>
     <div id="relTopicsList" style="font-size:13px;color:var(--stone);line-height:1.8;"></div>
     <div style="margin-top:14px;">
-      <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--rose);margin-bottom:4px;">Red flags I am noticing in myself</div>
-      <p style="font-size:11px;color:var(--mist);font-family:var(--serif);font-style:italic;margin-bottom:8px;line-height:1.6;">Where is my wound active right now?</p>
-      <textarea id="relSelfFlags" placeholder="I am shrinking when... I noticed I am chasing by... My wound is..." oninput="saveRelFocus()" style="width:100%;min-height:140px;border:1px solid var(--pink-100);border-radius:10px;padding:10px 12px;font-family:var(--serif);font-size:13px;color:var(--stone);background:var(--blush);resize:vertical;outline:none;box-sizing:border-box;"></textarea>
-      <div style="margin-top:10px;margin-bottom:2px;">
-        <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mist);margin-bottom:7px;">Or select a pattern manually</div>
-        <div style="display:flex;flex-wrap:wrap;gap:6px;" id="selfFlagTagPills">
-          <button class="sfp-pill" onclick="toggleSelfFlagTag(this,'anxiety')" data-tag="anxiety">Anxious thoughts</button>
-          <button class="sfp-pill" onclick="toggleSelfFlagTag(this,'chase')" data-tag="chase">Chasing</button>
-          <button class="sfp-pill" onclick="toggleSelfFlagTag(this,'shrink')" data-tag="shrink">Self-shrinking</button>
-          <button class="sfp-pill" onclick="toggleSelfFlagTag(this,'tooneedy')" data-tag="tooneedy">Too much / needy</button>
-          <button class="sfp-pill" onclick="toggleSelfFlagTag(this,'selfabandon')" data-tag="selfabandon">Self-abandonment</button>
-          <button class="sfp-pill" onclick="toggleSelfFlagTag(this,'overexplain')" data-tag="overexplain">Over-explaining</button>
-          <button class="sfp-pill" onclick="toggleSelfFlagTag(this,'jealous')" data-tag="jealous">Insecurity</button>
-          <button class="sfp-pill" onclick="toggleSelfFlagTag(this,'ignore')" data-tag="ignore">Ignoring gut</button>
-          <button class="sfp-pill" onclick="toggleSelfFlagTag(this,'testing')" data-tag="testing">Testing / sabotage</button>
-          <button class="sfp-pill" onclick="toggleSelfFlagTag(this,'dishonest')" data-tag="dishonest">Inauthenticity</button>
-        </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:8px 0;" onclick="toggleSelfFlagsSection()">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--rose);">Red flags I am noticing in myself</div>
+        <span id="selfFlagsToggleIcon" style="font-size:14px;transition:transform .2s;">▼</span>
       </div>
-      <div id="selfFlagMsg" style="font-size:11px;font-style:italic;min-height:14px;opacity:0;transition:opacity .3s;margin-top:4px;"></div>
-      <div id="selfFlagGuidance" style="display:none;margin-top:10px;padding:12px 14px;background:var(--blush);border:1px solid var(--pink-100);border-radius:12px;font-family:var(--serif);font-size:13px;color:var(--stone);line-height:1.7;"></div>
-      <div id="selfFlagFeed"></div>
-      <div style="margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-        <button onclick="saveSelfFlagEntry()" style="padding:8px 18px;background:var(--deep);color:white;border:none;border-radius:99px;font-size:12px;font-weight:500;font-family:var(--sans);cursor:pointer;">Save for this week</button>
-        <button onclick="endThingsAndGoSingle()" style="padding:8px 18px;background:white;color:var(--mist);border:1.5px solid var(--pink-100);border-radius:99px;font-size:12px;font-weight:500;font-family:var(--sans);cursor:pointer;transition:all .2s;" onmouseover="this.style.borderColor='var(--rose)';this.style.color='var(--rose)'" onmouseout="this.style.borderColor='var(--pink-100)';this.style.color='var(--mist)'">We ended things &rarr;</button>
+      <div id="selfFlagsContent" style="max-height:1000px;overflow:hidden;transition:max-height .3s ease;margin-top:8px;">
+        <p style="font-size:11px;color:var(--mist);font-family:var(--serif);font-style:italic;margin-bottom:8px;line-height:1.6;">Where is my wound active right now?</p>
+        <textarea id="relSelfFlags" placeholder="I am shrinking when... I noticed I am chasing by... My wound is..." oninput="saveRelFocus()" style="width:100%;min-height:140px;border:1px solid var(--pink-100);border-radius:10px;padding:10px 12px;font-family:var(--serif);font-size:13px;color:var(--stone);background:var(--blush);resize:vertical;outline:none;box-sizing:border-box;"></textarea>
+        <div style="margin-top:10px;margin-bottom:2px;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mist);margin-bottom:7px;">Or select a pattern manually</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;" id="selfFlagTagPills">
+            <button class="sfp-pill" onclick="toggleSelfFlagTag(this,'anxiety')" data-tag="anxiety">Anxious thoughts</button>
+            <button class="sfp-pill" onclick="toggleSelfFlagTag(this,'chase')" data-tag="chase">Chasing</button>
+            <button class="sfp-pill" onclick="toggleSelfFlagTag(this,'shrink')" data-tag="shrink">Self-shrinking</button>
+            <button class="sfp-pill" onclick="toggleSelfFlagTag(this,'tooneedy')" data-tag="tooneedy">Too much / needy</button>
+            <button class="sfp-pill" onclick="toggleSelfFlagTag(this,'selfabandon')" data-tag="selfabandon">Self-abandonment</button>
+            <button class="sfp-pill" onclick="toggleSelfFlagTag(this,'overexplain')" data-tag="overexplain">Over-explaining</button>
+            <button class="sfp-pill" onclick="toggleSelfFlagTag(this,'jealous')" data-tag="jealous">Insecurity</button>
+            <button class="sfp-pill" onclick="toggleSelfFlagTag(this,'ignore')" data-tag="ignore">Ignoring gut</button>
+            <button class="sfp-pill" onclick="toggleSelfFlagTag(this,'testing')" data-tag="testing">Testing / sabotage</button>
+            <button class="sfp-pill" onclick="toggleSelfFlagTag(this,'dishonest')" data-tag="dishonest">Inauthenticity</button>
+          </div>
+        </div>
+        <div id="selfFlagMsg" style="font-size:11px;font-style:italic;min-height:14px;opacity:0;transition:opacity .3s;margin-top:4px;"></div>
+        <div id="selfFlagGuidance" style="display:none;margin-top:10px;padding:12px 14px;background:var(--blush);border:1px solid var(--pink-100);border-radius:12px;font-family:var(--serif);font-size:13px;color:var(--stone);line-height:1.7;"></div>
+        <div id="selfFlagFeed"></div>
+        <div style="margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <button onclick="saveSelfFlagEntry()" style="padding:8px 18px;background:var(--deep);color:white;border:none;border-radius:99px;font-size:12px;font-weight:500;font-family:var(--sans);cursor:pointer;">Save for this week</button>
+          <button onclick="endThingsAndGoSingle()" style="padding:8px 18px;background:white;color:var(--mist);border:1.5px solid var(--pink-100);border-radius:99px;font-size:12px;font-weight:500;font-family:var(--sans);cursor:pointer;transition:all .2s;" onmouseover="this.style.borderColor='var(--rose)';this.style.color='var(--rose)'" onmouseout="this.style.borderColor='var(--pink-100)';this.style.color='var(--mist)'">We ended things &rarr;</button>
+        </div>
       </div>
     </div>
   </div>
@@ -2713,7 +2718,7 @@ const PHASES = [
 ];
 const RATING_LABELS = ["","This feels very hard right now","More uncertain than hopeful","Somewhere in the middle","Feeling mostly good","This feels really right"];
 
-let S = {activePhase:1,tab:{},checks:{},notes:{},log:[],him:{},selfcare:{},checkins:[],moon:[],journal:{prompts:{},entries:[]}};
+let S = {activePhase:1,tab:{},checks:{},notes:{},notesLog:{},log:[],him:{},selfcare:{},checkins:[],moon:[],journal:{prompts:{},entries:[]},selfFlagLog:[],rlog:[],moonLog:[],overrides:{},phase0:{}};
 try{const d=localStorage.getItem("rbp4");if(d)S=JSON.parse(d);}catch(e){}
 function save(){try{localStorage.setItem("rbp4",JSON.stringify(S));}catch(e){}}
 
@@ -3047,6 +3052,17 @@ function renderTimeline(){
 function updateHealthScore(){
   var health=calcHealthScore();
   renderHealthPanel(health);
+  // Update stat display
+  var statHealth=document.getElementById('statHealth');
+  if(statHealth){
+    if(health){
+      statHealth.textContent=health.pct+'%';
+      statHealth.style.color=health.col;
+    }else{
+      statHealth.textContent='♥';
+      statHealth.style.color='var(--petal)';
+    }
+  }
 }
 
 function renderStats(){
@@ -3237,12 +3253,12 @@ function renderPhase(){
     }
   }
   if(tab==="prenup"&&ph.prenup){
-    body="<div class='prenup-box'><div class='prenup-title'>"+ph.prenup.title+"</div>"+ph.prenup.items.map(function(pi){return "<div class='prenup-item'><span class='prenup-arrow'>\u2192</span>"+pi+"</div>";}).join("")+"</div><div class='notes-lbl'>Prenup notes</div><textarea id='pn' placeholder='Lawyer name, dates, outstanding items...' onchange='saveNote("+ph.num+",\"prenup\")'>"+(S.notes[ph.num+"_prenup"]||"")+"</textarea>";
+    body="<div class='prenup-box'><div class='prenup-title'>"+ph.prenup.title+"</div>"+ph.prenup.items.map(function(pi){return "<div class='prenup-item'><span class='prenup-arrow'>\u2192</span>"+pi+"</div>";}).join("")+"</div><div class='notes-lbl'>Prenup notes <span id='notesSaveStatus_"+ph.num+"_prenup' style='font-size:11px;font-weight:400;color:var(--green);opacity:0;transition:opacity .3s ease;margin-left:8px;display:inline-block;'></span></div><textarea id='pn' placeholder='Lawyer name, dates, outstanding items...' oninput='autoSaveNote("+ph.num+",\"prenup\")' onblur='saveNote("+ph.num+",\"prenup\")' style='width:100%;border:1px solid var(--pink-100);border-radius:10px;padding:10px 12px;font-family:var(--serif);font-size:13px;color:var(--stone);background:var(--blush);resize:vertical;outline:none;box-sizing:border-box;'>"+(S.notes[ph.num+"_prenup"]||"")+"</textarea>";
   }
   if(tab==="guide"){body=buildConvGuide(ph.num);}
   if(tab==="guide"){body=buildConvGuide(ph.num);}
   if(tab==="notes"){
-    body="<div class='notes-lbl'>Phase notes \u2014 what I observed, how I felt, what to remember</div><textarea id='pn' placeholder='Write freely...' onchange='saveNote("+ph.num+",\"main\")' style='min-height:120px'>"+(S.notes[ph.num+"_main"]||"")+"</textarea>";
+    body="<div class='notes-lbl'>Phase notes \u2014 what I observed, how I felt, what to remember <span id='notesSaveStatus_"+ph.num+"_main' style='font-size:11px;font-weight:400;color:var(--green);opacity:0;transition:opacity .3s ease;margin-left:8px;display:inline-block;'></span></div><textarea id='pn' placeholder='Write freely...' oninput='autoSaveNote("+ph.num+",\"main\")' onblur='saveNote("+ph.num+",\"main\")' style='width:100%;min-height:120px;border:1px solid var(--pink-100);border-radius:10px;padding:10px 12px;font-family:var(--serif);font-size:13px;color:var(--stone);background:var(--blush);resize:vertical;outline:none;box-sizing:border-box;'>"+(S.notes[ph.num+"_main"]||"")+"</textarea>";
   }
   el("phaseCard").innerHTML="<div class='phase-card-header'><div class='phase-num-badge"+(isPre?" prenup-badge":"")+"'>"+ph.num+"</div><div class='phase-title-block'><div class='phase-title'>Phase "+ph.num+" \u2014 "+ph.label+"</div><div class='phase-gate'>\u201c"+ph.gate+"\u201d</div><div class='phase-timing'>"+ph.timing+"</div></div><div class='score-circle'><span class='score-pct'>"+sc.pct+"%</span><span class='score-sub'>"+sc.yes+"/"+sc.tot+"</span></div></div>"+tabsHtml+"<div class='phase-body'>"+body+"</div>";
 }
@@ -3257,7 +3273,43 @@ function toggleMonthBlock(id){
   var hdr=el.previousElementSibling;
   if(hdr){var arr=hdr.querySelector("span:last-child");if(arr)arr.innerHTML=isOpen?"&#9660;":"&#9650;";}
 }
-function saveNote(ph,type){var e=el("pn");if(e){S.notes[ph+"_"+type]=e.value;save();}}
+var _noteSaveTimer={};
+
+function autoSaveNote(ph,type){
+  // Clear existing timer for this note
+  if(_noteSaveTimer[ph+'_'+type]){
+    clearTimeout(_noteSaveTimer[ph+'_'+type]);
+  }
+  // Set new timer to save after 2 seconds of inactivity
+  _noteSaveTimer[ph+'_'+type]=setTimeout(function(){
+    saveNote(ph,type);
+  },2000);
+}
+
+function saveNote(ph,type){
+  var e=el("pn");
+  if(!e||!e.value.trim()){
+    console.log('saveNote: textarea not found or empty');
+    return;
+  }
+  try{
+    if(!S.notesLog) S.notesLog={};
+    if(!S.notesLog[ph+"_"+type]) S.notesLog[ph+"_"+type]=[];
+    var timestamp=new Date().toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    S.notesLog[ph+"_"+type].push({text:e.value,timestamp:timestamp});
+    S.notes[ph+"_"+type]=e.value;
+    save();
+    var statusEl=document.getElementById('notesSaveStatus_'+ph+'_'+type);
+    if(statusEl){
+      statusEl.textContent='✓ Saved '+timestamp;
+      statusEl.style.opacity='1';
+      setTimeout(function(){statusEl.style.opacity='0';},3000);
+    }
+    console.log('Note saved successfully for phase '+ph+' type '+type);
+  }catch(err){
+    console.error('Error in saveNote:',err);
+  }
+}
 function overrideUnlock(n){if(!S.overrides)S.overrides={};S.overrides[n]=true;save();renderAll();}
 
 // ── LOG ───────────────────────────────────────────────────────────────────
@@ -3572,6 +3624,7 @@ function restoreFile(e){
         tab:              parsed.tab||{},
         checks:           parsed.checks||{},
         notes:            parsed.notes||{},
+        notesLog:         parsed.notesLog||{},
         log:              parsed.log||[],
         checkins:         parsed.checkins||[],
         him:              parsed.him||{},
@@ -3853,15 +3906,15 @@ function confirmEndIt(){
     learned: (el('enditLearned')||{}).value||'',
     how:     (el('enditHow')||{}).value||'i-ended',
     date:    new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}),
-    snapshot:{him:JSON.parse(JSON.stringify(S.him||{})),startDate:S.startDate||null,log:JSON.parse(JSON.stringify(S.log||[])),checkins:JSON.parse(JSON.stringify(S.checkins||[])),tab:JSON.parse(JSON.stringify(S.tab||{})),checks:JSON.parse(JSON.stringify(S.checks||{})),notes:JSON.parse(JSON.stringify(S.notes||{})),activePhase:S.activePhase||1,overrides:JSON.parse(JSON.stringify(S.overrides||{})),hisTest:S.hisTest?JSON.parse(JSON.stringify(S.hisTest)):null,selfFlagLog:JSON.parse(JSON.stringify(S.selfFlagLog||[])),phase0:JSON.parse(JSON.stringify(S.phase0||{}))}
+    snapshot:{him:JSON.parse(JSON.stringify(S.him||{})),startDate:S.startDate||null,log:JSON.parse(JSON.stringify(S.log||[])),checkins:JSON.parse(JSON.stringify(S.checkins||[])),tab:JSON.parse(JSON.stringify(S.tab||{})),checks:JSON.parse(JSON.stringify(S.checks||{})),notes:JSON.parse(JSON.stringify(S.notes||{})),notesLog:JSON.parse(JSON.stringify(S.notesLog||{})),activePhase:S.activePhase||1,overrides:JSON.parse(JSON.stringify(S.overrides||{})),hisTest:S.hisTest?JSON.parse(JSON.stringify(S.hisTest)):null,selfFlagLog:JSON.parse(JSON.stringify(S.selfFlagLog||[])),phase0:JSON.parse(JSON.stringify(S.phase0||{}))}
   });
   // preserve rlog, journal, selfcareHistory across reset
   var keepRlog=S.rlog||[];
   var keepJournal=S.journal||{};
   var keepSCHist=S.selfcareHistory||[];
   // Phase 0 resets when a relationship ends — she must complete it fresh for the next person
-  S={activePhase:1,tab:{},checks:{},notes:{},log:[],checkins:[],
-     him:{},selfcare:{},phase0:{},
+  S={activePhase:1,tab:{},checks:{},notes:{},notesLog:{},log:[],checkins:[],
+     him:{},selfcare:{},phase0:{},selfFlagLog:[],moonLog:[],
      rlog:keepRlog,journal:keepJournal,selfcareHistory:keepSCHist,
      startDate:null,overrides:{}};
   save();
@@ -6209,12 +6262,15 @@ function renderSelfFlagFeed(){
   var entries = (S.selfFlagLog || []).slice().reverse().slice(0,5);
   if(!entries.length){ wrap.innerHTML=''; return; }
   var html = '<div class="self-flag-feed">';
-  entries.forEach(function(e){
+  var allEntries = S.selfFlagLog || [];
+  entries.forEach(function(e, idx){
+    var realIdx = allEntries.length - 1 - allEntries.slice().reverse().indexOf(e);
     var clsKey = e.cls==='red'?'red':e.cls==='amber'?'amber':'neutral';
     var metaCls = 'sf-meta-'+clsKey;
-    html += '<div class="sf-entry sf-entry-'+clsKey+'">';
-    html += '<span class="sf-entry-meta '+metaCls+'">Phase '+e.phase+' \u2014 '+e.date+'</span>';
-    html += (e.text||'').slice(0,120) + (e.text&&e.text.length>120?'\u2026':'');
+    html += '<div class="sf-entry sf-entry-'+clsKey+'" style="display:flex;justify-content:space-between;align-items:start;gap:10px;">';
+    html += '<div style="flex:1;"><span class="sf-entry-meta '+metaCls+'">Phase '+e.phase+' \u2014 '+e.date+'</span>';
+    html += (e.text||'').slice(0,120) + (e.text&&e.text.length>120?'\u2026':'') + '</div>';
+    html += '<button onclick="deleteSelfFlagEntry('+realIdx+')" style="background:none;border:none;color:var(--rose);cursor:pointer;font-size:16px;padding:0;opacity:.6;transition:opacity .2s;" title="Delete this entry">\u00d7</button>';
     html += '</div>';
   });
   html += '</div>';
@@ -6463,9 +6519,12 @@ function toggleSelfFlagTag(btn,tag){
 
 function deleteSelfFlagEntry(idx){
   if(!S.selfFlagLog||!S.selfFlagLog[idx]) return;
+  var entry = S.selfFlagLog[idx];
+  if(!confirm('Delete this entry? "'+entry.text.slice(0,60)+(entry.text.length>60?'...':'')+'"')) return;
   S.selfFlagLog.splice(idx,1);
   save();
   renderSelfFlagFeed();
+  updateHealthScore();
 }
 
 
@@ -6525,12 +6584,7 @@ function openHisTest(){
     if(S.hisTest.answerTexts) window._htAnswerTexts=S.hisTest.answerTexts;
     htRenderAnswerSummary(S.hisTest.grade);
   } else {
-    if(form){
-      if(!form.innerHTML||form.innerHTML.trim()===''){
-        htBuildForm(form);
-      }
-      form.style.display='block';
-    }
+    if(form) form.style.display='block';
     if(res) res.style.display='none';
   }
   ov.scrollTop=0;
@@ -6866,25 +6920,11 @@ function calcHealthScore(){
     var yes=0,possible=0;
     items.forEach(function(it){
       var v=getVal(it.k);
-      // Only count items that have been answered (not 'none')
-      // OR count only from unlocked phases
-      if(v!=='none'||hasItemInUnlockedPhase(it.k)){
-        if(v==='yes') yes+=it.w;
-        else if(v==='partial') yes+=it.w*0.5;
-        possible+=it.w;
-      }
+      if(v==='yes') yes+=it.w;
+      else if(v==='partial') yes+=it.w*0.5;
+      possible+=it.w;
     });
     return possible>0?{s:yes/possible,p:possible}:{s:-1,p:0};
-  }
-  
-  function hasItemInUnlockedPhase(key){
-    var checks=S.checks||{};
-    for(var phase=1;phase<=8;phase++){
-      if(!isUnlocked(phase))continue;
-      var phaseKey=phase+'_'+key;
-      if(checks.hasOwnProperty(phaseKey))return true;
-    }
-    return false;
   }
 
   var his   = scoreGroup(HIS);
@@ -6936,6 +6976,21 @@ function toggleHealthPanel(){
   if(panel) panel.style.display=panel.style.display==='none'?'block':'none';
 }
 
+function toggleSelfFlagsSection(){
+  var content=document.getElementById('selfFlagsContent');
+  var icon=document.getElementById('selfFlagsToggleIcon');
+  if(content){
+    var isCollapsed=content.style.maxHeight==='0px'||content.style.maxHeight==='';
+    if(isCollapsed){
+      content.style.maxHeight='1000px';
+      icon.style.transform='rotate(0deg)';
+    }else{
+      content.style.maxHeight='0px';
+      icon.style.transform='rotate(-90deg)';
+    }
+  }
+}
+
 function renderHealthPanel(health){
   var el=document.getElementById('healthContent');
   if(!el) return;
@@ -6980,7 +7035,7 @@ function restoreFromRlog(idx){
   var snap=entry.snapshot;
   var keepRlog=S.rlog||[];var keepJournal=S.journal||{};var keepSCHist=S.selfcareHistory||[];
   S.him=snap.him||{};S.startDate=snap.startDate||null;S.log=snap.log||[];S.checkins=snap.checkins||[];
-  S.tab=snap.tab||{};S.checks=snap.checks||{};S.notes=snap.notes||{};S.activePhase=snap.activePhase||1;
+  S.tab=snap.tab||{};S.checks=snap.checks||{};S.notes=snap.notes||{};S.notesLog=snap.notesLog||{};S.activePhase=snap.activePhase||1;
   S.overrides=snap.overrides||{};S.hisTest=snap.hisTest||null;S.selfFlagLog=snap.selfFlagLog||[];
   S.phase0=snap.phase0||{};S.selfcare={};S.rlog=keepRlog;S.journal=keepJournal;S.selfcareHistory=keepSCHist;S.moonLog=S.moonLog||[];
   save();setMode('relationship');renderAll();loadHim&&loadHim();loadSelfCare&&loadSelfCare();loadPhase0&&loadPhase0();updatePhase0Score&&updatePhase0Score();
