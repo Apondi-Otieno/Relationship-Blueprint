@@ -2496,11 +2496,9 @@ const PHASES = [
      {key:"remembers",label:"He remembers",text:"Does he remember details you told him and follow up on them unprompted?"},
      {key:"nochase",label:"I did not chase",text:"I refrained from initiating, over-texting, or performing for his attention."},
      {key:"redflags1",label:"No red flags",text:"No dismissiveness, financial instability, or dishonesty observed."},
-     {key:"pullback",label:"Attachment signal",text:"He went cold or distant when I was naturally less available"},
+     {key:"pullback",label:"Stayed warm, no pullback",text:"He stayed warm and consistent even when I was naturally less available — he did not go cold or distant."},
      {key:"physattract",label:"Physical attraction",text:"Am I genuinely and fully attracted to him — how he looks, how he moves, how he carries himself — without rationalising?"},
      {key:"voicepresence",label:"Voice and presence",text:"Do I find his voice, the way he speaks, and the way he occupies a room attractive — not just acceptable?"},
-     {key:"noredflagsphys",label:"No physical discomfort",text:"There is no physical aversion I am overlooking or explaining away because other things are good."},
-     {key:"voicepresence",label:"Voice and presence",text:"Do I find his voice, the way he speaks, and the way he occupies a room attractive? Not just acceptable — actually attractive?"},
      {key:"noredflagsphys",label:"No physical discomfort",text:"There is no physical aversion I am overlooking or explaining away because other things are good."},
      {key:"motherrel",label:"How he speaks of his mother",text:"How does he speak about his mother and the women in his life? With respect, complexity, and care — or with contempt or dismissal?"},
      {key:"closenessresp",label:"Response to closeness",text:"When the conversation got warm, personal, or emotionally close — did he lean in and stay present? A secure man moves toward intimacy, not away from it."},
@@ -2788,9 +2786,29 @@ const PHASES = [
 ];
 const RATING_LABELS = ["","This feels very hard right now","More uncertain than hopeful","Somewhere in the middle","Feeling mostly good","This feels really right"];
 
-let S = {activePhase:1,tab:{},checks:{},notes:{},notesLog:{},log:[],him:{},selfcare:{},checkins:[],moon:[],journal:{prompts:{},entries:[]},selfFlagLog:[],rlog:[],moonLog:[],overrides:{},phase0:{}};
+let S = {activePhase:1,tab:{},checks:{},notes:{},notesLog:{},log:[],him:{},selfcare:{},checkins:[],moon:[],journal:{prompts:{},entries:[]},selfFlagLog:[],rlog:[],moonLog:[],overrides:{},phase0:{},migrations:{}};
 try{const d=localStorage.getItem("rbp4");if(d)S=JSON.parse(d);}catch(e){}
 function save(){try{localStorage.setItem("rbp4",JSON.stringify(S));}catch(e){}}
+
+// ── ONE-TIME DATA MIGRATIONS ────────────────────────────────────────────
+// The "pullback" question (Phase 1) used to be worded so that "yes" meant
+// he DID go cold/distant (a bad sign). It is now worded so "yes" means he
+// stayed warm (a good sign) — matching every other item's scoring direction.
+// Any previously-saved answer needs its value flipped once so old data
+// keeps its original real-world meaning under the new wording.
+function migratePullback(){
+  if(!S.migrations) S.migrations={};
+  if(S.migrations.pullbackFlip) return;
+  if(S.checks){
+    var pbKey="1_pullback";
+    if(S.checks[pbKey]==="yes"||S.checks[pbKey]==="no"){
+      S.checks[pbKey]=S.checks[pbKey]==="yes"?"no":"yes";
+    }
+  }
+  S.migrations.pullbackFlip=true;
+}
+migratePullback();
+save();
 
 // ── TIME ──────────────────────────────────────────────────────────────────
 function getDaysIn(){
@@ -3725,7 +3743,8 @@ function restoreFile(e){
         selfFlagLog:      parsed.selfFlagLog||[],
         relFocus:         parsed.relFocus||{},
         habits:           parsed.habits||{list:[],checkins:{},intentions:{},mood:{}},
-        ui:               parsed.ui||{}
+        ui:               parsed.ui||{},
+        migrations:       parsed.migrations||{}
       };
       // journal — handle both old flat format and new {prompts,entries} format
       if(parsed.journal){
@@ -3737,6 +3756,7 @@ function restoreFile(e){
       } else {
         S.journal={prompts:{},entries:[]};
       }
+      migratePullback();
       save();
       // render everything safely
       try{loadHim();}catch(e2){console.warn('loadHim:',e2);}
