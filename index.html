@@ -2516,7 +2516,7 @@ const PHASES = [
      {key:"p2_watch",label:"Watched dates & payment",text:"I watched whether he plans dates or waits for me to, and who pays and how it feels."},
      {key:"p2_jokes",label:"Noted any money jokes",text:"I noted any jokes about money, splitting, or him being taken care of — even once."},
      {key:"p2_exclusivity",label:"Named exclusivity once",text:"By month 4–5, if exclusivity was not named, I named it once and treated his response as data."},
-     {key:"p2_boundary",label:"Held the boundary",text:"I held the boundary — no sleepovers, no sex — as non-negotiable."},
+     {key:"p2_boundaryheld",label:"Held the boundary",text:"I held the boundary — no sleepovers, no sex — as non-negotiable."},
      {key:"p2_noadjust",label:"Stayed myself",text:"I did not adjust my personality, opinions, or standards to keep his interest."},
    ],
    prenup:null,
@@ -2656,7 +2656,7 @@ const PHASES = [
      {key:"p5_dates",label:"Checked who plans dates",text:"I checked whether he is still planning dates, or whether that has quietly become my job."},
      {key:"p5_paying",label:"Checked who pays",text:"I checked whether he is still paying, or whether money has started to feel like a negotiation."},
      {key:"p5_effort",label:"Tracked his effort trend",text:"I noted whether his effort has increased, plateaued, or declined since I stopped being new."},
-     {key:"p5_finindep",label:"Checked financial independence",text:"I checked whether he has established full financial independence from his parents."},
+     {key:"p5_finindepcheck",label:"Checked financial independence",text:"I checked whether he has established full financial independence from his parents."},
      {key:"p5_stresstest",label:"Watched him under stress",text:"I watched how he shows up when I am stressed, unwell, or unavailable."},
      {key:"p5_wins",label:"Watched his response to my wins",text:"I noticed how he responds to my wins — whether he celebrates me or competes with me."},
      {key:"p5_freeormanaged",label:"Asked: free or managed?",text:"I asked myself honestly: do I feel more free or more managed in this relationship?"},
@@ -7006,8 +7006,10 @@ function calcHealthScore(){
     var yes=0,possible=0;
     items.forEach(function(it){
       var v=getVal(it.k);
+      if(v==='none') return; // not yet answered (e.g. a future phase) — don't count as a fail
       if(v==='yes') yes+=it.w;
       else if(v==='partial') yes+=it.w*0.5;
+      // 'no' contributes 0 but still counts toward the possible total below
       possible+=it.w;
     });
     return possible>0?{s:yes/possible,p:possible}:{s:-1,p:0};
@@ -7088,7 +7090,7 @@ function renderHealthPanel(health){
   h+='<div style="font-size:11px;color:var(--mist);line-height:1.5;">Based on your completed checklist items,<br>observation log, and self-reflection entries.</div></div></div>';
   h+='<div style="height:8px;background:var(--pink-100);border-radius:99px;overflow:hidden;margin-bottom:18px;">';
   h+='<div style="width:'+health.pct+'%;height:100%;background:'+health.col+';border-radius:99px;transition:width .8s ease;"></div></div>';
-  var hComponents=[{label:'His behaviour & consistency',val:health.his,desc:'Plans dates, pays, remembers, follows through, takes accountability'},{label:'Your self-respect',val:health.her,desc:'Not chasing, holding boundaries, staying yourself, feeling free'},{label:'No red flags flagged',val:health.flags,desc:'Red flag checklist items confirmed clean'},{label:'Observation log ratio',val:health.obs,desc:'Green vs red flags in your observation log'},{label:'Wound activity',val:health.sf,desc:'How often your wound is active (lower = healthier)'}];
+  var hComponents=[{label:'His behaviour & consistency',val:health.his,desc:'Plans dates, pays, remembers, follows through, takes accountability'},{label:'Your self-respect',val:health.her,desc:'Not chasing, holding boundaries, staying yourself, feeling free'},{label:'No red flags flagged',val:health.flags,desc:'Red flag checklist items confirmed clean'},{label:'Observation log ratio',val:health.obs,desc:'Green vs red flags in your observation log'},{label:'Wound groundedness',val:health.sf,desc:'Based on your self-reflection log — higher means your wound has been active less often'}];
   h+='<div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mauve);margin-bottom:10px;">Score breakdown</div>';
   hComponents.forEach(function(comp){
     if(comp.val<0) return;
